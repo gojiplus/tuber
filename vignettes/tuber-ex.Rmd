@@ -1,0 +1,51 @@
+### tuber: Access YouTube via R
+
+#### Load the package
+
+To get started, load the package. The latest version of the package will always be on github. Instructions for installing the package from github are provided below.
+
+
+
+```r
+library(tuber)
+```
+
+
+```r
+"
+Get the latest version from github:
+
+# install.packages('devtools')
+devtools::install_github('soodoku/tuber')
+"
+```
+
+To get going, get the application id and password from [https://cloud.google.com/console](https://cloud.google.com/console). Enable YouTube APIs. Then set the application id and password via the `yt_oauth` function. For more information about YouTube OAuth, see [YouTube OAuth Guide](https://developers.google.com/youtube/v3/guides/authentication).
+
+```{r yt_oauth}
+yt_oauth("app_id", "app_password")
+```
+
+**Get Statistics of a Video**
+
+```{r get_stats}
+get_stats(video_id="N708P-A45D0")
+```
+
+**Get Information About a Video**
+
+```{r get_stats}
+get_details(video_id="N708P-A45D0")
+```
+
+**Get Caption of a Video**
+
+```{r get_captions}
+get_captions(video_id="yJXTXN4xrI8")
+```
+
+**Search Videos**
+```{r yt_search}
+yt_search("Barack Obama")
+```
+
