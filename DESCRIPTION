@@ -1,0 +1,12 @@
+Package: tuber
+Title: Access to YouTube API
+Version: 0.1
+Authors@R: person("Gaurav", "Sood", email = "gsood07@gmail.com", role = c("aut", "cre"))
+Maintainer: Gaurav Sood <gsood07@gmail.com>
+Description: Access to YouTube API. 
+URL: http://github.com/soodoku/tuber
+BugReports: http://github.com/soodoku/tuber/issues
+Depends: R (>= 3.2.0)
+License: GPL (>= 2)
+LazyData: true
+Imports: httr
