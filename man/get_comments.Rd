@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_comments.R
 \name{get_comments}
 \alias{get_comments}
-\title{Get Statistics of a Video}
+\title{Get Comments To a Video}
 \usage{
 get_comments(video_id = NULL)
 }
@@ -10,10 +10,10 @@ get_comments(video_id = NULL)
 \item{video_id}{id of the video; required}
 }
 \value{
-list with 5 elements - viewCount, likeCount, dislikeCount, favoriteCount, commentCount
+XML list of comments
 }
 \description{
-Get Statistics of a Video
+Get Comments To a Video
 }
 \examples{
 get_comments(video_id="N708P-A45D0")

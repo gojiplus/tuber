@@ -45,7 +45,10 @@ get_captions(video_id="yJXTXN4xrI8")
 yt_search("Barack Obama")
 ```
 
-
+**Get Comments**
+```{r get_comments}
+get_comments(video_id="N708P-A45D0")
+```
 
 
 #### License

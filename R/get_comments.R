@@ -1,7 +1,7 @@
-#' Get Statistics of a Video
+#' Get Comments To a Video
 #'
 #' @param video_id id of the video; required
-#' @return list with 5 elements - viewCount, likeCount, dislikeCount, favoriteCount, commentCount
+#' @return XML list of comments
 #' @export
 #' @references \url{https://console.developers.google.com/project}
 #' @examples
@@ -12,8 +12,19 @@ get_comments <- function (video_id=NULL){
 	google_token=getOption("google_token")
 	if (is.null(google_token)) stop("Please set up authorization via yt_oauth()).")
 
-	req <- httr::GET(paste0("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=", video_id), config(token = google_token))
+	# Try getting comments directly
+	req <- httr::GET(paste0("https://gdata.youtube.com/feeds/api/videos/", video_id, "/comments?orderby=published"))
+	res <- content(req, as="text")
+
+	# Error handling
+	if (req$status==400) stop(res)
 	httr::stop_for_status(req)
-	req
+	
+	if (length(content(req))==0) {
+		req <- httr::GET(paste0("https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=", video_id), config(token = google_token))
+		httr::stop_for_status(req)
+		res <- content(req)
+	}
+	res	
 }
 
