@@ -16,7 +16,7 @@ devtools::install_github("soodoku/tuber")
 
 ### Usage
 
-To get going, get the application id and password from [https://cloud.google.com/console](https://cloud.google.com/console). Enable YouTube APIs. Then set the application id and password via the `yt_oauth` function. For more information about YouTube OAuth, see [YouTube OAuth Guide](https://developers.google.com/youtube/v3/guides/authentication).
+To get going, get the application id and password from [https://cloud.google.com/console](https://cloud.google.com/console). Enable all the YouTube APIs. Also enable Freebase API. Then set the application id and password via the `yt_oauth` function. For more information about YouTube OAuth, see [YouTube OAuth Guide](https://developers.google.com/youtube/v3/guides/authentication).
 
 ```{r yt_oauth}
 yt_oauth("app_id", "app_password")
@@ -34,7 +34,7 @@ get_stats(video_id="N708P-A45D0")
 get_details(video_id="N708P-A45D0")
 ```
 
-**Get Caption of a Video**
+**Get Captions of a Video**
 
 ```{r get_captions}
 get_captions(video_id="yJXTXN4xrI8")
@@ -45,11 +45,17 @@ get_captions(video_id="yJXTXN4xrI8")
 yt_search("Barack Obama")
 ```
 
+**Search Videos by Topic**
+Uses the [Freebase](http://freebase.com) database of topics.
+
+```{r yt_topic_search}
+yt_topic_search("Barack Obama")
+```
+
 **Get Comments**
 ```{r get_comments}
 get_comments(video_id="N708P-A45D0")
 ```
-
 
 #### License
 Scripts are released under [GNU V3](http://www.gnu.org/licenses/gpl-3.0.en.html).
