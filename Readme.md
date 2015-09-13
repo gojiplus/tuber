@@ -1,4 +1,4 @@
-### Access YouTube API via R
+### :sweet_potato: tuber: Access YouTube API via R
 
 [![GPL-3.0](http://img.shields.io/:license-gpl-blue.svg)](http://opensource.org/licenses/GPL-3.0)
 [![Build Status](https://travis-ci.org/soodoku/tuber.svg?branch=master)](https://travis-ci.org/soodoku/tuber)
