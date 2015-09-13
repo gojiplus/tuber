@@ -12,7 +12,10 @@
 #' @references \url{https://console.developers.google.com/project}
 #' @references \url{https://developers.google.com/youtube/v3/guides/auth/client-side-web-apps} for different scopes
 #' @examples
-#' yt_oauth("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.com", "MbOSt6cQhhFkwETXKur-L9rN")
+#'  \dontrun{
+#'	  yt_oauth("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.com", 
+#'	           "MbOSt6cQhhFkwETXKur-L9rN")
+#' }
 
 yt_oauth <- function (app_id=NULL, app_secret=NULL, scope="ssl", remove_old_oauth=FALSE){
 
@@ -25,13 +28,13 @@ yt_oauth <- function (app_id=NULL, app_secret=NULL, scope="ssl", remove_old_oaut
 	} else if(is.null(app_id) | is.null(app_secret)){
 		stop("Please provide values for app_id and app_secret")
 	} else {
-		httr::oauth_endpoints("google")
-		myapp <- httr::oauth_app("google", key = app_id, secret = app_secret)
+		oauth_endpoints("google")
+		myapp <- oauth_app("google", key = app_id, secret = app_secret)
 
 		if (scope=="ssl") {
-			google_token <-  httr::oauth2.0_token( httr::oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtube.force-ssl")
+			google_token <-  oauth2.0_token( oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtube.force-ssl")
 		} else if (scope=="basic") {
-			google_token <-  httr::oauth2.0_token( httr::oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtube")
+			google_token <-  oauth2.0_token( oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtube")
 		}
 	}
 	

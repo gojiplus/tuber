@@ -8,7 +8,7 @@ It uses the Freebase list of topics}
 yt_topic_search(topic = NULL)
 }
 \arguments{
-\item{term}{search term; required; no default}
+\item{topic}{topic being searched for; required; no default}
 }
 \value{
 a list
@@ -18,7 +18,7 @@ Search YouTube by Topic
 It uses the Freebase list of topics
 }
 \examples{
-yt_topic_search(topic="Barack Obama")
+\dontrun{yt_topic_search(topic="Barack Obama")}
 }
 \references{
 \url{http://www.freebase.com/}

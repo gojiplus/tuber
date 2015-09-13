@@ -25,7 +25,10 @@ If you want to remove the existing .httr-oauth, set remove_old_oauth to TRUE. By
 The function launches a browser to allow you to authorize the application
 }
 \examples{
-yt_oauth("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.com", "MbOSt6cQhhFkwETXKur-L9rN")
+\dontrun{
+	  yt_oauth("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.com",
+	           "MbOSt6cQhhFkwETXKur-L9rN")
+}
 }
 \references{
 \url{https://console.developers.google.com/project}

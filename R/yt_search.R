@@ -6,7 +6,7 @@
 #' @export
 #' @references \url{https://console.developers.google.com/project}
 #' @examples
-#' yt_search(term="Barack Obama")
+#'  \dontrun{yt_search(term="Barack Obama")}
 
 yt_search <- function (term=NULL) {
 
@@ -15,8 +15,8 @@ yt_search <- function (term=NULL) {
 
 	# For queries with spaces
 	term <- paste0(unlist(strsplit(term, " ")), collapse="%20")
-	req <- httr::GET(paste0("https://www.googleapis.com/youtube/v3/search?part=snippet&q=", term), config(token = google_token))
-	httr::stop_for_status(req)
+	req <- GET(paste0("https://www.googleapis.com/youtube/v3/search?part=snippet&q=", term), config(token = google_token))
+	stop_for_status(req)
 
 	res <- content(req)
 

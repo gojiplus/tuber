@@ -16,7 +16,7 @@ list with the following elements - publishedAt, channelId, title, description, t
 Get details such as when the video was published, the title, description, thumbnails, category etc.
 }
 \examples{
-get_details(video_id="N708P-A45D0")
+\dontrun{get_details(video_id="N708P-A45D0")}
 }
 \references{
 \url{https://developers.google.com/youtube/v3/}

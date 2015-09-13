@@ -3,3 +3,7 @@
 .httr-oauth
 yt_dev.R
 tuber-ex.Rmd
+.travis.yml
+Readme.md
+^.*\.Rmd$
+^.*\.md$

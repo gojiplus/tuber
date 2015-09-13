@@ -5,15 +5,15 @@
 #' @export
 #' @references \url{https://console.developers.google.com/project}
 #' @examples
-#' get_stats(video_id="N708P-A45D0")
+#'  \dontrun{get_stats(video_id="N708P-A45D0")}
 
 get_stats <- function (video_id=NULL){
 
 	google_token=getOption("google_token")
 	if (is.null(google_token)) stop("Please set up authorization via yt_oauth()).")
 	
-	req <- httr::GET(paste0("https://www.googleapis.com/youtube/v3/videos?part=statistics&id=", video_id), config(token = google_token))
-	httr::stop_for_status(req)
+	req <- GET(paste0("https://www.googleapis.com/youtube/v3/videos?part=statistics&id=", video_id), config(token = google_token))
+	stop_for_status(req)
 	res <- content(req)$items[[1]]$statistics
 
 	cat('No. of Views', res$viewCount, "\n")
