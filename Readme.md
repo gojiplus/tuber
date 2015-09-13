@@ -7,14 +7,14 @@ Access YouTube API via R.
 
 ### Installation
 
-To get the current development version from github:
+To get the current development version from GitHub:
 
 ```{r install}
 # install.packages("devtools")
 devtools::install_github("soodoku/tuber")
 ```
 
-### Usage
+### Using tuber
 
 To get going, get the application id and password from [https://cloud.google.com/console](https://cloud.google.com/console). Enable all the YouTube APIs. Also enable Freebase API. Then set the application id and password via the `yt_oauth` function. For more information about YouTube OAuth, see [YouTube OAuth Guide](https://developers.google.com/youtube/v3/guides/authentication).
 
