@@ -1,6 +1,6 @@
 ### :sweet_potato: tuber: Access YouTube API via R
 
-[![GPL-3.0](http://img.shields.io/:license-gpl-blue.svg)](http://opensource.org/licenses/GPL-3.0)
+[![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.org/soodoku/tuber.svg?branch=master)](https://travis-ci.org/soodoku/tuber)
 
 Access YouTube API via R.
@@ -58,5 +58,4 @@ get_comments(video_id="N708P-A45D0")
 ```
 
 #### License
-Scripts are released under [GNU V3](http://www.gnu.org/licenses/gpl-3.0.en.html).
-
+Scripts are released under the [MIT License](http://opensource.org/licenses/MIT).
