@@ -4,6 +4,5 @@
 yt_dev.R
 tuber-ex.Rmd
 .travis.yml
-Readme.md
+appveyor.yml
 ^.*\.Rmd$
-^.*\.md$
