@@ -4,30 +4,27 @@
 
 To get started, load the package. The latest version of the package will always be on github. Instructions for installing the package from github are provided below.
 
-
-
-```r
-library(tuber)
-```
-
-
-```r
+```{r, eval=FALSE, install}
 "
 Get the latest version from github:
 
 # install.packages('devtools')
-devtools::install_github('soodoku/tuber')
+devtools::install_github("soodoku/tuber", build_vignettes = TRUE)
 "
+```
+
+```{r, eval=FALSE, loadlib}
+library(tuber)
 ```
 
 To get going, get the application id and password from [https://cloud.google.com/console](https://cloud.google.com/console). Enable YouTube APIs. Then set the application id and password via the `yt_oauth` function. For more information about YouTube OAuth, see [YouTube OAuth Guide](https://developers.google.com/youtube/v3/guides/authentication).
 
 
-```r
+```{r, eval=FALSE, auth}
 yt_oauth("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.com", "MbOSt6cQhhFkwETXKur-L9rN")
 ```
 
-```
+```{r, eval=FALSE, prints}
 ## Waiting for authentication in browser...
 ## Press Esc/Ctrl + C to abort
 ## Authentication complete.
@@ -40,7 +37,7 @@ yt_oauth("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.c
 **Get Statistics of a Video**
 
 
-```r
+```{r, eval=FALSE, getstats}
 get_stats(video_id="N708P-A45D0")
 ```
 
@@ -59,7 +56,7 @@ get_stats(video_id="N708P-A45D0")
 **Get Information About a Video**
 
 
-```r
+```{r, eval=FALSE, getdetails}
 get_details(video_id="N708P-A45D0")
 ```
 
@@ -70,11 +67,11 @@ get_details(video_id="N708P-A45D0")
 **Get Caption of a Video**
 
 
-```r
+```{r, eval=FALSE, getcaptions}
 get_captions(video_id="yJXTXN4xrI8")
 ```
 
-```
+```{r, eval=FALSE, prints}
 ## Warning in req$status: partial match of 'status' to 'status_code'
 ```
 
@@ -178,7 +175,7 @@ get_captions(video_id="yJXTXN4xrI8")
 
 **Search Videos**
 
-```r
+```{r, eval=FALSE, searchvids}
 yt_search("Barack Obama")
 ```
 

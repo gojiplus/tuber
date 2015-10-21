@@ -11,7 +11,12 @@ To get the current development version from GitHub:
 
 ```{r install}
 # install.packages("devtools")
-devtools::install_github("soodoku/tuber")
+devtools::install_github("soodoku/tuber", build_vignettes = TRUE)
+```
+
+To get a quick overview of some important functions in tuber, see the vignette:
+```
+vignette("tuber-ex", package="tuber")
 ```
 
 ### Using tuber

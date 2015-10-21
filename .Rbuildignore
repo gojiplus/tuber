@@ -2,7 +2,6 @@
 ^\.Rproj\.user$
 .httr-oauth
 yt_dev.R
-tuber-ex.Rmd
 .travis.yml
 appveyor.yml
-^.*\.Rmd$
+^tuber-ex.Rmd$

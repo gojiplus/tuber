@@ -1,12 +1,14 @@
 Package: tuber
-Title: Access to YouTube API
+Title: Client for the YouTube API
 Version: 0.1
 Authors@R: person("Gaurav", "Sood", email = "gsood07@gmail.com", role = c("aut", "cre"))
 Maintainer: Gaurav Sood <gsood07@gmail.com>
-Description: Access YouTube. 
+Description: Client for the YouTube API. 
 URL: http://github.com/soodoku/tuber
 BugReports: http://github.com/soodoku/tuber/issues
 Depends: R (>= 3.2.0)
-License: GPL (>= 2)
+License: MIT + file LICENSE
 LazyData: true
 Imports: httr
+VignetteBuilder: knitr
+Suggests: knitr (>= 1.11)
