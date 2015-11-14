@@ -1,7 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 .httr-oauth
-yt_dev.R
-.travis.yml
-appveyor.yml
-^tuber-ex.Rmd$
+dev
+^.travis.yml$
+^appveyor.yml$

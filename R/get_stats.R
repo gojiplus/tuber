@@ -5,7 +5,9 @@
 #' @export
 #' @references \url{https://console.developers.google.com/project}
 #' @examples
-#'  \dontrun{get_stats(video_id="N708P-A45D0")}
+#' \dontrun{
+#' get_stats(video_id="N708P-A45D0")
+#' }
 
 get_stats <- function (video_id=NULL){
 

@@ -15,4 +15,4 @@ Imports:
 VignetteBuilder: knitr
 Suggests:
     knitr (>= 1.11)
-RoxygenNote: 5.0.0
+RoxygenNote: 5.0.1
