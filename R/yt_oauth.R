@@ -17,24 +17,34 @@
 #'	           "MbOSt6cQhhFkwETXKur-L9rN")
 #' }
 
-yt_oauth <- function (app_id=NULL, app_secret=NULL, scope="ssl", remove_old_oauth=FALSE){
+yt_oauth <- function (app_id=NULL, app_secret=NULL, scope="ssl", remove_old_oauth=FALSE) {
 
-	if(remove_old_oauth){
+	if (remove_old_oauth & file.exists('.httr-oauth')) {
 		file.remove('.httr-oauth')
 	}
 
 	if (file.exists('.httr-oauth')) {
+		
 		google_token <- readRDS('.httr-oauth')
-	} else if(is.null(app_id) | is.null(app_secret)){
+		google_token <- google_token[[1]]
+
+	} else if(is.null(app_id) | is.null(app_secret)) {
+		
 		stop("Please provide values for app_id and app_secret")
+	
 	} else {
+	
 		oauth_endpoints("google")
 		myapp <- oauth_app("google", key = app_id, secret = app_secret)
 
 		if (scope=="ssl") {
-			google_token <-  oauth2.0_token( oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtube.force-ssl")
+	
+			google_token <- oauth2.0_token(oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtube.force-ssl")
+			
 		} else if (scope=="basic") {
-			google_token <-  oauth2.0_token( oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtube")
+	
+			google_token <- oauth2.0_token( oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtube")
+
 		}
 	}
 	

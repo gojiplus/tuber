@@ -6,16 +6,21 @@
 #' @export
 #' @references \url{http://www.freebase.com/}
 #' @examples
-#'  \dontrun{yt_topic_search(topic="Barack Obama")}
+#'  \dontrun{
+#' yt_topic_search(topic="Barack Obama")
+#' }
 
 yt_topic_search <- function (topic=NULL) {
 
-	google_token <- getOption("google_token")
-	if (is.null(google_token)) stop("Please set up authorization via yt_oauth()).")
+	if (is.null(topic)) stop("Must specify a topic")
+
+	yt_check_token()
 
 	# For queries with spaces
 	topic <- paste0(unlist(strsplit(topic, " ")), collapse="%20")
-	req <- GET(paste0("https://www.googleapis.com/freebase/v1/search?query=", topic))
+	querylist = list(query=topic)
+
+	req <- GET("https://www.googleapis.com/freebase/v1/search", query=querylist, config(token =  getOption("google_token")))
 	stop_for_status(req)
 
 	res <- content(req)

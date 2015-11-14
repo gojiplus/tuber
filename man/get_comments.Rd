@@ -16,7 +16,9 @@ XML list of comments
 Get Comments To a Video
 }
 \examples{
- \dontrun{get_comments(video_id="N708P-A45D0")}
+\dontrun{
+get_comments(video_id="N708P-A45D0")
+}
 }
 \references{
 \url{https://console.developers.google.com/project}

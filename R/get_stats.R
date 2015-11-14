@@ -9,12 +9,15 @@
 #' get_stats(video_id="N708P-A45D0")
 #' }
 
-get_stats <- function (video_id=NULL){
+get_stats <- function (video_id=NULL) {
 
-	google_token=getOption("google_token")
-	if (is.null(google_token)) stop("Please set up authorization via yt_oauth()).")
+	if (is.null(video_id)) stop("Must specify a video ID")
+
+	yt_check_token()
 	
-	req <- GET(paste0("https://www.googleapis.com/youtube/v3/videos?part=statistics&id=", video_id), config(token = google_token))
+	querylist <- list(part="statistics", id = video_id)
+
+	req <- GET("https://www.googleapis.com/youtube/v3/videos", query=querylist, config(token =  getOption("google_token")))
 	stop_for_status(req)
 	res <- content(req)$items[[1]]$statistics
 

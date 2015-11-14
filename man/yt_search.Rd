@@ -17,7 +17,9 @@ snippet.thumbnails.default.url, snippet.thumbnails.medium.url, snippet.thumbnail
 Search YouTube
 }
 \examples{
- \dontrun{yt_search(term="Barack Obama")}
+\dontrun{
+yt_search(term="Barack Obama")
+}
 }
 \references{
 \url{https://console.developers.google.com/project}

@@ -18,7 +18,9 @@ Search YouTube by Topic
 It uses the Freebase list of topics
 }
 \examples{
- \dontrun{yt_topic_search(topic="Barack Obama")}
+ \dontrun{
+yt_topic_search(topic="Barack Obama")
+}
 }
 \references{
 \url{http://www.freebase.com/}

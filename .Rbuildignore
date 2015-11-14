@@ -4,3 +4,4 @@
 dev
 ^.travis.yml$
 ^appveyor.yml$
+tests

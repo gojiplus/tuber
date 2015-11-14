@@ -6,20 +6,24 @@
 #' @export
 #' @references \url{https://console.developers.google.com/project}
 #' @examples
-#'  \dontrun{yt_search(term="Barack Obama")}
+#' \dontrun{
+#' yt_search(term="Barack Obama")
+#' }
 
 yt_search <- function (term=NULL) {
 
-	google_token <- getOption("google_token")
-	if (is.null(google_token)) stop("Please set up authorization via yt_oauth()).")
+	if (is.null(term)) stop("Must specify a search term")
+
+	yt_check_token()
 
 	# For queries with spaces
-	term <- paste0(unlist(strsplit(term, " ")), collapse="%20")
-	req <- GET(paste0("https://www.googleapis.com/youtube/v3/search?part=snippet&q=", term), config(token = google_token))
+	term = paste0(unlist(strsplit(term, " ")), collapse="%20")
+	querylist <- list(part="snippet", q = term)
+
+	req <- GET("https://www.googleapis.com/youtube/v3/search", query=querylist, config(token = getOption("google_token")))
 	stop_for_status(req)
-
 	res <- content(req)
-
+	
 	resdf <- NA
 
 	if (res$pageInfo$totalResults!=0) {

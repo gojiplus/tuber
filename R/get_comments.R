@@ -5,26 +5,20 @@
 #' @export
 #' @references \url{https://console.developers.google.com/project}
 #' @examples
-#'  \dontrun{get_comments(video_id="N708P-A45D0")}
+#' \dontrun{
+#' get_comments(video_id="N708P-A45D0")
+#' }
 
-get_comments <- function (video_id=NULL){
+get_comments <- function (video_id=NULL) {
 
-	google_token=getOption("google_token")
-	if (is.null(google_token)) stop("Please set up authorization via yt_oauth()).")
+	if (is.null(video_id)) stop("Must specify a video ID")
 
-	# Try getting comments directly
-	req <- GET(paste0("https://gdata.youtube.com/feeds/api/videos/", video_id, "/comments?orderby=published"))
-	res <- content(req, as="text")
+	yt_check_token()
 
-	# Error handling
-	if (req$status==400) stop(res)
-	httr::stop_for_status(req)
-	
-	if (length(content(req))==0) {
-		req <- GET(paste0("https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=", video_id), config(token = google_token))
-		stop_for_status(req)
-		res <- content(req)
-	}
+	querylist <- list(part="snippet", videoId = video_id)
+	req <- GET("https://www.googleapis.com/youtube/v3/commentThreads", query=querylist, config(token = getOption("google_token")))
+	stop_for_status(req)
+	res <- content(req)
 	res	
 }
 

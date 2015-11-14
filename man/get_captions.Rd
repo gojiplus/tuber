@@ -18,7 +18,9 @@ list with 5 elements - viewCount, likeCount, dislikeCount, favoriteCount, commen
 Get Captions of a Video
 }
 \examples{
- \dontrun{get_captions(video_id="yJXTXN4xrI8")}
+\dontrun{
+get_captions(video_id="yJXTXN4xrI8")
+}
 }
 \references{
 \url{https://console.developers.google.com/project}
