@@ -5,3 +5,4 @@ dev
 ^.travis.yml$
 ^appveyor.yml$
 tests
+^cran-comments.md$
