@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_comments.R
 \name{get_comments}
 \alias{get_comments}
-\title{Get Comments To a Video}
+\title{Get Comments On a Video}
 \usage{
 get_comments(video_id = NULL)
 }
@@ -10,10 +10,12 @@ get_comments(video_id = NULL)
 \item{video_id}{id of the video; required}
 }
 \value{
-XML list of comments
+Nested named list. The entry \code{items} is a list of comments along with meta information. 
+Within each of the \code{items} is an item \code{snippet} which has an item \code{topLevelComment$snippet$textDisplay}
+that contains the actual comment.
 }
 \description{
-Get Comments To a Video
+Get Comments On a Video
 }
 \examples{
 \dontrun{

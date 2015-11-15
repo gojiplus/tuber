@@ -1,7 +1,10 @@
-#' Get Comments To a Video
+#' Get Comments On a Video
 #'
 #' @param video_id id of the video; required
-#' @return XML list of comments
+#' @return Nested named list. The entry \code{items} is a list of comments along with meta information. 
+#' Within each of the \code{items} is an item \code{snippet} which has an item \code{topLevelComment$snippet$textDisplay}
+#' that contains the actual comment.
+#'  
 #' @export
 #' @references \url{https://console.developers.google.com/project}
 #' @examples
@@ -19,6 +22,7 @@ get_comments <- function (video_id=NULL) {
 	req <- GET("https://www.googleapis.com/youtube/v3/commentThreads", query=querylist, config(token = getOption("google_token")))
 	stop_for_status(req)
 	res <- content(req)
-	res	
+	
+	return(invisible(res))	
 }
 

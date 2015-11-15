@@ -9,24 +9,31 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-### tuber: Access YouTube via R
+## tuber: Access YouTube via R
 
-#### Load the package
 
-To get started, load the package. The latest version of the package will always be on github. Instructions for installing the package from github are provided below.
+### Install, Load the package
+
+To install the latest version from CRAN: 
 
 ```{r, eval=FALSE, install}
-"
-Get the latest version from github:
+install.packages("tuber")
+```
 
+The latest development version of the package will always be on GitHub. Instructions for installing the package from Github are provided below.
+
+```{r, eval=FALSE, install_g}
 # install.packages('devtools')
 devtools::install_github("soodoku/tuber", build_vignettes = TRUE)
-"
 ```
+
+Next, load the package: 
 
 ```{r, eval=FALSE, loadlib}
 library(tuber)
 ```
+
+### Using the package
 
 To get going, get the application id and password from [https://cloud.google.com/console](https://cloud.google.com/console). Enable YouTube APIs. Then set the application id and password via the `yt_oauth` function. For more information about YouTube OAuth, see [YouTube OAuth Guide](https://developers.google.com/youtube/v3/guides/authentication).
 
@@ -41,20 +48,13 @@ yt_oauth("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.c
 ## Authentication complete.
 ```
 
-```
-## Warning in req$status: partial match of 'status' to 'status_code'
-```
-
-**Get Statistics of a Video**
+#### Get Statistics of a Video
 
 
 ```{r, eval=FALSE, getstats}
 get_stats(video_id="N708P-A45D0")
 ```
 
-```
-## Warning in req$status: partial match of 'status' to 'status_code'
-```
 
 ```
 ## No. of Views 525112 
@@ -64,26 +64,18 @@ get_stats(video_id="N708P-A45D0")
 ## No. of Comments 5329
 ```
 
-**Get Information About a Video**
+#### Get Information About a Video
 
 
 ```{r, eval=FALSE, getdetails}
 get_details(video_id="N708P-A45D0")
 ```
 
-```
-## Warning in req$status: partial match of 'status' to 'status_code'
-```
-
-**Get Caption of a Video**
+#### Get Caption of a Video
 
 
 ```{r, eval=FALSE, getcaptions}
 get_captions(video_id="yJXTXN4xrI8")
-```
-
-```{r, eval=FALSE, prints2}
-## Warning in req$status: partial match of 'status' to 'status_code'
 ```
 
 ```
@@ -184,17 +176,24 @@ get_captions(video_id="yJXTXN4xrI8")
 ## 
 ```
 
-**Search Videos**
+#### Search Videos
 
 ```{r, eval=FALSE, searchvids}
 yt_search("Barack Obama")
 ```
 
 ```
-## Warning in req$status: partial match of 'status' to 'status_code'
-```
-
-```
 ## Total Results 1000000
 ```
 
+#### Get Comments on a video
+
+```{r, eval=FALSE, get_comments}
+res <- get_comments(video_id="N708P-A45D0")
+# First comment
+res$items[[1]]$snippet$topLevelComment$snippet$textDisplay
+```
+
+```
+## Hillary Clinton is a corporate puppet, a flip-flopper, and a robotic establishment politician. She also constantly plays the card of vote for me because I have a vagina. She has received lots of money from wall street and corporations that own her. She was against  gay marriage, for the Iraq war, for the Patriot Act, undecided on the Keystone Pipeline for a long time(that should be a no brainier if you are truly an environmentalist), and is currently against Glass-Steagall. She is a mediocre liberal that tries to put on a progressive mask through vague messages. She is a phony crook that as Sanders said, talks the talk but doesn&#39;t walk the walk. She is the embodiment of politics as usual were money controls government. From her you should only expect at most a speck of progressivism. <br /><br />That is why you shouldn&#39;t vote for Clinton.﻿
+```

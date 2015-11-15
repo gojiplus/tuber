@@ -1,6 +1,7 @@
 #' Get statistics of a Video
 #'
 #' @param video_id id of the video; required
+#' 
 #' @return list with 5 elements - viewCount, likeCount, dislikeCount, favoriteCount, commentCount
 #' @export
 #' @references \url{https://console.developers.google.com/project}

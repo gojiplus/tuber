@@ -1,6 +1,7 @@
 #' Search YouTube
 #'
 #' @param term search term; required; no default
+#' 
 #' @return data.frame with 13 elements - kind, etag, id.kind, id.videoId, snippet.publishedAt, snippet.channelId, snippet.title, snippet.description, 
 #' snippet.thumbnails.default.url, snippet.thumbnails.medium.url, snippet.thumbnails.high.url, snippet.channelTitle, snippet.liveBroadcastContent
 #' @export

@@ -12,7 +12,7 @@ get_captions(video_id = NULL, lang = "en")
 \item{lang}{language of the caption; required; default is english ("en")}
 }
 \value{
-list with 5 elements - viewCount, likeCount, dislikeCount, favoriteCount, commentCount
+captions for the video from one of the first track
 }
 \description{
 Get Captions of a Video

@@ -2,7 +2,7 @@
 #'
 #' @param video_id id of the video; required; no default
 #' @param lang  language of the caption; required; default is english ("en")
-#' @return list with 5 elements - viewCount, likeCount, dislikeCount, favoriteCount, commentCount
+#' @return captions for the video from one of the first track
 #' @export
 #' @references \url{https://console.developers.google.com/project}
 #' @examples
@@ -19,6 +19,7 @@ get_captions <- function (video_id=NULL, lang="en") {
 	# Try getting captions directly
 	req <- GET(paste0("http://video.google.com/timedtext?lang=", lang, "&v=", video_id))
 
+	# If not try other things
 	if (length(content(req))==0) {
 		querylist = list(part="snippet", videoId = video_id)
 		req <- GET("https://www.googleapis.com/youtube/v3/captions", query = querylist, config(token = getOption("google_token")))

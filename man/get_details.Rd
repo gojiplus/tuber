@@ -10,13 +10,14 @@ get_details(video_id = NULL)
 \item{video_id}{id of the video; required}
 }
 \value{
-list with the following elements - publishedAt, channelId, title, description, thumbnails, channelTitle, categoryId, liveBroadcastContent, localized, defaultAudioLanguage
+list with the following elements - publishedAt, channelId, title, description, thumbnails, 
+channelTitle, categoryId, liveBroadcastContent, localized, defaultAudioLanguage
 }
 \description{
 Get details such as when the video was published, the title, description, thumbnails, category etc.
 }
 \examples{
- \dontrun{
+\dontrun{
 get_details(video_id="N708P-A45D0")
 }
 }
