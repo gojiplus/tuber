@@ -1,10 +1,11 @@
-### :sweet_potato: tuber: Access YouTube API via R
+## :sweet_potato: tuber: Access YouTube API via R
 
 [![Build status](https://ci.appveyor.com/api/projects/status/pgr0wih12gtwvvvx?svg=true)](https://ci.appveyor.com/project/soodoku/tuber)
 [![Build Status](https://travis-ci.org/soodoku/tuber.svg?branch=master)](https://travis-ci.org/soodoku/tuber)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/tuber)](http://cran.r-project.org/web/packages/tuber)
+![](http://cranlogs.r-pkg.org/badges/grand-total/tuber)
 
-Access YouTube API via R.
+Access YouTube API via R. Get comments posted on YouTube videos, information on how many times a video has been liked, search for videos with particular content, and much more. You can also scrape captions from a few videos. To learn more about the YouTube API, see [https://developers.google.com/youtube/v3/](https://developers.google.com/youtube/v3/).
 
 ### Installation
 
@@ -63,5 +64,5 @@ yt_topic_search("Barack Obama")
 get_comments(video_id="N708P-A45D0")
 ```
 
-#### License
+### License
 Scripts are released under the [MIT License](http://opensource.org/licenses/MIT).
