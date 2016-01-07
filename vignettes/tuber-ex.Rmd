@@ -2,7 +2,7 @@
 title: "Using tuber"
 author: "Gaurav Sood"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: rmarkdown::render
 vignette: >
   %\VignetteIndexEntry{Using tuber}
   %\VignetteEngine{knitr::rmarkdown}
