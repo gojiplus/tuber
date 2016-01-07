@@ -1,6 +1,6 @@
 version .2 2015-XX-XX
 -----------------------
-1. New use case vignette: Analyzing comments on YouTube Vides of Politicians
-2. Removed support for Freebase Topic Search
-3. Expanded API
+1. New use case vignette: Analyzing comments on YouTube Videos of Politicians
+2. Deprecated Freebase Topic Search
+3. Better support for the API. For instance, comments now supports maxResults, textFormat etc.
 4. More unit tests added
