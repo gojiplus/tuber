@@ -17,5 +17,6 @@ Imports:
     httr
 VignetteBuilder: knitr
 Suggests:
-    knitr (>= 1.11)
+    knitr (>= 1.11),
+    rmarkdown
 RoxygenNote: 5.0.1
