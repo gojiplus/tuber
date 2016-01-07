@@ -4,12 +4,17 @@
 \alias{get_comments}
 \title{Get Comments On a Video}
 \usage{
-get_comments(video_id = NULL, simplify = TRUE)
+get_comments(video_id = NULL, simplify = TRUE, maxResults = 20,
+  textFormat = "html")
 }
 \arguments{
-\item{video_id}{id of the video; required}
+\item{video_id}{Data Type: Character. ID of the video. Required.}
 
-\item{simplify}{Boolean. Default is TRUE. If TRUE, the function returns a data frame. Else a list with all the information returned.}
+\item{simplify}{Data Type: Boolean. Default is TRUE. If TRUE, the function returns a data frame. Else a list with all the information returned.}
+
+\item{maxResults}{Data Type: Numeric. Default is 20. Takes values between 20 and 100. Optional.}
+
+\item{textFormat}{Data Type: Character. Default is "html". Only takes "html" or "plainText." Optional.}
 }
 \value{
 Nested named list. The entry \code{items} is a list of comments along with meta information. 
