@@ -4,10 +4,12 @@
 \alias{yt_search}
 \title{Search YouTube}
 \usage{
-yt_search(term = NULL)
+yt_search(term = NULL, maxResults = 5)
 }
 \arguments{
 \item{term}{search term; required; no default}
+
+\item{maxResults}{Numeric. 0 to 50. Acceptable values are 0 to 50, inclusive.}
 }
 \value{
 data.frame with 13 elements - kind, etag, id.kind, id.videoId, snippet.publishedAt, snippet.channelId, snippet.title, snippet.description, 
@@ -22,6 +24,6 @@ yt_search(term="Barack Obama")
 }
 }
 \references{
-\url{https://console.developers.google.com/project}
+\url{https://developers.google.com/youtube/v3/docs/search/list}
 }
 
