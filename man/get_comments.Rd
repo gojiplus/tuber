@@ -4,10 +4,12 @@
 \alias{get_comments}
 \title{Get Comments On a Video}
 \usage{
-get_comments(video_id = NULL)
+get_comments(video_id = NULL, simplify = TRUE)
 }
 \arguments{
 \item{video_id}{id of the video; required}
+
+\item{simplify}{Boolean. Default is TRUE. If TRUE, the function returns a data frame. Else a list with all the information returned.}
 }
 \value{
 Nested named list. The entry \code{items} is a list of comments along with meta information. 
@@ -23,6 +25,6 @@ get_comments(video_id="N708P-A45D0")
 }
 }
 \references{
-\url{https://console.developers.google.com/project}
+\url{https://developers.google.com/youtube/v3/docs/}
 }
 
