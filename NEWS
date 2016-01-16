@@ -1,6 +1,10 @@
-version .2 2015-XX-XX
+version .2 2016-01-16
 -----------------------
+1. Deprecated Freebase Topic Search
+2. Supports many more functions of the API. For instance, list_langs, list_guidecats, list_videocats, list_regions
+3. Supports more arguments for many of the functions. For instance, comments now supports maxResults, textFormat etc.
+4. Return defaulted to a data.frame in many of the functions
+
+version .3 2015-XX-XX
+-------------------------
 1. New use case vignette: Analyzing comments on YouTube Videos of Politicians
-2. Deprecated Freebase Topic Search
-3. Better support for the API. For instance, comments now supports maxResults, textFormat etc.
-4. More unit tests added
