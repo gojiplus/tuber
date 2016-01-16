@@ -4,13 +4,14 @@
 #' @param topic topic being searched for; required; no default
 #' @return a list
 #' @export
-#' @references \url{http://www.freebase.com/}
 #' @examples
 #'  \dontrun{
 #' yt_topic_search(topic="Barack Obama")
 #' }
 
 yt_topic_search <- function (topic=NULL) {
+
+	.Deprecated("Freebase no longer supported by Google.")
 
 	if (is.null(topic)) stop("Must specify a topic")
 

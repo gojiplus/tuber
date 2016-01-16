@@ -1,8 +1,8 @@
 #' Get statistics of a Video
 #'
-#' @param video_id id of the video; required
+#' @param video_id Character. Id of the video. Required.
 #' 
-#' @return list with 5 elements - viewCount, likeCount, dislikeCount, favoriteCount, commentCount
+#' @return list with 5 elements: viewCount, likeCount, dislikeCount, favoriteCount, commentCount
 #' @export
 #' @references \url{https://console.developers.google.com/project}
 #' @examples
@@ -17,10 +17,9 @@ get_stats <- function (video_id=NULL) {
 	yt_check_token()
 	
 	querylist <- list(part="statistics", id = video_id)
-
-	req <- GET("https://www.googleapis.com/youtube/v3/videos", query=querylist, config(token =  getOption("google_token")))
-	stop_for_status(req)
-	res <- content(req)$items[[1]]$statistics
+    
+    res <- tuber_GET("videos", querylist)
+    res <- res$items[[1]]$statistics
 
 	cat('No. of Views', res$viewCount, "\n")
 	cat('No. of Likes', res$likeCount, "\n")

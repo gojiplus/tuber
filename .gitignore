@@ -2,4 +2,4 @@
 .Rhistory
 .RData
 dev
-tests
+.httr-oauth
