@@ -4,19 +4,51 @@
 \alias{yt_search}
 \title{Search YouTube}
 \usage{
-yt_search(term = NULL, maxResults = 5)
+yt_search(term = NULL, maxResults = 5, channelId = NULL,
+  channelType = NULL, type = "video", eventType = NULL, location = NULL,
+  locationRadius = NULL, publishedAfter = NULL, publishedBefore = NULL,
+  videoDefinition = "any", videoCaption = "any", videoLicense = "any",
+  videoSyndicated = "any", videoType = "any")
 }
 \arguments{
-\item{term}{search term; required; no default}
+\item{term}{Character. Search term; required; no default}
 
-\item{maxResults}{Numeric. 0 to 50. Acceptable values are 0 to 50, inclusive.}
+\item{maxResults}{Numeric. 0 to 50. Acceptable values are 0 to 50, inclusive. 
+Search results are constrained to a maximum of 500 videos if type is video and we have a value of ChannelId.}
+
+\item{channelId}{Character. Only return search results from this channel; Optional.}
+
+\item{channelType}{Character. Optional. Takes one of two values: 'any' or 'show'. Default is 'any'}
+
+\item{type}{Character. Optional. Takes one of three values: 'video', 'channel', or 'playlist'}
+
+\item{eventType}{Character. Optional. Takes one of three values: `completed', 'live' or 'upcoming'}
+
+\item{location}{Character.  Optional. Latitude and Longitude within parentheses, e.g. "(37.42307,-122.08427)"}
+
+\item{locationRadius}{Character.  Optional. e.g. "1500m", "5km", "10000ft", "0.75mi"}
+
+\item{publishedAfter}{Character. Optional. RFC 339 Format. For instance, "1970-01-01T00:00:00Z"}
+
+\item{publishedBefore}{Character. Optional. RFC 339 Format. For instance, "1970-01-01T00:00:00Z"}
+
+\item{videoDefinition}{Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'high' and 'standard'}
+
+\item{videoCaption}{Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'closedCaption', 'none'. Type must be set to video.}
+
+\item{videoLicense}{Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'creativeCommon' (return videos with Creative Commons 
+license), 'youtube' (return videos with standard YouTube license).}
+
+\item{videoSyndicated}{Character. Optional. Takes one of two values: 'any' (return all videos; Default), 'true' (return only syndicated videos)}
+
+\item{videoType}{Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'episode' (return episode of shows), 'movie' (return movies)}
 }
 \value{
 data.frame with 13 elements - kind, etag, id.kind, id.videoId, snippet.publishedAt, snippet.channelId, snippet.title, snippet.description, 
 snippet.thumbnails.default.url, snippet.thumbnails.medium.url, snippet.thumbnails.high.url, snippet.channelTitle, snippet.liveBroadcastContent
 }
 \description{
-Search YouTube
+Search for videos, channels and playlists. (By default, the function searches for videos.)
 }
 \examples{
 \dontrun{
