@@ -15,8 +15,7 @@ yt_get_related_videos(video_id = NULL, maxResults = 5,
 \item{safeSearch}{Character. Optional. Takes one of three values: 'moderate', 'none' (default) or 'strict'}
 }
 \value{
-data.frame with 13 elements - kind, etag, id.kind, id.videoId, snippet.publishedAt, snippet.channelId, snippet.title, snippet.description, 
-snippet.thumbnails.default.url, snippet.thumbnails.medium.url, snippet.thumbnails.high.url, snippet.channelTitle, snippet.liveBroadcastContent
+data.frame with 7 columns: publishedAt, channelId, title, description, thumbnails, channelTitle, liveBroadcastContent
 }
 \description{
 Takes a video id and returns related videos

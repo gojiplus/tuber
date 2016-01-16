@@ -6,8 +6,8 @@
 #' @param maxResults Numeric. 0 to 50. Acceptable values are 0 to 50, inclusive.
 #' @param safeSearch Character. Optional. Takes one of three values: 'moderate', 'none' (default) or 'strict'
 #' 
-#' @return data.frame with 13 elements - kind, etag, id.kind, id.videoId, snippet.publishedAt, snippet.channelId, snippet.title, snippet.description, 
-#' snippet.thumbnails.default.url, snippet.thumbnails.medium.url, snippet.thumbnails.high.url, snippet.channelTitle, snippet.liveBroadcastContent
+#' @return data.frame with 7 columns: publishedAt, channelId, title, description, thumbnails, channelTitle, liveBroadcastContent
+#' 
 #' @export
 #' @references \url{https://developers.google.com/youtube/v3/docs/search/list}
 #' @examples
@@ -27,9 +27,7 @@ yt_get_related_videos <- function (video_id=NULL, maxResults=5, safeSearch='none
 
 	querylist <- list(part="snippet", relatedToVideoId = video_id, type="video", maxResults=maxResults)
 
-	req <- GET("https://www.googleapis.com/youtube/v3/search", query=querylist, config(token = getOption("google_token")))
-	stop_for_status(req)
-	res <- content(req)
+	res <- tuber_GET("search", querylist)
 	
 	resdf <- NA
 

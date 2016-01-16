@@ -52,10 +52,8 @@ yt_search <- function (term=NULL, maxResults=5, channelId= NULL, channelType=NUL
 		location= location, publishedAfter=publishedAfter, publishedBefore=publishedBefore, videoDefinition = videoDefinition, videoCaption= videoCaption, 
 		videoType=videoType, videoSyndicated=videoSyndicated, videoLicense= videoLicense)
 
-	req <- GET("https://www.googleapis.com/youtube/v3/search", query=querylist, config(token = getOption("google_token")))
-	stop_for_status(req)
-	res <- content(req)
-	
+	res <- tuber_GET("search", querylist)
+
 	resdf <- NA
 
 	if (res$pageInfo$totalResults != 0) {

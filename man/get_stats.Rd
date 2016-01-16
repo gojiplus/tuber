@@ -7,10 +7,10 @@
 get_stats(video_id = NULL)
 }
 \arguments{
-\item{video_id}{id of the video; required}
+\item{video_id}{Character. Id of the video. Required.}
 }
 \value{
-list with 5 elements - viewCount, likeCount, dislikeCount, favoriteCount, commentCount
+list with 5 elements: viewCount, likeCount, dislikeCount, favoriteCount, commentCount
 }
 \description{
 Get statistics of a Video

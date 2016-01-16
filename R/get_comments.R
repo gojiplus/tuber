@@ -22,12 +22,9 @@ get_comments <- function (video_id=NULL, simplify=TRUE, maxResults=20, textForma
 	if (maxResults < 20 | maxResults > 100) stop("maxResults only takes a value between 20 and 100")
 	if (textFormat != "html" & textFormat !="plainText") stop("Provide a legitimate value of textFormat.")
 
-	yt_check_token()
-	
 	querylist <- list(part="snippet", videoId = video_id, maxResults=maxResults, textFormat=textFormat)
-	req <- GET("https://www.googleapis.com/youtube/v3/commentThreads", query=querylist, config(token = getOption("google_token")))
-	stop_for_status(req)
-	res <- content(req)
+
+	res <- tuber_GET("commentThreads", querylist)
 	
 	if (simplify==TRUE) {
 		simple_res  <- lapply(res$items, function(x) x$snippet$topLevelComment$snippet)
