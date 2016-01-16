@@ -10,7 +10,7 @@
 
 list_abuse_report_reasons <- function () {
 
-	querylist <- list(part="snippet", regionCode=regionCode)
+	querylist <- list(part="snippet")
 
 	res <- tuber_GET("videoAbuseReportReasons", querylist)
 
