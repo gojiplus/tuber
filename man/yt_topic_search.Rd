@@ -22,7 +22,4 @@ It uses the Freebase list of topics
 yt_topic_search(topic="Barack Obama")
 }
 }
-\references{
-\url{http://www.freebase.com/}
-}
 

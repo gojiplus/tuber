@@ -4,7 +4,6 @@
 #' @param topic topic being searched for; required; no default
 #' @return a list
 #' @export
-#' @references \url{http://www.freebase.com/}
 #' @examples
 #'  \dontrun{
 #' yt_topic_search(topic="Barack Obama")
