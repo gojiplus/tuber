@@ -7,10 +7,10 @@
 #' @references \url{https://developers.google.com/youtube/v3/docs/search/list}
 #' @examples
 #' \dontrun{
-#' yt_list_guidecats("JP")
+#' list_guidecats("JP")
 #' }
 
-yt_list_guidecats <- function (regionCode=NULL) {
+list_guidecats <- function (regionCode=NULL) {
 
 	if (is.null(regionCode)) stop("Must specify a regionCode")
 

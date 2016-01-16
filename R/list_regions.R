@@ -1,14 +1,14 @@
 #' List Content Regions That Youtube Currently Supports
 #' 
-#' @return data.frame with 2 columns: gl (two letter abbreviation), name (of the region)
+#' @return data.frame with 3 columns: gl (two letter abbreviation), name (of the region), etag
 #' @export
 #' @references \url{https://developers.google.com/youtube/v3/docs/i18nRegions/list}
 #' @examples
 #' \dontrun{
-#' yt_list_regions()
+#' list_regions()
 #' }
 
-yt_list_regions <- function () {
+list_regions <- function () {
 
 	querylist <- list(part="snippet")
 
@@ -17,7 +17,7 @@ yt_list_regions <- function () {
 	resdf <- NA
 
 	if (length(res$items) != 0) {
-		simple_res  <- lapply(res$items, function(x) x$snippet)
+		simple_res  <- lapply(res$items, function(x) c(unlist(x$snippet), etag=x$etag))
 		resdf       <- as.data.frame(do.call(rbind, simple_res))
 	} else {
 		resdf <- 0

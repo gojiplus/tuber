@@ -1,14 +1,14 @@
 #' List Languages That Youtube Currently Supports
 #' 
-#' @return data.frame with 2 columns: hl (two letter abbreviation), name (of the language)
+#' @return data.frame with 3 columns: hl (two letter abbreviation), name (of the language), etag
 #' @export
 #' @references \url{https://developers.google.com/youtube/v3/docs/i18nLanguages/list}
 #' @examples
 #' \dontrun{
-#' yt_list_langs()
+#' list_langs()
 #' }
 
-yt_list_langs <- function () {
+list_langs <- function () {
 
 	querylist <- list(part="snippet")
 
@@ -17,7 +17,7 @@ yt_list_langs <- function () {
 	resdf <- NA
 
 	if (length(res$items) != 0) {
-		simple_res  <- lapply(res$items, function(x) x$snippet)
+		simple_res  <- lapply(res$items, function(x) c(unlist(x$snippet), etag=x$etag))
 		resdf       <- as.data.frame(do.call(rbind, simple_res))
 	} else {
 		resdf <- 0
