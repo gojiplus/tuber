@@ -19,16 +19,13 @@ get_stats <- function (video_id=NULL) {
 	querylist <- list(part="statistics", id = video_id)
     
     res <- tuber_GET("videos", querylist)
-    #res <- res$items[[1]]$statistics
-    res <- res$items[[1]]
+    res <- res$items[[1]]$statistics
+    #res <- res$items[[1]]
 	cat('No. of Views', res$viewCount, "\n")
 	cat('No. of Likes', res$likeCount, "\n")
 	cat('No. of Dislikes', res$dislikeCount, "\n")
 	cat('No. of Favorites', res$favoriteCount, "\n")
 	cat('No. of Comments', res$commentCount, "\n")
-	cat('averageViewDuration', res$averageViewDurationCount, "\n")
-	cat('estimatedMinutesWatched', res$estimatedMinutesWatched, "\n")
-	 cat('subscribersGained', res$subscribersGainedCount, "\n")
-	 cat('subscribersGained', res$subscribersGained, "\n")
+ 
 	return(invisible(res))
 }
