@@ -27,7 +27,8 @@ get_stats <- function (video_id=NULL) {
 	cat('No. of Favorites', res$favoriteCount, "\n")
 	cat('No. of Comments', res$commentCount, "\n")
 	cat('averageViewDuration', res$averageViewDurationCount, "\n")
-	
-
+	cat('estimatedMinutesWatched', res$estimatedMinutesWatched, "\n")
+	 cat('subscribersGained', res$subscribersGainedCount, "\n")
+	 cat('subscribersGained', res$subscribersGained, "\n")
 	return(invisible(res))
 }
