@@ -21,7 +21,7 @@ get_channel <- function (channel_id=NULL) {
     res <- tuber_GET("channels", querylist)
     res1 <- res$items[[1]]$statistics
     res2 <- res$items[[1]]$snippet
-    	cat('Channel Title',res2$title)
+    	cat('Channel Title',res2$title, "\n")
 	cat('No. of Views', res1$viewCount, "\n")
 	cat('No. of Subscribers', res1$subscriberCount, "\n")
 	cat('No. of Videos', res1$videoCount, "\n")
