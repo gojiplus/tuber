@@ -26,6 +26,3 @@ list_channel_videos <- function (channel_name=NULL)
      cat("Total Number of Videos:", length(res$items), "\n")
      return(invisible(resdf))
 }
-
-# GET("https://www.googleapis.com/youtube/v3/channels", query=list(part = "id", forUserName = "latenight"), config(token = getOption("google_token")))
-# GET https://www.googleapis.com/youtube/v3/channels?part=id&forUsername=latenight
