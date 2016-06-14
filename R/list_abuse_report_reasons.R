@@ -1,6 +1,9 @@
 #' List reasons that can be used to report abusive videos
+#' 
+#' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'  
 #' @return data.frame with 3 columns: etag, label, secReasons
+#' 
 #' @export
 #' @references \url{https://developers.google.com/youtube/v3/docs/videoAbuseReportReasons/list}
 #' @examples
@@ -8,11 +11,11 @@
 #' list_abuse_report_reasons()
 #' }
 
-list_abuse_report_reasons <- function () {
+list_abuse_report_reasons <- function (...) {
 
 	querylist <- list(part="snippet")
 
-	res <- tuber_GET("videoAbuseReportReasons", querylist)
+	res <- tuber_GET("videoAbuseReportReasons", querylist, ...)
 
 	resdf <- NA
 

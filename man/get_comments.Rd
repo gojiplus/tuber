@@ -5,7 +5,7 @@
 \title{Get Comments On a Video}
 \usage{
 get_comments(video_id = NULL, simplify = TRUE, maxResults = 20,
-  textFormat = "html")
+  textFormat = "html", ...)
 }
 \arguments{
 \item{video_id}{Data Type: Character. ID of the video. Required.}
@@ -15,6 +15,8 @@ get_comments(video_id = NULL, simplify = TRUE, maxResults = 20,
 \item{maxResults}{Data Type: Numeric. Default is 20. Takes values between 20 and 100. Optional.}
 
 \item{textFormat}{Data Type: Character. Default is "html". Only takes "html" or "plainText." Optional.}
+
+\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
 Nested named list. The entry \code{items} is a list of comments along with meta information. 

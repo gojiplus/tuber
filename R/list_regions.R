@@ -1,6 +1,9 @@
 #' List Content Regions That Youtube Currently Supports
 #' 
+#' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
+#' 
 #' @return data.frame with 3 columns: gl (two letter abbreviation), name (of the region), etag
+#' 
 #' @export
 #' @references \url{https://developers.google.com/youtube/v3/docs/i18nRegions/list}
 #' @examples
@@ -8,11 +11,11 @@
 #' list_regions()
 #' }
 
-list_regions <- function () {
+list_regions <- function (...) {
 
 	querylist <- list(part="snippet")
 
-	res <- tuber_GET("i18nRegions", querylist)
+	res <- tuber_GET("i18nRegions", querylist, ...)
 
 	resdf <- NA
 

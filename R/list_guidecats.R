@@ -1,6 +1,7 @@
 #' Get List of categories that can be associated with YouTube channels
 #' 
 #' @param regionCode Character. Required. Has to be a ISO 3166-1 alpha-2 code (see \url{https://www.iso.org/obp/ui/#search}).
+#' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
 #' @return data.frame with 4 columns: channelId, title, etag, id
 #' @export
@@ -10,13 +11,13 @@
 #' list_guidecats("JP")
 #' }
 
-list_guidecats <- function (regionCode=NULL) {
+list_guidecats <- function (regionCode=NULL, ...) {
 
 	if (is.null(regionCode)) stop("Must specify a regionCode")
 
 	querylist <- list(part="snippet", regionCode=regionCode)
 
-	res <- tuber_GET("guideCategories", querylist)
+	res <- tuber_GET("guideCategories", querylist, ...)
 
 	resdf <- NA
 

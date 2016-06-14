@@ -23,14 +23,15 @@ yt_check_token <- function() {
 #' 
 #' @param path path to specific API request URL 
 #' @param query query list 
+#' @param \dots Additional arguments passed to \code{\link[httr]{GET}}.
 #' @return list
 
 tuber_GET <- 
-function(path, query) {
+function(path, query, ...) {
 
 	yt_check_token()
 	
-	req <- GET("https://www.googleapis.com", path=paste0("youtube/v3/", path), query=query, config(token = getOption("google_token")))
+	req <- GET("https://www.googleapis.com", path=paste0("youtube/v3/", path), query=query, config(token = getOption("google_token")), ...)
 	stop_for_status(req)
 	res <- content(req)
 
@@ -43,14 +44,16 @@ function(path, query) {
 #' @param path path to specific API request URL 
 #' @param query query list
 #' @param body passing image through body 
+#' @param \dots Additional arguments passed to \code{\link[httr]{GET}}.
+#' 
 #' @return list
 
 tuber_POST <- 
-function(path, query, body="") {
+function(path, query, body="", ...) {
 
 	yt_check_token()
 	
-	req <- POST("https://www.googleapis.com", path=paste0("youtube/v3/", path), body=body, query=query, config(token = getOption("google_token")))
+	req <- POST("https://www.googleapis.com", path=paste0("youtube/v3/", path), body=body, query=query, config(token = getOption("google_token")), ...)
 	stop_for_status(req)
 	res <- content(req)
 

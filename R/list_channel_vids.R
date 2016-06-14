@@ -1,6 +1,7 @@
 #' List All the Videos in a Channel
 #' 
 #' @param channel_name string, channel name, required
+#' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
 #' @return data.frame with 3 columns: hl (two letter abbreviation), name (of the language), etag
 #' @export
@@ -10,10 +11,10 @@
 #' list_channel_videos("latenight")
 #' }
 
-list_channel_videos <- function (channel_name=NULL) 
+list_channel_videos <- function (channel_name=NULL, ...) 
 {
      querylist <- list(part = "contentDetails", forUserName = channel_name)
-     res <- tuber_GET("channels", querylist)
+     res <- tuber_GET("channels", querylist, ...)
      resdf <- NA
      if (length(res$items) != 0) {
           simple_res <- lapply(res$items, function(x) c(unlist(x$snippet), 

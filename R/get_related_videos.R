@@ -5,7 +5,8 @@
 #' @param video_id Character. Required. No default.
 #' @param maxResults Numeric. 0 to 50. Acceptable values are 0 to 50, inclusive.
 #' @param safeSearch Character. Optional. Takes one of three values: 'moderate', 'none' (default) or 'strict'
-#' 
+#' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
+#'  
 #' @return data.frame with 7 columns: publishedAt, channelId, title, description, thumbnails, channelTitle, liveBroadcastContent
 #' 
 #' @export
@@ -15,7 +16,7 @@
 #' yt_get_related_videos(video_id="yJXTXN4xrI8")
 #' }
 
-yt_get_related_videos <- function (video_id=NULL, maxResults=5, safeSearch='none') {
+yt_get_related_videos <- function (video_id=NULL, maxResults=5, safeSearch='none', ...) {
 
 	if (is.null(video_id)) stop("Must specify a video ID")
 	if (maxResults < 0 | maxResults > 50) stop("maxResults only takes a value between 0 and 50")
@@ -27,7 +28,7 @@ yt_get_related_videos <- function (video_id=NULL, maxResults=5, safeSearch='none
 
 	querylist <- list(part="snippet", relatedToVideoId = video_id, type="video", maxResults=maxResults)
 
-	res <- tuber_GET("search", querylist)
+	res <- tuber_GET("search", querylist, ...)
 	
 	resdf <- NA
 

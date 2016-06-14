@@ -5,7 +5,7 @@
 \title{Get Related Videos}
 \usage{
 yt_get_related_videos(video_id = NULL, maxResults = 5,
-  safeSearch = "none")
+  safeSearch = "none", ...)
 }
 \arguments{
 \item{video_id}{Character. Required. No default.}
@@ -13,6 +13,8 @@ yt_get_related_videos(video_id = NULL, maxResults = 5,
 \item{maxResults}{Numeric. 0 to 50. Acceptable values are 0 to 50, inclusive.}
 
 \item{safeSearch}{Character. Optional. Takes one of three values: 'moderate', 'none' (default) or 'strict'}
+
+\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
 data.frame with 7 columns: publishedAt, channelId, title, description, thumbnails, channelTitle, liveBroadcastContent

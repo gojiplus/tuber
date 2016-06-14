@@ -4,7 +4,10 @@
 \alias{list_langs}
 \title{List Languages That Youtube Currently Supports}
 \usage{
-list_langs()
+list_langs(...)
+}
+\arguments{
+\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
 data.frame with 3 columns: hl (two letter abbreviation), name (of the language), etag

@@ -3,6 +3,7 @@
 #' @param channel_id Character. Id of the channel
 #' 
 #' @return list with 5 elements: viewCount, likeCount, dislikeCount, favoriteCount, commentCount
+#' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' @export
 #' @references \url{https://console.developers.google.com/project}
 #' @examples
@@ -10,7 +11,7 @@
 #' get_channel(channel_id="UChTJTbr5kf3hYazJZO-euHg")
 #' }
 
-get_channel <- function (channel_id=NULL) {
+get_channel <- function (channel_id=NULL, ...) {
 
 	if (is.null(channel_id)) stop("Must specify a channel ID")
 
@@ -18,7 +19,7 @@ get_channel <- function (channel_id=NULL) {
 	
 	querylist <- list(part="contentDetails,statistics,snippet", id = channel_id)
     
-    res <- tuber_GET("channels", querylist)
+    res <- tuber_GET("channels", querylist, ...)
     res1 <- res$items[[1]]$statistics
     res2 <- res$items[[1]]$snippet
     

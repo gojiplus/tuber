@@ -4,10 +4,12 @@
 \alias{list_channel_videos}
 \title{List All the Videos in a Channel}
 \usage{
-list_channel_videos(channel_name = NULL)
+list_channel_videos(channel_name = NULL, ...)
 }
 \arguments{
 \item{channel_name}{string, channel name, required}
+
+\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
 data.frame with 3 columns: hl (two letter abbreviation), name (of the language), etag

@@ -19,6 +19,7 @@
 #' @param videoDefinition Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'high' and 'standard'
 #' @param videoLicense Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'creativeCommon' (return videos with Creative Commons 
 #' license), 'youtube' (return videos with standard YouTube license).
+#' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
 #' @return data.frame with 13 elements - kind, etag, id.kind, id.videoId, snippet.publishedAt, snippet.channelId, snippet.title, snippet.description, 
 #' snippet.thumbnails.default.url, snippet.thumbnails.medium.url, snippet.thumbnails.high.url, snippet.channelTitle, snippet.liveBroadcastContent
@@ -30,7 +31,7 @@
 #' }
 
 yt_search <- function (term=NULL, maxResults=5, channelId= NULL, channelType=NULL, type="video", eventType=NULL, location= NULL, locationRadius=NULL, 
-	publishedAfter=NULL, publishedBefore=NULL, videoDefinition = "any", videoCaption="any", videoLicense="any", videoSyndicated="any", videoType="any") {
+	publishedAfter=NULL, publishedBefore=NULL, videoDefinition = "any", videoCaption="any", videoLicense="any", videoSyndicated="any", videoType="any", ...) {
 
 	if (is.null(term)) stop("Must specify a search term")
 	if (maxResults < 0 | maxResults > 50) stop("maxResults only takes a value between 0 and 50")
@@ -52,7 +53,7 @@ yt_search <- function (term=NULL, maxResults=5, channelId= NULL, channelType=NUL
 		location= location, publishedAfter=publishedAfter, publishedBefore=publishedBefore, videoDefinition = videoDefinition, videoCaption= videoCaption, 
 		videoType=videoType, videoSyndicated=videoSyndicated, videoLicense= videoLicense)
 
-	res <- tuber_GET("search", querylist)
+	res <- tuber_GET("search", querylist, ...)
 
 	resdf <- NA
 

@@ -2,6 +2,8 @@
 #' It uses the Freebase list of topics
 #'
 #' @param topic topic being searched for; required; no default
+#' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
+#' 
 #' @return a list
 #' @export
 #' @examples
@@ -9,7 +11,7 @@
 #' yt_topic_search(topic="Barack Obama")
 #' }
 
-yt_topic_search <- function (topic=NULL) {
+yt_topic_search <- function (topic=NULL, ...) {
 
 	.Deprecated("Freebase no longer supported by Google.")
 
@@ -21,7 +23,7 @@ yt_topic_search <- function (topic=NULL) {
 	topic <- paste0(unlist(strsplit(topic, " ")), collapse="%20")
 	querylist = list(query=topic)
 
-	req <- GET("https://www.googleapis.com/freebase/v1/search", query=querylist, config(token =  getOption("google_token")))
+	req <- GET("https://www.googleapis.com/freebase/v1/search", query=querylist, config(token =  getOption("google_token")), ...)
 	stop_for_status(req)
 
 	res <- content(req)

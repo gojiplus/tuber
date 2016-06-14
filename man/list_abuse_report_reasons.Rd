@@ -4,7 +4,10 @@
 \alias{list_abuse_report_reasons}
 \title{List reasons that can be used to report abusive videos}
 \usage{
-list_abuse_report_reasons()
+list_abuse_report_reasons(...)
+}
+\arguments{
+\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
 data.frame with 3 columns: etag, label, secReasons

@@ -1,6 +1,7 @@
 #' List of Categories That Can be Associated with Videos
 #' 
 #' @param regionCode Character. Required. Has to be a ISO 3166-1 alpha-2 code (see \url{https://www.iso.org/obp/ui/#search}).
+#' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
 #' @return data.frame with 5 columns: channelId, title, assignable, etag, id
 #' @export
@@ -10,7 +11,7 @@
 #' list_videocats("JP")
 #' }
 
-list_videocats <- function (regionCode=NULL) {
+list_videocats <- function (regionCode=NULL, ...) {
 
 	if (is.null(regionCode)) stop("Must specify a regionCode")
 

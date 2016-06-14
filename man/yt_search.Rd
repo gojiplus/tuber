@@ -8,7 +8,7 @@ yt_search(term = NULL, maxResults = 5, channelId = NULL,
   channelType = NULL, type = "video", eventType = NULL, location = NULL,
   locationRadius = NULL, publishedAfter = NULL, publishedBefore = NULL,
   videoDefinition = "any", videoCaption = "any", videoLicense = "any",
-  videoSyndicated = "any", videoType = "any")
+  videoSyndicated = "any", videoType = "any", ...)
 }
 \arguments{
 \item{term}{Character. Search term; required; no default}
@@ -42,6 +42,8 @@ license), 'youtube' (return videos with standard YouTube license).}
 \item{videoSyndicated}{Character. Optional. Takes one of two values: 'any' (return all videos; Default), 'true' (return only syndicated videos)}
 
 \item{videoType}{Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'episode' (return episode of shows), 'movie' (return movies)}
+
+\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
 data.frame with 13 elements - kind, etag, id.kind, id.videoId, snippet.publishedAt, snippet.channelId, snippet.title, snippet.description, 

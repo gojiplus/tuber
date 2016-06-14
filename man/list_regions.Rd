@@ -4,7 +4,10 @@
 \alias{list_regions}
 \title{List Content Regions That Youtube Currently Supports}
 \usage{
-list_regions()
+list_regions(...)
+}
+\arguments{
+\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
 data.frame with 3 columns: gl (two letter abbreviation), name (of the region), etag

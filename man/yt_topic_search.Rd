@@ -5,10 +5,12 @@
 \title{Search YouTube by Topic
 It uses the Freebase list of topics}
 \usage{
-yt_topic_search(topic = NULL)
+yt_topic_search(topic = NULL, ...)
 }
 \arguments{
 \item{topic}{topic being searched for; required; no default}
+
+\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
 a list

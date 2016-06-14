@@ -4,10 +4,12 @@
 \alias{list_videocats}
 \title{List of Categories That Can be Associated with Videos}
 \usage{
-list_videocats(regionCode = NULL)
+list_videocats(regionCode = NULL, ...)
 }
 \arguments{
 \item{regionCode}{Character. Required. Has to be a ISO 3166-1 alpha-2 code (see \url{https://www.iso.org/obp/ui/#search}).}
+
+\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
 data.frame with 5 columns: channelId, title, assignable, etag, id
