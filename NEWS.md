@@ -2,6 +2,10 @@
 # version .2.1 2016-06-20
 
 * Support the dots --- allow for passing of extra arguments to httr GET and POST
+* More tests
+* Added list channel activities and list channel sections
+* Get details uses the abstract infrastructure
+* yt_oauth takes path to token file. removing file no longer supported
 
 # version .2 2016-01-16
 
