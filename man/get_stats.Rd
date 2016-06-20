@@ -23,6 +23,6 @@ get_stats(video_id="N708P-A45D0")
 }
 }
 \references{
-\url{https://console.developers.google.com/project}
+\url{https://console.cloud.google.com/}
 }
 

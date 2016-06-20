@@ -1,7 +1,7 @@
 ---
 title: "Using tuber"
 author: "Gaurav Sood"
-date: "`r Sys.Date()`"
+date: "2016-06-20"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Using tuber}
@@ -16,20 +16,23 @@ vignette: >
 
 To install the latest version from CRAN: 
 
-```{r, eval=FALSE, install}
+
+```r
 install.packages("tuber")
 ```
 
 The latest development version of the package will always be on GitHub. Instructions for installing the package from Github are provided below.
 
-```{r, eval=FALSE, install_g}
+
+```r
 # install.packages('devtools')
 devtools::install_github("soodoku/tuber", build_vignettes = TRUE)
 ```
 
 Next, load the package: 
 
-```{r, eval=FALSE, loadlib}
+
+```r
 library(tuber)
 ```
 
@@ -38,11 +41,13 @@ library(tuber)
 To get going, get the application id and password from [https://console.cloud.google.com/](https://console.cloud.google.com/). Enable YouTube APIs. Then set the application id and password via the `yt_oauth` function. For more information about YouTube OAuth, see [YouTube OAuth Guide](https://developers.google.com/youtube/v3/guides/authentication).
 
 
-```{r, eval=FALSE, auth}
+
+```r
 yt_oauth("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.com", "MbOSt6cQhhFkwETXKur-L9rN")
 ```
 
-```{r, eval=FALSE, prints}
+
+```r
 ## Waiting for authentication in browser...
 ## Press Esc/Ctrl + C to abort
 ## Authentication complete.
@@ -51,7 +56,8 @@ yt_oauth("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.c
 #### Get Statistics of a Video
 
 
-```{r, eval=FALSE, getstats}
+
+```r
 get_stats(video_id="N708P-A45D0")
 ```
 
@@ -67,14 +73,16 @@ get_stats(video_id="N708P-A45D0")
 #### Get Information About a Video
 
 
-```{r, eval=FALSE, getdetails}
+
+```r
 get_details(video_id="N708P-A45D0")
 ```
 
 #### Get Caption of a Video
 
 
-```{r, eval=FALSE, getcaptions}
+
+```r
 get_captions(video_id="yJXTXN4xrI8")
 ```
 
@@ -178,7 +186,8 @@ get_captions(video_id="yJXTXN4xrI8")
 
 #### Search Videos
 
-```{r, eval=FALSE, searchvids}
+
+```r
 yt_search("Barack Obama")
 ```
 
@@ -188,7 +197,8 @@ yt_search("Barack Obama")
 
 #### Get Comments on a video
 
-```{r, eval=FALSE, get_comments}
+
+```r
 res <- get_comments(video_id="N708P-A45D0")
 # First comment
 res$items[[1]]$snippet$topLevelComment$snippet$textDisplay

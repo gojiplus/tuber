@@ -5,7 +5,7 @@
 #' @return list with 5 elements: viewCount, likeCount, dislikeCount, favoriteCount, commentCount
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' @export
-#' @references \url{https://console.developers.google.com/project}
+#' @references \url{https://console.cloud.google.com/}
 #' @examples
 #' \dontrun{
 #' get_channel(channel_id="UChTJTbr5kf3hYazJZO-euHg")

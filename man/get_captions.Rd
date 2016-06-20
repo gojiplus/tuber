@@ -25,6 +25,6 @@ get_captions(video_id="yJXTXN4xrI8")
 }
 }
 \references{
-\url{https://console.developers.google.com/project}
+\url{https://console.cloud.google.com/}
 }
 

@@ -23,6 +23,6 @@ get_channel(channel_id="UChTJTbr5kf3hYazJZO-euHg")
 }
 }
 \references{
-\url{https://console.developers.google.com/project}
+\url{https://console.cloud.google.com/}
 }
 
