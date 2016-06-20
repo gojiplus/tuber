@@ -4,12 +4,12 @@
 \alias{get_activities}
 \title{Get Channel Activity}
 \usage{
-get_activities(video_id = NULL, lang = "en", ...)
+get_activities(channel_id = NULL, part = "snippet", ...)
 }
 \arguments{
-\item{video_id}{id of the video; required; no default}
+\item{channel_id}{id of the channel; required; no default}
 
-\item{lang}{language of the caption; required; default is english ("en")}
+\item{part}{specify which part do you want. It can only be one of the three: contentDetails, id, snippet. Default is snippet.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
@@ -17,14 +17,14 @@ get_activities(video_id = NULL, lang = "en", ...)
 captions for the video from one of the first track
 }
 \description{
-Get Channel Activity
+Returns a list of channel activity events that match the request criteria.
 }
 \examples{
 \dontrun{
-get_activities(video_id="yJXTXN4xrI8")
+get_activities(channel_id="UCRw8bIz2wMLmfgAgWm903cA")
 }
 }
 \references{
-\url{https://developers.google.com/youtube/v3/docs/captions/list}
+\url{https://developers.google.com/youtube/v3/docs/activities/list}
 }
 
