@@ -38,7 +38,7 @@ library(tuber)
 
 ### Using the package
 
-To get going, get the application id and password from [https://console.cloud.google.com/](https://console.cloud.google.com/). Enable YouTube APIs. Then set the application id and password via the `yt_oauth` function. For more information about YouTube OAuth, see [YouTube OAuth Guide](https://developers.google.com/youtube/v3/guides/authentication).
+To get going, get the application id and password from Google Developer Console (see [https://developers.google.com/youtube/v3/getting-started](https://developers.google.com/youtube/v3/getting-started)). Enable YouTube APIs. Then set the application id and password via the `yt_oauth` function. For more information about YouTube OAuth, see [YouTube OAuth Guide](https://developers.google.com/youtube/v3/guides/authentication).
 
 
 
