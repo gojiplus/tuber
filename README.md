@@ -23,7 +23,7 @@ vignette("tuber-ex", package="tuber")
 
 ### Using tuber
 
-To get going, get the application id and password from [https://cloud.google.com/console](https://cloud.google.com/console). Enable all the YouTube APIs. Also enable Freebase API. Then set the application id and password via the `yt_oauth` function. For more information about YouTube OAuth, see [YouTube OAuth Guide](https://developers.google.com/youtube/v3/guides/authentication).
+To get going, get the application id and password from [https://console.cloud.google.com/](https://console.cloud.google.com/). Enable all the YouTube APIs. Also enable Freebase API. Then set the application id and password via the `yt_oauth` function. For more information about YouTube OAuth, see [YouTube OAuth Guide](https://developers.google.com/youtube/v3/guides/authentication).
 
 ```r
 yt_oauth("app_id", "app_password")

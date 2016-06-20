@@ -7,7 +7,7 @@
 #' 
 #' @return captions for the video from one of the first track
 #' @export
-#' @references \url{https://console.cloud.google.com/}
+#' @references \url{https://developers.google.com/youtube/v3/docs/captions/list}
 #' @examples
 #' \dontrun{
 #' get_captions(video_id="yJXTXN4xrI8")

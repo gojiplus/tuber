@@ -31,7 +31,7 @@ The function launches a browser to allow you to authorize the application
 }
 }
 \references{
-\url{https://console.cloud.google.com/}
+\url{https://developers.google.com/youtube/v3/docs/}
 
 \url{https://developers.google.com/youtube/v3/guides/auth/client-side-web-apps} for different scopes
 }

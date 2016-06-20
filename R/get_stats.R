@@ -5,7 +5,7 @@
 #' 
 #' @return list with 5 elements: viewCount, likeCount, dislikeCount, favoriteCount, commentCount
 #' @export
-#' @references \url{https://console.cloud.google.com/}
+#' @references \url{https://developers.google.com/youtube/v3/docs/videos/list#parameters}
 #' @examples
 #' \dontrun{
 #' get_stats(video_id="N708P-A45D0")

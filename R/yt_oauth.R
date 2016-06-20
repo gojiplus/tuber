@@ -10,7 +10,7 @@
 #' @param remove_old_oauth required; default is FALSE. It will remove .httr-oauth if such a file exists in the working directory
 #' @return sets the google_token option and also saves .httr_auth in the working directory (find out the working directory via getwd())
 #' @export
-#' @references \url{https://console.cloud.google.com/}
+#' @references \url{https://developers.google.com/youtube/v3/docs/}
 #' @references \url{https://developers.google.com/youtube/v3/guides/auth/client-side-web-apps} for different scopes
 #' @examples
 #'  \dontrun{
