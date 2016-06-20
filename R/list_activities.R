@@ -1,4 +1,4 @@
-#' Get Channel Activity
+#' List Channel Activity
 #' 
 #' Returns a list of channel activity events that match the request criteria. 
 #' 
@@ -11,10 +11,10 @@
 #' @references \url{https://developers.google.com/youtube/v3/docs/activities/list}
 #' @examples
 #' \dontrun{
-#' get_activities(channel_id="UCRw8bIz2wMLmfgAgWm903cA")
+#' list_activities(channel_id="UCRw8bIz2wMLmfgAgWm903cA")
 #' }
 
-get_activities <- function (channel_id=NULL, part="snippet", ...) {
+list_activities <- function (channel_id=NULL, part="snippet", ...) {
 
 	
 	if (is.null(channel_id)) stop("Must specify a channel_id")
