@@ -1,21 +1,16 @@
 language: r
 sudo: required
-
 warnings_are_errors: true
-
 r_github_packages:
-  - jimhester/covr
-
+- jimhester/covr
 cache: packages
-
 before_install:
-- openssl aes-256-cbc -K $encrypted_1fc90f464345_key -iv $encrypted_1fc90f464345_iv
-  -in tests/testthat/yt_key.enc -out tests/testthat/yt_key -d
-
+- openssl aes-256-cbc -K $encrypted_47e3e43a04fa_key -iv $encrypted_47e3e43a04fa_iv
+  -in token_file.rds.enc -out token_file.rds -d
 after_success:
-  - Rscript -e 'covr::codecov()'
-
+- Rscript -e 'covr::codecov()'
 notifications:
   email:
     on_success: change
     on_failure: always
+
