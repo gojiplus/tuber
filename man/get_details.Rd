@@ -4,10 +4,12 @@
 \alias{get_details}
 \title{Get Details about a Video}
 \usage{
-get_details(video_id = NULL)
+get_details(video_id = NULL, ...)
 }
 \arguments{
 \item{video_id}{id of the video; required}
+
+\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
 list with the following elements - publishedAt, channelId, title, description, thumbnails, 

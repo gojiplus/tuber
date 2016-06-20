@@ -18,5 +18,6 @@ Imports:
 VignetteBuilder: knitr
 Suggests:
     knitr (>= 1.11),
+    testthat,
     rmarkdown
 RoxygenNote: 5.0.1

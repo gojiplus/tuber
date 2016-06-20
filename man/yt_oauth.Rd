@@ -5,7 +5,7 @@
 \title{Set up Authorization}
 \usage{
 yt_oauth(app_id = NULL, app_secret = NULL, scope = "ssl",
-  remove_old_oauth = FALSE)
+  token = ".httr-oauth", ...)
 }
 \arguments{
 \item{app_id}{client id; required; no default}
@@ -14,7 +14,10 @@ yt_oauth(app_id = NULL, app_secret = NULL, scope = "ssl",
 
 \item{scope}{"ssl" or "basic"; required; default is ssl. The scopes are largely exchangeable but ssl yields extra authorizations that come in handy.}
 
-\item{remove_old_oauth}{required; default is FALSE. It will remove .httr-oauth if such a file exists in the working directory}
+\item{token}{path to file containing the token. If a path is given, the function will first try to read from it. Default is \code{.httr-oauth} in the local directory.
+So if there is such a file, the function will first try to read from it.}
+
+\item{\dots}{Additional arguments passed to \code{\link{oauth2.0_token}}}
 }
 \value{
 sets the google_token option and also saves .httr_auth in the working directory (find out the working directory via getwd())

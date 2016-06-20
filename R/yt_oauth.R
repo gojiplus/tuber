@@ -7,27 +7,29 @@
 #' @param app_id client id; required; no default
 #' @param app_secret client secret; required; no default
 #' @param scope "ssl" or "basic"; required; default is ssl. The scopes are largely exchangeable but ssl yields extra authorizations that come in handy. 
-#' @param remove_old_oauth required; default is FALSE. It will remove .httr-oauth if such a file exists in the working directory
+#' @param token path to file containing the token. If a path is given, the function will first try to read from it. Default is \code{.httr-oauth} in the local directory.
+#' So if there is such a file, the function will first try to read from it.
+#' @param \dots Additional arguments passed to \code{\link{oauth2.0_token}}
+#' 
 #' @return sets the google_token option and also saves .httr_auth in the working directory (find out the working directory via getwd())
+#' 
 #' @export
+#' 
 #' @references \url{https://developers.google.com/youtube/v3/docs/}
 #' @references \url{https://developers.google.com/youtube/v3/guides/auth/client-side-web-apps} for different scopes
+#' 
 #' @examples
 #'  \dontrun{
 #'	  yt_oauth("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.com", 
 #'	           "MbOSt6cQhhFkwETXKur-L9rN")
 #' }
 
-yt_oauth <- function (app_id=NULL, app_secret=NULL, scope="ssl", remove_old_oauth=FALSE) {
+yt_oauth <- function (app_id=NULL, app_secret=NULL, scope="ssl", token = '.httr-oauth', ...) {
 
-	if (remove_old_oauth & file.exists('.httr-oauth')) {
-		file.remove('.httr-oauth')
-	}
-
-	if (file.exists('.httr-oauth')) {
+	if (file.exists(token)) {
 		
-		google_token <- readRDS('.httr-oauth')
-		google_token <- google_token[[1]]
+		google_token <- readRDS(token)
+		google_token <- google_token$google_token
 
 	} else if(is.null(app_id) | is.null(app_secret)) {
 		
@@ -35,16 +37,15 @@ yt_oauth <- function (app_id=NULL, app_secret=NULL, scope="ssl", remove_old_oaut
 	
 	} else {
 	
-		oauth_endpoints("google")
 		myapp <- oauth_app("google", key = app_id, secret = app_secret)
 
 		if (scope=="ssl") {
 	
-			google_token <- oauth2.0_token(oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtube.force-ssl")
+			google_token <- oauth2.0_token(oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtube.force-ssl", ...)
 			
 		} else if (scope=="basic") {
 	
-			google_token <- oauth2.0_token( oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtube")
+			google_token <- oauth2.0_token( oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtube", ...)
 
 		}
 	}

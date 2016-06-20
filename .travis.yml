@@ -5,5 +5,17 @@ warnings_are_errors: true
 
 r_github_packages:
   - jimhester/covr
+
+cache: packages
+
+before_install:
+- openssl aes-256-cbc -K $encrypted_1fc90f464345_key -iv $encrypted_1fc90f464345_iv
+  -in tests/testthat/yt_key.enc -out tests/testthat/yt_key -d
+
 after_success:
   - Rscript -e 'covr::codecov()'
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always

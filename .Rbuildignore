@@ -4,5 +4,5 @@
 dev
 ^.travis.yml$
 ^appveyor.yml$
-tests
 ^cran-comments.md$
+^tests\testthat\yt_key.enc$
