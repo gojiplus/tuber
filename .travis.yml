@@ -6,7 +6,7 @@ r_github_packages:
 cache: packages
 before_install:
 - openssl aes-256-cbc -K $encrypted_47e3e43a04fa_key -iv $encrypted_47e3e43a04fa_iv
-  -in token_file.rds.enc -out token_file.rds -d
+  -in tests/testthat/token_file.rds.enc -out tests/testthat/token_file.rds -d
 after_success:
 - Rscript -e 'covr::codecov()'
 notifications:
