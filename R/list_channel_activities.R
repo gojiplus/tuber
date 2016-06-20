@@ -11,10 +11,10 @@
 #' @references \url{https://developers.google.com/youtube/v3/docs/activities/list}
 #' @examples
 #' \dontrun{
-#' list_activities(channel_id="UCRw8bIz2wMLmfgAgWm903cA")
+#' list_channel_activities(channel_id="UCRw8bIz2wMLmfgAgWm903cA")
 #' }
 
-list_activities <- function (channel_id=NULL, part="snippet", ...) {
+list_channel_activities <- function (channel_id=NULL, part="snippet", ...) {
 
 	
 	if (is.null(channel_id)) stop("Must specify a channel_id")
