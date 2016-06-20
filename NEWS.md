@@ -1,8 +1,7 @@
 
-# version .3 2016-XX-XX
+# version .2.1 2016-06-20
 
-* Support the dots
-* New use case vignette: Analyzing comments on YouTube Videos of Politicians
+* Support the dots --- allow for passing of extra arguments to httr GET and POST
 
 # version .2 2016-01-16
 

@@ -1,12 +1,12 @@
 Package: tuber
 Title: Client for the YouTube API
-Version: 0.2
+Version: 0.2.1
 Authors@R: person("Gaurav", "Sood", email = "gsood07@gmail.com", role = c("aut", "cre"))
 Maintainer: Gaurav Sood <gsood07@gmail.com>
 Description:  Get comments posted on YouTube videos, information on how many 
     times a video has been liked, search for videos with particular content, and 
     much more. You can also scrape captions from a few videos. To learn more about
-    the YouTube API, see https://developers.google.com/youtube/v3/.
+    the YouTube API, see <https://developers.google.com/youtube/v3/>.
 URL: http://github.com/soodoku/tuber
 BugReports: http://github.com/soodoku/tuber/issues
 Depends:
