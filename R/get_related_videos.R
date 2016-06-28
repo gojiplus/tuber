@@ -23,9 +23,6 @@ yt_get_related_videos <- function (video_id=NULL, maxResults=5, safeSearch='none
 	
 	yt_check_token()
 
-	# For queries with spaces
-	term = paste0(unlist(strsplit(term, " ")), collapse="%20", safeSearch = safeSearch)
-
 	querylist <- list(part="snippet", relatedToVideoId = video_id, type="video", maxResults=maxResults)
 
 	res <- tuber_GET("search", querylist, ...)
