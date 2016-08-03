@@ -2,6 +2,7 @@
 
 * Replaces list_channel_videos with list_channel_resources. Returns a list. 
 * list_channel_activities supports all optional params, documents them
+* 
 
 # version .2.1 2016-06-20
 
