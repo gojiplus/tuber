@@ -7,3 +7,4 @@ dev
 ^appveyor.yml$
 ^cran-comments.md$
 ^tests\testthat\yt_key.enc$
+^\.httr-oauth$

@@ -13,7 +13,7 @@
 
 list_channel_videos <- function (channel_name=NULL, ...) 
 {
-     querylist <- list(part = "contentDetails", forUserName = channel_name)
+     querylist <- list(part = "contentDetails", forUsername = channel_name)
      res <- tuber_GET("channels", querylist, ...)
      resdf <- NA
      if (length(res$items) != 0) {
