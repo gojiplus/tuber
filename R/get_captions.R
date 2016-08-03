@@ -3,6 +3,7 @@
 #' 
 #' @param video_id id of the video; required; no default
 #' @param lang  language of the caption; required; default is english ("en")
+#' @param id    comma-separated list of IDs that identify the caption resources that should be retrieved; optional; string
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
 #' @return captions for the video from one of the first track
@@ -13,7 +14,7 @@
 #' get_captions(video_id="yJXTXN4xrI8")
 #' }
 
-get_captions <- function (video_id=NULL, lang="en", ...) {
+get_captions <- function (video_id=NULL, lang="en", id=NULL, ...) {
 
 	if (is.null(video_id)) stop("Must specify a video ID")
 
@@ -24,7 +25,7 @@ get_captions <- function (video_id=NULL, lang="en", ...) {
 
 	# If not try other things
 	if (length(content(req))==0) {
-		querylist = list(part="snippet", videoId = video_id)
+		querylist = list(part="snippet", videoId = video_id, id = id)
 		req <- GET("https://www.googleapis.com/youtube/v3/captions", query = querylist, config(token = getOption("google_token")), ...)
 		stop_for_status(req)
 		# Multiple caption tracks possible but for now harvest just the first

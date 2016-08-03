@@ -4,12 +4,14 @@
 \alias{get_captions}
 \title{Get Captions of a Video}
 \usage{
-get_captions(video_id = NULL, lang = "en", ...)
+get_captions(video_id = NULL, lang = "en", id = NULL, ...)
 }
 \arguments{
 \item{video_id}{id of the video; required; no default}
 
 \item{lang}{language of the caption; required; default is english ("en")}
+
+\item{id}{comma-separated list of IDs that identify the caption resources that should be retrieved; optional; string}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }

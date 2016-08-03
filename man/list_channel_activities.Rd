@@ -21,7 +21,7 @@ list_channel_activities(channel_id = NULL, part = "snippet",
 
 \item{published_before}{activity before a particular date, time; datetime in ISO 8601 (YYYY-MM-DDThh:mm:ss.sZ) format, optional}
 
-\item{region_code}{ISO 3166-1 alpha-2 country code, optional, see also \link{\code{list_regions}}}
+\item{region_code}{ISO 3166-1 alpha-2 country code, optional, see also \code{\link{list_regions}}}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }

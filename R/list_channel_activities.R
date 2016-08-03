@@ -8,7 +8,7 @@
 #' @param page_token specific page in the result set that should be returned, optional
 #' @param published_after activity after a particular date, time; datetime in ISO 8601 (YYYY-MM-DDThh:mm:ss.sZ) format, optional
 #' @param published_before activity before a particular date, time; datetime in ISO 8601 (YYYY-MM-DDThh:mm:ss.sZ) format, optional
-#' @param region_code  ISO 3166-1 alpha-2 country code, optional, see also \link{\code{list_regions}}
+#' @param region_code  ISO 3166-1 alpha-2 country code, optional, see also \code{\link{list_regions}}
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
 #' @return named list
