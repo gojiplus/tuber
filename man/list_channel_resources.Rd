@@ -5,7 +5,7 @@
 \title{Returns List of Requested Channel Resources}
 \usage{
 list_channel_resources(channel_name = NULL, part = "contentDetails",
-  max_results = 50, page_token = NULL, ...)
+  max_results = 50, page_token = NULL, hl = NULL, ...)
 }
 \arguments{
 \item{channel_name}{string, channel name, required}

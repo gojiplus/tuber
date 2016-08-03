@@ -19,9 +19,9 @@
 #' list_channel_videos("latenight", part="id, contentDetails", max_results=10)
 #' }
 
-list_channel_resources <- function (channel_name=NULL, part="contentDetails", max_results = 50, page_token = NULL, ...) 
+list_channel_resources <- function (channel_name=NULL, part="contentDetails", max_results = 50, page_token = NULL, hl= NULL, ...) 
 {
-     querylist <- list(part = part, forUsername = channel_name, max_results = max_results, page_token = page_token)
+     querylist <- list(part = part, forUsername = channel_name, max_results = max_results, page_token = page_token, hl= hl)
      res <- tuber_GET("channels", querylist, ...)
     
      return(invisible(res))
