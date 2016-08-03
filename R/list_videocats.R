@@ -17,7 +17,7 @@ list_videocats <- function (regionCode=NULL, ...) {
 
 	querylist <- list(part="snippet", regionCode=regionCode)
 
-	res <- tuber_GET("videoCategories", querylist)
+	res <- tuber_GET("videoCategories", querylist, ...)
 
 	resdf <- NA
 

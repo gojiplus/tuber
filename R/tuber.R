@@ -30,8 +30,9 @@ tuber_GET <-
 function(path, query, ...) {
 
 	yt_check_token()
-	
+
 	req <- GET("https://www.googleapis.com", path=paste0("youtube/v3/", path), query=query, config(token = getOption("google_token")), ...)
+	
 	stop_for_status(req)
 	res <- content(req)
 
