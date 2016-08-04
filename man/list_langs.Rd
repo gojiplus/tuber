@@ -4,9 +4,11 @@
 \alias{list_langs}
 \title{List Languages That Youtube Currently Supports}
 \usage{
-list_langs(...)
+list_langs(hl = NULL, ...)
 }
 \arguments{
+\item{hl}{language that will be used for text values, optional, default is en-US.}
+
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{

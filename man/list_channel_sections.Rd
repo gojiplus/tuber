@@ -4,12 +4,14 @@
 \alias{list_channel_sections}
 \title{List Channel Sections}
 \usage{
-list_channel_sections(channel_id = NULL, part = "snippet", ...)
+list_channel_sections(channel_id = NULL, part = "snippet", hl = NULL, ...)
 }
 \arguments{
 \item{channel_id}{id of the channel; required; no default}
 
-\item{part}{specify which part do you want. It can only be one of the three: contentDetails, id, snippet. Default is snippet.}
+\item{part}{specify which part do you want. It can only be one of the following: contentDetails, id, localizations, snippet, targeting. Default is snippet.}
+
+\item{hl}{language that will be used for text values, optional, default is en-US. See also \code{\link{list_langs}}}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }

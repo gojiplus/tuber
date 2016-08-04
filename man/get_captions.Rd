@@ -4,12 +4,16 @@
 \alias{get_captions}
 \title{Get Captions of a Video}
 \usage{
-get_captions(video_id = NULL, lang = "en", id = NULL, ...)
+get_captions(part = "snippet", video_id = NULL, lang = "en", id = NULL,
+  ...)
 }
 \arguments{
-\item{video_id}{id of the video; required; no default}
+\item{part}{Caption resource requested. Required. Comma separated list of one or more of the 
+following: id, snippet. e.g., "id, snippet", "id" Default: snippet.}
 
-\item{lang}{language of the caption; required; default is english ("en")}
+\item{video_id}{ID of the video whose captions are requested. Required. No default.}
+
+\item{lang}{Language of the caption; required; default is english ("en")}
 
 \item{id}{comma-separated list of IDs that identify the caption resources that should be retrieved; optional; string}
 

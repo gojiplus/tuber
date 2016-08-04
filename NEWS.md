@@ -1,8 +1,8 @@
-# version .2.2 2016-08-03
+# version .3 2016-08-04
 
 * Replaces list_channel_videos with list_channel_resources. Returns a list. 
-* Supports all optional params except onBehalfOfContentOwner, documents them for list_guidecats, list_channel_activities, get_captions, 
-* 
+* Supports and documents all optional params except onBehalfOfContentOwner, for list_guidecats, list_channel_activities, get_captions, list_channel_sections, get_comments, list_langs, list_regions
+* Adds get_playlists, get_playlist_items, get_subscriptions, get_videos
 
 # version .2.1 2016-06-20
 

@@ -4,9 +4,11 @@
 \alias{list_regions}
 \title{List Content Regions That Youtube Currently Supports}
 \usage{
-list_regions(...)
+list_regions(hl = NULL, ...)
 }
 \arguments{
+\item{hl}{language that will be used for text values, optional, default is en-US. See also \code{\link{list_langs}}}
+
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{

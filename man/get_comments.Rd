@@ -4,17 +4,19 @@
 \alias{get_comments}
 \title{Get Comments On a Video}
 \usage{
-get_comments(video_id = NULL, simplify = TRUE, maxResults = 20,
-  textFormat = "html", ...)
+get_comments(video_id = NULL, simplify = TRUE, max_results = 100,
+  text_format = "html", page_token = NULL, ...)
 }
 \arguments{
 \item{video_id}{Data Type: Character. ID of the video. Required.}
 
 \item{simplify}{Data Type: Boolean. Default is TRUE. If TRUE, the function returns a data frame. Else a list with all the information returned.}
 
-\item{maxResults}{Data Type: Numeric. Default is 20. Takes values between 20 and 100. Optional.}
+\item{max_results}{maximum number of items that should be returned, integer, can be between 20 and 100, default is 100}
 
-\item{textFormat}{Data Type: Character. Default is "html". Only takes "html" or "plainText." Optional.}
+\item{text_format}{Data Type: Character. Default is "html". Only takes "html" or "plainText." Optional.}
+
+\item{page_token}{specific page in the result set that should be returned, optional}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
