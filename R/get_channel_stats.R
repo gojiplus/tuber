@@ -28,5 +28,5 @@ get_channel_stats <- function (channel_id=NULL, ...) {
 	cat('No. of Subscribers', res1$subscriberCount, "\n")
 	cat('No. of Videos', res1$videoCount, "\n")
  
-	return(invisible(res))
+	res
 }

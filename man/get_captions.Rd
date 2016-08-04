@@ -9,7 +9,7 @@ get_captions(part = "snippet", video_id = NULL, lang = "en", id = NULL,
 }
 \arguments{
 \item{part}{Caption resource requested. Required. Comma separated list of one or more of the 
-following: id, snippet. e.g., "id, snippet", "id" Default: snippet.}
+following: \code{id, snippet}. e.g., "id, snippet", "id" Default: \code{snippet}.}
 
 \item{video_id}{ID of the video whose captions are requested. Required. No default.}
 

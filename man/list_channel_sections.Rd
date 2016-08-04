@@ -9,7 +9,7 @@ list_channel_sections(channel_id = NULL, part = "snippet", hl = NULL, ...)
 \arguments{
 \item{channel_id}{id of the channel; required; no default}
 
-\item{part}{specify which part do you want. It can only be one of the following: contentDetails, id, localizations, snippet, targeting. Default is snippet.}
+\item{part}{specify which part do you want. It can only be one of the following: \code{contentDetails, id, localizations, snippet, targeting}. Default is \code{snippet}.}
 
 \item{hl}{language that will be used for text values, optional, default is en-US. See also \code{\link{list_langs}}}
 

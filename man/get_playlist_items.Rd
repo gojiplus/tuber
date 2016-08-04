@@ -10,9 +10,9 @@ get_playlist_items(playlist_id = NULL, part = "contentDetails",
 \arguments{
 \item{playlist_id}{ID of the playlist}
 
-\item{part}{Required. Comma separated string including one or more of the following: contentDetails, id, snippet, status. Default: contentDetails.}
+\item{part}{Required. Comma separated string including one or more of the following: \code{contentDetails, id, snippet, status}. Default: \code{contentDetails}.}
 
-\item{max_results}{maximum number of items that should be returned, integer, can be between 0 and 50, default is 50}
+\item{max_results}{Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.}
 
 \item{video_id}{Optional. request should return only the playlist items that contain the specified video.}
 

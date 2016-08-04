@@ -4,19 +4,22 @@
 \alias{get_comments}
 \title{Get Comments On a Video}
 \usage{
-get_comments(video_id = NULL, simplify = TRUE, max_results = 100,
-  text_format = "html", page_token = NULL, ...)
+get_comments(part = "snippet", video_id = NULL, text_format = "html",
+  simplify = TRUE, max_results = 100, page_token = NULL, ...)
 }
 \arguments{
-\item{video_id}{Data Type: Character. ID of the video. Required.}
+\item{part}{Comment resource requested. Required. Comma separated list of one or more of the 
+following: \code{id, snippet}. e.g., "id, snippet", "id" Default: \code{snippet}.}
 
-\item{simplify}{Data Type: Boolean. Default is TRUE. If TRUE, the function returns a data frame. Else a list with all the information returned.}
-
-\item{max_results}{maximum number of items that should be returned, integer, can be between 20 and 100, default is 100}
+\item{video_id}{ID of the video. Required. Data Type: Character.}
 
 \item{text_format}{Data Type: Character. Default is "html". Only takes "html" or "plainText." Optional.}
 
-\item{page_token}{specific page in the result set that should be returned, optional}
+\item{simplify}{Data Type: Boolean. Default is TRUE. If TRUE, the function returns a data frame. Else a list with all the information returned.}
+
+\item{max_results}{Maximum number of items that should be returned. Integer. Optional. Can be between 20 and 100. Default is 100.}
+
+\item{page_token}{Specific page in the result set that should be returned. Optional.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
@@ -34,6 +37,6 @@ get_comments(video_id="N708P-A45D0")
 }
 }
 \references{
-\url{https://developers.google.com/youtube/v3/docs/}
+\url{https://developers.google.com/youtube/v3/docs/comments/list}
 }
 

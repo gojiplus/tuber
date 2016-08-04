@@ -4,44 +4,45 @@
 \alias{yt_search}
 \title{Search YouTube}
 \usage{
-yt_search(term = NULL, maxResults = 5, channelId = NULL,
-  channelType = NULL, type = "video", eventType = NULL, location = NULL,
-  locationRadius = NULL, publishedAfter = NULL, publishedBefore = NULL,
-  videoDefinition = "any", videoCaption = "any", videoLicense = "any",
-  videoSyndicated = "any", videoType = "any", ...)
+yt_search(term = NULL, max_results = 50, channel_id = NULL,
+  channel_type = NULL, type = "video", event_type = NULL,
+  location = NULL, location_radius = NULL, published_after = NULL,
+  published_before = NULL, video_definition = "any",
+  video_caption = "any", video_license = "any", video_syndicated = "any",
+  video_type = "any", ...)
 }
 \arguments{
 \item{term}{Character. Search term; required; no default}
 
-\item{maxResults}{Numeric. 0 to 50. Acceptable values are 0 to 50, inclusive. 
+\item{max_results}{Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.
 Search results are constrained to a maximum of 500 videos if type is video and we have a value of ChannelId.}
 
-\item{channelId}{Character. Only return search results from this channel; Optional.}
+\item{channel_id}{Character. Only return search results from this channel; Optional.}
 
-\item{channelType}{Character. Optional. Takes one of two values: 'any' or 'show'. Default is 'any'}
+\item{channel_type}{Character. Optional. Takes one of two values: 'any' or 'show'. Default is 'any'}
 
 \item{type}{Character. Optional. Takes one of three values: 'video', 'channel', or 'playlist'}
 
-\item{eventType}{Character. Optional. Takes one of three values: `completed', 'live' or 'upcoming'}
+\item{event_type}{Character. Optional. Takes one of three values: `completed', 'live' or 'upcoming'}
 
 \item{location}{Character.  Optional. Latitude and Longitude within parentheses, e.g. "(37.42307,-122.08427)"}
 
-\item{locationRadius}{Character.  Optional. e.g. "1500m", "5km", "10000ft", "0.75mi"}
+\item{location_radius}{Character.  Optional. e.g. "1500m", "5km", "10000ft", "0.75mi"}
 
-\item{publishedAfter}{Character. Optional. RFC 339 Format. For instance, "1970-01-01T00:00:00Z"}
+\item{published_after}{Character. Optional. RFC 339 Format. For instance, "1970-01-01T00:00:00Z"}
 
-\item{publishedBefore}{Character. Optional. RFC 339 Format. For instance, "1970-01-01T00:00:00Z"}
+\item{published_before}{Character. Optional. RFC 339 Format. For instance, "1970-01-01T00:00:00Z"}
 
-\item{videoDefinition}{Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'high' and 'standard'}
+\item{video_definition}{Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'high' and 'standard'}
 
-\item{videoCaption}{Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'closedCaption', 'none'. Type must be set to video.}
+\item{video_caption}{Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'closedCaption', 'none'. Type must be set to video.}
 
-\item{videoLicense}{Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'creativeCommon' (return videos with Creative Commons 
+\item{video_license}{Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'creativeCommon' (return videos with Creative Commons 
 license), 'youtube' (return videos with standard YouTube license).}
 
-\item{videoSyndicated}{Character. Optional. Takes one of two values: 'any' (return all videos; Default), 'true' (return only syndicated videos)}
+\item{video_syndicated}{Character. Optional. Takes one of two values: 'any' (return all videos; Default), 'true' (return only syndicated videos)}
 
-\item{videoType}{Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'episode' (return episode of shows), 'movie' (return movies)}
+\item{video_type}{Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'episode' (return episode of shows), 'movie' (return movies)}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }

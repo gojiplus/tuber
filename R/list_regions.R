@@ -1,7 +1,7 @@
 #' List Content Regions That Youtube Currently Supports
 #' 
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
-#' @param hl  language that will be used for text values, optional, default is en-US. See also \code{\link{list_langs}}
+#' @param hl  Language used for text values. Optional. Default is \code{en-US}. For other allowed language codes, see \code{\link{list_langs}}.
 #' 
 #' @return data.frame with 3 columns: gl (two letter abbreviation), name (of the region), etag
 #' 

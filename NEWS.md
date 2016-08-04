@@ -4,7 +4,8 @@
 * Supports and documents all optional params except onBehalfOfContentOwner, for list_guidecats, list_channel_activities, get_captions, list_channel_sections, get_comments, list_langs, list_regions
 * Adds get_playlists, get_playlist_items, get_subscriptions, get_videos
 * Renames get_channel with get_channel_stats
-
+* Standardize argument naming to snake_case
+ 
 # version .2.1 2016-06-20
 
 * Support the dots --- allow for passing of extra arguments to httr GET and POST

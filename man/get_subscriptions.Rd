@@ -9,17 +9,18 @@ get_subscriptions(channel_id = NULL, part = "contentDetails",
   page_token = NULL, ...)
 }
 \arguments{
-\item{channel_id}{Character. ID of the channel}
+\item{channel_id}{ID of the channel. Character. Required.}
 
-\item{part}{Required. String. A comma separated list of one or more of the following: contentDetails, id, snippet, subscriberSnippet. Default: contentDetails. e.g. "id, snippet", "id", etc.}
+\item{part}{Part of the resource requested. Required. Character. 
+A comma separated list of one or more of the following: \code{contentDetails, id, snippet, subscriberSnippet}. e.g. "id, snippet", "id", etc. Default: \code{contentDetails}.}
 
-\item{max_results}{Optional. Integer. Maximum number of items that should be returned. Can be between 0 and 50. Default is 50.}
+\item{max_results}{Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.}
 
 \item{for_channel_id}{Optional. String. A comma-separated list of channel IDs. Limits response to subscriptions matching those channels.}
 
 \item{order}{method that will be used to sort resources in the API response. Takes one of the following: alphabetical, relevance, unread}
 
-\item{page_token}{Optional. String.  Specific page in the result set that should be returned, optional}
+\item{page_token}{Specific page in the result set that should be returned. Optional. String.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }

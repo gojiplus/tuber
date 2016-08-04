@@ -10,11 +10,11 @@ get_playlists(channel_id = NULL, part = "contentDetails",
 \arguments{
 \item{channel_id}{Character. ID of the channel}
 
-\item{part}{Required. One of the following: contentDetails, id, localizations, player, snippet, status. Default: contentDetails.}
+\item{part}{Required. One of the following: \code{contentDetails, id, localizations, player, snippet, status}. Default: \code{contentDetails}.}
 
-\item{max_results}{maximum number of items that should be returned, integer, can be between 0 and 50, default is 50}
+\item{max_results}{Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.}
 
-\item{hl}{language that will be used for text values, optional, default is en-US. See also \code{\link{list_langs}}}
+\item{hl}{Language used for text values. Optional. Default is \code{en-US}. For other allowed language codes, see \code{\link{list_langs}}.}
 
 \item{page_token}{specific page in the result set that should be returned, optional}
 

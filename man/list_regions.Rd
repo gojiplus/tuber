@@ -7,7 +7,7 @@
 list_regions(hl = NULL, ...)
 }
 \arguments{
-\item{hl}{language that will be used for text values, optional, default is en-US. See also \code{\link{list_langs}}}
+\item{hl}{Language used for text values. Optional. Default is \code{en-US}. For other allowed language codes, see \code{\link{list_langs}}.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }

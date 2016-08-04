@@ -9,17 +9,17 @@ list_channel_activities(channel_id = NULL, part = "snippet",
   published_before = NULL, region_code = NULL, ...)
 }
 \arguments{
-\item{channel_id}{id of the channel; required; no default}
+\item{channel_id}{ID of the channel. Required. No default.}
 
-\item{part}{specify which part do you want. It can only be one of the three: contentDetails, id, snippet. Default is snippet.}
+\item{part}{specify which part do you want. It can only be one of the three: \code{contentDetails, id, snippet}. Default is \code{snippet}.}
 
-\item{max_results}{maximum number of items that should be returned, integer, can be between 0 and 50, default is 50}
+\item{max_results}{Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.}
 
 \item{page_token}{specific page in the result set that should be returned, optional}
 
-\item{published_after}{activity after a particular date, time; datetime in ISO 8601 (YYYY-MM-DDThh:mm:ss.sZ) format, optional}
+\item{published_after}{Character. Optional. RFC 339 Format. For instance, "1970-01-01T00:00:00Z"}
 
-\item{published_before}{activity before a particular date, time; datetime in ISO 8601 (YYYY-MM-DDThh:mm:ss.sZ) format, optional}
+\item{published_before}{Character. Optional. RFC 339 Format. For instance, "1970-01-01T00:00:00Z"}
 
 \item{region_code}{ISO 3166-1 alpha-2 country code, optional, see also \code{\link{list_regions}}}
 
@@ -29,7 +29,7 @@ list_channel_activities(channel_id = NULL, part = "snippet",
 named list
 }
 \description{
-Returns a list of channel activity events that match the request criteria.
+Returns a list of channel events that match the request criteria.
 }
 \examples{
 \dontrun{

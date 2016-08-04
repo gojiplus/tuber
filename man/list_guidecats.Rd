@@ -9,7 +9,7 @@ list_guidecats(regionCode = NULL, hl = NULL, ...)
 \arguments{
 \item{regionCode}{Character. Required. Has to be a ISO 3166-1 alpha-2 code (see \url{https://www.iso.org/obp/ui/#search})}
 
-\item{hl}{language that will be used for text values, optional, default is en-US. See also \code{\link{list_langs}}}
+\item{hl}{Language used for text values. Optional. Default is \code{en-US}. For other allowed language codes, see \code{\link{list_langs}}.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }

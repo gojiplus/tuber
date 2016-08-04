@@ -11,15 +11,15 @@ list_videos(chart = "mostPopular", part = "contentDetails",
 \arguments{
 \item{chart}{mostPopular}
 
-\item{part}{Required. Comma separated string including one or more of the following: contentDetails, 
+\item{part}{Required. Comma separated string including one or more of the following: \code{contentDetails, 
 fileDetails, id, liveStreamingDetails, localizations, player, processingDetails, recordingDetails, 
-snippet, statistics, status, suggestions, topicDetails. Default: contentDetails.}
+snippet, statistics, status, suggestions, topicDetails}. Default: \code{contentDetails}.}
 
-\item{max_results}{maximum number of items that should be returned, integer, can be between 0 and 50, default is 50}
+\item{max_results}{Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.}
 
 \item{page_token}{specific page in the result set that should be returned, optional}
 
-\item{hl}{language that will be used for text values, optional, default is en-US. See also \code{\link{list_langs}}.}
+\item{hl}{Language used for text values. Optional. Default is \code{en-US}. For other allowed language codes, see \code{\link{list_langs}}.}
 
 \item{region_code}{Character. Required. Has to be a ISO 3166-1 alpha-2 code (see \url{https://www.iso.org/obp/ui/#search}).}
 

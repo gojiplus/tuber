@@ -10,15 +10,15 @@ list_channel_resources(channel_name = NULL, part = "contentDetails",
 \arguments{
 \item{channel_name}{string, channel name, required}
 
-\item{part}{a comma separated list of channel resource properties that response will include
-string, required, one of the following: auditDetails, brandingSettings, contentDetails, contentOwnerDetails, id, invideoPromotion, localizations, snippet, statistics, status, topicDetails
-default is contentDetails}
+\item{part}{a comma separated list of channel resource properties that response will include string. Required. 
+One of the following: \code{auditDetails, brandingSettings, contentDetails, contentOwnerDetails, id, invideoPromotion, localizations, snippet, statistics, status, topicDetails}.
+Default is \code{contentDetails}.}
 
-\item{max_results}{maximum number of items that should be returned, integer, can be between 0 and 50, default is 50}
+\item{max_results}{Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.}
 
 \item{page_token}{specific page in the result set that should be returned, optional}
 
-\item{hl}{language that will be used for text values, optional, default is en-US. See also \code{\link{list_langs}}}
+\item{hl}{Language used for text values. Optional. Default is \code{en-US}. For other allowed language codes, see \code{\link{list_langs}}.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
