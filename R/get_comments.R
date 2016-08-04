@@ -1,9 +1,9 @@
 #' Get Comments On a Video
 #'
-#' @param video_id Data Type: Character. ID of the video. Required.
+#' @param video_id ID of the video. Required. Data Type: Character. 
 #' @param simplify Data Type: Boolean. Default is TRUE. If TRUE, the function returns a data frame. Else a list with all the information returned.
-#' @param max_results maximum number of items that should be returned, integer, can be between 20 and 100, default is 100
-#' @param page_token specific page in the result set that should be returned, optional
+#' @param max_results Maximum number of items that should be returned. Integer. Can be between 20 and 100. Default is 100.
+#' @param page_token Specific page in the result set that should be returned. Optional.
 #' @param text_format Data Type: Character. Default is "html". Only takes "html" or "plainText." Optional. 
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'  
@@ -18,7 +18,7 @@
 #' get_comments(video_id="N708P-A45D0")
 #' }
 
-get_comments <- function (video_id=NULL, simplify=TRUE, max_results=100, text_format="html", page_token = NULL, ...) {
+get_comments <- function (video_id=NULL, text_format="html", simplify=TRUE, max_results=100, page_token = NULL, ...) {
 
 	if (is.null(video_id)) stop("Must specify a video ID")
 	if (max_results < 20 | max_results > 100) stop("maxResults only takes a value between 20 and 100")
