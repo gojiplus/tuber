@@ -29,8 +29,8 @@ yt_oauth <- function (app_id=NULL, app_secret=NULL, scope="ssl", token = '.httr-
 	if (file.exists(token)) {
 		
 		google_token <- readRDS(token)
-		google_token <- google_token$google_token
-
+		google_token <- google_token[[1]]
+				
 	} else if(is.null(app_id) | is.null(app_secret)) {
 		
 		stop("Please provide values for app_id and app_secret")

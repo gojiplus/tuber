@@ -14,8 +14,6 @@
 get_stats <- function (video_id=NULL, ...) {
 
 	if (is.null(video_id)) stop("Must specify a video ID")
-
-	yt_check_token()
 	
 	querylist <- list(part="statistics", id = video_id)
     
