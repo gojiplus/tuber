@@ -2,7 +2,11 @@
 #' 
 #' Returns a list of channel events that match the request criteria. 
 #' 
-#' @param channel_id ID of the channel. Required. No default.
+#' @param filter string; Required.
+#' named vector of length 1
+#' potential names of the entry in the vector: 
+#' \code{channel_id}: ID of the channel. Required. No default.
+#' 
 #' @param part specify which part do you want. It can only be one of the three: \code{contentDetails, id, snippet}. Default is \code{snippet}.
 #' @param max_results Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.
 #' @param page_token specific page in the result set that should be returned, optional
@@ -14,20 +18,29 @@
 #' @return named list
 #' @export
 #' @references \url{https://developers.google.com/youtube/v3/docs/activities/list}
+#' 
 #' @examples
 #' \dontrun{
-#' list_channel_activities(channel_id="UCRw8bIz2wMLmfgAgWm903cA")
-#' list_channel_activities(channel_id="UCRw8bIz2wMLmfgAgWm903cA", regionCode="US")
+#' list_channel_activities(filter = c(channel_id="UCRw8bIz2wMLmfgAgWm903cA"))
+#' list_channel_activities(filter = c(channel_id="UCRw8bIz2wMLmfgAgWm903cA", regionCode="US"))
 #' }
 
-list_channel_activities <- function (channel_id=NULL, part="snippet", max_results = 50, page_token = NULL, published_after = NULL, published_before = NULL, region_code = NULL, ...) {
+list_channel_activities <- function (filter=NULL, part="snippet", max_results = 50, page_token = NULL, published_after = NULL, published_before = NULL, region_code = NULL, ...) {
 
 	if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50")
-	if (is.null(channel_id)) stop("Must specify a channel_id")
+
 	if (!is.null(published_after))  if (is.na(as.POSIXct(published_after, format="%Y-%m-%dT%H:%M:%SZ"))) stop("The date is not properly formatted in RFC 339 Format")
 	if (!is.null(published_before)) if (is.na(as.POSIXct(published_before, format="%Y-%m-%dT%H:%M:%SZ"))) stop("The date is not properly formatted in RFC 339 Format")
 
-	querylist <- list(part=part, channelId=channel_id, maxResults = max_results, pageToken = page_token, publishedAfter = published_after, publishedBefore = published_before, regionCode = region_code)
+	if (!(names(filter) %in% c("channel_id"))) stop("filter can only take one of values: channel_id.")
+	if ( length(filter) != 1) stop("filter must be a vector of length 1.")
+
+	translate_filter   <- c(channel_id = 'channelId')
+	yt_filter_name     <- as.vector(translate_filter[match(names(filter), names(translate_filter))])
+	names(filter)      <- yt_filter_name
+
+	querylist <- list(part=part, maxResults = max_results, pageToken = page_token, publishedAfter = published_after, publishedBefore = published_before, regionCode = region_code)
+	querylist <- c(querylist, filter)
 
 	res <- tuber_GET("activities", querylist, ...)
  

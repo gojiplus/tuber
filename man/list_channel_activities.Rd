@@ -4,12 +4,15 @@
 \alias{list_channel_activities}
 \title{List Channel Activity}
 \usage{
-list_channel_activities(channel_id = NULL, part = "snippet",
-  max_results = 50, page_token = NULL, published_after = NULL,
-  published_before = NULL, region_code = NULL, ...)
+list_channel_activities(filter = NULL, part = "snippet", max_results = 50,
+  page_token = NULL, published_after = NULL, published_before = NULL,
+  region_code = NULL, ...)
 }
 \arguments{
-\item{channel_id}{ID of the channel. Required. No default.}
+\item{filter}{string; Required.
+named vector of length 1
+potential names of the entry in the vector: 
+\code{channel_id}: ID of the channel. Required. No default.}
 
 \item{part}{specify which part do you want. It can only be one of the three: \code{contentDetails, id, snippet}. Default is \code{snippet}.}
 
@@ -33,8 +36,8 @@ Returns a list of channel events that match the request criteria.
 }
 \examples{
 \dontrun{
-list_channel_activities(channel_id="UCRw8bIz2wMLmfgAgWm903cA")
-list_channel_activities(channel_id="UCRw8bIz2wMLmfgAgWm903cA", regionCode="US")
+list_channel_activities(filter = c(channel_id="UCRw8bIz2wMLmfgAgWm903cA"))
+list_channel_activities(filter = c(channel_id="UCRw8bIz2wMLmfgAgWm903cA", regionCode="US"))
 }
 }
 \references{
