@@ -1,7 +1,7 @@
 ---
 title: "Using tuber"
 author: "Gaurav Sood"
-date: "2016-06-20"
+date: "2016-10-02"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Using tuber}
@@ -206,4 +206,124 @@ res$items[[1]]$snippet$topLevelComment$snippet$textDisplay
 
 ```
 ## Hillary Clinton is a corporate puppet, a flip-flopper, and a robotic establishment politician. She also constantly plays the card of vote for me because I have a vagina. She has received lots of money from wall street and corporations that own her. She was against  gay marriage, for the Iraq war, for the Patriot Act, undecided on the Keystone Pipeline for a long time(that should be a no brainier if you are truly an environmentalist), and is currently against Glass-Steagall. She is a mediocre liberal that tries to put on a progressive mask through vague messages. She is a phony crook that as Sanders said, talks the talk but doesn&#39;t walk the walk. She is the embodiment of politics as usual were money controls government. From her you should only expect at most a speck of progressivism. <br /><br />That is why you shouldn&#39;t vote for Clinton.﻿
+```
+
+### Get statistics of all the videos in a channel
+
+
+```r
+a <- list_channel_resources(id = "UCT5Cx1l4IS3wHkJXNyuj4TA", part="contentDetails")
+
+# Uploaded playlists:
+playlist_id <- a$items[[1]]$contentDetails$relatedPlaylists$uploads
+
+# Get videos on the playlist
+vids <- get_playlist_items(playlist_id) 
+
+# Video ids
+vid_ids <- as.vector(unlist(sapply(vids$items, "[", "contentDetails")))
+
+# get stats:
+res <- data.frame()
+for (i in vid_ids) {
+
+	temp <- get_stats(i)
+	temp$vid_id <- i
+	res  <- rbind(res, temp)
+}
+```
+
+```
+## No. of Views 707 
+## No. of Likes 3 
+## No. of Dislikes 1 
+## No. of Favorites 0 
+## No. of Comments 0 
+## No. of Views 689 
+## No. of Likes 0 
+## No. of Dislikes 0 
+## No. of Favorites 0 
+## No. of Comments 0 
+## No. of Views 456 
+## No. of Likes 1 
+## No. of Dislikes 0 
+## No. of Favorites 0 
+## No. of Comments 0 
+## No. of Views 381 
+## No. of Likes 0 
+## No. of Dislikes 0 
+## No. of Favorites 0 
+## No. of Comments 0 
+## No. of Views 174971 
+## No. of Likes 5 
+## No. of Dislikes 0 
+## No. of Favorites 0 
+## No. of Comments 0 
+## No. of Views 563 
+## No. of Likes 3 
+## No. of Dislikes 2 
+## No. of Favorites 0 
+## No. of Comments 3 
+## No. of Views 242816 
+## No. of Likes 12 
+## No. of Dislikes 0 
+## No. of Favorites 0 
+## No. of Comments 4 
+## No. of Views 994 
+## No. of Likes 0 
+## No. of Dislikes 0 
+## No. of Favorites 0 
+## No. of Comments 0 
+## No. of Views 291 
+## No. of Likes 1 
+## No. of Dislikes 0 
+## No. of Favorites 0 
+## No. of Comments 1 
+## No. of Views 95661 
+## No. of Likes 3 
+## No. of Dislikes 1 
+## No. of Favorites 0 
+## No. of Comments 0 
+## No. of Views 10889 
+## No. of Likes 17 
+## No. of Dislikes 9 
+## No. of Favorites 0 
+## No. of Comments 1 
+## No. of Views 76 
+## No. of Likes 0 
+## No. of Dislikes 0 
+## No. of Favorites 0 
+## No. of Comments 0 
+## No. of Views 672 
+## No. of Likes 0 
+## No. of Dislikes 0 
+## No. of Favorites 0 
+## No. of Comments 0 
+## No. of Views 3540 
+## No. of Likes 14 
+## No. of Dislikes 2 
+## No. of Favorites 0 
+## No. of Comments 5
+```
+
+```r
+res
+```
+
+```
+##    viewCount likeCount dislikeCount favoriteCount commentCount      vid_id
+## 1        707         3            1             0            0 91gZ4taDiDE
+## 2        689         0            0             0            0 bHPCvSqTxn4
+## 3        456         1            0             0            0 h2UPH87kjhc
+## 4        381         0            0             0            0 E2VtxjljZCE
+## 5     174971         5            0             0            0 5Ajfk620fA0
+## 6        563         3            2             0            3 PdI3HjulcA4
+## 7     242816        12            0             0            4 IGUZAeLoGOU
+## 8        994         0            0             0            0 0L1HCWo7Py0
+## 9        291         1            0             0            1 IM6bGZ-Msf0
+## 10     95661         3            1             0            0 hfUnu9QQii4
+## 11     10889        17            9             0            1 aPyWkycj8TE
+## 12        76         0            0             0            0 g_q_MwpQTb0
+## 13       672         0            0             0            0 rryhpc7krCw
+## 14      3540        14            2             0            5 dRK64OVdfmo
 ```
