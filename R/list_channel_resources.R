@@ -38,7 +38,7 @@ list_channel_resources <- function (filter=NULL, part="contentDetails", max_resu
 	yt_filter_name     <- as.vector(translate_filter[match(names(filter), names(translate_filter))])
 	names(filter)      <- yt_filter_name
 
-    querylist <- list(part = part, max_results = max_results, page_token = page_token, hl= hl)
+    querylist <- list(part = part, maxResults = max_results, pageToken = page_token, hl= hl)
     querylist <- c(querylist, filter)
 
     res <- tuber_GET("channels", querylist, ...)
