@@ -1,6 +1,7 @@
 #' Returns List of Requested Channel Resources
 #' 
-#' @param channel_name string, channel name, required
+#' @param channel_name string, channel name, either channel_name or id are required
+#' @param id string, id for the channel.
 #' @param part a comma separated list of channel resource properties that response will include string. Required. 
 #' One of the following: \code{auditDetails, brandingSettings, contentDetails, contentOwnerDetails, id, invideoPromotion, localizations, snippet, statistics, status, topicDetails}.
 #' Default is \code{contentDetails}.
@@ -14,16 +15,16 @@
 #' @references \url{https://developers.google.com/youtube/v3/docs/channels/list}
 #' @examples
 #' \dontrun{
-#' list_channel_videos("latenight")
-#' list_channel_videos("latenight", part="id, contentDetails")
-#' list_channel_videos("latenight", part="id, contentDetails", max_results=10)
+#' list_channel_resources("latenight")
+#' list_channel_resources("latenight", part="id, contentDetails")
+#' list_channel_resources("latenight", part="id, contentDetails", max_results=10)
 #' }
 
-list_channel_resources <- function (channel_name=NULL, part="contentDetails", max_results = 50, page_token = NULL, hl= NULL, ...) 
+list_channel_resources <- function (id=NULL, channel_name=NULL, part="contentDetails", max_results = 50, page_token = NULL, hl= NULL, ...) 
 {
 	 if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50")
 
-     querylist <- list(part = part, forUsername = channel_name, max_results = max_results, page_token = page_token, hl= hl)
+     querylist <- list(part = part, id = id, forUsername = channel_name, max_results = max_results, page_token = page_token, hl= hl)
      res <- tuber_GET("channels", querylist, ...)
     
      return(invisible(res))

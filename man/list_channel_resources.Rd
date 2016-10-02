@@ -4,11 +4,14 @@
 \alias{list_channel_resources}
 \title{Returns List of Requested Channel Resources}
 \usage{
-list_channel_resources(channel_name = NULL, part = "contentDetails",
-  max_results = 50, page_token = NULL, hl = NULL, ...)
+list_channel_resources(id = NULL, channel_name = NULL,
+  part = "contentDetails", max_results = 50, page_token = NULL,
+  hl = NULL, ...)
 }
 \arguments{
-\item{channel_name}{string, channel name, required}
+\item{id}{string, id for the channel.}
+
+\item{channel_name}{string, channel name, either channel_name or id are required}
 
 \item{part}{a comma separated list of channel resource properties that response will include string. Required. 
 One of the following: \code{auditDetails, brandingSettings, contentDetails, contentOwnerDetails, id, invideoPromotion, localizations, snippet, statistics, status, topicDetails}.
@@ -30,9 +33,9 @@ Returns List of Requested Channel Resources
 }
 \examples{
 \dontrun{
-list_channel_videos("latenight")
-list_channel_videos("latenight", part="id, contentDetails")
-list_channel_videos("latenight", part="id, contentDetails", max_results=10)
+list_channel_resources("latenight")
+list_channel_resources("latenight", part="id, contentDetails")
+list_channel_resources("latenight", part="id, contentDetails", max_results=10)
 }
 }
 \references{
