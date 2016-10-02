@@ -4,14 +4,16 @@
 \alias{list_channel_resources}
 \title{Returns List of Requested Channel Resources}
 \usage{
-list_channel_resources(id = NULL, channel_name = NULL,
-  part = "contentDetails", max_results = 50, page_token = NULL,
-  hl = NULL, ...)
+list_channel_resources(filter = NULL, part = "contentDetails",
+  max_results = 50, page_token = NULL, hl = NULL, ...)
 }
 \arguments{
-\item{id}{string, id for the channel.}
-
-\item{channel_name}{string, channel name, either channel_name or id are required}
+\item{filter}{string
+named vector of length 1
+potential names of the entry in the vector: 
+category_id: YouTube guide category that returns channels associated with that category
+username:  YouTube username that returns channel associated with that username.
+id: a comma-separated list of the YouTube channel ID(s) for the resource(s) that are being retrieved}
 
 \item{part}{a comma separated list of channel resource properties that response will include string. Required. 
 One of the following: \code{auditDetails, brandingSettings, contentDetails, contentOwnerDetails, id, invideoPromotion, localizations, snippet, statistics, status, topicDetails}.
@@ -32,10 +34,12 @@ list
 Returns List of Requested Channel Resources
 }
 \examples{
+
 \dontrun{
-list_channel_resources("latenight")
-list_channel_resources("latenight", part="id, contentDetails")
-list_channel_resources("latenight", part="id, contentDetails", max_results=10)
+list_channel_resources(filter = c(id = "UCT5Cx1l4IS3wHkJXNyuj4TA"))
+list_channel_resources(filter = c(username = "latenight"), part="id, contentDetails")
+list_channel_resources(filter = c(username = "latenight"), part="id, contentDetails", 
+max_results=10)
 }
 }
 \references{
