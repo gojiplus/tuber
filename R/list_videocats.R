@@ -1,21 +1,30 @@
 #' List of Categories That Can be Associated with Videos
 #' 
-#' @param regionCode Character. Required. Has to be a ISO 3166-1 alpha-2 code (see \url{https://www.iso.org/obp/ui/#search}).
+#' @param filter string; Required.
+#' named vector of length 1
+#' potential names of the entry in the vector: 
+#' \code{region_code}: Character. Required. Has to be a ISO 3166-1 alpha-2 code (see \url{https://www.iso.org/obp/ui/#search})
+#' \code{category_id}: video category ID
+#'
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
 #' @return data.frame with 5 columns: channelId, title, assignable, etag, id
 #' @export
-#' @references \url{https://developers.google.com/youtube/v3/docs/search/list}
+#' @references \url{https://developers.google.com/youtube/v3/docs/videoCategories/list}
+#' 
 #' @examples
 #' \dontrun{
-#' list_videocats("JP")
+#' list_videocats(c(region_code = "JP"))
 #' }
 
-list_videocats <- function (regionCode=NULL, ...) {
+list_videocats <- function (filter=NULL, ...) {
 
-	if (is.null(regionCode)) stop("Must specify a regionCode")
+	translate_filter   <- c(id = 'id', region_code = 'regionCode')
+	yt_filter_name     <- as.vector(translate_filter[match(names(filter), names(translate_filter))])
+	names(filter)      <- yt_filter_name
 
-	querylist <- list(part="snippet", regionCode=regionCode)
+	querylist <- list(part="snippet")
+    if (!is.null(filter)) querylist <- c(querylist, filter)
 
 	res <- tuber_GET("videoCategories", querylist, ...)
 
