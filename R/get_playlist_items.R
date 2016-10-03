@@ -25,7 +25,7 @@ get_playlist_items <- function (filter = NULL, part="contentDetails", max_result
 
 	if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50")
 	
-	if (!(names(filter) %in% c("channel_id", "playlist_id"))) stop("filter can only take one of values: channel_id, playlist_id.")
+	if (!(names(filter) %in% c("item_id", "playlist_id"))) stop("filter can only take one of values: item_id, playlist_id.")
 	if ( length(filter) != 1) stop("filter must be a vector of length 1.")
 
 	translate_filter   <- c(item_id = 'id', playlist_id ='playlistId')

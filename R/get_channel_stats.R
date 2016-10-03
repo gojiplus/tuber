@@ -17,7 +17,7 @@ get_channel_stats <- function (channel_id=NULL, ...) {
 
 	yt_check_token()
 	
-	querylist <- list(part="contentDetails,statistics,snippet", id = channel_id)
+	querylist <- list(part="statistics,snippet", id = channel_id)
     
     res <- tuber_GET("channels", querylist, ...)
     res1 <- res$items[[1]]$statistics

@@ -13,7 +13,7 @@ get_subscriptions(filter = NULL, part = "contentDetails",
 named vector of length 1
 potential names of the entry in the vector: 
 \code{channel_id}: ID of the channel. Required. No default.
-\code{id}: YouTube subscription ID}
+\code{subscription_id}: YouTube subscription ID}
 
 \item{part}{Part of the resource requested. Required. Character. 
 A comma separated list of one or more of the following: \code{contentDetails, id, snippet, subscriberSnippet}. e.g. "id, snippet", "id", etc. Default: \code{contentDetails}.}
@@ -29,7 +29,7 @@ A comma separated list of one or more of the following: \code{contentDetails, id
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-captions for the video from one of the first track
+named list of subscriptions
 }
 \description{
 Get Subscriptions
@@ -40,6 +40,6 @@ get_subscriptions(filter=c(channel_id="UChTJTbr5kf3hYazJZO-euHg"))
 }
 }
 \references{
-\url{https://developers.google.com/youtube/v3/docs/playlists/list}
+\url{https://developers.google.com/youtube/v3/docs/subscriptions/list}
 }
 
