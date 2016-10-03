@@ -4,10 +4,14 @@
 \alias{list_channel_sections}
 \title{List Channel Sections}
 \usage{
-list_channel_sections(channel_id = NULL, part = "snippet", hl = NULL, ...)
+list_channel_sections(filter = NULL, part = "snippet", hl = NULL, ...)
 }
 \arguments{
-\item{channel_id}{id of the channel; required; no default}
+\item{filter}{string; Required.
+named vector of length 1
+potential names of the entry in the vector: 
+\code{channel_id}: Channel ID
+\code{id}: Section ID}
 
 \item{part}{specify which part do you want. It can only be one of the following: \code{contentDetails, id, localizations, snippet, targeting}. Default is \code{snippet}.}
 
@@ -22,8 +26,9 @@ captions for the video from one of the first track
 Returns list of channel sections that channel id belongs to.
 }
 \examples{
+
 \dontrun{
-list_channel_sections(channel_id="UCRw8bIz2wMLmfgAgWm903cA")
+list_channel_sections(c(channel_id="UCRw8bIz2wMLmfgAgWm903cA"))
 }
 }
 \references{
