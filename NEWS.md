@@ -1,6 +1,7 @@
 # version .4 2016-10-04
 
 * Filtering by different facets is now supported. This is via passing a named vector.
+* Added a function to list_channel_videos
 * Added to the vignette an example of how to get stats of all videos of a channel.
 
 # version .3 2016-08-04

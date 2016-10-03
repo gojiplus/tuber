@@ -1,6 +1,11 @@
 #' Get Subscriptions
 #' 
-#' @param channel_id ID of the channel. Character. Required.
+#' @param filter string; Required.
+#' named vector of length 1
+#' potential names of the entry in the vector: 
+#' \code{channel_id}: ID of the channel. Required. No default.
+#' \code{id}: YouTube subscription ID
+#' 
 #' @param part Part of the resource requested. Required. Character. 
 #' A comma separated list of one or more of the following: \code{contentDetails, id, snippet, subscriberSnippet}. e.g. "id, snippet", "id", etc. Default: \code{contentDetails}. 
 #' @param max_results Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.
@@ -14,16 +19,22 @@
 #' @references \url{https://developers.google.com/youtube/v3/docs/playlists/list}
 #' @examples
 #' \dontrun{
-#' get_subscriptions(channel_id="UChTJTbr5kf3hYazJZO-euHg")
+#' get_subscriptions(filter=c(channel_id="UChTJTbr5kf3hYazJZO-euHg"))
 #' }
 
-get_subscriptions <- function (channel_id = NULL, part="contentDetails", max_results=50, for_channel_id = NULL, order=NULL, page_token=NULL, ...) {
+get_subscriptions <- function (filter=NULL, part="contentDetails", max_results=50, for_channel_id = NULL, order=NULL, page_token=NULL, ...) {
 
 	if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50")
 
-	yt_check_token()
+	if (!(names(filter) %in% c("channel_id"))) stop("filter can only take one of values: channel_id.")
+	if ( length(filter) != 1) stop("filter must be a vector of length 1.")
 	
-	querylist <- list(channelId = channel_id, part=part, maxResults = max_results, pageToken = page_token, order = order, forChannelId = for_channel_id)
+	translate_filter   <- c(channel_id = 'channelId')
+	yt_filter_name     <- as.vector(translate_filter[match(names(filter), names(translate_filter))])
+	names(filter)      <- yt_filter_name
+	
+	querylist <- list(part=part, maxResults = max_results, pageToken = page_token, order = order, forChannelId = for_channel_id)
+	querylist <- c(querylist, filter)
 
 	res <- tuber_GET("playlists", querylist, ...)
  
