@@ -202,13 +202,13 @@ res$items[[1]]$snippet$topLevelComment$snippet$textDisplay
 
 ```{r, eval=FALSE, get_channel_vids_stats}
 
-a <- list_channel_resources(id = "UCT5Cx1l4IS3wHkJXNyuj4TA", part="contentDetails")
+a <- list_channel_resources(filter = c(channel_id = "UCT5Cx1l4IS3wHkJXNyuj4TA"), part="contentDetails")
 
 # Uploaded playlists:
 playlist_id <- a$items[[1]]$contentDetails$relatedPlaylists$uploads
 
 # Get videos on the playlist
-vids <- get_playlist_items(playlist_id) 
+vids <- get_playlist_items(filter= c(playlist_id=playlist_id)) 
 
 # Video ids
 vid_ids <- as.vector(unlist(sapply(vids$items, "[", "contentDetails")))

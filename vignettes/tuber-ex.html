@@ -12,7 +12,7 @@
 
 <meta name="author" content="Gaurav Sood" />
 
-<meta name="date" content="2016-10-02" />
+<meta name="date" content="2016-10-03" />
 
 <title>Using tuber</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Using tuber</h1>
 <h4 class="author"><em>Gaurav Sood</em></h4>
-<h4 class="date"><em>2016-10-02</em></h4>
+<h4 class="date"><em>2016-10-03</em></h4>
 
 
 
@@ -220,13 +220,13 @@ res$items[[<span class="dv">1</span>]]$snippet$topLevelComment$snippet$textDispl
 </div>
 <div id="get-statistics-of-all-the-videos-in-a-channel" class="section level3">
 <h3>Get statistics of all the videos in a channel</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a &lt;-<span class="st"> </span><span class="kw">list_channel_resources</span>(<span class="dt">id =</span> <span class="st">&quot;UCT5Cx1l4IS3wHkJXNyuj4TA&quot;</span>, <span class="dt">part=</span><span class="st">&quot;contentDetails&quot;</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a &lt;-<span class="st"> </span><span class="kw">list_channel_resources</span>(<span class="dt">filter =</span> <span class="kw">c</span>(<span class="dt">channel_id =</span> <span class="st">&quot;UCT5Cx1l4IS3wHkJXNyuj4TA&quot;</span>), <span class="dt">part=</span><span class="st">&quot;contentDetails&quot;</span>)
 
 <span class="co"># Uploaded playlists:</span>
 playlist_id &lt;-<span class="st"> </span>a$items[[<span class="dv">1</span>]]$contentDetails$relatedPlaylists$uploads
 
 <span class="co"># Get videos on the playlist</span>
-vids &lt;-<span class="st"> </span><span class="kw">get_playlist_items</span>(playlist_id) 
+vids &lt;-<span class="st"> </span><span class="kw">get_playlist_items</span>(<span class="dt">filter=</span> <span class="kw">c</span>(<span class="dt">playlist_id=</span>playlist_id)) 
 
 <span class="co"># Video ids</span>
 vid_ids &lt;-<span class="st"> </span><span class="kw">as.vector</span>(<span class="kw">unlist</span>(<span class="kw">sapply</span>(vids$items, <span class="st">&quot;[&quot;</span>, <span class="st">&quot;contentDetails&quot;</span>)))
@@ -238,93 +238,9 @@ for (i in vid_ids) {
     temp &lt;-<span class="st"> </span><span class="kw">get_stats</span>(i)
     temp$vid_id &lt;-<span class="st"> </span>i
     res  &lt;-<span class="st"> </span><span class="kw">rbind</span>(res, temp)
-}</code></pre></div>
-<pre><code>## No. of Views 707 
-## No. of Likes 3 
-## No. of Dislikes 1 
-## No. of Favorites 0 
-## No. of Comments 0 
-## No. of Views 689 
-## No. of Likes 0 
-## No. of Dislikes 0 
-## No. of Favorites 0 
-## No. of Comments 0 
-## No. of Views 456 
-## No. of Likes 1 
-## No. of Dislikes 0 
-## No. of Favorites 0 
-## No. of Comments 0 
-## No. of Views 381 
-## No. of Likes 0 
-## No. of Dislikes 0 
-## No. of Favorites 0 
-## No. of Comments 0 
-## No. of Views 174971 
-## No. of Likes 5 
-## No. of Dislikes 0 
-## No. of Favorites 0 
-## No. of Comments 0 
-## No. of Views 563 
-## No. of Likes 3 
-## No. of Dislikes 2 
-## No. of Favorites 0 
-## No. of Comments 3 
-## No. of Views 242816 
-## No. of Likes 12 
-## No. of Dislikes 0 
-## No. of Favorites 0 
-## No. of Comments 4 
-## No. of Views 994 
-## No. of Likes 0 
-## No. of Dislikes 0 
-## No. of Favorites 0 
-## No. of Comments 0 
-## No. of Views 291 
-## No. of Likes 1 
-## No. of Dislikes 0 
-## No. of Favorites 0 
-## No. of Comments 1 
-## No. of Views 95661 
-## No. of Likes 3 
-## No. of Dislikes 1 
-## No. of Favorites 0 
-## No. of Comments 0 
-## No. of Views 10889 
-## No. of Likes 17 
-## No. of Dislikes 9 
-## No. of Favorites 0 
-## No. of Comments 1 
-## No. of Views 76 
-## No. of Likes 0 
-## No. of Dislikes 0 
-## No. of Favorites 0 
-## No. of Comments 0 
-## No. of Views 672 
-## No. of Likes 0 
-## No. of Dislikes 0 
-## No. of Favorites 0 
-## No. of Comments 0 
-## No. of Views 3540 
-## No. of Likes 14 
-## No. of Dislikes 2 
-## No. of Favorites 0 
-## No. of Comments 5</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res</code></pre></div>
-<pre><code>##    viewCount likeCount dislikeCount favoriteCount commentCount      vid_id
-## 1        707         3            1             0            0 91gZ4taDiDE
-## 2        689         0            0             0            0 bHPCvSqTxn4
-## 3        456         1            0             0            0 h2UPH87kjhc
-## 4        381         0            0             0            0 E2VtxjljZCE
-## 5     174971         5            0             0            0 5Ajfk620fA0
-## 6        563         3            2             0            3 PdI3HjulcA4
-## 7     242816        12            0             0            4 IGUZAeLoGOU
-## 8        994         0            0             0            0 0L1HCWo7Py0
-## 9        291         1            0             0            1 IM6bGZ-Msf0
-## 10     95661         3            1             0            0 hfUnu9QQii4
-## 11     10889        17            9             0            1 aPyWkycj8TE
-## 12        76         0            0             0            0 g_q_MwpQTb0
-## 13       672         0            0             0            0 rryhpc7krCw
-## 14      3540        14            2             0            5 dRK64OVdfmo</code></pre>
+}
+
+res</code></pre></div>
 </div>
 </div>
 

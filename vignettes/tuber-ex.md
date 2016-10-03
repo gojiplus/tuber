@@ -1,7 +1,7 @@
 ---
 title: "Using tuber"
 author: "Gaurav Sood"
-date: "2016-10-02"
+date: "2016-10-03"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Using tuber}
@@ -212,13 +212,13 @@ res$items[[1]]$snippet$topLevelComment$snippet$textDisplay
 
 
 ```r
-a <- list_channel_resources(id = "UCT5Cx1l4IS3wHkJXNyuj4TA", part="contentDetails")
+a <- list_channel_resources(filter = c(channel_id = "UCT5Cx1l4IS3wHkJXNyuj4TA"), part="contentDetails")
 
 # Uploaded playlists:
 playlist_id <- a$items[[1]]$contentDetails$relatedPlaylists$uploads
 
 # Get videos on the playlist
-vids <- get_playlist_items(playlist_id) 
+vids <- get_playlist_items(filter= c(playlist_id=playlist_id)) 
 
 # Video ids
 vid_ids <- as.vector(unlist(sapply(vids$items, "[", "contentDetails")))
@@ -231,99 +231,6 @@ for (i in vid_ids) {
 	temp$vid_id <- i
 	res  <- rbind(res, temp)
 }
-```
 
-```
-## No. of Views 707 
-## No. of Likes 3 
-## No. of Dislikes 1 
-## No. of Favorites 0 
-## No. of Comments 0 
-## No. of Views 689 
-## No. of Likes 0 
-## No. of Dislikes 0 
-## No. of Favorites 0 
-## No. of Comments 0 
-## No. of Views 456 
-## No. of Likes 1 
-## No. of Dislikes 0 
-## No. of Favorites 0 
-## No. of Comments 0 
-## No. of Views 381 
-## No. of Likes 0 
-## No. of Dislikes 0 
-## No. of Favorites 0 
-## No. of Comments 0 
-## No. of Views 174971 
-## No. of Likes 5 
-## No. of Dislikes 0 
-## No. of Favorites 0 
-## No. of Comments 0 
-## No. of Views 563 
-## No. of Likes 3 
-## No. of Dislikes 2 
-## No. of Favorites 0 
-## No. of Comments 3 
-## No. of Views 242816 
-## No. of Likes 12 
-## No. of Dislikes 0 
-## No. of Favorites 0 
-## No. of Comments 4 
-## No. of Views 994 
-## No. of Likes 0 
-## No. of Dislikes 0 
-## No. of Favorites 0 
-## No. of Comments 0 
-## No. of Views 291 
-## No. of Likes 1 
-## No. of Dislikes 0 
-## No. of Favorites 0 
-## No. of Comments 1 
-## No. of Views 95661 
-## No. of Likes 3 
-## No. of Dislikes 1 
-## No. of Favorites 0 
-## No. of Comments 0 
-## No. of Views 10889 
-## No. of Likes 17 
-## No. of Dislikes 9 
-## No. of Favorites 0 
-## No. of Comments 1 
-## No. of Views 76 
-## No. of Likes 0 
-## No. of Dislikes 0 
-## No. of Favorites 0 
-## No. of Comments 0 
-## No. of Views 672 
-## No. of Likes 0 
-## No. of Dislikes 0 
-## No. of Favorites 0 
-## No. of Comments 0 
-## No. of Views 3540 
-## No. of Likes 14 
-## No. of Dislikes 2 
-## No. of Favorites 0 
-## No. of Comments 5
-```
-
-```r
 res
-```
-
-```
-##    viewCount likeCount dislikeCount favoriteCount commentCount      vid_id
-## 1        707         3            1             0            0 91gZ4taDiDE
-## 2        689         0            0             0            0 bHPCvSqTxn4
-## 3        456         1            0             0            0 h2UPH87kjhc
-## 4        381         0            0             0            0 E2VtxjljZCE
-## 5     174971         5            0             0            0 5Ajfk620fA0
-## 6        563         3            2             0            3 PdI3HjulcA4
-## 7     242816        12            0             0            4 IGUZAeLoGOU
-## 8        994         0            0             0            0 0L1HCWo7Py0
-## 9        291         1            0             0            1 IM6bGZ-Msf0
-## 10     95661         3            1             0            0 hfUnu9QQii4
-## 11     10889        17            9             0            1 aPyWkycj8TE
-## 12        76         0            0             0            0 g_q_MwpQTb0
-## 13       672         0            0             0            0 rryhpc7krCw
-## 14      3540        14            2             0            5 dRK64OVdfmo
 ```
