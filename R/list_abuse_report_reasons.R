@@ -27,7 +27,7 @@ list_abuse_report_reasons <- function (part = "id, snippet", hl = "en-US", ...) 
 
 	res <- tuber_GET("videoAbuseReportReasons", querylist, ...)
 
-	resdf <- data.frame()
+	resdf <- NULL
 
 	if (length(res$items) != 0) {
 		
