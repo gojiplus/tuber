@@ -2,7 +2,7 @@
 
 export(get_captions)
 export(get_channel_stats)
-export(get_comments)
+export(get_comment_threads)
 export(get_playlist_items)
 export(get_playlists)
 export(get_related_videos)

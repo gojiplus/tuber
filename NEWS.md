@@ -2,6 +2,7 @@
 
 * Filtering by different facets is now supported. This is via passing a named vector.
 * Added a function to list_channel_videos
+* Added a function to get comment threads
 * Added to the vignette an example of how to get stats of all videos of a channel.
 
 # version .3 2016-08-04

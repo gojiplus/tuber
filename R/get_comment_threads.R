@@ -1,5 +1,13 @@
-#' Get Comments On a Video
+#' Get Comments Threads
 #'
+#' @param filter string; Required.
+#' named vector of length 1
+#' potential names of the entry in the vector: 
+#' \code{video_id}: video ID.
+#' \code{channel_id}: channel ID.
+#' \code{thread_id}: comma-separated list of comment thread IDs
+#' \code{threads_related_to_channel}: channel ID.
+#'  
 #' @param part  Comment resource requested. Required. Comma separated list of one or more of the 
 #' following: \code{id, snippet}. e.g., "id, snippet", "id" Default: \code{snippet}.  
 #' @param video_id ID of the video. Required. Data Type: Character. 
@@ -15,19 +23,27 @@
 #' that contains the actual comment.
 #'  
 #' @export
-#' @references \url{https://developers.google.com/youtube/v3/docs/comments/list}
+#' @references \url{https://developers.google.com/youtube/v3/docs/commentThreads/list}
+#' 
 #' @examples
 #' \dontrun{
-#' get_comments(video_id="N708P-A45D0")
+#' get_comment_threads(filter = c(video_id="N708P-A45D0"))
 #' }
 
-get_comments <- function (part="snippet", video_id=NULL, text_format="html", simplify=TRUE, max_results=100, page_token = NULL, ...) {
+get_comment_threads <- function (filter=NULL, part="snippet", text_format="html", simplify=TRUE, max_results=100, page_token = NULL, ...) {
 
-	if (is.null(video_id)) stop("Must specify a video ID")
 	if (max_results < 20 | max_results > 100) stop("max_results only takes a value between 20 and 100")
 	if (text_format != "html" & text_format !="plainText") stop("Provide a legitimate value of textFormat.")
 
-	querylist <- list(part=part, videoId = video_id, maxResults=max_results, textFormat=text_format)
+	if (!(names(filter) %in% c("video_id", "channel_id", "thread_id", "threads_related_to_channel"))) stop("filter can only take one of values: channel_id, video_id, parent_id, threads_related_to_channel.")
+	if ( length(filter) != 1) stop("filter must be a vector of length 1.")
+
+	translate_filter   <- c(video_id = 'videoId', thread_id ='id', threads_related_to_channel = 'allThreadsRelatedToChannelId', channel_id = 'channelId')
+	yt_filter_name     <- as.vector(translate_filter[match(names(filter), names(translate_filter))])
+	names(filter)      <- yt_filter_name
+
+	querylist <- list(part=part, maxResults=max_results, textFormat=text_format)
+	querylist <- c(querylist, filter)
 
 	res <- tuber_GET("commentThreads", querylist, ...)
 	
