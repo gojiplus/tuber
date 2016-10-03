@@ -4,11 +4,15 @@
 \alias{get_playlist_items}
 \title{Get Playlist Items}
 \usage{
-get_playlist_items(playlist_id = NULL, part = "contentDetails",
+get_playlist_items(filter = NULL, part = "contentDetails",
   max_results = 50, video_id = NULL, page_token = NULL, ...)
 }
 \arguments{
-\item{playlist_id}{ID of the playlist}
+\item{filter}{string; Required.
+named vector of length 1
+potential names of the entry in the vector: 
+\code{item_id}: comma-separated list of one or more unique playlist item IDs.
+\code{playlist_id}: YouTube playlist ID.}
 
 \item{part}{Required. Comma separated string including one or more of the following: \code{contentDetails, id, snippet, status}. Default: \code{contentDetails}.}
 
@@ -28,7 +32,7 @@ Get Playlist Items
 }
 \examples{
 \dontrun{
-get_playlist_items(playlist_id="PLrEnWoR732-CN09YykVof2lxdI3MLOZda")
+get_playlist_items(filter= c(playlist_id="PLrEnWoR732-CN09YykVof2lxdI3MLOZda"))
 }
 }
 \references{

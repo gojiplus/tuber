@@ -1,6 +1,11 @@
 #' Get Playlist Items
 #' 
-#' @param playlist_id ID of the playlist
+#' @param filter string; Required.
+#' named vector of length 1
+#' potential names of the entry in the vector: 
+#' \code{item_id}: comma-separated list of one or more unique playlist item IDs.
+#' \code{playlist_id}: YouTube playlist ID.
+#' 
 #' @param part Required. Comma separated string including one or more of the following: \code{contentDetails, id, snippet, status}. Default: \code{contentDetails}.
 #' @param max_results Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.
 #' @param page_token specific page in the result set that should be returned, optional
@@ -10,18 +15,25 @@
 #' @return captions for the video from one of the first track
 #' @export
 #' @references \url{https://developers.google.com/youtube/v3/docs/playlists/list}
+#' 
 #' @examples
 #' \dontrun{
-#' get_playlist_items(playlist_id="PLrEnWoR732-CN09YykVof2lxdI3MLOZda")
+#' get_playlist_items(filter= c(playlist_id="PLrEnWoR732-CN09YykVof2lxdI3MLOZda"))
 #' }
 
-get_playlist_items <- function (playlist_id = NULL, part="contentDetails", max_results=50, video_id = NULL, page_token = NULL, ...) {
+get_playlist_items <- function (filter = NULL, part="contentDetails", max_results=50, video_id = NULL, page_token = NULL, ...) {
 
 	if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50")
-
-	yt_check_token()
 	
-	querylist <- list(playlistId = playlist_id, part=part, maxResults = max_results, pageToken = page_token, videoId = video_id)
+	if (!(names(filter) %in% c("channel_id", "playlist_id"))) stop("filter can only take one of values: channel_id, playlist_id.")
+	if ( length(filter) != 1) stop("filter must be a vector of length 1.")
+
+	translate_filter   <- c(item_id = 'id', playlist_id ='playlistId')
+	yt_filter_name     <- as.vector(translate_filter[match(names(filter), names(translate_filter))])
+	names(filter)      <- yt_filter_name
+
+	querylist <- list(part=part, maxResults = max_results, pageToken = page_token, videoId = video_id)
+	querylist <- c(querylist, filter)
 
 	res <- tuber_GET("playlistItems", querylist, ...)
  
