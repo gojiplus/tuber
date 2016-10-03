@@ -4,11 +4,15 @@
 \alias{get_playlists}
 \title{Get Playlists}
 \usage{
-get_playlists(channel_id = NULL, part = "contentDetails",
-  max_results = 50, hl = NULL, page_token = NULL, ...)
+get_playlists(filter = NULL, part = "contentDetails", max_results = 50,
+  hl = NULL, page_token = NULL, ...)
 }
 \arguments{
-\item{channel_id}{Character. ID of the channel}
+\item{filter}{string; Required.
+named vector of length 1
+potential names of the entry in the vector: 
+\code{channel_id}: ID of the channel
+\code{playlist_id}: YouTube playlist ID.}
 
 \item{part}{Required. One of the following: \code{contentDetails, id, localizations, player, snippet, status}. Default: \code{contentDetails}.}
 
@@ -28,7 +32,7 @@ Get Playlists
 }
 \examples{
 \dontrun{
-get_playlists(channel_id="UChTJTbr5kf3hYazJZO-euHg")
+get_playlists(filter=c(channel_id="UChTJTbr5kf3hYazJZO-euHg"))
 }
 }
 \references{
