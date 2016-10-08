@@ -9,19 +9,19 @@ yt_search(term = NULL, max_results = 50, channel_id = NULL,
   location = NULL, location_radius = NULL, published_after = NULL,
   published_before = NULL, video_definition = "any",
   video_caption = "any", video_license = "any", video_syndicated = "any",
-  video_type = "any", ...)
+  video_type = "any", simplify = TRUE, ...)
 }
 \arguments{
 \item{term}{Character. Search term; required; no default}
 
 \item{max_results}{Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.
-Search results are constrained to a maximum of 500 videos if type is video and we have a value of ChannelId.}
+Search results are constrained to a maximum of 500 videos if type is video and we have a value of \code{channel_id}.}
 
 \item{channel_id}{Character. Only return search results from this channel; Optional.}
 
 \item{channel_type}{Character. Optional. Takes one of two values: 'any' or 'show'. Default is 'any'}
 
-\item{type}{Character. Optional. Takes one of three values: 'video', 'channel', or 'playlist'}
+\item{type}{Character. Optional. Takes one of three values: 'video', 'channel', or 'playlist'. Default is 'video'.}
 
 \item{event_type}{Character. Optional. Takes one of three values: `completed', 'live' or 'upcoming'}
 
@@ -44,11 +44,12 @@ license), 'youtube' (return videos with standard YouTube license).}
 
 \item{video_type}{Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'episode' (return episode of shows), 'movie' (return movies)}
 
+\item{simplify}{Boolean. Return a data.frame if TRUE. Default is TRUE. If FALSE, it returns a list that carries additional information.}
+
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-data.frame with 13 elements - kind, etag, id.kind, id.videoId, snippet.publishedAt, snippet.channelId, snippet.title, snippet.description, 
-snippet.thumbnails.default.url, snippet.thumbnails.medium.url, snippet.thumbnails.high.url, snippet.channelTitle, snippet.liveBroadcastContent
+data.frame with 7 elements: publishedAt, channelId, title, description, thumbnails, channelTitle, liveBroadcastContent
 }
 \description{
 Search for videos, channels and playlists. (By default, the function searches for videos.)
