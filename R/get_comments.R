@@ -35,23 +35,33 @@ get_comments <- function (filter=NULL, part="snippet", text_format="html", simpl
 	if (!(names(filter) %in% c("parent_id", "comment_id"))) stop("filter can only take one of values: comment_id, parent_id.")
 	if ( length(filter) != 1) stop("filter must be a vector of length 1.")
 
-	translate_filter   <- c(parent_id ='parentId', comment_id = 'id')
+	translate_filter   <- c('parent_id' ='parentId', 'comment_id' = 'id')
 	yt_filter_name     <- as.vector(translate_filter[match(names(filter), names(translate_filter))])
 	names(filter)      <- yt_filter_name
 
 	querylist <- list(part=part, maxResults=max_results, textFormat=text_format)
 	querylist <- c(querylist, filter)
 
-	res <- tuber_GET("comments", querylist, ...)
-	
-	if (simplify==TRUE & part=="snippet") {
+	raw_res <- tuber_GET("comments", querylist, ...)
+
+	if (length(raw_res$items) ==0) { 
+    	cat("No comment information available. Likely cause: Incorrect ID. \n")
+    	return(list())
+    }
+
+	res     <- raw_res$items[[1]]$snippet
+
+	if (simplify==TRUE & part=="snippet" & is.null(filter[["id"]])) {
 		simple_res  <- lapply(res$items, function(x) x$snippet$topLevelComment$snippet)
 		simpler_res <- as.data.frame(do.call(rbind, simple_res))
-
 		return(simpler_res)
+
+	} else if(simplify==TRUE & part=="snippet" & !is.null(filter[["id"]])) {
+
+		return(as.data.frame(res))
 	}
 
-	res
+	raw_res
 
 }
 
