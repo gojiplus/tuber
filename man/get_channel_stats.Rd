@@ -12,7 +12,10 @@ get_channel_stats(channel_id = NULL, ...)
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-list with 5 elements: viewCount, likeCount, dislikeCount, favoriteCount, commentCount
+nested named list with top element names:
+kind, etag, id, snippet (list of details of the channel including title), statistics (list of 5)
+
+If the channel_id is mistyped or there is no information, an empty list is returned
 }
 \description{
 Get statistics of a Channel
