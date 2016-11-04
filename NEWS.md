@@ -1,3 +1,8 @@
+# version 0.6.0 
+
+* video_id is returned as part of the list for get_stats, get_video_details
+* handles errors stemming from bad video id for get_stats, get_video_details
+
 # version 0.5.0
 
 * Added contributor code of conduct

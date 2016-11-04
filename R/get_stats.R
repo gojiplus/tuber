@@ -24,7 +24,7 @@ get_stats <- function (video_id=NULL, ...) {
     	return(list())
     }
 
-    res     <- raw_res$items[[1]]
+    res      <- raw_res$items[[1]]
     stat_res <- res$statistics 
 
 	cat('No. of Views', stat_res$viewCount, "\n")
