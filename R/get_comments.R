@@ -29,6 +29,7 @@
 #' @examples
 #' \dontrun{
 #' get_comments(filter = c(comment_id="z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk"))
+#' get_comments(filter = c(comment_id="z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk,z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk"))
 #' }
 
 get_comments <- function (filter = NULL, part = "snippet", text_format = "html", simplify = TRUE, max_results = 100, page_token = NULL, ...) {
