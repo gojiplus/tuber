@@ -3,7 +3,7 @@
 #' @param video_id Character. Id of the video. Required.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
-#' @return list with 5 elements: viewCount, likeCount, dislikeCount, favoriteCount, commentCount
+#' @return list with 6 elements: id, viewCount, likeCount, dislikeCount, favoriteCount, commentCount
 #' @export
 #' @references \url{https://developers.google.com/youtube/v3/docs/videos/list#parameters}
 #' @examples
@@ -17,14 +17,21 @@ get_stats <- function (video_id=NULL, ...) {
 	
 	querylist <- list(part="statistics", id = video_id)
     
-    res <- tuber_GET("videos", querylist, ...)
-    res <- res$items[[1]]$statistics
+    raw_res <- tuber_GET("videos", querylist, ...)
 
-	cat('No. of Views', res$viewCount, "\n")
-	cat('No. of Likes', res$likeCount, "\n")
-	cat('No. of Dislikes', res$dislikeCount, "\n")
-	cat('No. of Favorites', res$favoriteCount, "\n")
-	cat('No. of Comments', res$commentCount, "\n")
+    if (length(raw_res$items) ==0) { 
+    	cat("No statistics for this video are available. Likely cause: Incorrect ID. \n")
+    	return(list())
+    }
+
+    res     <- raw_res$items[[1]]
+    stat_res <- res$statistics 
+
+	cat('No. of Views', stat_res$viewCount, "\n")
+	cat('No. of Likes', stat_res$likeCount, "\n")
+	cat('No. of Dislikes', stat_res$dislikeCount, "\n")
+	cat('No. of Favorites', stat_res$favoriteCount, "\n")
+	cat('No. of Comments', stat_res$commentCount, "\n")
  
-	return(invisible(res))
+	return(invisible(c(id=res$id, stat_res)))
 }
