@@ -2,6 +2,7 @@
 
 * video_id is returned as part of the list for get_stats, get_video_details
 * handles errors stemming from bad video id for get_stats, get_video_details
+* fixed bug in get_comment that delivers separate results for diff. filters, error handling for bad comment_id, and now comment_id returned as part of df 
 
 # version 0.5.0
 

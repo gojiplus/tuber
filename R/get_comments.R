@@ -18,6 +18,10 @@
 #' Nested named list. The entry \code{items} is a list of comments along with meta information. 
 #' Within each of the \code{items} is an item \code{snippet} which has an item \code{topLevelComment$snippet$textDisplay}
 #' that contains the actual comment.
+#' 
+#' When filter is comment_id, and simplify is TRUE, and there is a correct comment id, it returns a data.frame with 
+#' following cols:  id, authorDisplayName, authorProfileImageUrl, authorChannelUrl, value, textDisplay, canRate, viewerRating, likeCount
+#' publishedAt, updatedAt
 #'  
 #' @export
 #' @references \url{https://developers.google.com/youtube/v3/docs/comments/list}
@@ -46,6 +50,7 @@ get_comments <- function (filter=NULL, part="snippet", text_format="html", simpl
 
 	if (length(raw_res$items) ==0) { 
     	cat("No comment information available. Likely cause: Incorrect ID. \n")
+    	if (simplify == TRUE) return(data.frame())
     	return(list())
     }
 
@@ -57,7 +62,7 @@ get_comments <- function (filter=NULL, part="snippet", text_format="html", simpl
 		return(simpler_res)
 
 	} else if(simplify==TRUE & part=="snippet" & !is.null(filter[["id"]])) {
-
+		res <- c(id = raw_res$items[[1]]$id, res)
 		return(as.data.frame(res))
 	}
 

@@ -11,7 +11,7 @@
 #' get_channel_stats(channel_id="UChTJTbr5kf3hYazJZO-euHg")
 #' }
 
-get_channel_stats <- function (channel_id=NULL, ...) {
+get_channel_stats <- function (channel_id = NULL, ...) {
 
 	if (is.null(channel_id)) stop("Must specify a channel ID")
 
