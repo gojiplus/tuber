@@ -28,7 +28,7 @@ list_channel_videos <- function (channel_id=NULL, max_results = 50, ...)
 	playlist_id <- res$items[[1]]$contentDetails$relatedPlaylists$uploads
 
 	# Get videos on the playlist
-	vids <- get_playlist_items(playlist_id) 
+	vids <- get_playlist_items(filter= c(playlist_id=playlist_id)) 
 
 	# Video ids
 	vid_ids <- as.vector(unlist(sapply(vids$items, "[", "contentDetails")))

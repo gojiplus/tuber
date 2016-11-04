@@ -8,7 +8,7 @@
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
 #' @export
-#' @references \url{https://developers.google.com/youtube/v3/}
+#' @references \url{https://www.googleapis.com/youtube/v3/videos}
 #' @examples
 #' \dontrun{
 #' get_video_details(video_id="yJXTXN4xrI8")
