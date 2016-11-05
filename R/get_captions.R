@@ -39,7 +39,7 @@ get_captions <- function (video_id=NULL, lang="en", id = NULL, ...) {
     		return(list())
     	}
 
-		return(captions)
+		return(raw_res)
 	}
 
 	req

@@ -27,6 +27,7 @@ information.
 \examples{
 \dontrun{
 get_captions(video_id="yJXTXN4xrI8")
+get_captions(id="y3ElXcEME3lSISz6izkWVT5GvxjPu8pA")
 }
 }
 
