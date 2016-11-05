@@ -24,6 +24,6 @@ get_video_details(video_id="yJXTXN4xrI8")
 }
 }
 \references{
-\url{https://www.googleapis.com/youtube/v3/videos}
+\url{https://developers.google.com/youtube/v3/docs/videos/list}
 }
 

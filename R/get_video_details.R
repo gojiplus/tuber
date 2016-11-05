@@ -10,7 +10,7 @@
 #' 
 #' @export
 
-#' @references \url{https://www.googleapis.com/youtube/v3/videos}
+#' @references \url{https://developers.google.com/youtube/v3/docs/videos/list}
 
 #' @examples
 #' \dontrun{
