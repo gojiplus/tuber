@@ -4,8 +4,11 @@
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
 #' @return list with 6 elements: id, viewCount, likeCount, dislikeCount, favoriteCount, commentCount
+#'
 #' @export
+#' 
 #' @references \url{https://developers.google.com/youtube/v3/docs/videos/list#parameters}
+#' 
 #' @examples
 #' \dontrun{
 #' get_stats(video_id="N708P-A45D0")

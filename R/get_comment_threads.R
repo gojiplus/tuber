@@ -47,7 +47,7 @@ get_comment_threads <- function (filter=NULL, part="snippet", text_format="html"
 	res <- tuber_GET("commentThreads", querylist, ...)
 	
 	if (simplify==TRUE & part=="snippet") {
-		simple_res  <- lapply(res$items, function(x) x$snippet$topLevelComment$snippet)
+		simple_res  <- lapply(res$items, function(x) unlist(x$snippet$topLevelComment$snippet))
 		simpler_res <- as.data.frame(do.call(rbind, simple_res))
 
 		return(simpler_res)
