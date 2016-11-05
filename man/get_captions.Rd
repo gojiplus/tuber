@@ -4,33 +4,29 @@
 \alias{get_captions}
 \title{Get Captions of a Video}
 \usage{
-get_captions(part = "snippet", video_id = NULL, lang = "en", id = NULL,
-  ...)
+get_captions(video_id = NULL, lang = "en", id = NULL, ...)
 }
 \arguments{
-\item{part}{Caption resource requested. Required. Comma separated list of one or more of the 
-following: \code{id, snippet}. e.g., "id, snippet", "id" Default: \code{snippet}.}
-
 \item{video_id}{ID of the video whose captions are requested. Required. No default.}
 
 \item{lang}{Language of the caption; required; default is english ("en")}
 
-\item{id}{comma-separated list of IDs that identify the caption resources that should be retrieved; optional; string}
+\item{id}{String. id of the caption track that is being retrieved}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-captions for the video from one of the first track
+String.
 }
 \description{
-Get Captions of a Video
+A few of Youtube videos have caption tracks available from an older 
+YouTube API. If that caption track is available, this function returns that,
+Or it returns caption track specified by id resource. Check \code{\link{list_caption_tracks}} for more
+information.
 }
 \examples{
 \dontrun{
 get_captions(video_id="yJXTXN4xrI8")
 }
-}
-\references{
-\url{https://developers.google.com/youtube/v3/docs/captions/list}
 }
 

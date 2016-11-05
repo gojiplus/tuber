@@ -10,7 +10,7 @@
 #' 
 #' @return list of caption tracks. When simplify is TRUE, a data.frame is returned with 
 #' following columns: videoId, lastUpdated, trackKind, language, name, audioTrackType, isCC,
-#' isLarge, isEasyReader, isDraft, isAutoSynced, status
+#' isLarge, isEasyReader, isDraft, isAutoSynced, status, id (caption id)
 #' 
 #' @export
 #' 
@@ -34,7 +34,8 @@ list_caption_tracks <- function (part="snippet", video_id=NULL, lang="en", id = 
     }
 
     if (simplify == TRUE & part=="snippet") {
-    	res_df <- 	do.call(rbind, lapply(raw_res$items, function(x) unlist(x$snippet)))
+    	res_df 	  <- as.data.frame(do.call(rbind, lapply(raw_res$items, function(x) unlist(x$snippet))))
+    	res_df$id <- sapply(raw_res$items, function(x) unlist(x$id))
     	return(res_df)
     }
 

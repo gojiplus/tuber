@@ -4,7 +4,7 @@
 * handles errors stemming from bad video id for get_stats, get_video_details
 * fixed bug in get_comment that delivers separate results for diff. filters, error handling for bad comment_id, and now comment_id returned as part of df 
 * better returns when simplify is TRUE for get_related_videos, get_comment_threads
-* list_captions function added
+* list_caption_tracks function added. updated get_captions to only return caption related to a particular caption_id or video_id 
 
 # version 0.5.0
 
