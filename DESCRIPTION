@@ -19,5 +19,6 @@ VignetteBuilder: knitr
 Suggests:
     knitr (>= 1.11),
     testthat,
-    rmarkdown
+    rmarkdown,
+    xml2
 RoxygenNote: 5.0.1

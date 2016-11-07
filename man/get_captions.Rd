@@ -4,12 +4,10 @@
 \alias{get_captions}
 \title{Get Captions of a Video}
 \usage{
-get_captions(video_id = NULL, lang = "en", id = NULL, ...)
+get_captions(video_id = NULL, id = NULL, ...)
 }
 \arguments{
 \item{video_id}{ID of the video whose captions are requested. Required. No default.}
-
-\item{lang}{Language of the caption; required; default is english ("en")}
 
 \item{id}{String. id of the caption track that is being retrieved}
 
