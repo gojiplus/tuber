@@ -6,6 +6,7 @@
 #' information.
 #' 
 #' @param video_id ID of the video whose captions are requested. Required. No default.
+#' @param lang  Language of the caption; required; default is english ("en")
 #' @param id    String. id of the caption track that is being retrieved
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
@@ -19,7 +20,7 @@
 #' get_captions(id="y3ElXcEME3lSISz6izkWVT5GvxjPu8pA")
 #' }
 
-get_captions <- function (video_id=NULL, id = NULL, ...) {
+get_captions <- function (video_id=NULL, lang = "en", id = NULL, ...) {
 
 	if (!is.character(video_id) & !is.character(id)) stop("Must specify a video_id or id.")
 
