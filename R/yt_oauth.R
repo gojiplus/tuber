@@ -1,17 +1,19 @@
 #' Set up Authorization
 #'
-#' The function looks for .httr-oauth in the working directory. If it doesn't find it, it expects an application ID and a secret.
-#' If you want to remove the existing .httr-oauth, set remove_old_oauth to TRUE. By default, it is set to FALSE.
+#' The function looks for \code{.httr-oauth} in the working directory. If it doesn't find it, it expects an application ID and a secret.
+#' If you want to remove the existing \code{.httr-oauth}, set remove_old_oauth to TRUE. By default, it is set to FALSE.
 #' The function launches a browser to allow you to authorize the application 
 #' 
 #' @param app_id client id; required; no default
 #' @param app_secret client secret; required; no default
-#' @param scope "ssl" or "basic"; required; default is ssl. The scopes are largely exchangeable but ssl yields extra authorizations that come in handy. 
-#' @param token path to file containing the token. If a path is given, the function will first try to read from it. Default is \code{.httr-oauth} in the local directory.
+#' @param scope Character. \code{ssl}, \code{basic}, \code{own_account_readonly}, \code{upload_and_manage_own_videos} and \code{partner_audit}. 
+#' Required. \code{ssl} and \code{basic} are basically interchangeable. Default is \code{ssl}.
+#' @param token path to file containing the token. If a path is given, the function will first try to read from it. 
+#' Default is \code{.httr-oauth} in the local directory.
 #' So if there is such a file, the function will first try to read from it.
 #' @param \dots Additional arguments passed to \code{\link{oauth2.0_token}}
 #' 
-#' @return sets the google_token option and also saves .httr_auth in the working directory (find out the working directory via getwd())
+#' @return sets the google_token option and also saves \code{.httr_oauth} in the working directory (find out the working directory via \code{getwd()})
 #' 
 #' @export
 #' 
@@ -39,14 +41,22 @@ yt_oauth <- function (app_id=NULL, app_secret=NULL, scope="ssl", token = '.httr-
 	
 		myapp <- oauth_app("google", key = app_id, secret = app_secret)
 
-		if (scope=="ssl") {
+		if (scope == "ssl") {
 	
 			google_token <- oauth2.0_token(oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtube.force-ssl", ...)
 			
-		} else if (scope=="basic") {
+		} else if (scope == "basic") {
 	
 			google_token <- oauth2.0_token( oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtube", ...)
 
+		} else if (scope == "own_account_readonly") {
+			google_token <- oauth2.0_token( oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtube.readonly", ...)
+		
+		} else if (scope == "upload_and_manage_own_videos") {
+			google_token <- oauth2.0_token( oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtube.upload", ...)
+		
+		} else if (scope == "partner_audit") {
+			google_token <- oauth2.0_token( oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtubepartner-channel-audit", ...)
 		}
 	}
 	
