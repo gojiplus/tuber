@@ -25,6 +25,9 @@ List reasons that can be used to report abusive videos
 }
 \examples{
 \dontrun{
+
+# Set API token via yt_oauth() first
+
 list_abuse_report_reasons()
 list_abuse_report_reasons(part="id")
 list_abuse_report_reasons(part="snippet")

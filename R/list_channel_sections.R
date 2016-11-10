@@ -18,6 +18,9 @@
 #' @examples
 #' 
 #' \dontrun{
+#' 
+#' # Set API token via yt_oauth() first
+#' 
 #' list_channel_sections(c(channel_id="UCRw8bIz2wMLmfgAgWm903cA"))
 #' }
 

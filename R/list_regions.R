@@ -9,6 +9,9 @@
 #' @references \url{https://developers.google.com/youtube/v3/docs/i18nRegions/list}
 #' @examples
 #' \dontrun{
+#' 
+#' # Set API token via yt_oauth() first
+#' 
 #' list_regions()
 #' }
 

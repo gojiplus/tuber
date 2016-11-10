@@ -18,6 +18,9 @@
 #' 
 #' @examples
 #' \dontrun{
+#' 
+#' # Set API token via yt_oauth() first
+#' 
 #' list_guidecats(c(region_code = "JP"))
 #' }
 

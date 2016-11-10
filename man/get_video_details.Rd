@@ -20,6 +20,9 @@ Get details such as when the video was published, the title, description, thumbn
 }
 \examples{
 \dontrun{
+
+# Set API token via yt_oauth() first
+
 get_video_details(video_id="yJXTXN4xrI8")
 }
 }

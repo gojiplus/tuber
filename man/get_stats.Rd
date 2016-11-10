@@ -19,6 +19,9 @@ Get statistics of a Video
 }
 \examples{
 \dontrun{
+
+# Set API token via yt_oauth() first
+
 get_stats(video_id="N708P-A45D0")
 }
 }

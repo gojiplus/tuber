@@ -8,6 +8,9 @@
 #' @export
 #' @examples
 #'  \dontrun{
+#' 
+#' # Set API token via yt_oauth() first
+#' 
 #' yt_topic_search(topic="Barack Obama")
 #' }
 

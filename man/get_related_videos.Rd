@@ -27,6 +27,9 @@ Takes a video id and returns related videos
 }
 \examples{
 \dontrun{
+
+# Set API token via yt_oauth() first
+
 get_related_videos(video_id="yJXTXN4xrI8")
 }
 }

@@ -14,6 +14,9 @@
 #' 
 #' @examples
 #' \dontrun{
+#' 
+#' # Set API token via yt_oauth() first
+#' 
 #' list_videocats(c(region_code = "JP"))
 #' }
 

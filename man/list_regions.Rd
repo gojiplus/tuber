@@ -19,6 +19,9 @@ List Content Regions That Youtube Currently Supports
 }
 \examples{
 \dontrun{
+
+# Set API token via yt_oauth() first
+
 list_regions()
 }
 }

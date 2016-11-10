@@ -18,6 +18,9 @@
 #' 
 #' @examples
 #' \dontrun{
+#' 
+#' # Set API token via yt_oauth() first
+#' 
 #' get_playlist_items(filter= c(playlist_id="PLrEnWoR732-CN09YykVof2lxdI3MLOZda"))
 #' }
 

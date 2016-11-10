@@ -28,6 +28,9 @@
 #' 
 #' @examples
 #' \dontrun{
+#' 
+#' # Set API token via yt_oauth() first
+#' 
 #' get_comments(filter = c(comment_id="z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk"))
 #' get_comments(filter = 
 #' c(comment_id="z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk, z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk"))

@@ -16,6 +16,9 @@
 #' @references \url{https://developers.google.com/youtube/v3/docs/videoAbuseReportReasons/list}
 #' @examples
 #' \dontrun{
+#' 
+#' # Set API token via yt_oauth() first
+#' 
 #' list_abuse_report_reasons()
 #' list_abuse_report_reasons(part="id")
 #' list_abuse_report_reasons(part="snippet")

@@ -25,6 +25,9 @@ Get List of categories that can be associated with YouTube channels
 }
 \examples{
 \dontrun{
+
+# Set API token via yt_oauth() first
+
 list_guidecats(c(region_code = "JP"))
 }
 }

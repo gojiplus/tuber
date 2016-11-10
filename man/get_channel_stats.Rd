@@ -22,6 +22,9 @@ Get statistics of a Channel
 }
 \examples{
 \dontrun{
+
+# Set API token via yt_oauth() first
+
 get_channel_stats(channel_id="UChTJTbr5kf3hYazJZO-euHg")
 }
 }

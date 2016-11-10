@@ -31,6 +31,9 @@ Get Captions of a Video
 }
 \examples{
 \dontrun{
+
+# Set API token via yt_oauth() first
+
 list_caption_tracks(video_id="yJXTXN4xrI8")
 }
 }

@@ -26,6 +26,9 @@
 #' 
 #' @examples
 #' \dontrun{
+#' 
+#' # Set API token via yt_oauth() first
+#' 
 #' get_comment_threads(filter = c(video_id="N708P-A45D0"))
 #' }
 

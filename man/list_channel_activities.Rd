@@ -36,6 +36,9 @@ Returns a list of channel events that match the request criteria.
 }
 \examples{
 \dontrun{
+
+# Set API token via yt_oauth() first
+
 list_channel_activities(filter = c(channel_id="UCRw8bIz2wMLmfgAgWm903cA"))
 list_channel_activities(filter = c(channel_id="UCRw8bIz2wMLmfgAgWm903cA", regionCode="US"))
 }

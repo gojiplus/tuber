@@ -16,6 +16,9 @@
 #' @references \url{https://developers.google.com/youtube/v3/docs/search/list}
 #' @examples
 #' \dontrun{
+#' 
+#' # Set API token via yt_oauth() first
+#' 
 #' list_videos()
 #' }
 

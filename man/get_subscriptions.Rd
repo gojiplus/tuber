@@ -36,6 +36,9 @@ Get Subscriptions
 }
 \examples{
 \dontrun{
+
+# Set API token via yt_oauth() first
+
 get_subscriptions(filter=c(channel_id="UChTJTbr5kf3hYazJZO-euHg"))
 }
 }
