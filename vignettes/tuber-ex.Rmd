@@ -68,7 +68,7 @@ get_stats(video_id="N708P-A45D0")
 
 
 ```{r, eval=FALSE, getdetails}
-get_details(video_id="N708P-A45D0")
+get_video_details(video_id="N708P-A45D0")
 ```
 
 #### Get Caption of a Video
@@ -179,23 +179,35 @@ get_captions(video_id="yJXTXN4xrI8")
 #### Search Videos
 
 ```{r, eval=FALSE, searchvids}
-yt_search("Barack Obama")
+res <- yt_search("Barack Obama")
+head(res[, 1:3])
 ```
 
 ```
-## Total Results 1000000
+##                publishedAt                channelId                                                                           title
+## 1 2016-09-06T11:20:20.000Z UC6CZwQv8cbZco3wOwtp7W2g             See How Obama Ignored Xi Jinping & Welcomed PM Modi At G20 Summit !
+## 2 2016-09-05T06:01:17.000Z UC6RJ7-PaXg6TIH2BzZfTV7w                                   PM Modi Meets Barack Obama at G20 Summit 2016
+## 3 2008-03-24T16:31:53.000Z UC4o-h3-3GhrmHB6ytgO3oIQ                                      Top 20 Obama Pastor Comments You Never Saw
+## 4 2016-09-03T06:43:38.000Z UC5aeU5hk31cLzq_sAExLVWg                                     LIVE: Obama arrives in China for G20 summit
+## 5 2016-09-20T01:30:42.000Z UCmWHDwXFvdKc8OVBbb2dMZg Buy Lot of 20 Obama, 44th U.S. President, 56th Presidential Inauguration coins!
+## 6 2016-09-03T06:57:05.000Z UCgrNz-aDmcr2uuto8_DL2jg                           US President Obama arrives in Hangzhou for G20 Summit
 ```
 
 #### Get Comments on a video
 
 ```{r, eval=FALSE, get_comments}
-res <- get_comments(video_id="N708P-A45D0")
-# First comment
-res$items[[1]]$snippet$topLevelComment$snippet$textDisplay
+res <- get_comment_threads(c(video_id="N708P-A45D0"))
+head(res)
 ```
 
 ```
-## Hillary Clinton is a corporate puppet, a flip-flopper, and a robotic establishment politician. She also constantly plays the card of vote for me because I have a vagina. She has received lots of money from wall street and corporations that own her. She was against  gay marriage, for the Iraq war, for the Patriot Act, undecided on the Keystone Pipeline for a long time(that should be a no brainier if you are truly an environmentalist), and is currently against Glass-Steagall. She is a mediocre liberal that tries to put on a progressive mask through vague messages. She is a phony crook that as Sanders said, talks the talk but doesn&#39;t walk the walk. She is the embodiment of politics as usual were money controls government. From her you should only expect at most a speck of progressivism. <br /><br />That is why you shouldn&#39;t vote for Clinton.﻿
+##    authorDisplayName                                                                              authorProfileImageUrl                                        authorChannelUrl
+## 1             Tony Rx https://lh5.googleusercontent.com/-OL_t2gRZ8RI/AAAAAAAAAAI/AAAAAAAAACg/tXnqTDNYXec/photo.jpg?sz=50 http://www.youtube.com/channel/UCqKvEBPMtbmh020d56WrQXQ
+## 2       Kevin Manning https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50 http://www.youtube.com/channel/UCEF-WytcLvgijQIklAbteUw
+## 3       Kevin Manning https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50 http://www.youtube.com/channel/UCEF-WytcLvgijQIklAbteUw
+## 4 TheDrunkenRocketMan https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50 http://www.youtube.com/channel/UCvTypSrsihX3fr2zCZivmwA
+## 5          pangratata https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50 http://www.youtube.com/channel/UCETB8ILZueyFMCFWMF0p3Yg
+## 6          pangratata https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50 http://www.youtube.com/channel/UCETB8ILZueyFMCFWMF0p3Yg
 ```
 
 ### Get statistics of all the videos in a channel
@@ -222,5 +234,15 @@ for (i in vid_ids) {
 	res  <- rbind(res, temp)
 }
 
-res
+head(res)
+```
+
+```
+##            id viewCount likeCount dislikeCount favoriteCount commentCount      vid_id
+## 1 91gZ4taDiDE       906         4            1             0            0 91gZ4taDiDE
+## 2 bHPCvSqTxn4       706         0            0             0            0 bHPCvSqTxn4
+## 3 h2UPH87kjhc       458         1            0             0            0 h2UPH87kjhc
+## 4 E2VtxjljZCE       391         0            0             0            0 E2VtxjljZCE
+## 5 5Ajfk620fA0    175000         5            0             0            0 5Ajfk620fA0
+## 6 PdI3HjulcA4       575         3            2             0            3 PdI3HjulcA4
 ```

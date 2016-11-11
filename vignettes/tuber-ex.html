@@ -12,7 +12,7 @@
 
 <meta name="author" content="Gaurav Sood" />
 
-<meta name="date" content="2016-10-03" />
+<meta name="date" content="2016-11-11" />
 
 <title>Using tuber</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Using tuber</h1>
 <h4 class="author"><em>Gaurav Sood</em></h4>
-<h4 class="date"><em>2016-10-03</em></h4>
+<h4 class="date"><em>2016-11-11</em></h4>
 
 
 
@@ -104,7 +104,7 @@ devtools::<span class="kw">install_github</span>(<span class="st">&quot;soodoku/
 </div>
 <div id="get-information-about-a-video" class="section level4">
 <h4>Get Information About a Video</h4>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">get_details</span>(<span class="dt">video_id=</span><span class="st">&quot;N708P-A45D0&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">get_video_details</span>(<span class="dt">video_id=</span><span class="st">&quot;N708P-A45D0&quot;</span>)</code></pre></div>
 </div>
 <div id="get-caption-of-a-video" class="section level4">
 <h4>Get Caption of a Video</h4>
@@ -207,15 +207,27 @@ devtools::<span class="kw">install_github</span>(<span class="st">&quot;soodoku/
 </div>
 <div id="search-videos" class="section level4">
 <h4>Search Videos</h4>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">yt_search</span>(<span class="st">&quot;Barack Obama&quot;</span>)</code></pre></div>
-<pre><code>## Total Results 1000000</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res &lt;-<span class="st"> </span><span class="kw">yt_search</span>(<span class="st">&quot;Barack Obama&quot;</span>)
+<span class="kw">head</span>(res[, <span class="dv">1</span>:<span class="dv">3</span>])</code></pre></div>
+<pre><code>##                publishedAt                channelId                                                                           title
+## 1 2016-09-06T11:20:20.000Z UC6CZwQv8cbZco3wOwtp7W2g             See How Obama Ignored Xi Jinping &amp; Welcomed PM Modi At G20 Summit !
+## 2 2016-09-05T06:01:17.000Z UC6RJ7-PaXg6TIH2BzZfTV7w                                   PM Modi Meets Barack Obama at G20 Summit 2016
+## 3 2008-03-24T16:31:53.000Z UC4o-h3-3GhrmHB6ytgO3oIQ                                      Top 20 Obama Pastor Comments You Never Saw
+## 4 2016-09-03T06:43:38.000Z UC5aeU5hk31cLzq_sAExLVWg                                     LIVE: Obama arrives in China for G20 summit
+## 5 2016-09-20T01:30:42.000Z UCmWHDwXFvdKc8OVBbb2dMZg Buy Lot of 20 Obama, 44th U.S. President, 56th Presidential Inauguration coins!
+## 6 2016-09-03T06:57:05.000Z UCgrNz-aDmcr2uuto8_DL2jg                           US President Obama arrives in Hangzhou for G20 Summit</code></pre>
 </div>
 <div id="get-comments-on-a-video" class="section level4">
 <h4>Get Comments on a video</h4>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res &lt;-<span class="st"> </span><span class="kw">get_comments</span>(<span class="dt">video_id=</span><span class="st">&quot;N708P-A45D0&quot;</span>)
-<span class="co"># First comment</span>
-res$items[[<span class="dv">1</span>]]$snippet$topLevelComment$snippet$textDisplay</code></pre></div>
-<pre><code>## Hillary Clinton is a corporate puppet, a flip-flopper, and a robotic establishment politician. She also constantly plays the card of vote for me because I have a vagina. She has received lots of money from wall street and corporations that own her. She was against  gay marriage, for the Iraq war, for the Patriot Act, undecided on the Keystone Pipeline for a long time(that should be a no brainier if you are truly an environmentalist), and is currently against Glass-Steagall. She is a mediocre liberal that tries to put on a progressive mask through vague messages. She is a phony crook that as Sanders said, talks the talk but doesn&amp;#39;t walk the walk. She is the embodiment of politics as usual were money controls government. From her you should only expect at most a speck of progressivism. &lt;br /&gt;&lt;br /&gt;That is why you shouldn&amp;#39;t vote for Clinton.ï»¿</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res &lt;-<span class="st"> </span><span class="kw">get_comment_threads</span>(<span class="kw">c</span>(<span class="dt">video_id=</span><span class="st">&quot;N708P-A45D0&quot;</span>))
+<span class="kw">head</span>(res)</code></pre></div>
+<pre><code>##    authorDisplayName                                                                              authorProfileImageUrl                                        authorChannelUrl
+## 1             Tony Rx https://lh5.googleusercontent.com/-OL_t2gRZ8RI/AAAAAAAAAAI/AAAAAAAAACg/tXnqTDNYXec/photo.jpg?sz=50 http://www.youtube.com/channel/UCqKvEBPMtbmh020d56WrQXQ
+## 2       Kevin Manning https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50 http://www.youtube.com/channel/UCEF-WytcLvgijQIklAbteUw
+## 3       Kevin Manning https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50 http://www.youtube.com/channel/UCEF-WytcLvgijQIklAbteUw
+## 4 TheDrunkenRocketMan https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50 http://www.youtube.com/channel/UCvTypSrsihX3fr2zCZivmwA
+## 5          pangratata https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50 http://www.youtube.com/channel/UCETB8ILZueyFMCFWMF0p3Yg
+## 6          pangratata https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50 http://www.youtube.com/channel/UCETB8ILZueyFMCFWMF0p3Yg</code></pre>
 </div>
 </div>
 <div id="get-statistics-of-all-the-videos-in-a-channel" class="section level3">
@@ -240,7 +252,14 @@ for (i in vid_ids) {
     res  &lt;-<span class="st"> </span><span class="kw">rbind</span>(res, temp)
 }
 
-res</code></pre></div>
+<span class="kw">head</span>(res)</code></pre></div>
+<pre><code>##            id viewCount likeCount dislikeCount favoriteCount commentCount      vid_id
+## 1 91gZ4taDiDE       906         4            1             0            0 91gZ4taDiDE
+## 2 bHPCvSqTxn4       706         0            0             0            0 bHPCvSqTxn4
+## 3 h2UPH87kjhc       458         1            0             0            0 h2UPH87kjhc
+## 4 E2VtxjljZCE       391         0            0             0            0 E2VtxjljZCE
+## 5 5Ajfk620fA0    175000         5            0             0            0 5Ajfk620fA0
+## 6 PdI3HjulcA4       575         3            2             0            3 PdI3HjulcA4</code></pre>
 </div>
 </div>
 
