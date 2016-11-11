@@ -35,5 +35,5 @@ list_langs <- function (hl=NULL, ...) {
 	# Cat total results
 	cat("Total Number of Languages:", length(res$items), "\n")
 
-	return(invisible(resdf))
+	resdf
 }

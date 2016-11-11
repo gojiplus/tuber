@@ -22,7 +22,7 @@
 
 get_video_details <- function (video_id = NULL, ...){
 	
-	if (is.null(video_id)) stop("Must specify a video ID")
+	if (!is.character(video_id)) stop("Must specify a video ID")
 
 	querylist <- list(part="snippet", id = video_id)
 

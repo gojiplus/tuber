@@ -50,12 +50,15 @@ yt_oauth <- function (app_id=NULL, app_secret=NULL, scope="ssl", token = '.httr-
 			google_token <- oauth2.0_token( oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtube", ...)
 
 		} else if (scope == "own_account_readonly") {
+			
 			google_token <- oauth2.0_token( oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtube.readonly", ...)
 		
 		} else if (scope == "upload_and_manage_own_videos") {
+			
 			google_token <- oauth2.0_token( oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtube.upload", ...)
 		
 		} else if (scope == "partner_audit") {
+			
 			google_token <- oauth2.0_token( oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtubepartner-channel-audit", ...)
 		}
 	}

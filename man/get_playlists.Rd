@@ -5,7 +5,7 @@
 \title{Get Playlists}
 \usage{
 get_playlists(filter = NULL, part = "contentDetails", max_results = 50,
-  hl = NULL, page_token = NULL, ...)
+  hl = NULL, page_token = NULL, simplify = TRUE, ...)
 }
 \arguments{
 \item{filter}{string; Required.
@@ -22,6 +22,9 @@ potential names of the entry in the vector:
 
 \item{page_token}{specific page in the result set that should be returned, optional}
 
+\item{simplify}{Data Type: Boolean. Default is \code{TRUE}. If \code{TRUE} and if part requested is \code{contentDetails}, 
+the function returns a \code{data.frame}. Else a list with all the information returned.}
+
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
@@ -35,7 +38,8 @@ Get Playlists
 
 # Set API token via yt_oauth() first
 
-get_playlists(filter=c(channel_id="UChTJTbr5kf3hYazJZO-euHg"))
+get_playlists(filter=c(channel_id="UCMtFAi84ehTSYSE9XoHefig"))
+get_playlists(filter=c(channel_id="UCMtFAi84ehTSYSE9X")) # incorrect Channel ID
 }
 }
 \references{

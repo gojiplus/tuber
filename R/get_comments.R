@@ -36,7 +36,7 @@
 #' c(comment_id="z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk, z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk"))
 #' }
 
-get_comments <- function (filter = NULL, part = "snippet", text_format = "html", simplify = TRUE, max_results = 100, page_token = NULL, ...) {
+get_comments <- function (filter = NULL, part = "snippet", max_results = 100, text_format = "html", page_token = NULL, simplify = TRUE, ...) {
 
 	if (max_results < 20 | max_results > 100) stop("max_results only takes a value between 20 and 100")
 	if (text_format != "html" & text_format !="plainText") stop("Provide a legitimate value of textFormat.")
@@ -58,8 +58,6 @@ get_comments <- function (filter = NULL, part = "snippet", text_format = "html",
     	if (simplify == TRUE) return(data.frame())
     	return(list())
     }
-
-	res     <- raw_res$items[[1]]$snippet
 
 	if (simplify==TRUE & part=="snippet") {
 		simple_res  <- lapply(raw_res$items, function(x) unlist(x$snippet))

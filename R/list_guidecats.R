@@ -49,5 +49,5 @@ list_guidecats <- function (filter=NULL, hl = NULL, ...) {
 	# Cat total results
 	cat("Total Number of Categories:", length(res$items), "\n")
 
-	return(invisible(resdf))
+	resdf
 }

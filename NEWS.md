@@ -1,3 +1,9 @@
+# version 0.7.0 
+
+* get_playlists now supports simplify --- allows for data.frame return 
+* No more invisible return
+* Rather than is.null checks, !is.character checks for args expected to be chars
+
 # version 0.6.0 
 
 * Based on CRAN feedback, add comment about yt_outh to all man pages

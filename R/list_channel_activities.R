@@ -32,8 +32,8 @@ list_channel_activities <- function (filter=NULL, part="snippet", max_results = 
 
 	if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50")
 
-	if (!is.null(published_after))  if (is.na(as.POSIXct(published_after, format="%Y-%m-%dT%H:%M:%SZ"))) stop("The date is not properly formatted in RFC 339 Format")
-	if (!is.null(published_before)) if (is.na(as.POSIXct(published_before, format="%Y-%m-%dT%H:%M:%SZ"))) stop("The date is not properly formatted in RFC 339 Format")
+	if (is.character(published_after))  if (is.na(as.POSIXct(published_after, format="%Y-%m-%dT%H:%M:%SZ"))) stop("The date is not properly formatted in RFC 339 Format")
+	if (is.character(published_before)) if (is.na(as.POSIXct(published_before, format="%Y-%m-%dT%H:%M:%SZ"))) stop("The date is not properly formatted in RFC 339 Format")
 
 	if (!(names(filter) %in% c("channel_id"))) stop("filter can only take one of values: channel_id.")
 	if ( length(filter) != 1) stop("filter must be a vector of length 1.")

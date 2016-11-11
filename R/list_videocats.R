@@ -27,7 +27,7 @@ list_videocats <- function (filter=NULL, ...) {
 	names(filter)      <- yt_filter_name
 
 	querylist <- list(part="snippet")
-    if (!is.null(filter)) querylist <- c(querylist, filter)
+    if (is.character(filter)) querylist <- c(querylist, filter)
 
 	res <- tuber_GET("videoCategories", querylist, ...)
 
@@ -43,5 +43,5 @@ list_videocats <- function (filter=NULL, ...) {
 	# Cat total results
 	cat("Total Number of Categories:", length(res$items), "\n")
 
-	return(invisible(resdf))
+	resdf
 }

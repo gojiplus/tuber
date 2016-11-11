@@ -19,7 +19,7 @@
 
 get_stats <- function (video_id=NULL, ...) {
 
-	if (is.null(video_id)) stop("Must specify a video ID")
+	if (!is.character(video_id)) stop("Must specify a video ID")
 	
 	querylist <- list(part="statistics", id = video_id)
     
@@ -39,5 +39,5 @@ get_stats <- function (video_id=NULL, ...) {
 	cat('No. of Favorites', stat_res$favoriteCount, "\n")
 	cat('No. of Comments', stat_res$commentCount, "\n")
  
-	return(invisible(c(id=res$id, stat_res)))
+	c(id=res$id, stat_res)
 }

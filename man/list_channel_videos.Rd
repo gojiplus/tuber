@@ -14,7 +14,7 @@ list_channel_videos(channel_id = NULL, max_results = 50, ...)
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-character vector
+character vector of video IDs
 }
 \description{
 Returns List of Requested Channel Videos

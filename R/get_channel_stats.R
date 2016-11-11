@@ -17,12 +17,13 @@
 #' 
 #' # Set API token via yt_oauth() first
 #' 
-#' get_channel_stats(channel_id="UChTJTbr5kf3hYazJZO-euHg")
+#' get_channel_stats(channel_id="UCMtFAi84ehTSYSE9XoHefig")
+#' get_channel_stats(channel_id="UCMtFAi84ehTSYSE9Xo") # Incorrect channel ID
 #' }
 
 get_channel_stats <- function (channel_id = NULL, ...) {
 
-	if (is.null(channel_id)) stop("Must specify a channel ID")
+	if (!is.character(channel_id)) stop("Must specify a channel ID")
 	
 	querylist <- list(part = "statistics,snippet", id = channel_id)
     

@@ -4,8 +4,8 @@
 \alias{get_comments}
 \title{Get Comments}
 \usage{
-get_comments(filter = NULL, part = "snippet", text_format = "html",
-  simplify = TRUE, max_results = 100, page_token = NULL, ...)
+get_comments(filter = NULL, part = "snippet", max_results = 100,
+  text_format = "html", page_token = NULL, simplify = TRUE, ...)
 }
 \arguments{
 \item{filter}{string; Required.
@@ -17,13 +17,13 @@ potential names of the entry in the vector:
 \item{part}{Comment resource requested. Required. Comma separated list of one or more of the 
 following: \code{id, snippet}. e.g., "id, snippet", "id" Default: \code{snippet}.}
 
-\item{text_format}{Data Type: Character. Default is "html". Only takes "html" or "plainText." Optional.}
-
-\item{simplify}{Data Type: Boolean. Default is TRUE. If TRUE, the function returns a data frame. Else a list with all the information returned.}
-
 \item{max_results}{Maximum number of items that should be returned. Integer. Optional. Can be between 20 and 100. Default is 100.}
 
+\item{text_format}{Data Type: Character. Default is "html". Only takes "html" or "plainText." Optional.}
+
 \item{page_token}{Specific page in the result set that should be returned. Optional.}
+
+\item{simplify}{Data Type: Boolean. Default is TRUE. If TRUE, the function returns a data frame. Else a list with all the information returned.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }

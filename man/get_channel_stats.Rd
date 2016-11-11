@@ -25,7 +25,8 @@ Get statistics of a Channel
 
 # Set API token via yt_oauth() first
 
-get_channel_stats(channel_id="UChTJTbr5kf3hYazJZO-euHg")
+get_channel_stats(channel_id="UCMtFAi84ehTSYSE9XoHefig")
+get_channel_stats(channel_id="UCMtFAi84ehTSYSE9Xo") # Incorrect channel ID
 }
 }
 \references{

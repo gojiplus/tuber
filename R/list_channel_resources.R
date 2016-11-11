@@ -46,6 +46,6 @@ list_channel_resources <- function (filter=NULL, part="contentDetails", max_resu
 
     res <- tuber_GET("channels", querylist, ...)
     
-    return(invisible(res))
+    res
 }
 

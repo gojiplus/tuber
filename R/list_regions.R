@@ -33,5 +33,5 @@ list_regions <- function (hl = NULL, ...) {
 	# Cat total results
 	cat("Total Number of Content Regions:", length(res$items), "\n")
 
-	return(invisible(resdf))
+	resdf
 }

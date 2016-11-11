@@ -26,7 +26,7 @@
 
 list_caption_tracks <- function (part="snippet", video_id=NULL, lang="en", id = NULL, simplify = TRUE, ...) {
 
-	if (is.null(video_id)) stop("Must specify a video ID")
+	if (!is.character(video_id)) stop("Must specify a video ID")
 	
 	querylist = list(part=part, videoId = video_id, id = id)
 	raw_res <- tuber_GET("captions", query = querylist, ...)
