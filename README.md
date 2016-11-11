@@ -52,9 +52,6 @@ get_captions(video_id="yJXTXN4xrI8")
 yt_search("Barack Obama")
 ```
 
-**Search Videos by Topic**
-Uses the [Freebase](http://freebase.com) database of topics.
-
 ```r
 yt_topic_search("Barack Obama")
 ```
