@@ -41,7 +41,7 @@ list_videocats <- function (filter = NULL, ...) {
 	resdf <- read.table(text = "", 
     					 col.names = c("region_code", "channelId", "title", "assignable", "etag", "id"))
 
-	if (length(res$items) != 0) {
+	if (length(res$items) > 0) {
 	
 		simple_res  <- lapply(res$items, function(x) c(unlist(x$snippet), etag=x$etag, id=x$id))
 		resdf       <- as.data.frame(cbind(region_code = filter["regionCode"], do.call(rbind, simple_res)))

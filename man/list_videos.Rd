@@ -2,15 +2,12 @@
 % Please edit documentation in R/list_videos.R
 \name{list_videos}
 \alias{list_videos}
-\title{List Videos}
+\title{List (Most Popular) Videos}
 \usage{
-list_videos(chart = "mostPopular", part = "contentDetails",
-  max_results = 50, page_token = NULL, hl = NULL, region_code = NULL,
-  video_category_id = NULL, ...)
+list_videos(part = "contentDetails", max_results = 50, page_token = NULL,
+  hl = NULL, region_code = NULL, video_category_id = NULL, ...)
 }
 \arguments{
-\item{chart}{mostPopular}
-
 \item{part}{Required. Comma separated string including one or more of the following: \code{contentDetails, 
 fileDetails, id, liveStreamingDetails, localizations, player, processingDetails, recordingDetails, 
 snippet, statistics, status, suggestions, topicDetails}. Default: \code{contentDetails}.}
@@ -31,7 +28,7 @@ snippet, statistics, status, suggestions, topicDetails}. Default: \code{contentD
 data.frame with 5 columns: \code{channelId, title, assignable, etag, id}
 }
 \description{
-List Videos
+List (Most Popular) Videos
 }
 \examples{
 \dontrun{
