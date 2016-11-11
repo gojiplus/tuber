@@ -3,6 +3,7 @@
 * get_playlists now supports simplify --- allows for data.frame return 
 * No more invisible return
 * Rather than is.null checks, !is.character checks for args expected to be chars
+* More consistent return for get_related_videos() --- df with same cols. even if no results.
 
 # version 0.6.0 
 

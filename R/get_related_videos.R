@@ -7,7 +7,7 @@
 #' @param safe_search Character. Optional. Takes one of three values: 'moderate', 'none' (default) or 'strict'
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'  
-#' @return data.frame with 15 columns: publishedAt, channelId, title, description, 
+#' @return data.frame with 16 columns: video_id, publishedAt, channelId, title, description, 
 #' thumbnails.default.url, thumbnails.default.width, thumbnails.default.height, thumbnails.medium.url, 
 #' thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url, thumbnails.high.width, 
 #' thumbnails.high.height, channelTitle, liveBroadcastContent
@@ -22,7 +22,7 @@
 #' get_related_videos(video_id="yJXTXN4xrI8")
 #' }
 
-get_related_videos <- function (video_id=NULL, max_results=50, safe_search='none', ...) {
+get_related_videos <- function (video_id = NULL, max_results = 50, safe_search = 'none', ...) {
 
 	if (!is.character(video_id)) stop("Must specify a video ID")
 	if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50")
@@ -31,13 +31,22 @@ get_related_videos <- function (video_id=NULL, max_results=50, safe_search='none
 
 	res <- tuber_GET("search", querylist, ...)
 	
-	resdf <- NA
+	resdf <- read.table(text = "", 
+    					 col.names = c("video_id", "publishedAt", "channelId", "title", "description", 
+    					 				"thumbnails.default.url", "thumbnails.default.width", "thumbnails.default.height", 
+    					 				"thumbnails.medium.url", "thumbnails.medium.width", "thumbnails.medium.height", 
+    					 				"thumbnails.high.url", "thumbnails.high.width", "thumbnails.high.height", 
+    					 				"channelTitle", "liveBroadcastContent"))
 
 	if (res$pageInfo$totalResults != 0) {
+
 		simple_res  <- lapply(res$items, function(x) unlist(x$snippet))
-		resdf       <- as.data.frame(do.call(rbind, simple_res))
+		resdf       <- cbind(video_id = video_id, do.call(rbind, simple_res))
+		resdf       <- as.data.frame(resdf)
+
 	} else {
-		resdf <- data.frame()
+
+		resdf[1,"video_id"] <- video_id
 	}
 
 	# Cat total results
