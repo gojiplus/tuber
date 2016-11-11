@@ -4,6 +4,7 @@
 * No more invisible return
 * Rather than is.null checks, !is.character checks for args expected to be chars
 * More consistent return for get_related_videos() --- df with same cols. even if no results.
+* list_guidecats() and list_videocats() now return region_code as part of the returned data.frame
 
 # version 0.6.0 
 

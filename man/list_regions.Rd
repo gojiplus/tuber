@@ -12,7 +12,8 @@ list_regions(hl = NULL, ...)
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-data.frame with 3 columns: \code{gl} (two letter abbreviation), \code{name} (of the region), \code{etag}
+data.frame with 3 columns: 
+\code{gl} (two letter abbreviation), \code{name} (of the region), \code{etag}
 }
 \description{
 List Content Regions That Youtube Currently Supports

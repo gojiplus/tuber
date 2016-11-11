@@ -2,7 +2,7 @@
 % Please edit documentation in R/list_guidecats.R
 \name{list_guidecats}
 \alias{list_guidecats}
-\title{Get List of categories that can be associated with YouTube channels}
+\title{Get list of categories that can be associated with YouTube channels}
 \usage{
 list_guidecats(filter = NULL, hl = NULL, ...)
 }
@@ -18,10 +18,10 @@ potential names of the entry in the vector:
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-data.frame with 4 columns: \code{channelId, title, etag, id}
+data.frame with 5 columns: \code{region_code, channelId, title, etag, id}
 }
 \description{
-Get List of categories that can be associated with YouTube channels
+Get list of categories that can be associated with YouTube channels
 }
 \examples{
 \dontrun{
@@ -32,6 +32,6 @@ list_guidecats(c(region_code = "JP"))
 }
 }
 \references{
-\url{https://developers.google.com/youtube/v3/docs/search/list}
+\url{https://developers.google.com/youtube/v3/docs/guideCategories/list}
 }
 

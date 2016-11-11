@@ -16,7 +16,7 @@ potential names of the entry in the vector:
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-data.frame with 5 columns: \code{channelId, title, assignable, etag, id}
+data.frame with 6 columns: \code{region_code, channelId, title, assignable, etag, id}
 }
 \description{
 List of Categories That Can be Associated with Videos
@@ -27,6 +27,7 @@ List of Categories That Can be Associated with Videos
 # Set API token via yt_oauth() first
 
 list_videocats(c(region_code = "JP"))
+list_videocats() # Will throw an error asking for a valid filter with valid region_code
 }
 }
 \references{
