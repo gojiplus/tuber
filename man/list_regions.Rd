@@ -18,15 +18,15 @@ data.frame with 3 columns:
 \description{
 List Content Regions That Youtube Currently Supports
 }
-\references{
-\url{https://developers.google.com/youtube/v3/docs/i18nRegions/list}
-
- @examples
+\examples{
 \dontrun{
 
 # Set API token via yt_oauth() first
 
 list_regions()
 }
+}
+\references{
+\url{https://developers.google.com/youtube/v3/docs/i18nRegions/list}
 }
 

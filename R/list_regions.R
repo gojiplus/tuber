@@ -1,7 +1,8 @@
 #' List Content Regions That Youtube Currently Supports
 #' 
-#' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
+#' 
 #' @param hl  Language used for text values. Optional. Default is \code{en-US}. For other allowed language codes, see \code{\link{list_langs}}.
+#' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
 #' @return data.frame with 3 columns: 
 #' \code{gl} (two letter abbreviation), \code{name} (of the region), \code{etag}
@@ -10,7 +11,7 @@
 #' 
 #' @references \url{https://developers.google.com/youtube/v3/docs/i18nRegions/list}
 #'
-#'  @examples
+#' @examples
 #' \dontrun{
 #' 
 #' # Set API token via yt_oauth() first
@@ -20,7 +21,7 @@
 
 list_regions <- function (hl = NULL, ...) {
 
-	querylist <- list(part="snippet")
+	querylist <- list(part = "snippet")
 
 	res <- tuber_GET("i18nRegions", querylist, ...)
 
