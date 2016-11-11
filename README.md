@@ -38,7 +38,7 @@ get_stats(video_id="N708P-A45D0")
 **Get Information About a Video**
 
 ```r
-get_details(video_id="N708P-A45D0")
+get_video_details(video_id="N708P-A45D0")
 ```
 
 **Get Captions of a Video**
@@ -52,13 +52,9 @@ get_captions(video_id="yJXTXN4xrI8")
 yt_search("Barack Obama")
 ```
 
-```r
-yt_topic_search("Barack Obama")
-```
-
 **Get Comments**
 ```r
-get_comments(video_id="N708P-A45D0")
+get_comment_threads(filter=c(video_id="N708P-A45D0"))
 ```
 
 ### License
