@@ -5,8 +5,8 @@
 #' @param video_id Comma separated list of IDs of the videos for which details are requested. Required. 
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
-#' @return list with the following elements: id (video id that was passed), publishedAt, channelId, title, description, thumbnails, 
-#' channelTitle, categoryId, liveBroadcastContent, localized, defaultAudioLanguage
+#' @return list with the following elements: \code{id} (video id that was passed), \code{publishedAt, channelId, title, description, thumbnails, 
+#' channelTitle, categoryId, liveBroadcastContent, localized, defaultAudioLanguage}
 #' 
 #' @export
 

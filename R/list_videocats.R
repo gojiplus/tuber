@@ -8,7 +8,7 @@
 #'
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
-#' @return data.frame with 5 columns: channelId, title, assignable, etag, id
+#' @return data.frame with 5 columns: \code{channelId, title, assignable, etag, id}
 #' @export
 #' @references \url{https://developers.google.com/youtube/v3/docs/videoCategories/list}
 #' 

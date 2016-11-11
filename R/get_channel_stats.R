@@ -4,9 +4,9 @@
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
 #' @return nested named list with top element names:
-#' kind, etag, id, snippet (list of details of the channel including title), statistics (list of 5)
+#' \code{kind, etag, id, snippet (list of details of the channel including title), statistics (list of 5)}
 #' 
-#' If the channel_id is mistyped or there is no information, an empty list is returned
+#' If the \code{channel_id} is mistyped or there is no information, an empty list is returned
 #' 
 #' @export
 #' 

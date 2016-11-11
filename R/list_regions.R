@@ -3,11 +3,13 @@
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' @param hl  Language used for text values. Optional. Default is \code{en-US}. For other allowed language codes, see \code{\link{list_langs}}.
 #' 
-#' @return data.frame with 3 columns: gl (two letter abbreviation), name (of the region), etag
+#' @return data.frame with 3 columns: \code{gl} (two letter abbreviation), \code{name} (of the region), \code{etag}
 #' 
 #' @export
+#' 
 #' @references \url{https://developers.google.com/youtube/v3/docs/i18nRegions/list}
-#' @examples
+#'
+#'  @examples
 #' \dontrun{
 #' 
 #' # Set API token via yt_oauth() first

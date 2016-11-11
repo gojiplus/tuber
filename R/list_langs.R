@@ -3,7 +3,7 @@
 #' @param hl  Language used for text values. Optional. Default is \code{en-US}. For other allowed language codes, see \code{\link{list_langs}}.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
-#' @return data.frame with 3 columns: hl (two letter abbreviation), name (of the language), etag
+#' @return data.frame with 3 columns: \code{hl} (two letter abbreviation), \code{name} (of the language), \code{etag}
 #' 
 #' @export
 #' 

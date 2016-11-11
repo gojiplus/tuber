@@ -18,7 +18,7 @@ potential names of the entry in the vector:
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-data.frame with 4 columns: channelId, title, etag, id
+data.frame with 4 columns: \code{channelId, title, etag, id}
 }
 \description{
 Get List of categories that can be associated with YouTube channels

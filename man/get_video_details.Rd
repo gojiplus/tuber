@@ -12,8 +12,8 @@ get_video_details(video_id = NULL, ...)
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-list with the following elements: id (video id that was passed), publishedAt, channelId, title, description, thumbnails, 
-channelTitle, categoryId, liveBroadcastContent, localized, defaultAudioLanguage
+list with the following elements: \code{id} (video id that was passed), \code{publishedAt, channelId, title, description, thumbnails, 
+channelTitle, categoryId, liveBroadcastContent, localized, defaultAudioLanguage}
 }
 \description{
 Get details such as when the video was published, the title, description, thumbnails, category etc.

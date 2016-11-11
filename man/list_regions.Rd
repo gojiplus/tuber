@@ -12,20 +12,20 @@ list_regions(hl = NULL, ...)
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-data.frame with 3 columns: gl (two letter abbreviation), name (of the region), etag
+data.frame with 3 columns: \code{gl} (two letter abbreviation), \code{name} (of the region), \code{etag}
 }
 \description{
 List Content Regions That Youtube Currently Supports
 }
-\examples{
+\references{
+\url{https://developers.google.com/youtube/v3/docs/i18nRegions/list}
+
+ @examples
 \dontrun{
 
 # Set API token via yt_oauth() first
 
 list_regions()
 }
-}
-\references{
-\url{https://developers.google.com/youtube/v3/docs/i18nRegions/list}
 }
 

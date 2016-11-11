@@ -9,8 +9,8 @@
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
 #' @return list of caption tracks. When simplify is TRUE, a data.frame is returned with 
-#' following columns: videoId, lastUpdated, trackKind, language, name, audioTrackType, isCC,
-#' isLarge, isEasyReader, isDraft, isAutoSynced, status, id (caption id)
+#' following columns: \code{videoId, lastUpdated, trackKind, language, name, audioTrackType, isCC,
+#' isLarge, isEasyReader, isDraft, isAutoSynced, status, id} (caption id)
 #' 
 #' @export
 #' 

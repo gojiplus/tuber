@@ -17,11 +17,11 @@ potential names of the entry in the vector:
 \code{threads_related_to_channel}: channel ID.}
 
 \item{part}{Comment resource requested. Required. Comma separated list of one or more of the 
-following: \code{id, snippet}. e.g., "id, snippet", "id" Default: \code{snippet}.}
+following: \code{id, snippet}. e.g., \code{"id, snippet"}, \code{"id"}, etc. Default: \code{snippet}.}
 
-\item{text_format}{Data Type: Character. Default is "html". Only takes "html" or "plainText." Optional.}
+\item{text_format}{Data Type: Character. Default is \code{"html"}. Only takes \code{"html"} or \code{"plainText"}. Optional.}
 
-\item{simplify}{Data Type: Boolean. Default is TRUE. If TRUE, the function returns a data frame. Else a list with all the information returned.}
+\item{simplify}{Data Type: Boolean. Default is \code{TRUE}. If \code{TRUE}, the function returns a data frame. Else a list with all the information returned.}
 
 \item{max_results}{Maximum number of items that should be returned. Integer. Optional. Can be between 20 and 100. Default is 100.}
 
@@ -33,6 +33,10 @@ following: \code{id, snippet}. e.g., "id, snippet", "id" Default: \code{snippet}
 Nested named list. The entry \code{items} is a list of comments along with meta information. 
 Within each of the \code{items} is an item \code{snippet} which has an item \code{topLevelComment$snippet$textDisplay}
 that contains the actual comment.
+
+If simplify is \code{TRUE}, a \code{data.frame} with the following columns:
+\code{authorDisplayName, authorProfileImageUrl, authorChannelUrl, authorChannelId.value, videoId, textDisplay,          
+canRate, viewerRating, likeCount, publishedAt, updatedAt}
 }
 \description{
 Get Comments Threads

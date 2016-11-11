@@ -12,7 +12,7 @@ list_langs(hl = NULL, ...)
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-data.frame with 3 columns: hl (two letter abbreviation), name (of the language), etag
+data.frame with 3 columns: \code{hl} (two letter abbreviation), \code{name} (of the language), \code{etag}
 }
 \description{
 List Languages That Youtube Currently Supports

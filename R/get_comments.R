@@ -7,11 +7,11 @@
 #' \code{parent_id}: parent ID.
 #'  
 #' @param part  Comment resource requested. Required. Comma separated list of one or more of the 
-#' following: \code{id, snippet}. e.g., "id, snippet", "id" Default: \code{snippet}.  
+#' following: \code{id, snippet}. e.g., \code{"id, snippet"}, \code{"id"}, etc. Default: \code{snippet}.  
 #' @param simplify Data Type: Boolean. Default is TRUE. If TRUE, the function returns a data frame. Else a list with all the information returned.
 #' @param max_results  Maximum number of items that should be returned. Integer. Optional. Can be between 20 and 100. Default is 100.
 #' @param page_token  Specific page in the result set that should be returned. Optional.
-#' @param text_format Data Type: Character. Default is "html". Only takes "html" or "plainText." Optional. 
+#' @param text_format Data Type: Character. Default is \code{"html"}. Only takes \code{"html"} or \code{"plainText"}. Optional. 
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'  
 #' @return 
@@ -19,9 +19,10 @@
 #' Within each of the \code{items} is an item \code{snippet} which has an item \code{topLevelComment$snippet$textDisplay}
 #' that contains the actual comment.
 #' 
-#' When filter is comment_id, and simplify is TRUE, and there is a correct comment id, it returns a data.frame with 
-#' following cols:  id, authorDisplayName, authorProfileImageUrl, authorChannelUrl, value, textDisplay, canRate, viewerRating, likeCount
-#' publishedAt, updatedAt
+#' When filter is \code{comment_id}, and \code{simplify} is \code{TRUE}, and there is a correct comment id, it returns a \code{data.frame} with 
+#' following cols: 
+#' \code{id, authorDisplayName, authorProfileImageUrl, authorChannelUrl, value, textDisplay, canRate, viewerRating, likeCount
+#' publishedAt, updatedAt}
 #'  
 #' @export
 #' @references \url{https://developers.google.com/youtube/v3/docs/comments/list}

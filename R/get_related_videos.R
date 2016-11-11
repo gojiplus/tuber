@@ -4,13 +4,13 @@
 #' 
 #' @param video_id Character. Required. No default.
 #' @param max_results Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.
-#' @param safe_search Character. Optional. Takes one of three values: 'moderate', 'none' (default) or 'strict'
+#' @param safe_search Character. Optional. Takes one of three values: \code{'moderate'}, \code{'none'} (default) or \code{'strict'}
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'  
-#' @return data.frame with 16 columns: video_id, publishedAt, channelId, title, description, 
+#' @return data.frame with 16 columns: \code{video_id, publishedAt, channelId, title, description, 
 #' thumbnails.default.url, thumbnails.default.width, thumbnails.default.height, thumbnails.medium.url, 
 #' thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url, thumbnails.high.width, 
-#' thumbnails.high.height, channelTitle, liveBroadcastContent
+#' thumbnails.high.height, channelTitle, liveBroadcastContent}
 #' 
 #' @export
 #' @references \url{https://developers.google.com/youtube/v3/docs/search/list}

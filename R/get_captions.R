@@ -6,7 +6,7 @@
 #' information.
 #' 
 #' @param video_id ID of the video whose captions are requested. Required. No default.
-#' @param lang  Language of the caption; required; default is english ("en")
+#' @param lang  Language of the caption; required; default is \code{"en"} (English)
 #' @param id    String. id of the caption track that is being retrieved
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 

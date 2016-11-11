@@ -28,7 +28,7 @@ snippet, statistics, status, suggestions, topicDetails}. Default: \code{contentD
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-data.frame with 5 columns: channelId, title, assignable, etag, id
+data.frame with 5 columns: \code{channelId, title, assignable, etag, id}
 }
 \description{
 List Videos

@@ -12,7 +12,7 @@ get_stats(video_id = NULL, ...)
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-list with 6 elements: id, viewCount, likeCount, dislikeCount, favoriteCount, commentCount
+list with 6 elements: \code{id, viewCount, likeCount, dislikeCount, favoriteCount, commentCount}
 }
 \description{
 Get statistics of a Video
