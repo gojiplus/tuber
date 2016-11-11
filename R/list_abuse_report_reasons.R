@@ -26,11 +26,13 @@
 
 list_abuse_report_reasons <- function (part = "id, snippet", hl = "en-US", ...) {
 
+	if (!is.character(part)) stop("Provide a valid value for part.")
+
 	querylist <- list(part=part)
 
 	res <- tuber_GET("videoAbuseReportReasons", querylist, ...)
 
-	resdf <- NULL
+	resdf <- data.frame()
 
 	if (length(res$items) != 0) {
 		
