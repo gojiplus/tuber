@@ -21,7 +21,7 @@
 list_channel_videos <- function (channel_id=NULL, max_results = 50, ...) 
 {
 
-	if (!is.character(channel_id)) stop("Must specify a channel ID")
+	if (!is.character(channel_id)) stop("Must specify a channel ID.")
 
     querylist <- list(id = channel_id, part="contentDetails", maxResults= max_results)
 

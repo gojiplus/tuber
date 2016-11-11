@@ -25,7 +25,7 @@
 
 get_captions <- function (video_id=NULL, lang = "en", id = NULL, ...) {
 
-	if (!is.character(video_id) & !is.character(id)) stop("Must specify a video_id or id.")
+	if (!is.character(video_id) & !is.character(id)) stop("Must specify a valid video_id or id.")
 
 	# Try getting captions directly
 	req <- GET(paste0("http://video.google.com/timedtext?lang=", lang, "&v=", video_id))

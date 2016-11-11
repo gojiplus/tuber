@@ -26,7 +26,7 @@
 
 get_playlist_items <- function (filter = NULL, part="contentDetails", max_results=50, video_id = NULL, page_token = NULL, ...) {
 
-	if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50")
+	if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50.")
 	
 	if (!(names(filter) %in% c("item_id", "playlist_id"))) stop("filter can only take one of values: item_id, playlist_id.")
 	if ( length(filter) != 1) stop("filter must be a vector of length 1.")

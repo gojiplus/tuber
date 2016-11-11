@@ -6,7 +6,7 @@
 \usage{
 list_channel_activities(filter = NULL, part = "snippet", max_results = 50,
   page_token = NULL, published_after = NULL, published_before = NULL,
-  region_code = NULL, ...)
+  region_code = NULL, simplify = TRUE, ...)
 }
 \arguments{
 \item{filter}{string; Required.
@@ -25,6 +25,9 @@ potential names of the entry in the vector:
 \item{published_before}{Character. Optional. RFC 339 Format. For instance, "1970-01-01T00:00:00Z"}
 
 \item{region_code}{ISO 3166-1 alpha-2 country code, optional, see also \code{\link{list_regions}}}
+
+\item{simplify}{Data Type: Boolean. Default is \code{TRUE}. If \code{TRUE} and if part requested is \code{contentDetails}, 
+the function returns a \code{data.frame}. Else a list with all the information returned.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }

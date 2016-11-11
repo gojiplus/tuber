@@ -19,7 +19,7 @@
 
 get_stats <- function (video_id=NULL, ...) {
 
-	if (!is.character(video_id)) stop("Must specify a video ID")
+	if (!is.character(video_id)) stop("Must specify a video ID.")
 	
 	querylist <- list(part="statistics", id = video_id)
     

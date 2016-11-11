@@ -37,13 +37,13 @@ yt_search <- function (term=NULL, max_results=50, channel_id= NULL, channel_type
 	published_after=NULL, published_before=NULL, video_definition = "any", video_caption="any", video_license="any", video_syndicated="any", video_type="any", 
 	simplify=TRUE,...) {
 
-	if (is.null(term)) stop("Must specify a search term")
-	if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50")
-	if (!(video_license %in% c("any", "creativeCommon", "youtube"))) stop("video_license can only take values: any, creativeCommon, or youtube")
-	if (!(video_syndicated %in% c("any", "true"))) stop("video_syndicated can only take values: any or true")
-	if (!(video_type %in% c("any", "episode", "movie"))) stop("video_type can only take values: any, episode, or movie")
-	if (!is.null(published_after))  if (is.na(as.POSIXct(published_after, format="%Y-%m-%dT%H:%M:%SZ"))) stop("The date is not properly formatted in RFC 339 Format")
-	if (!is.null(published_before)) if (is.na(as.POSIXct(published_before, format="%Y-%m-%dT%H:%M:%SZ"))) stop("The date is not properly formatted in RFC 339 Format")
+	if (is.null(term)) stop("Must specify a search term.\n")
+	if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50.")
+	if (!(video_license %in% c("any", "creativeCommon", "youtube"))) stop("video_license can only take values: any, creativeCommon, or youtube.")
+	if (!(video_syndicated %in% c("any", "true"))) stop("video_syndicated can only take values: any or true.")
+	if (!(video_type %in% c("any", "episode", "movie"))) stop("video_type can only take values: any, episode, or movie.")
+	if (!is.null(published_after))  if (is.na(as.POSIXct(published_after, format="%Y-%m-%dT%H:%M:%SZ"))) stop("The date is not properly formatted in RFC 339 Format.")
+	if (!is.null(published_before)) if (is.na(as.POSIXct(published_before, format="%Y-%m-%dT%H:%M:%SZ"))) stop("The date is not properly formatted in RFC 339 Format.")
 
 	if (type!="video") video_caption = video_license = video_definition = video_type = video_syndicated= NULL
 

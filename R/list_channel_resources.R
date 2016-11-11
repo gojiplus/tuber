@@ -33,7 +33,7 @@
 
 list_channel_resources <- function (filter=NULL, part="contentDetails", max_results = 50, page_token = NULL, hl= NULL, ...) 
 {
-	if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50")
+	if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50.")
 	if (!(names(filter) %in% c("category_id", "username", "channel_id"))) stop("filter can only take one of three values: category_id, username or channel_id.")
 	if ( length(filter) != 1) stop("filter must be a vector of length 1.")
 

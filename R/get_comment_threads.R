@@ -34,7 +34,7 @@
 
 get_comment_threads <- function (filter=NULL, part="snippet", text_format="html", simplify=TRUE, max_results=100, page_token = NULL, ...) {
 
-	if (max_results < 20 | max_results > 100) stop("max_results only takes a value between 20 and 100")
+	if (max_results < 20 | max_results > 100) stop("max_results only takes a value between 20 and 100.")
 	if (text_format != "html" & text_format !="plainText") stop("Provide a legitimate value of textFormat.")
 
 	if (!(names(filter) %in% c("video_id", "channel_id", "thread_id", "threads_related_to_channel"))) stop("filter can only take one of values: channel_id, video_id, parent_id, threads_related_to_channel.")

@@ -38,7 +38,7 @@
 
 get_comments <- function (filter = NULL, part = "snippet", max_results = 100, text_format = "html", page_token = NULL, simplify = TRUE, ...) {
 
-	if (max_results < 20 | max_results > 100) stop("max_results only takes a value between 20 and 100")
+	if (max_results < 20 | max_results > 100) stop("max_results only takes a value between 20 and 100.")
 	if (text_format != "html" & text_format !="plainText") stop("Provide a legitimate value of textFormat.")
 
 	if (!(names(filter) %in% c("parent_id", "comment_id"))) stop("filter can only take one of values: comment_id, parent_id.")

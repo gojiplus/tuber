@@ -25,7 +25,7 @@
 list_videos <- function (chart="mostPopular", part = "contentDetails", max_results = 50, page_token=NULL, hl = NULL, region_code = NULL, video_category_id = NULL, ...) 
 {
 
-	if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50")
+	if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50.")
 
 	querylist <- list(chart="mostPopular", part=part, maxResults = max_results, pageToken = page_token, hl = hl, regionCode=region_code, videoCategoryId = video_category_id)
 

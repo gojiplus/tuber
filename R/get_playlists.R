@@ -29,10 +29,10 @@
 
 get_playlists <- function (filter=NULL, part="contentDetails", max_results=50, hl = NULL, page_token=NULL, simplify = TRUE, ...) {
 
-	if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50")
+	if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50.")
 
 	if (!(names(filter) %in% c("channel_id", "playlist_id"))) stop("filter can only take one of values: channel_id, playlist_id.")
-	if ( length(filter) != 1) stop("filter must be a vector of length 1.")
+	if ( length(filter) != 1) stop("filter must be a vector of length 1.\n")
 
 	translate_filter   <- c(channel_id = 'channelId', playlist_id ='id')
 	yt_filter_name     <- as.vector(translate_filter[match(names(filter), names(translate_filter))])
@@ -44,7 +44,7 @@ get_playlists <- function (filter=NULL, part="contentDetails", max_results=50, h
 	raw_res <- tuber_GET("playlists", querylist, ...)
  	
  	if (length(raw_res$items) ==0) { 
-    	cat("No comment information available. Likely cause: Incorrect ID. \n")
+    	cat("No playlists available.\n")
     	if (simplify == TRUE) return(data.frame())
     	return(list())
     }
