@@ -4,6 +4,7 @@
 [![Build Status](https://travis-ci.org/soodoku/tuber.svg?branch=master)](https://travis-ci.org/soodoku/tuber)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/tuber)](https://cran.r-project.org/package=tuber)
 ![](http://cranlogs.r-pkg.org/badges/grand-total/tuber)
+[![codecov](https://codecov.io/gh/soodoku/tuber/branch/master/graph/badge.svg)](https://codecov.io/gh/soodoku/tuber)
 
 Access YouTube API via R. Get comments posted on YouTube videos, information on how many times a video has been liked, search for videos with particular content, and much more. You can also scrape captions from a few videos. To learn more about the YouTube API, see [https://developers.google.com/youtube/v3/](https://developers.google.com/youtube/v3/).
 
