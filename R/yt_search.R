@@ -38,7 +38,7 @@
 #' yt_search(term="Barack Obama", published_after="2016-10-01T00:00:00Z")
 #' yt_search(term="Barack Obama", published_before="2016-09-01T00:00:00Z")
 #' yt_search(term="Barack Obama", published_before="2016-03-01T00:00:00Z", published_after="2016-02-01T00:00:00Z")
-#' yt_search(term="Tom Cruise", published_before = "2016-01-10T00:00:00Z", published_after="2016-01-01T00:00:00Z")
+#' yt_search(term="Barack Obama", published_before = "2016-02-10T00:00:00Z", published_after="2016-01-01T00:00:00Z")
 #' }
 
 yt_search <- function (term=NULL, max_results=50, channel_id= NULL, channel_type=NULL, type="video", event_type=NULL, location= NULL, location_radius=NULL, 
@@ -61,6 +61,8 @@ yt_search <- function (term=NULL, max_results=50, channel_id= NULL, channel_type
 	querylist <- list(part="snippet", q = term, maxResults=max_results, channelId=channel_id, type=type, channelType=channel_type, eventType= event_type, 
 		location= location, publishedAfter=published_after, publishedBefore=published_before, videoDefinition = video_definition, videoCaption= video_caption, 
 		videoType=video_type, videoSyndicated=video_syndicated, videoLicense= video_license)
+
+	querylist <- querylist[names(querylist)[sapply(querylist, is.character)]]
 
 	res <- tuber_GET("search", querylist, ...)
 
