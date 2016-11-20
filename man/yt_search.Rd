@@ -49,7 +49,9 @@ license), 'youtube' (return videos with standard YouTube license).}
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-data.frame with 7 elements: publishedAt, channelId, title, description, thumbnails, channelTitle, liveBroadcastContent
+data.frame with 15 elements: \code{publishedAt, channelId, title, description, thumbnails.default.url, thumbnails.default.width, 
+thumbnails.default.height, thumbnails.medium.url, thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url, thumbnails.high.width, 
+thumbnails.high.height, channelTitle, liveBroadcastContent}
 }
 \description{
 Search for videos, channels and playlists. (By default, the function searches for videos.)
@@ -57,6 +59,8 @@ Search for videos, channels and playlists. (By default, the function searches fo
 \examples{
 \dontrun{
 yt_search(term="Barack Obama")
+yt_search(term="Barack Obama", published_after="2016-10-01T00:00:00Z")
+yt_search(term="Barack Obama", published_before="2016-09-01T00:00:00Z")
 }
 }
 \references{

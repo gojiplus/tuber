@@ -22,8 +22,9 @@
 #' @param simplify Boolean. Return a data.frame if TRUE. Default is TRUE. If FALSE, it returns a list that carries additional information. 
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
-#' @return data.frame with 7 elements: publishedAt, channelId, title, description, thumbnails, channelTitle, liveBroadcastContent
-#' 
+#' @return data.frame with 15 elements: \code{publishedAt, channelId, title, description, thumbnails.default.url, thumbnails.default.width, 
+#' thumbnails.default.height, thumbnails.medium.url, thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url, thumbnails.high.width, 
+#' thumbnails.high.height, channelTitle, liveBroadcastContent} 
 #' @export
 #' 
 #' @references \url{https://developers.google.com/youtube/v3/docs/search/list}
@@ -31,23 +32,23 @@
 #' @examples
 #' \dontrun{
 #' yt_search(term="Barack Obama")
+#' yt_search(term="Barack Obama", published_after="2016-10-01T00:00:00Z")
+#' yt_search(term="Barack Obama", published_before="2016-09-01T00:00:00Z")
 #' }
 
 yt_search <- function (term=NULL, max_results=50, channel_id= NULL, channel_type=NULL, type="video", event_type=NULL, location= NULL, location_radius=NULL, 
 	published_after=NULL, published_before=NULL, video_definition = "any", video_caption="any", video_license="any", video_syndicated="any", video_type="any", 
 	simplify=TRUE,...) {
 
-	if (is.null(term)) stop("Must specify a search term.\n")
+	if (!is.character(term)) stop("Must specify a search term.\n")
 	if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50.")
 	if (!(video_license %in% c("any", "creativeCommon", "youtube"))) stop("video_license can only take values: any, creativeCommon, or youtube.")
 	if (!(video_syndicated %in% c("any", "true"))) stop("video_syndicated can only take values: any or true.")
 	if (!(video_type %in% c("any", "episode", "movie"))) stop("video_type can only take values: any, episode, or movie.")
-	if (!is.null(published_after))  if (is.na(as.POSIXct(published_after, format="%Y-%m-%dT%H:%M:%SZ"))) stop("The date is not properly formatted in RFC 339 Format.")
-	if (!is.null(published_before)) if (is.na(as.POSIXct(published_before, format="%Y-%m-%dT%H:%M:%SZ"))) stop("The date is not properly formatted in RFC 339 Format.")
+	if (is.character(published_after))  if (is.na(as.POSIXct(published_after,  format = "%Y-%m-%dT%H:%M:%SZ"))) stop("The date is not properly formatted in RFC 339 Format.")
+	if (is.character(published_before)) if (is.na(as.POSIXct(published_before, format = "%Y-%m-%dT%H:%M:%SZ"))) stop("The date is not properly formatted in RFC 339 Format.")
 
 	if (type!="video") video_caption = video_license = video_definition = video_type = video_syndicated= NULL
-
-	yt_check_token()
 
 	# For queries with spaces
 	term = paste0(unlist(strsplit(term, " ")), collapse="%20")
@@ -58,23 +59,20 @@ yt_search <- function (term=NULL, max_results=50, channel_id= NULL, channel_type
 
 	res <- tuber_GET("search", querylist, ...)
 
-
-	resdf <- NA
+	# Cat total results
+	cat("Total Results", res$pageInfo$totalResults, "\n")
 
 	if (identical(simplify, TRUE)) {
 
 		if (res$pageInfo$totalResults != 0) {
-			simple_res  <- lapply(res$items, function(x) x$snippet)
+			simple_res  <- lapply(res$items, function(x) unlist(x$snippet))
 			resdf       <- as.data.frame(do.call(rbind, simple_res))
+			return(resdf)
 		} else {
-			resdf <- 0
+			return(data.frame())
 		}
-
-		return(resdf)
 	}
 
-	# Cat total results
-	cat("Total Results", res$pageInfo$totalResults, "\n")
 
 	return(res)
 }
