@@ -31,9 +31,14 @@
 #' 
 #' @examples
 #' \dontrun{
+#' 
+#' # Set API token via yt_oauth() first
+#' 
 #' yt_search(term="Barack Obama")
 #' yt_search(term="Barack Obama", published_after="2016-10-01T00:00:00Z")
 #' yt_search(term="Barack Obama", published_before="2016-09-01T00:00:00Z")
+#' yt_search(term="Barack Obama", published_before="2016-03-01T00:00:00Z", published_after="2016-02-01T00:00:00Z")
+#' yt_search(term="Tom Cruise", published_before = "2016-01-10T00:00:00Z", published_after="2016-01-01T00:00:00Z")
 #' }
 
 yt_search <- function (term=NULL, max_results=50, channel_id= NULL, channel_type=NULL, type="video", event_type=NULL, location= NULL, location_radius=NULL, 
@@ -72,7 +77,6 @@ yt_search <- function (term=NULL, max_results=50, channel_id= NULL, channel_type
 			return(data.frame())
 		}
 	}
-
 
 	return(res)
 }
