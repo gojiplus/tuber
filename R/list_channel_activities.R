@@ -28,17 +28,20 @@
 #' 
 #' list_channel_activities(filter = c(channel_id="UCRw8bIz2wMLmfgAgWm903cA"))
 #' list_channel_activities(filter = c(channel_id="UCRw8bIz2wMLmfgAgWm903cA", regionCode="US"))
+#' list_channel_activities(filter = c(channel_id="UCMtFAi84ehTSYSE9XoHefig"),  
+#'                         published_before = "2016-02-10T00:00:00Z", published_after="2016-01-01T00:00:00Z")
 #' }
 
-list_channel_activities <- function (filter=NULL, part="snippet", max_results = 50, page_token = NULL, published_after = NULL, published_before = NULL, region_code = NULL, simplify = TRUE, ...) {
+list_channel_activities <- function (filter=NULL, part="snippet", max_results = 50, page_token = NULL, 
+									 published_after = NULL, published_before = NULL, region_code = NULL, simplify = TRUE, ...) {
 
 	if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50.")
 
-	if (is.character(published_after))  if (is.na(as.POSIXct(published_after, format="%Y-%m-%dT%H:%M:%SZ"))) stop("The date is not properly formatted in RFC 339 Format.")
-	if (is.character(published_before)) if (is.na(as.POSIXct(published_before, format="%Y-%m-%dT%H:%M:%SZ"))) stop("The date is not properly formatted in RFC 339 Format.")
-
 	if (!(names(filter) %in% c("channel_id"))) stop("filter can only take one of values: channel_id.")
 	if ( length(filter) != 1) stop("filter must be a vector of length 1.")
+
+	if (is.character(published_after))  if (is.na(as.POSIXct(published_after,  format = "%Y-%m-%dT%H:%M:%SZ"))) stop("The date is not properly formatted in RFC 339 Format.")
+	if (is.character(published_before)) if (is.na(as.POSIXct(published_before, format = "%Y-%m-%dT%H:%M:%SZ"))) stop("The date is not properly formatted in RFC 339 Format.")
 
 	translate_filter   <- c(channel_id = 'channelId')
 	yt_filter_name     <- as.vector(translate_filter[match(names(filter), names(translate_filter))])
@@ -57,7 +60,7 @@ list_channel_activities <- function (filter=NULL, part="snippet", max_results = 
 
     if (simplify==TRUE & part=="snippet") {
 		simple_res  <- lapply(raw_res$items, function(x) unlist(x))
-		simpler_res <- as.data.frame(do.call(rbind, simple_res))
+		simpler_res <- ldply(simple_res, rbind)
 		return(simpler_res)
 	} 
 

@@ -73,7 +73,7 @@ yt_search <- function (term=NULL, max_results=50, channel_id= NULL, channel_type
 
 		if (res$pageInfo$totalResults != 0) {
 			simple_res  <- lapply(res$items, function(x) unlist(x$snippet))
-			resdf       <- as.data.frame(do.call(rbind, simple_res))
+			resdf       <- ldply(simple_res, rbind)
 			return(resdf)
 		} else {
 			return(data.frame())
