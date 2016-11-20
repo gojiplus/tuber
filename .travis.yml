@@ -3,7 +3,7 @@ sudo: required
 warnings_are_errors: true
 cache: packages
 before_install:
-  - openssl aes-256-cbc -K $encrypted_d5a8c2c3d7b0_key -iv $encrypted_d5a8c2c3d7b0_iv -in tests/testthat/token_file.rds.enc -out tests/testthat/token_file.rds -d
+  -  openssl aes-256-cbc -K $encrypted_dc184331e475_key -iv $encrypted_dc184331e475_iv -in tests/testthat/token_file.rds.enc -out tests/testthat/token_file.rds -d
 after_success:
 - Rscript -e 'covr::codecov()'
 notifications:
