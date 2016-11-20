@@ -6,6 +6,7 @@
 * More consistent return for get_related_videos() --- df with same cols. even if no results.
 * list_guidecats() and list_videocats() now return region_code as part of the returned data.frame
 * return when simplify is TRUE for yt_search now gives a data.frame with 15 columns
+* using ldly for more robust rbind of data.frames 
 
 # version 0.6.0 
 

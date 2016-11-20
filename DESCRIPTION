@@ -14,7 +14,8 @@ Depends:
 License: MIT + file LICENSE
 LazyData: true
 Imports:
-    httr
+    httr,
+    plyr
 VignetteBuilder: knitr
 Suggests:
     knitr (>= 1.11),
