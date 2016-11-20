@@ -1,3 +1,7 @@
+# version 0.8.0 
+
+* get_all --- iterate through the results and get all supported for various functions.
+
 # version 0.7.0 
 
 * No more invisible return
