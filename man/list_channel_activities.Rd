@@ -45,7 +45,8 @@ Returns a list of channel events that match the request criteria.
 list_channel_activities(filter = c(channel_id="UCRw8bIz2wMLmfgAgWm903cA"))
 list_channel_activities(filter = c(channel_id="UCRw8bIz2wMLmfgAgWm903cA", regionCode="US"))
 list_channel_activities(filter = c(channel_id="UCMtFAi84ehTSYSE9XoHefig"),  
-                        published_before = "2016-02-10T00:00:00Z", published_after="2016-01-01T00:00:00Z")
+                        published_before = "2016-02-10T00:00:00Z", 
+                        published_after="2016-01-01T00:00:00Z")
 }
 }
 \references{

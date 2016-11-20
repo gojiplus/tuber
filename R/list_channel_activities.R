@@ -29,7 +29,8 @@
 #' list_channel_activities(filter = c(channel_id="UCRw8bIz2wMLmfgAgWm903cA"))
 #' list_channel_activities(filter = c(channel_id="UCRw8bIz2wMLmfgAgWm903cA", regionCode="US"))
 #' list_channel_activities(filter = c(channel_id="UCMtFAi84ehTSYSE9XoHefig"),  
-#'                         published_before = "2016-02-10T00:00:00Z", published_after="2016-01-01T00:00:00Z")
+#'                         published_before = "2016-02-10T00:00:00Z", 
+#'                         published_after="2016-01-01T00:00:00Z")
 #' }
 
 list_channel_activities <- function (filter=NULL, part="snippet", max_results = 50, page_token = NULL, 
