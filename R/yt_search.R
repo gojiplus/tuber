@@ -20,6 +20,7 @@
 #' @param video_license Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'creativeCommon' (return videos with Creative Commons 
 #' license), 'youtube' (return videos with standard YouTube license).
 #' @param simplify Boolean. Return a data.frame if TRUE. Default is TRUE. If FALSE, it returns a list that carries additional information. 
+#' @param page_token specific page in the result set that should be returned, optional
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
 #' @return data.frame with 15 elements: \code{publishedAt, channelId, title, description, thumbnails.default.url, thumbnails.default.width, 
@@ -45,7 +46,7 @@
 
 yt_search <- function (term=NULL, max_results=50, channel_id= NULL, channel_type=NULL, type="video", event_type=NULL, location= NULL, location_radius=NULL, 
 	published_after=NULL, published_before=NULL, video_definition = "any", video_caption="any", video_license="any", video_syndicated="any", video_type="any", 
-	simplify=TRUE,...) {
+	simplify = TRUE,  page_token = NULL, ...) {
 
 	if (!is.character(term)) stop("Must specify a search term.\n")
 	if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50.")
@@ -62,7 +63,7 @@ yt_search <- function (term=NULL, max_results=50, channel_id= NULL, channel_type
 
 	querylist <- list(part="snippet", q = term, maxResults=max_results, channelId=channel_id, type=type, channelType=channel_type, eventType= event_type, 
 		location= location, publishedAfter=published_after, publishedBefore=published_before, videoDefinition = video_definition, videoCaption= video_caption, 
-		videoType=video_type, videoSyndicated=video_syndicated, videoLicense= video_license)
+		videoType=video_type, videoSyndicated=video_syndicated, videoLicense= video_license, pageToken = page_token)
 
 	querylist <- querylist[names(querylist)[sapply(querylist, is.character)]]
 

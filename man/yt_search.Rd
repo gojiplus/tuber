@@ -9,7 +9,7 @@ yt_search(term = NULL, max_results = 50, channel_id = NULL,
   location = NULL, location_radius = NULL, published_after = NULL,
   published_before = NULL, video_definition = "any",
   video_caption = "any", video_license = "any", video_syndicated = "any",
-  video_type = "any", simplify = TRUE, ...)
+  video_type = "any", simplify = TRUE, page_token = NULL, ...)
 }
 \arguments{
 \item{term}{Character. Search term; required; no default}
@@ -45,6 +45,8 @@ license), 'youtube' (return videos with standard YouTube license).}
 \item{video_type}{Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'episode' (return episode of shows), 'movie' (return movies)}
 
 \item{simplify}{Boolean. Return a data.frame if TRUE. Default is TRUE. If FALSE, it returns a list that carries additional information.}
+
+\item{page_token}{specific page in the result set that should be returned, optional}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
