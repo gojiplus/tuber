@@ -18,6 +18,11 @@
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
 #' @return named list
+#' If \code{simplify} is \code{TRUE}, a data.frame is returned with 18 columns:
+#' \code{publishedAt, channelId, title, description, thumbnails.default.url, thumbnails.default.width, thumbnails.default.height,
+#' thumbnails.medium.url, thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url, thumbnails.high.width, 
+#' thumbnails.high.height, thumbnails.standard.url, thumbnails.standard.width, thumbnails.standard.height, channelTitle, type} 
+#' 
 #' @export
 #' @references \url{https://developers.google.com/youtube/v3/docs/activities/list}
 #' 
@@ -60,7 +65,7 @@ list_channel_activities <- function (filter=NULL, part="snippet", max_results = 
     }
 
     if (simplify==TRUE & part=="snippet") {
-		simple_res  <- lapply(raw_res$items, function(x) unlist(x))
+		simple_res  <- lapply(raw_res$items, function(x) unlist(x$snippet))
 		simpler_res <- ldply(simple_res, rbind)
 		return(simpler_res)
 	} 

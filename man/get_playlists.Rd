@@ -28,7 +28,9 @@ the function returns a \code{data.frame}. Else a list with all the information r
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-captions for the video from one of the first track
+playlists
+When \code{simplify} is \code{TRUE}, a \code{data.frame} with 4 columns is returned:
+\code{kind, etag, id, contentDetails.itemCount}
 }
 \description{
 Get Playlists

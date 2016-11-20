@@ -55,8 +55,7 @@ get_comment_threads <- function (filter=NULL, part="snippet", text_format="html"
 	
 	if (simplify==TRUE & part=="snippet") {
 		simple_res  <- lapply(res$items, function(x) unlist(x$snippet$topLevelComment$snippet))
-		simpler_res <- as.data.frame(do.call(rbind, simple_res))
-
+		simpler_res <- ldply(simple_res, rbind)
 		return(simpler_res)
 	}
 

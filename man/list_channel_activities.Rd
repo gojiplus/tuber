@@ -33,6 +33,10 @@ the function returns a \code{data.frame}. Else a list with all the information r
 }
 \value{
 named list
+If \code{simplify} is \code{TRUE}, a data.frame is returned with 18 columns:
+\code{publishedAt, channelId, title, description, thumbnails.default.url, thumbnails.default.width, thumbnails.default.height,
+thumbnails.medium.url, thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url, thumbnails.high.width, 
+thumbnails.high.height, thumbnails.standard.url, thumbnails.standard.width, thumbnails.standard.height, channelTitle, type}
 }
 \description{
 Returns a list of channel events that match the request criteria.

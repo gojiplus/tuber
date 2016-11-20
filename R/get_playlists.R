@@ -14,7 +14,10 @@
 #' the function returns a \code{data.frame}. Else a list with all the information returned.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
-#' @return captions for the video from one of the first track
+#' @return playlists
+#' When \code{simplify} is \code{TRUE}, a \code{data.frame} with 4 columns is returned:
+#' \code{kind, etag, id, contentDetails.itemCount}
+#' 
 #' @export
 #' @references \url{https://developers.google.com/youtube/v3/docs/playlists/list}
 #' 
@@ -51,7 +54,7 @@ get_playlists <- function (filter = NULL, part = "contentDetails", max_results =
 
     if (simplify==TRUE & part=="contentDetails") {
 		simple_res  <- lapply(raw_res$items, function(x) unlist(x))
-		simpler_res <- as.data.frame(do.call(rbind, simple_res))
+		simpler_res <- ldply(simple_res, rbind)
 		return(simpler_res)
 	} 
 

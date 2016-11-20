@@ -65,6 +65,7 @@ yt_search <- function (term=NULL, max_results=50, channel_id= NULL, channel_type
 		location= location, publishedAfter=published_after, publishedBefore=published_before, videoDefinition = video_definition, videoCaption= video_caption, 
 		videoType=video_type, videoSyndicated=video_syndicated, videoLicense= video_license, pageToken = page_token)
 
+	# Sending NULLs to Google seems to short its wiring
 	querylist <- querylist[names(querylist)[sapply(querylist, is.character)]]
 
 	res <- tuber_GET("search", querylist, ...)

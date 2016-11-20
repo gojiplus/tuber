@@ -1,12 +1,16 @@
 # version 0.7.0 
 
-* get_playlists now supports simplify --- allows for data.frame return 
 * No more invisible return
 * Rather than is.null checks, !is.character checks for args expected to be chars
-* More consistent return for get_related_videos() --- df with same cols. even if no results.
-* list_guidecats() and list_videocats() now return region_code as part of the returned data.frame
-* return when simplify is TRUE for yt_search now gives a data.frame with 15 columns
 * using ldly for more robust rbind of data.frames 
+* Specific functions:
+    * get_playlists now supports simplify --- allows for data.frame return 
+    * More consistent return for get_related_videos() --- df with same cols. even if no results.
+    * list_guidecats() and list_videocats() now return region_code as part of the returned data.frame
+    * return when simplify is TRUE for yt_search() now gives a data.frame with 15 columns
+    * nicer return and documentation for list_channel_activities()
+    * better documentation for get_playlists()
+    * fixed a bug in list_abuse_report_reasons() for part as snippet
 
 # version 0.6.0 
 

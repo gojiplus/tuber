@@ -34,7 +34,8 @@
 #' 
 #' get_comments(filter = c(comment_id="z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk"))
 #' get_comments(filter = 
-#' c(comment_id="z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk, z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk"))
+#' c(comment_id="z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk, 
+#' 		         z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk"))
 #' }
 
 get_comments <- function (filter = NULL, part = "snippet", max_results = 100, text_format = "html", page_token = NULL, simplify = TRUE, ...) {
@@ -62,7 +63,7 @@ get_comments <- function (filter = NULL, part = "snippet", max_results = 100, te
 
 	if (simplify==TRUE & part=="snippet") {
 		simple_res  <- lapply(raw_res$items, function(x) unlist(x$snippet))
-		simpler_res <- as.data.frame(do.call(rbind, simple_res))
+		simpler_res <- ldply(simple_res, rbind)
 		simpler_res$id <- raw_res$items[[1]]$id
 		return(simpler_res)
 	} 

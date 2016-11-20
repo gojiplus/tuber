@@ -47,7 +47,8 @@ Get Comments
 
 get_comments(filter = c(comment_id="z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk"))
 get_comments(filter = 
-c(comment_id="z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk, z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk"))
+c(comment_id="z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk, 
+		         z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk"))
 }
 }
 \references{

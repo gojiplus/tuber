@@ -8,7 +8,7 @@
 #' @param simplify Boolean. Default is TRUE. When TRUE, and part is \code{snippet}, a data.frame is returned
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
-#' @return list of caption tracks. When simplify is TRUE, a data.frame is returned with 
+#' @return list of caption tracks. When \code{simplify} is \code{TRUE}, a \code{data.frame} is returned with 
 #' following columns: \code{videoId, lastUpdated, trackKind, language, name, audioTrackType, isCC,
 #' isLarge, isEasyReader, isDraft, isAutoSynced, status, id} (caption id)
 #' 
@@ -37,7 +37,7 @@ list_caption_tracks <- function (part="snippet", video_id=NULL, lang="en", id = 
     }
 
     if (simplify == TRUE & part=="snippet") {
-    	res_df 	  <- as.data.frame(do.call(rbind, lapply(raw_res$items, function(x) unlist(x$snippet))))
+    	res_df 	  <- ldply(lapply(raw_res$items, function(x) unlist(x$snippet)), rbind)
     	res_df$id <- sapply(raw_res$items, function(x) unlist(x$id))
     	return(res_df)
     }

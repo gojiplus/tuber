@@ -17,7 +17,7 @@ get_related_videos(video_id = NULL, max_results = 50,
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-data.frame with 16 columns: \code{video_id, publishedAt, channelId, title, description, 
+\code{data.frame} with 16 columns: \code{video_id, publishedAt, channelId, title, description, 
 thumbnails.default.url, thumbnails.default.width, thumbnails.default.height, thumbnails.medium.url, 
 thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url, thumbnails.high.width, 
 thumbnails.high.height, channelTitle, liveBroadcastContent}

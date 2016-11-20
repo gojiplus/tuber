@@ -7,7 +7,7 @@
 #' @param safe_search Character. Optional. Takes one of three values: \code{'moderate'}, \code{'none'} (default) or \code{'strict'}
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'  
-#' @return data.frame with 16 columns: \code{video_id, publishedAt, channelId, title, description, 
+#' @return \code{data.frame} with 16 columns: \code{video_id, publishedAt, channelId, title, description, 
 #' thumbnails.default.url, thumbnails.default.width, thumbnails.default.height, thumbnails.medium.url, 
 #' thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url, thumbnails.high.width, 
 #' thumbnails.high.height, channelTitle, liveBroadcastContent}
@@ -41,7 +41,7 @@ get_related_videos <- function (video_id = NULL, max_results = 50, safe_search =
 	if (res$pageInfo$totalResults != 0) {
 
 		simple_res  <- lapply(res$items, function(x) unlist(x$snippet))
-		resdf       <- cbind(video_id = video_id, do.call(rbind, simple_res))
+		resdf       <- cbind(video_id = video_id, ldply(simple_res, rbind))
 		resdf       <- as.data.frame(resdf)
 
 	} else {

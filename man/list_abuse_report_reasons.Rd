@@ -16,8 +16,8 @@ following: \code{id, snippet}. e.g., \code{"id, snippet"}, \code{"id"}, etc. Def
 }
 \value{
 If no results, empty data.frame returned
-If part requested = "id, snippet", data.frame with 4 columns: \code{etag, id, label, secReasons}
-If part requested = "snippet", data.frame with 3 columns: \code{etag, label, secReasons}
+If part requested = "id, snippet" or "snippet", 
+\code{data.frame} with 4 columns: \code{etag, id, label, secReasons}
 If part requested = "id", data.frame with 2 columns: \code{etag, id}
 }
 \description{

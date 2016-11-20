@@ -8,8 +8,8 @@
 #' @return 
 #' 
 #' If no results, empty data.frame returned
-#' If part requested = "id, snippet", data.frame with 4 columns: \code{etag, id, label, secReasons}
-#' If part requested = "snippet", data.frame with 3 columns: \code{etag, label, secReasons}
+#' If part requested = "id, snippet" or "snippet", 
+#' \code{data.frame} with 4 columns: \code{etag, id, label, secReasons}
 #' If part requested = "id", data.frame with 2 columns: \code{etag, id}
 #' 
 #' @export
@@ -36,19 +36,14 @@ list_abuse_report_reasons <- function (part = "id, snippet", hl = "en-US", ...) 
 
 	if (length(res$items) != 0) {
 		
-		if (part=="id, snippet") {
+		if (part=="id, snippet" | part=="snippet") {
 			simple_res  <- lapply(res$items, function(x) c(etag=x$etag, id=x$id, label=x$snippet$label, secReasons=paste(unlist(x$snippet$secondaryReasons), collapse=",")))
-			resdf       <- as.data.frame(do.call(rbind, simple_res))
-		}
-
-		if (part=="id, snippet") {
-			simple_res  <- lapply(res$items, function(x) c(etag=x$etag, label=x$snippet$label, secReasons=paste(unlist(x$snippet$secondaryReasons), collapse=",")))
-			resdf       <- as.data.frame(do.call(rbind, simple_res))
+			resdf       <- ldply(simple_res, rbind)
 		}
 
 		if (part=="id") {
 			simple_res  <- lapply(res$items, function(x) c(etag=x$etag, id=x$id))
-			resdf       <- as.data.frame(do.call(rbind, simple_res))
+			resdf       <- ldply(simple_res, rbind)
 		}
 
 	}
