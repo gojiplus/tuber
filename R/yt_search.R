@@ -80,7 +80,9 @@ yt_search <- function (term=NULL, max_results = 50, channel_id= NULL, channel_ty
 
 		while ( is.character(page_token)) {
 
-			a_res <- yt_search(part="snippet", term = term, simplify = FALSE, get_all = FALSE, page_token = page_token)
+			a_res <- yt_search(part="snippet", term = term, max_results = max_results, channel_id=channel_id, type=type, channel_type=channel_type, event_type= event_type, 
+							   location= location, published_after = published_after, published_before = published_before, video_definition = video_definition, video_caption= video_caption, 
+							   video_type=video_type, video_syndicated=video_syndicated, video_license = video_license, simplify = FALSE, get_all = FALSE, page_token = page_token)
 			
 			a_simple_res  <- lapply(a_res$items, function(x) unlist(x$snippet))
 			a_resdf       <- ldply(a_simple_res, rbind)
@@ -89,8 +91,6 @@ yt_search <- function (term=NULL, max_results = 50, channel_id= NULL, channel_ty
 
 			page_token    <- a_res$nextPageToken
 			
-			print(page_token)
-
 		}
 
 		return(fin_res)
