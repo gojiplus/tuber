@@ -75,7 +75,16 @@ yt_search <- function (term=NULL, max_results = 50, channel_id= NULL, channel_ty
 
 	if (identical(get_all, TRUE)) {
 		
-		simple_res  <- lapply(res$items, function(x) c(video_id = x$id$videoId, unlist(x$snippet)))
+		if (type=="video") {
+			
+			simple_res  <- lapply(res$items, function(x) c(video_id = x$id$videoId, unlist(x$snippet)))
+			
+			} else {
+			 
+			 simple_res  <- lapply(res$items, function(x) unlist(x$snippet))
+			
+			}
+
 		fin_res     <- ldply(simple_res, rbind)
 		
 		page_token  <- res$nextPageToken
@@ -86,7 +95,16 @@ yt_search <- function (term=NULL, max_results = 50, channel_id= NULL, channel_ty
 							   location= location, published_after = published_after, published_before = published_before, video_definition = video_definition, video_caption= video_caption, 
 							   video_type=video_type, video_syndicated=video_syndicated, video_license = video_license, simplify = FALSE, get_all = FALSE, page_token = page_token)
 			
-			a_simple_res  <- lapply(a_res$items, function(x)  c(video_id = x$id$videoId, unlist(x$snippet)))
+			if (type=="video") {
+			
+				a_simple_res  <- lapply(a_res$items, function(x)  c(video_id = x$id$videoId, unlist(x$snippet)))
+			
+			} else {
+			
+				a_simple_res  <- lapply(a_res$items, function(x)  unlist(x$snippet))
+			
+			}
+
 			a_resdf       <- ldply(a_simple_res, rbind)
 
 			fin_res       <- rbind(fin_res, a_resdf)
