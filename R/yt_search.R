@@ -6,21 +6,22 @@
 #' @param max_results Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.
 #' Search results are constrained to a maximum of 500 videos if type is video and we have a value of \code{channel_id}.
 #' @param channel_id Character. Only return search results from this channel; Optional.
-#' @param channel_type Character. Optional. Takes one of two values: 'any' or 'show'. Default is 'any'
-#' @param event_type Character. Optional. Takes one of three values: `completed', 'live' or 'upcoming'
+#' @param channel_type Character. Optional. Takes one of two values: \code{'any', 'show'}. Default is \code{'any'}
+#' @param event_type Character. Optional. Takes one of three values: \code{'completed', 'live', 'upcoming'}
 #' @param location  Character.  Optional. Latitude and Longitude within parentheses, e.g. "(37.42307,-122.08427)"
 #' @param location_radius Character.  Optional. e.g. "1500m", "5km", "10000ft", "0.75mi"
 #' @param published_after Character. Optional. RFC 339 Format. For instance, "1970-01-01T00:00:00Z"
 #' @param published_before Character. Optional. RFC 339 Format. For instance, "1970-01-01T00:00:00Z"
-#' @param type Character. Optional. Takes one of three values: 'video', 'channel', or 'playlist'. Default is 'video'.
-#' @param video_caption Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'closedCaption', 'none'. Type must be set to video.
-#' @param video_type Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'episode' (return episode of shows), 'movie' (return movies)
-#' @param video_syndicated Character. Optional. Takes one of two values: 'any' (return all videos; Default), 'true' (return only syndicated videos)
-#' @param video_definition Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'high' and 'standard'
-#' @param video_license Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'creativeCommon' (return videos with Creative Commons 
-#' license), 'youtube' (return videos with standard YouTube license).
-#' @param simplify Boolean. Return a data.frame if TRUE. Default is TRUE. If FALSE, it returns a list that carries additional information. 
+#' @param type Character. Optional. Takes one of three values: \code{'video', 'channel', 'playlist'}. Default is \code{'video'}.
+#' @param video_caption Character. Optional. Takes one of three values: \code{'any'} (return all videos; Default), \code{'closedCaption', 'none'}. Type must be set to video.
+#' @param video_type Character. Optional. Takes one of three values: \code{'any'} (return all videos; Default), \code{'episode'} (return episode of shows), 'movie' (return movies)
+#' @param video_syndicated Character. Optional. Takes one of two values: \code{'any'} (return all videos; Default), \code{'true'} (return only syndicated videos)
+#' @param video_definition Character. Optional. Takes one of three values: \code{'any'} (return all videos; Default), \code{'high', 'standard'}
+#' @param video_license Character. Optional. Takes one of three values: \code{'any'} (return all videos; Default), \code{'creativeCommon'} (return videos with Creative Commons 
+#' license), \code{'youtube'} (return videos with standard YouTube license).
+#' @param simplify Boolean. Return a data.frame if \code{TRUE}. Default is \code{TRUE}. If \code{TRUE}, it returns a list that carries additional information. 
 #' @param page_token specific page in the result set that should be returned, optional
+#' @param get_all get all results, iterating through all the results pages. Default is \code{TRUE}. Result is a \code{data.frame}. Optional.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
 #' @return data.frame with 15 elements: \code{publishedAt, channelId, title, description, thumbnails.default.url, thumbnails.default.width, 
@@ -44,9 +45,9 @@
 #'                                published_after="2016-01-01T00:00:00Z")
 #' }
 
-yt_search <- function (term=NULL, max_results=50, channel_id= NULL, channel_type=NULL, type="video", event_type=NULL, location= NULL, location_radius=NULL, 
+yt_search <- function (term=NULL, max_results = 50, channel_id= NULL, channel_type=NULL, type="video", event_type=NULL, location= NULL, location_radius=NULL, 
 	published_after=NULL, published_before=NULL, video_definition = "any", video_caption="any", video_license="any", video_syndicated="any", video_type="any", 
-	simplify = TRUE,  page_token = NULL, ...) {
+	simplify = TRUE, get_all = TRUE, page_token = NULL, ...) {
 
 	if (!is.character(term)) stop("Must specify a search term.\n")
 	if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50.")
@@ -59,9 +60,9 @@ yt_search <- function (term=NULL, max_results=50, channel_id= NULL, channel_type
 	if (type!="video") video_caption = video_license = video_definition = video_type = video_syndicated= NULL
 
 	# For queries with spaces
-	term = paste0(unlist(strsplit(term, " ")), collapse="%20")
+	format_term = paste0(unlist(strsplit(term, " ")), collapse="%20")
 
-	querylist <- list(part="snippet", q = term, maxResults=max_results, channelId=channel_id, type=type, channelType=channel_type, eventType= event_type, 
+	querylist <- list(part="snippet", q = format_term, maxResults = max_results, channelId=channel_id, type=type, channelType=channel_type, eventType= event_type, 
 		location= location, publishedAfter=published_after, publishedBefore=published_before, videoDefinition = video_definition, videoCaption= video_caption, 
 		videoType=video_type, videoSyndicated=video_syndicated, videoLicense= video_license, pageToken = page_token)
 
@@ -70,8 +71,30 @@ yt_search <- function (term=NULL, max_results=50, channel_id= NULL, channel_type
 
 	res <- tuber_GET("search", querylist, ...)
 
-	# Cat total results
-	cat("Total Results", res$pageInfo$totalResults, "\n")
+	if (identical(get_all, TRUE)) {
+		
+		simple_res  <- lapply(res$items, function(x) unlist(x$snippet))
+		fin_res     <- ldply(simple_res, rbind)
+
+		page_token  <- res$nextPageToken
+
+		while ( is.character(page_token)) {
+
+			a_res <- yt_search(part="snippet", term = term, simplify = FALSE, get_all = FALSE, page_token = page_token)
+			
+			a_simple_res  <- lapply(a_res$items, function(x) unlist(x$snippet))
+			a_resdf       <- ldply(a_simple_res, rbind)
+
+			fin_res       <- rbind(fin_res, a_resdf)
+
+			page_token    <- a_res$nextPageToken
+			
+			print(page_token)
+
+		}
+
+		return(fin_res)
+	}
 
 	if (identical(simplify, TRUE)) {
 
@@ -84,5 +107,6 @@ yt_search <- function (term=NULL, max_results=50, channel_id= NULL, channel_type
 		}
 	}
 
+	
 	return(res)
 }

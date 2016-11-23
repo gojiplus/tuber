@@ -9,7 +9,8 @@ yt_search(term = NULL, max_results = 50, channel_id = NULL,
   location = NULL, location_radius = NULL, published_after = NULL,
   published_before = NULL, video_definition = "any",
   video_caption = "any", video_license = "any", video_syndicated = "any",
-  video_type = "any", simplify = TRUE, page_token = NULL, ...)
+  video_type = "any", simplify = TRUE, get_all = TRUE,
+  page_token = NULL, ...)
 }
 \arguments{
 \item{term}{Character. Search term; required; no default}
@@ -19,11 +20,11 @@ Search results are constrained to a maximum of 500 videos if type is video and w
 
 \item{channel_id}{Character. Only return search results from this channel; Optional.}
 
-\item{channel_type}{Character. Optional. Takes one of two values: 'any' or 'show'. Default is 'any'}
+\item{channel_type}{Character. Optional. Takes one of two values: \code{'any', 'show'}. Default is \code{'any'}}
 
-\item{type}{Character. Optional. Takes one of three values: 'video', 'channel', or 'playlist'. Default is 'video'.}
+\item{type}{Character. Optional. Takes one of three values: \code{'video', 'channel', 'playlist'}. Default is \code{'video'}.}
 
-\item{event_type}{Character. Optional. Takes one of three values: `completed', 'live' or 'upcoming'}
+\item{event_type}{Character. Optional. Takes one of three values: \code{'completed', 'live', 'upcoming'}}
 
 \item{location}{Character.  Optional. Latitude and Longitude within parentheses, e.g. "(37.42307,-122.08427)"}
 
@@ -33,18 +34,20 @@ Search results are constrained to a maximum of 500 videos if type is video and w
 
 \item{published_before}{Character. Optional. RFC 339 Format. For instance, "1970-01-01T00:00:00Z"}
 
-\item{video_definition}{Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'high' and 'standard'}
+\item{video_definition}{Character. Optional. Takes one of three values: \code{'any'} (return all videos; Default), \code{'high', 'standard'}}
 
-\item{video_caption}{Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'closedCaption', 'none'. Type must be set to video.}
+\item{video_caption}{Character. Optional. Takes one of three values: \code{'any'} (return all videos; Default), \code{'closedCaption', 'none'}. Type must be set to video.}
 
-\item{video_license}{Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'creativeCommon' (return videos with Creative Commons 
-license), 'youtube' (return videos with standard YouTube license).}
+\item{video_license}{Character. Optional. Takes one of three values: \code{'any'} (return all videos; Default), \code{'creativeCommon'} (return videos with Creative Commons 
+license), \code{'youtube'} (return videos with standard YouTube license).}
 
-\item{video_syndicated}{Character. Optional. Takes one of two values: 'any' (return all videos; Default), 'true' (return only syndicated videos)}
+\item{video_syndicated}{Character. Optional. Takes one of two values: \code{'any'} (return all videos; Default), \code{'true'} (return only syndicated videos)}
 
-\item{video_type}{Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'episode' (return episode of shows), 'movie' (return movies)}
+\item{video_type}{Character. Optional. Takes one of three values: \code{'any'} (return all videos; Default), \code{'episode'} (return episode of shows), 'movie' (return movies)}
 
-\item{simplify}{Boolean. Return a data.frame if TRUE. Default is TRUE. If FALSE, it returns a list that carries additional information.}
+\item{simplify}{Boolean. Return a data.frame if \code{TRUE}. Default is \code{TRUE}. If \code{TRUE}, it returns a list that carries additional information.}
+
+\item{get_all}{get all results, iterating through all the results pages. Default is \code{TRUE}. Result is a \code{data.frame}. Optional.}
 
 \item{page_token}{specific page in the result set that should be returned, optional}
 
