@@ -24,7 +24,7 @@
 #' @param get_all get all results, iterating through all the results pages. Default is \code{TRUE}. Result is a \code{data.frame}. Optional.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
-#' @return data.frame with 15 elements: \code{publishedAt, channelId, title, description, thumbnails.default.url, thumbnails.default.width, 
+#' @return data.frame with 16 elements: \code{video_id, publishedAt, channelId, title, description, thumbnails.default.url, thumbnails.default.width, 
 #' thumbnails.default.height, thumbnails.medium.url, thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url, thumbnails.high.width, 
 #' thumbnails.high.height, channelTitle, liveBroadcastContent} 
 #' @export
@@ -45,9 +45,11 @@
 #'                                published_after="2016-01-01T00:00:00Z")
 #' }
 
-yt_search <- function (term=NULL, max_results = 50, channel_id= NULL, channel_type=NULL, type="video", event_type=NULL, location= NULL, location_radius=NULL, 
-	published_after=NULL, published_before=NULL, video_definition = "any", video_caption="any", video_license="any", video_syndicated="any", video_type="any", 
-	simplify = TRUE, get_all = TRUE, page_token = NULL, ...) {
+yt_search <- function (term=NULL, max_results = 50, channel_id= NULL, channel_type=NULL, type="video", 
+					   event_type=NULL, location= NULL, location_radius=NULL, published_after=NULL, 
+					   published_before=NULL, video_definition = "any", video_caption="any", 
+					   video_license="any", video_syndicated="any", video_type="any", 
+					   simplify = TRUE, get_all = TRUE, page_token = NULL, ...) {
 
 	if (!is.character(term)) stop("Must specify a search term.\n")
 	if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50.")
@@ -73,9 +75,9 @@ yt_search <- function (term=NULL, max_results = 50, channel_id= NULL, channel_ty
 
 	if (identical(get_all, TRUE)) {
 		
-		simple_res  <- lapply(res$items, function(x) unlist(x$snippet))
+		simple_res  <- lapply(res$items, function(x) c(video_id = x$id$videoId, unlist(x$snippet)))
 		fin_res     <- ldply(simple_res, rbind)
-
+		
 		page_token  <- res$nextPageToken
 
 		while ( is.character(page_token)) {
@@ -84,7 +86,7 @@ yt_search <- function (term=NULL, max_results = 50, channel_id= NULL, channel_ty
 							   location= location, published_after = published_after, published_before = published_before, video_definition = video_definition, video_caption= video_caption, 
 							   video_type=video_type, video_syndicated=video_syndicated, video_license = video_license, simplify = FALSE, get_all = FALSE, page_token = page_token)
 			
-			a_simple_res  <- lapply(a_res$items, function(x) unlist(x$snippet))
+			a_simple_res  <- lapply(a_res$items, function(x)  c(video_id = x$id$videoId, unlist(x$snippet)))
 			a_resdf       <- ldply(a_simple_res, rbind)
 
 			fin_res       <- rbind(fin_res, a_resdf)

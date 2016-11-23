@@ -54,7 +54,7 @@ license), \code{'youtube'} (return videos with standard YouTube license).}
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-data.frame with 15 elements: \code{publishedAt, channelId, title, description, thumbnails.default.url, thumbnails.default.width, 
+data.frame with 16 elements: \code{video_id, publishedAt, channelId, title, description, thumbnails.default.url, thumbnails.default.width, 
 thumbnails.default.height, thumbnails.medium.url, thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url, thumbnails.high.width, 
 thumbnails.high.height, channelTitle, liveBroadcastContent}
 }
