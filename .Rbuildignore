@@ -1,7 +1,8 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-.httr-oauth
-dev
+^.httr-oauth$
+^dev$
+^docs$
 ^.travis.yml$
 ^codecov.yml$
 ^appveyor.yml$
