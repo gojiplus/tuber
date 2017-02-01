@@ -32,4 +32,3 @@ get_channel_stats(channel_id="UCMtFAi84ehTSYSE9Xo") # Incorrect channel ID
 \references{
 \url{https://developers.google.com/youtube/v3/docs/channels/list}
 }
-

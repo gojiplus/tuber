@@ -52,4 +52,3 @@ get_comment_threads(filter = c(video_id="N708P-A45D0"))
 \references{
 \url{https://developers.google.com/youtube/v3/docs/commentThreads/list}
 }
-

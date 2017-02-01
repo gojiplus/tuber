@@ -48,4 +48,3 @@ max_results=10)
 \references{
 \url{https://developers.google.com/youtube/v3/docs/channels/list}
 }
-

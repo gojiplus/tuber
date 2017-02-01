@@ -3,7 +3,7 @@ Title: Client for the YouTube API
 Version: 0.7.0
 Authors@R: person("Gaurav", "Sood", email = "gsood07@gmail.com", role = c("aut", "cre"))
 Maintainer: Gaurav Sood <gsood07@gmail.com>
-Description:  Get comments posted on YouTube videos, information on how many 
+Description: Get comments posted on YouTube videos, information on how many 
     times a video has been liked, search for videos with particular content, and 
     much more. You can also scrape captions from a few videos. To learn more about
     the YouTube API, see <https://developers.google.com/youtube/v3/>.
@@ -22,4 +22,4 @@ Suggests:
     testthat,
     rmarkdown,
     xml2
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.0

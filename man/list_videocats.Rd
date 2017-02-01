@@ -33,4 +33,3 @@ list_videocats() # Will throw an error asking for a valid filter with valid regi
 \references{
 \url{https://developers.google.com/youtube/v3/docs/videoCategories/list}
 }
-

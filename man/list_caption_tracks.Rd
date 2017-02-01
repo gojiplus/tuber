@@ -40,4 +40,3 @@ list_caption_tracks(video_id="yJXTXN4xrI8")
 \references{
 \url{https://developers.google.com/youtube/v3/docs/captions/list}
 }
-

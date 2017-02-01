@@ -36,4 +36,3 @@ list_abuse_report_reasons(part="snippet")
 \references{
 \url{https://developers.google.com/youtube/v3/docs/videoAbuseReportReasons/list}
 }
-

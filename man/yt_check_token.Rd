@@ -9,4 +9,3 @@ yt_check_token()
 \description{
 Check if authentication token is in options
 }
-

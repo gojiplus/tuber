@@ -37,4 +37,3 @@ list_channel_sections(c(channel_id="UCRw8bIz2wMLmfgAgWm903cA"))
 \references{
 \url{https://developers.google.com/youtube/v3/docs/activities/list}
 }
-

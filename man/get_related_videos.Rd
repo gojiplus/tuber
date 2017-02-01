@@ -36,4 +36,3 @@ get_related_videos(video_id="yJXTXN4xrI8")
 \references{
 \url{https://developers.google.com/youtube/v3/docs/search/list}
 }
-

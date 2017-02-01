@@ -40,4 +40,3 @@ The function launches a browser to allow you to authorize the application
 
 \url{https://developers.google.com/youtube/v3/guides/auth/client-side-web-apps} for different scopes
 }
-

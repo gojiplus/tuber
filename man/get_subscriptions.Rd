@@ -45,4 +45,3 @@ get_subscriptions(filter=c(channel_id="UChTJTbr5kf3hYazJZO-euHg"))
 \references{
 \url{https://developers.google.com/youtube/v3/docs/subscriptions/list}
 }
-

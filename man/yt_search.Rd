@@ -78,4 +78,3 @@ yt_search(term="Barack Obama", published_before = "2016-02-10T00:00:00Z",
 \references{
 \url{https://developers.google.com/youtube/v3/docs/search/list}
 }
-

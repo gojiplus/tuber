@@ -47,4 +47,3 @@ get_playlists(filter=c(channel_id="UCMtFAi84ehTSYSE9X")) # incorrect Channel ID
 \references{
 \url{https://developers.google.com/youtube/v3/docs/playlists/list}
 }
-

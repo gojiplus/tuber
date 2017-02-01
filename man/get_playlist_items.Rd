@@ -41,4 +41,3 @@ get_playlist_items(filter= c(playlist_id="PLrEnWoR732-CN09YykVof2lxdI3MLOZda"))
 \references{
 \url{https://developers.google.com/youtube/v3/docs/playlists/list}
 }
-

@@ -28,4 +28,3 @@ get_stats(video_id="N708P-A45D0")
 \references{
 \url{https://developers.google.com/youtube/v3/docs/videos/list#parameters}
 }
-

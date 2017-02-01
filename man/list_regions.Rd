@@ -29,4 +29,3 @@ list_regions()
 \references{
 \url{https://developers.google.com/youtube/v3/docs/i18nRegions/list}
 }
-

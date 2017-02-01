@@ -32,4 +32,3 @@ list_channel_videos(channel_id = "UCT5Cx1l4IS3wHkJXNyuj4TA", max_results=10)
 \references{
 \url{https://developers.google.com/youtube/v3/docs/channels/list}
 }
-

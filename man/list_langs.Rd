@@ -28,4 +28,3 @@ list_langs()
 \references{
 \url{https://developers.google.com/youtube/v3/docs/i18nLanguages/list}
 }
-

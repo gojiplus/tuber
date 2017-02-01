@@ -34,4 +34,3 @@ list_guidecats(c(region_code = "JP"))
 \references{
 \url{https://developers.google.com/youtube/v3/docs/guideCategories/list}
 }
-
