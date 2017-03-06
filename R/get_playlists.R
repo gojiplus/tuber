@@ -30,7 +30,7 @@
 #' get_playlists(filter=c(channel_id="UCMtFAi84ehTSYSE9X")) # incorrect Channel ID
 #' }
 
-get_playlists <- function (filter = NULL, part = "contentDetails", max_results = 50, hl = NULL, page_token = NULL, simplify = TRUE, ...) {
+get_playlists <- function (filter = NULL, part = c("contentDetails", "id", "localizations", "player", "snippet", "status"), max_results = 50, hl = NULL, page_token = NULL, simplify = TRUE, ...) {
 
 	if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50.")
 
@@ -40,6 +40,8 @@ get_playlists <- function (filter = NULL, part = "contentDetails", max_results =
 	translate_filter   <- c(channel_id = 'channelId', playlist_id ='id')
 	yt_filter_name     <- as.vector(translate_filter[match(names(filter), names(translate_filter))])
 	names(filter)      <- yt_filter_name
+
+	part      <- match.arg(part)
 
 	querylist <- list(part=part, maxResults = max_results, pageToken = page_token, hl = hl)
 	querylist <- c(querylist, filter)
