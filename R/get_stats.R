@@ -26,7 +26,7 @@ get_stats <- function (video_id=NULL, ...) {
     raw_res <- tuber_GET("videos", querylist, ...)
 
     if (length(raw_res$items) ==0) { 
-    	cat("No statistics for this video are available. Likely cause: Incorrect ID. \n")
+    	warning("No statistics for this video are available. Likely cause: Incorrect ID. \n")
     	return(list())
     }
 

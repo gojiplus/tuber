@@ -38,7 +38,7 @@ get_captions <- function (video_id=NULL, lang = "en", id = NULL, ...) {
 		raw_res <- tuber_GET("captions", query = querylist, ...)
 		
 		if (length(raw_res$items) ==0) { 
-    		cat("No caption tracks available. Likely cause: Incorrect video ID. \n")
+    		warning("No caption tracks available. Likely cause: Incorrect video ID. \n")
     		return(list())
     	}
 

@@ -30,7 +30,7 @@ get_channel_stats <- function (channel_id = NULL, ...) {
     raw_res  <- tuber_GET("channels", querylist, ...)
 
     if (length(raw_res$items) ==0) { 
-    	cat("No channel stats available. Likely cause: Incorrect channel_id. \n")
+    	warning("No channel stats available. Likely cause: Incorrect channel_id. \n")
     	return(list())
     }
 

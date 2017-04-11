@@ -59,7 +59,7 @@ list_channel_activities <- function (filter=NULL, part="snippet", max_results = 
 	raw_res <- tuber_GET("activities", querylist, ...)
  
  	if (length(raw_res$items) ==0) { 
-    	cat("No comment information available. Likely cause: Incorrect ID. \n")
+    	warning("No comment information available. Likely cause: Incorrect ID. \n")
     	if (simplify == TRUE) return(data.frame())
     	return(list())
     }

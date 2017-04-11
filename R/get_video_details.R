@@ -29,7 +29,7 @@ get_video_details <- function (video_id = NULL, ...){
 	raw_res <- tuber_GET("videos",  querylist, ...)
 	
 	if (length(raw_res$items) ==0) { 
-    	cat("No details for this video are available. Likely cause: Incorrect ID. \n")
+    	warning("No details for this video are available. Likely cause: Incorrect ID. \n")
     	return(list())
     }
 
