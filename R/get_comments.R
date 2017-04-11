@@ -56,7 +56,7 @@ get_comments <- function (filter = NULL, part = "snippet", max_results = 100, te
 	raw_res <- tuber_GET("comments", querylist, ...)
 
 	if (length(raw_res$items) ==0) { 
-    	cat("No comment information available. Likely cause: Incorrect ID. \n")
+    	warning("No comment information available. Likely cause: Incorrect ID. \n")
     	if (simplify == TRUE) return(data.frame())
     	return(list())
     }

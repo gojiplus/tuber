@@ -2,6 +2,7 @@
 
 * get_all --- iterate through the results and get all supported for various functions. supported for yt_search(). prints removed from yt_search()
 * yt_search() for returns a data.frame with video_id when simplify is TRUE
+* When a resource with a particular ID is not found, the functions now issue a warning() rather than 'cat' out the problem.
 
 # version 0.7.0 
 
