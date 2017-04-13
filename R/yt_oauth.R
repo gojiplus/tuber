@@ -26,11 +26,16 @@
 #'	           "MbOSt6cQhhFkwETXKur-L9rN")
 #' }
 
-yt_oauth <- function (app_id=NULL, app_secret=NULL, scope="ssl", token = '.httr-oauth', ...) {
+yt_oauth <- function (app_id = NULL, app_secret = NULL, scope = "ssl", token = '.httr-oauth', ...) {
 
 	if (file.exists(token)) {
+				
+		google_token <- try(suppressWarnings(readRDS(token)), silent = TRUE)
 		
-		google_token <- readRDS(token)
+		if ( inherits(google_token, "try-error")) {
+  			  stop(sprintf("Unable to read token from:%s", token))
+  		}
+
 		google_token <- google_token[[1]]
 				
 	} else if(is.null(app_id) | is.null(app_secret)) {
@@ -47,19 +52,19 @@ yt_oauth <- function (app_id=NULL, app_secret=NULL, scope="ssl", token = '.httr-
 			
 		} else if (scope == "basic") {
 	
-			google_token <- oauth2.0_token( oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtube", ...)
+			google_token <- oauth2.0_token(oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtube", ...)
 
 		} else if (scope == "own_account_readonly") {
 			
-			google_token <- oauth2.0_token( oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtube.readonly", ...)
+			google_token <- oauth2.0_token(oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtube.readonly", ...)
 		
 		} else if (scope == "upload_and_manage_own_videos") {
 			
-			google_token <- oauth2.0_token( oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtube.upload", ...)
+			google_token <- oauth2.0_token(oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtube.upload", ...)
 		
 		} else if (scope == "partner_audit") {
 			
-			google_token <- oauth2.0_token( oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtubepartner-channel-audit", ...)
+			google_token <- oauth2.0_token(oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/youtubepartner-channel-audit", ...)
 		}
 	}
 	
