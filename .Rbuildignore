@@ -10,3 +10,4 @@
 ^tests\testthat\yt_key.enc$
 ^\.httr-oauth$
 ^_pkgdown\.yml$
+^revdep$
