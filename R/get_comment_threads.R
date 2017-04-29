@@ -33,33 +33,51 @@
 #' 
 #' # Set API token via yt_oauth() first
 #' 
-#' get_comment_threads(filter = c(video_id="N708P-A45D0"))
+#' get_comment_threads(filter = c(video_id = "N708P-A45D0"))
 #' }
 
-get_comment_threads <- function (filter=NULL, part="snippet", text_format="html", simplify=TRUE, max_results=100, page_token = NULL, ...) {
+get_comment_threads <- function (filter = NULL, part = "snippet",
+                                text_format = "html", simplify = TRUE,
+                                max_results = 100, page_token = NULL, ...) {
 
-	if (max_results < 20 | max_results > 100) stop("max_results only takes a value between 20 and 100.")
-	if (text_format != "html" & text_format !="plainText") stop("Provide a legitimate value of textFormat.")
+  if (max_results < 20 | max_results > 100) {
+    stop("max_results only takes a value between 20 and 100.")
+  }
 
-	if (!(names(filter) %in% c("video_id", "channel_id", "thread_id", "threads_related_to_channel"))) stop("filter can only take one of values: channel_id, video_id, parent_id, threads_related_to_channel.")
-	if ( length(filter) != 1) stop("filter must be a vector of length 1.")
+  if (text_format != "html" & text_format != "plainText") {
+    stop("Provide a legitimate value of textFormat.")
+  }
 
-	translate_filter   <- c(video_id = 'videoId', thread_id ='id', threads_related_to_channel = 'allThreadsRelatedToChannelId', channel_id = 'channelId')
-	yt_filter_name     <- as.vector(translate_filter[match(names(filter), names(translate_filter))])
-	names(filter)      <- yt_filter_name
+  if (!(names(filter) %in% 
+    c("video_id", "channel_id", "thread_id", "threads_related_to_channel"))) {
+    stop("filter can only take one of values: channel_id, video_id, parent_id, 
+      threads_related_to_channel.")
+  }
 
-	querylist <- list(part=part, maxResults=max_results, textFormat=text_format)
-	querylist <- c(querylist, filter)
+  if ( length(filter) != 1) stop("filter must be a vector of length 1.")
 
-	res <- tuber_GET("commentThreads", querylist, ...)
-	
-	if (simplify==TRUE & part=="snippet") {
-		simple_res  <- lapply(res$items, function(x) unlist(x$snippet$topLevelComment$snippet))
-		simpler_res <- ldply(simple_res, rbind)
-		return(simpler_res)
-	}
+  translate_filter <- c(video_id = "videoId", thread_id = "id", 
+                    threads_related_to_channel = "allThreadsRelatedToChannelId",
+                    channel_id = "channelId")
 
-	res
+  yt_filter_name     <- as.vector(translate_filter[match(names(filter), 
+                                                      names(translate_filter))])
+  names(filter)      <- yt_filter_name
 
+  querylist <- list(part = part, maxResults = max_results,
+                                                       textFormat = text_format)
+  querylist <- c(querylist, filter)
+
+  res <- tuber_GET("commentThreads", querylist, ...)
+  
+  if (simplify == TRUE & part == "snippet") {
+    simple_res  <- lapply(res$items, function(x) {
+                                     unlist(x$snippet$topLevelComment$snippet)
+                                     }
+                                     )
+    simpler_res <- ldply(simple_res, rbind)
+    return(simpler_res)
+  }
+
+  res
 }
-

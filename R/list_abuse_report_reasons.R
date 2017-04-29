@@ -24,32 +24,33 @@
 #' list_abuse_report_reasons(part="snippet")
 #' }
 
-list_abuse_report_reasons <- function (part = "id, snippet", hl = "en-US", ...) {
+list_abuse_report_reasons <- function(part = "id, snippet", hl = "en-US", ...) {
 
-	if (!is.character(part)) stop("Provide a valid value for part.")
+  if (!is.character(part)) stop("Provide a valid value for part.")
 
-	querylist <- list(part=part)
+  querylist <- list(part = part)
 
-	res <- tuber_GET("videoAbuseReportReasons", querylist, ...)
+  res <- tuber_GET("videoAbuseReportReasons", querylist, ...)
 
-	resdf <- data.frame()
+  resdf <- data.frame()
 
-	if (length(res$items) != 0) {
-		
-		if (part=="id, snippet" | part=="snippet") {
-			simple_res  <- lapply(res$items, function(x) c(etag=x$etag, id=x$id, label=x$snippet$label, secReasons=paste(unlist(x$snippet$secondaryReasons), collapse=",")))
-			resdf       <- ldply(simple_res, rbind)
-		}
+  if (length(res$items) != 0) {
 
-		if (part=="id") {
-			simple_res  <- lapply(res$items, function(x) c(etag=x$etag, id=x$id))
-			resdf       <- ldply(simple_res, rbind)
-		}
+    if (part == "id, snippet" | part == "snippet") {
+      simple_res  <- lapply(res$items, function(x) c(etag = x$etag, id = x$id,
+        label = x$snippet$label,
+        secReasons = paste(unlist(x$snippet$secondaryReasons), collapse = ",")))
+      resdf       <- ldply(simple_res, rbind)
+    }
 
-	}
+    if (part == "id") {
+      simple_res  <- lapply(res$items, function(x) c(etag = x$etag, id = x$id))
+      resdf       <- ldply(simple_res, rbind)
+    }
+  }
 
-	# Cat total results
-	cat("Total Number of Reasons:", length(res$items), "\n")
+  # Cat total results
+  cat("Total Number of Reasons:", length(res$items), "\n")
 
-	resdf
+  resdf
 }

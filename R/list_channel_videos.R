@@ -15,27 +15,26 @@
 #' # Set API token via yt_oauth() first
 #' 
 #' list_channel_videos(channel_id = "UCT5Cx1l4IS3wHkJXNyuj4TA")
-#' list_channel_videos(channel_id = "UCT5Cx1l4IS3wHkJXNyuj4TA", max_results=10)
+#' list_channel_videos(channel_id = "UCT5Cx1l4IS3wHkJXNyuj4TA", max_results = 10)
 #' }
 
-list_channel_videos <- function (channel_id=NULL, max_results = 50, ...) 
-{
+list_channel_videos <- function (channel_id = NULL, max_results = 50, ...) {
 
-	if (!is.character(channel_id)) stop("Must specify a channel ID.")
+  if (!is.character(channel_id)) stop("Must specify a channel ID.")
 
-    querylist <- list(id = channel_id, part="contentDetails", maxResults= max_results)
+    querylist <- list(id = channel_id, part = "contentDetails",
+                      maxResults = max_results)
 
     res <- tuber_GET("channels", querylist, ...)
-    
-	# Uploaded playlists:
-	playlist_id <- res$items[[1]]$contentDetails$relatedPlaylists$uploads
 
-	# Get videos on the playlist
-	vids <- get_playlist_items(filter= c(playlist_id=playlist_id)) 
+  # Uploaded playlists:
+  playlist_id <- res$items[[1]]$contentDetails$relatedPlaylists$uploads
 
-	# Video ids
-	vid_ids <- as.vector(unlist(sapply(vids$items, "[", "contentDetails")))
+  # Get videos on the playlist
+  vids <- get_playlist_items(filter = c(playlist_id = playlist_id))
 
-    vid_ids
+  # Video ids
+  vid_ids <- as.vector(unlist(sapply(vids$items, "[", "contentDetails")))
+
+  vid_ids
 }
-

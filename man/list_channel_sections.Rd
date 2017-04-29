@@ -31,7 +31,7 @@ Returns list of channel sections that channel id belongs to.
 
 # Set API token via yt_oauth() first
 
-list_channel_sections(c(channel_id="UCRw8bIz2wMLmfgAgWm903cA"))
+list_channel_sections(c(channel_id = "UCRw8bIz2wMLmfgAgWm903cA"))
 }
 }
 \references{

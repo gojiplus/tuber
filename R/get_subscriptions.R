@@ -24,25 +24,34 @@
 #' 
 #' # Set API token via yt_oauth() first
 #' 
-#' get_subscriptions(filter=c(channel_id="UChTJTbr5kf3hYazJZO-euHg"))
+#' get_subscriptions(filter = c(channel_id = "UChTJTbr5kf3hYazJZO-euHg"))
 #' }
 
-get_subscriptions <- function (filter=NULL, part="contentDetails", max_results=50, for_channel_id = NULL, order=NULL, page_token=NULL, ...) {
+get_subscriptions <- function (filter = NULL, part = "contentDetails",
+                               max_results = 50, for_channel_id = NULL,
+                               order = NULL, page_token = NULL, ...) {
 
-	if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50.")
+  if (max_results < 0 | max_results > 50) {
+    stop("max_results only takes a value between 0 and 50.")
+  }
 
-	if (!(names(filter) %in% c("channel_id", "subscription_id"))) stop("filter can only take one of values: channel_id, subscription_id.")
-	if ( length(filter) != 1) stop("filter must be a vector of length 1.")
-	
-	translate_filter   <- c(channel_id = 'channelId', subscription_id = 'id')
-	yt_filter_name     <- as.vector(translate_filter[match(names(filter), names(translate_filter))])
-	names(filter)      <- yt_filter_name
-	
-	querylist <- list(part=part, maxResults = max_results, pageToken = page_token, order = order, forChannelId = for_channel_id)
-	querylist <- c(querylist, filter)
+  if (!(names(filter) %in% c("channel_id", "subscription_id"))) {
+    stop("filter can only take one of values: channel_id, subscription_id.")
+  }
+  
+  if ( length(filter) != 1) stop("filter must be a vector of length 1.")
+  
+  translate_filter   <- c(channel_id = "channelId", subscription_id = "id")
+  yt_filter_name     <- as.vector(translate_filter[match(names(filter),
+                                                      names(translate_filter))])
+  names(filter)      <- yt_filter_name
+  
+  querylist <- list(part = part, maxResults = max_results,
+                   pageToken = page_token, order = order,
+                   forChannelId = for_channel_id)
+  querylist <- c(querylist, filter)
 
-	res <- tuber_GET("subscriptions", querylist, ...)
+  res <- tuber_GET("subscriptions", querylist, ...)
  
- 	res
-
+  res
 }

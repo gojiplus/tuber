@@ -23,7 +23,7 @@ Get details such as when the video was published, the title, description, thumbn
 
 # Set API token via yt_oauth() first
 
-get_video_details(video_id="yJXTXN4xrI8")
+get_video_details(video_id = "yJXTXN4xrI8")
 }
 }
 \references{

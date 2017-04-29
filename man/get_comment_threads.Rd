@@ -46,7 +46,7 @@ Get Comments Threads
 
 # Set API token via yt_oauth() first
 
-get_comment_threads(filter = c(video_id="N708P-A45D0"))
+get_comment_threads(filter = c(video_id = "N708P-A45D0"))
 }
 }
 \references{

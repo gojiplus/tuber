@@ -21,25 +21,33 @@
 #' 
 #' # Set API token via yt_oauth() first
 #' 
-#' get_playlist_items(filter= c(playlist_id="PLrEnWoR732-CN09YykVof2lxdI3MLOZda"))
+#' get_playlist_items(filter =  c(playlist_id = "PLrEnWoR732-CN09YykVof2lxdI3MLOZda"))
 #' }
 
-get_playlist_items <- function (filter = NULL, part="contentDetails", max_results=50, video_id = NULL, page_token = NULL, ...) {
+get_playlist_items <- function (filter = NULL, part = "contentDetails",
+                                max_results = 50, video_id = NULL,
+                                page_token = NULL, ...) {
 
-	if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50.")
-	
-	if (!(names(filter) %in% c("item_id", "playlist_id"))) stop("filter can only take one of values: item_id, playlist_id.")
-	if ( length(filter) != 1) stop("filter must be a vector of length 1.")
+  if (max_results < 0 | max_results > 50) {
+    stop("max_results only takes a value between 0 and 50.")
+  }
 
-	translate_filter   <- c(item_id = 'id', playlist_id ='playlistId')
-	yt_filter_name     <- as.vector(translate_filter[match(names(filter), names(translate_filter))])
-	names(filter)      <- yt_filter_name
+  if (!(names(filter) %in% c("item_id", "playlist_id"))) {
+    stop("filter can only take one of values: item_id, playlist_id.")
+  }
 
-	querylist <- list(part=part, maxResults = max_results, pageToken = page_token, videoId = video_id)
-	querylist <- c(querylist, filter)
+  if ( length(filter) != 1) stop("filter must be a vector of length 1.")
 
-	res <- tuber_GET("playlistItems", querylist, ...)
- 
- 	res
+  translate_filter   <- c(item_id = 'id', playlist_id ='playlistId')
+  yt_filter_name     <- as.vector(translate_filter[match(names(filter), 
+                                                      names(translate_filter))])
+  names(filter)      <- yt_filter_name
 
+  querylist <- list(part = part, maxResults = max_results,
+                                     pageToken = page_token, videoId = video_id)
+  querylist <- c(querylist, filter)
+
+  res <- tuber_GET("playlistItems", querylist, ...)
+
+  res
 }

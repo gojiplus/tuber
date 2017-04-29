@@ -17,24 +17,24 @@
 #' 
 #' # Set API token via yt_oauth() first
 #' 
-#' get_video_details(video_id="yJXTXN4xrI8")
+#' get_video_details(video_id = "yJXTXN4xrI8")
 #' }
 
-get_video_details <- function (video_id = NULL, ...){
-	
-	if (!is.character(video_id)) stop("Must specify a video ID.")
+get_video_details <- function(video_id = NULL, ...) {
 
-	querylist <- list(part="snippet", id = video_id)
+  if (!is.character(video_id)) stop("Must specify a video ID.")
 
-	raw_res <- tuber_GET("videos",  querylist, ...)
-	
-	if (length(raw_res$items) ==0) { 
-    	warning("No details for this video are available. Likely cause: Incorrect ID. \n")
-    	return(list())
+  querylist <- list(part = "snippet", id = video_id)
+
+  raw_res <- tuber_GET("videos",  querylist, ...)
+
+  if (length(raw_res$items) == 0) { 
+      warning("No details for this video are available. Likely cause: 
+              Incorrect ID. \n")
+      return(list())
     }
 
-    res <- raw_res$items[[1]]
+  res <- raw_res$items[[1]]
 
-	c(id = res$id, res$snippet)
+  c(id = res$id, res$snippet)
 }
-

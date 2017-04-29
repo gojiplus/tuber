@@ -21,27 +21,30 @@
 #' 
 #' # Set API token via yt_oauth() first
 #' 
-#' list_caption_tracks(video_id="yJXTXN4xrI8")
+#' list_caption_tracks(video_id = "yJXTXN4xrI8")
 #' }
 
-list_caption_tracks <- function (part="snippet", video_id=NULL, lang="en", id = NULL, simplify = TRUE, ...) {
+list_caption_tracks <- function (part = "snippet", video_id = NULL, lang = "en",
+                                 id = NULL, simplify = TRUE, ...) {
 
-	if (!is.character(video_id)) stop("Must specify a video ID.")
-	
-	querylist = list(part=part, videoId = video_id, id = id)
-	raw_res <- tuber_GET("captions", query = querylist, ...)
-		
-	if (length(raw_res$items) ==0) { 
-    	warning("No caption tracks available. Likely cause: Incorrect video ID. \n")
-    	return(list())
+  if (!is.character(video_id)) stop("Must specify a video ID.")
+
+  querylist <- list(part = part, videoId = video_id, id = id)
+  raw_res   <- tuber_GET("captions", query = querylist, ...)
+
+  if (length(raw_res$items) == 0) {
+      warning("No caption tracks available. Likely cause: Incorrect video ID.
+        \n")
+      return(list())
     }
 
-    if (simplify == TRUE & part=="snippet") {
-    	res_df 	  <- ldply(lapply(raw_res$items, function(x) unlist(x$snippet)), rbind)
-    	res_df$id <- sapply(raw_res$items, function(x) unlist(x$id))
-    	return(res_df)
+    if (simplify == TRUE & part == "snippet") {
+      res_df     <- ldply(lapply(raw_res$items, function(x) {
+                                                unlist(x$snippet)
+                                                }
+                                                ), rbind)
+      res_df$id <- sapply(raw_res$items, function(x) unlist(x$id))
+      return(res_df)
     }
-
-	raw_res
+  raw_res
 }
-

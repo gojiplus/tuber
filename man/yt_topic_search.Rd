@@ -24,6 +24,6 @@ It uses the Freebase list of topics
 
 # Set API token via yt_oauth() first
 
-yt_topic_search(topic="Barack Obama")
+yt_topic_search(topic = "Barack Obama")
 }
 }

@@ -21,19 +21,21 @@
 #' 
 #' # Set API token via yt_oauth() first
 #' 
-#' list_channel_sections(c(channel_id="UCRw8bIz2wMLmfgAgWm903cA"))
+#' list_channel_sections(c(channel_id = "UCRw8bIz2wMLmfgAgWm903cA"))
 #' }
 
-list_channel_sections <- function (filter=NULL, part="snippet", hl = NULL, ...) {
+list_channel_sections <- function (filter = NULL, part = "snippet",
+                                   hl = NULL, ...) {
 
-	translate_filter   <- c(id = 'id', channel_id = 'channelId')
-	yt_filter_name     <- as.vector(translate_filter[match(names(filter), names(translate_filter))])
-	names(filter)      <- yt_filter_name
+  translate_filter   <- c(id = "id", channel_id = "channelId")
+  yt_filter_name     <- as.vector(translate_filter[match(names(filter),
+                                                      names(translate_filter))])
+  names(filter)      <- yt_filter_name
 
-	querylist <- list(part=part)
-    querylist <- c(querylist, filter)
+  querylist <- list(part = part)
+  querylist <- c(querylist, filter)
 
-	res <- tuber_GET("channelSections", querylist, ...)
- 
- 	res
+  res <- tuber_GET("channelSections", querylist, ...)
+
+   res
 }

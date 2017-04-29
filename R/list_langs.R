@@ -19,19 +19,20 @@
 
 list_langs <- function (hl = NULL, ...) {
 
-	querylist <- list(part = "snippet", hl = hl)
+  querylist <- list(part = "snippet", hl = hl)
 
-	res <- tuber_GET("i18nLanguages", querylist)
+  res <- tuber_GET("i18nLanguages", querylist)
 
-	resdf <- data.frame()
+  resdf <- data.frame()
 
-	if (length(res$items) != 0) {
-		simple_res  <- lapply(res$items, function(x) c(unlist(x$snippet), etag=x$etag))
-		resdf       <- as.data.frame(do.call(rbind, simple_res))
-	} 
+  if (length(res$items) != 0) {
+    simple_res  <- lapply(res$items, function(x) c(unlist(x$snippet),
+                                                                 etag = x$etag))
+    resdf       <- as.data.frame(do.call(rbind, simple_res))
+  }
 
-	# Cat total results
-	cat("Total Number of Languages:", length(res$items), "\n")
+  # Cat total results
+  cat("Total Number of Languages:", length(res$items), "\n")
 
-	resdf
+  resdf
 }

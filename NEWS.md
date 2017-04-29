@@ -1,3 +1,7 @@
+# version 0.9.0
+
+* Extensive linting
+
 # version 0.8.0 
 
 * get_all --- iterate through the results and get all supported for various functions. supported for yt_search(). prints removed from yt_search()

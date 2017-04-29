@@ -21,27 +21,27 @@
 #' get_channel_stats(channel_id="UCMtFAi84ehTSYSE9Xo") # Incorrect channel ID
 #' }
 
-get_channel_stats <- function (channel_id = NULL, ...) {
+get_channel_stats <- function(channel_id = NULL, ...) {
 
-	if (!is.character(channel_id)) stop("Must specify a channel ID.")
-	
-	querylist <- list(part = "statistics,snippet", id = channel_id)
+  if (!is.character(channel_id)) stop("Must specify a channel ID.")
+  
+  querylist <- list(part = "statistics,snippet", id = channel_id)
     
-    raw_res  <- tuber_GET("channels", querylist, ...)
+  raw_res  <- tuber_GET("channels", querylist, ...)
 
-    if (length(raw_res$items) ==0) { 
-    	warning("No channel stats available. Likely cause: Incorrect channel_id. \n")
-    	return(list())
-    }
+  if (length(raw_res$items) == 0) { 
+    warning("No channel stats available. Likely cause: Incorrect channel_id.\n")
+    return(list())
+  }
 
-    res  <- raw_res$items[[1]] 
-    res1 <- res$statistics
-    res2 <- res$snippet
+  res  <- raw_res$items[[1]] 
+  res1 <- res$statistics
+  res2 <- res$snippet
     
-    cat('Channel Title:', res2$title, "\n")
-	cat('No. of Views:', res1$viewCount, "\n")
-	cat('No. of Subscribers:', res1$subscriberCount, "\n")
-	cat('No. of Videos:', res1$videoCount, "\n")
- 	
-	res
+  cat('Channel Title:', res2$title, "\n")
+  cat('No. of Views:', res1$viewCount, "\n")
+  cat('No. of Subscribers:', res1$subscriberCount, "\n")
+  cat('No. of Videos:', res1$videoCount, "\n")
+   
+  res
 }

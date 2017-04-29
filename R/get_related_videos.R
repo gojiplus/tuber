@@ -19,38 +19,44 @@
 #' 
 #' # Set API token via yt_oauth() first
 #' 
-#' get_related_videos(video_id="yJXTXN4xrI8")
+#' get_related_videos(video_id = "yJXTXN4xrI8")
 #' }
 
-get_related_videos <- function (video_id = NULL, max_results = 50, safe_search = 'none', ...) {
+get_related_videos <- function (video_id = NULL, max_results = 50,
+                                safe_search = 'none', ...) {
 
-	if (!is.character(video_id)) stop("Must specify a video ID.")
-	if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50.")
-	
-	querylist <- list(part="snippet", relatedToVideoId = video_id, type="video", maxResults=max_results, safeSearch = safe_search)
+  if (!is.character(video_id)) stop("Must specify a video ID.")
+  if (max_results < 0 | max_results > 50) {
+    stop("max_results only takes a value between 0 and 50.")
+  }
+  
+  querylist <- list(part = "snippet", relatedToVideoId = video_id, 
+             type = "video", maxResults = max_results, safeSearch = safe_search)
 
-	res <- tuber_GET("search", querylist, ...)
-	
-	resdf <- read.table(text = "", 
-    					 col.names = c("video_id", "publishedAt", "channelId", "title", "description", 
-    					 				"thumbnails.default.url", "thumbnails.default.width", "thumbnails.default.height", 
-    					 				"thumbnails.medium.url", "thumbnails.medium.width", "thumbnails.medium.height", 
-    					 				"thumbnails.high.url", "thumbnails.high.width", "thumbnails.high.height", 
-    					 				"channelTitle", "liveBroadcastContent"))
+  res <- tuber_GET("search", querylist, ...)
+  
+  resdf <- read.table(text = "", 
+               col.names = c("video_id", "publishedAt", "channelId", "title",
+                             "description", "thumbnails.default.url", 
+                             "thumbnails.default.width",
+                             "thumbnails.default.height", 
+                             "thumbnails.medium.url", "thumbnails.medium.width",
+                            "thumbnails.medium.height", "thumbnails.high.url",
+                            "thumbnails.high.width", "thumbnails.high.height", 
+                            "channelTitle", "liveBroadcastContent"))
 
-	if (res$pageInfo$totalResults != 0) {
+  if (res$pageInfo$totalResults != 0) {
 
-		simple_res  <- lapply(res$items, function(x) unlist(x$snippet))
-		resdf       <- cbind(video_id = video_id, ldply(simple_res, rbind))
-		resdf       <- as.data.frame(resdf)
+    simple_res  <- lapply(res$items, function(x) unlist(x$snippet))
+    resdf       <- cbind(video_id = video_id, ldply(simple_res, rbind))
+    resdf       <- as.data.frame(resdf)
+  } else {
 
-	} else {
+    resdf[1, "video_id"] <- video_id
+  }
 
-		resdf[1,"video_id"] <- video_id
-	}
+  # Cat total results
+  cat("Total Results", res$pageInfo$totalResults, "\n")
 
-	# Cat total results
-	cat("Total Results", res$pageInfo$totalResults, "\n")
-
-	resdf
+  resdf
 }

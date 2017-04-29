@@ -21,19 +21,20 @@
 
 list_regions <- function (hl = NULL, ...) {
 
-	querylist <- list(part = "snippet")
+  querylist <- list(part = "snippet")
 
-	res <- tuber_GET("i18nRegions", querylist, ...)
+  res <- tuber_GET("i18nRegions", querylist, ...)
 
-	resdf <- read.table(text = "", col.names = c("gl", "name", "etag"))
+  resdf <- read.table(text = "", col.names = c("gl", "name", "etag"))
 
-	# Cat total results
-	cat("Total Number of Content Regions:", length(res$items), "\n")
+  # Cat total results
+  cat("Total Number of Content Regions:", length(res$items), "\n")
 
-	if (length(res$items) != 0) {
-		simple_res  <- lapply(res$items, function(x) c(unlist(x$snippet), etag=x$etag))
-		resdf       <- ldply(simple_res, rbind)
-	}
+  if (length(res$items) != 0) {
+    simple_res  <- lapply(res$items, function(x) c(unlist(x$snippet),
+                          etag = x$etag))
+    resdf       <- ldply(simple_res, rbind)
+  }
 
-	resdf
+  resdf
 }

@@ -26,26 +26,36 @@
 #' # Set API token via yt_oauth() first
 #' 
 #' list_channel_resources(filter = c(channel_id = "UCT5Cx1l4IS3wHkJXNyuj4TA"))
-#' list_channel_resources(filter = c(username = "latenight"), part="id, contentDetails")
-#' list_channel_resources(filter = c(username = "latenight"), part="id, contentDetails", 
-#' max_results=10)
+#' list_channel_resources(filter = c(username = "latenight"), part = "id, contentDetails")
+#' list_channel_resources(filter = c(username = "latenight"), part = "id, contentDetails", 
+#' max_results = 10)
 #' }
 
-list_channel_resources <- function (filter=NULL, part="contentDetails", max_results = 50, page_token = NULL, hl= NULL, ...) 
-{
-	if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50.")
-	if (!(names(filter) %in% c("category_id", "username", "channel_id"))) stop("filter can only take one of three values: category_id, username or channel_id.")
-	if ( length(filter) != 1) stop("filter must be a vector of length 1.")
+list_channel_resources <- function (filter = NULL, part = "contentDetails",
+                         max_results = 50, page_token = NULL, hl =  NULL, ...) {
 
-	translate_filter   <- c(channel_id = 'id', category_id = 'categoryId', username = 'forUsername')
-	yt_filter_name     <- as.vector(translate_filter[match(names(filter), names(translate_filter))])
-	names(filter)      <- yt_filter_name
+  if (max_results < 0 | max_results > 50) {
+    stop("max_results only takes a value between 0 and 50.")
+  }
 
-    querylist <- list(part = part, maxResults = max_results, pageToken = page_token, hl= hl)
+  if (!(names(filter) %in% c("category_id", "username", "channel_id"))) {
+    stop("filter can only take one of three values: category_id,
+      username or channel_id.")
+  }
+
+  if ( length(filter) != 1) stop("filter must be a vector of length 1.")
+
+  translate_filter   <- c(channel_id = "id", category_id = "categoryId",
+                          username = "forUsername")
+  yt_filter_name     <- as.vector(translate_filter[match(names(filter),
+                                                      names(translate_filter))])
+  names(filter)      <- yt_filter_name
+
+    querylist <- list(part = part, maxResults = max_results,
+                     pageToken = page_token, hl =  hl)
     querylist <- c(querylist, filter)
 
     res <- tuber_GET("channels", querylist, ...)
-    
+
     res
 }
-

@@ -32,43 +32,52 @@
 #' 
 #' # Set API token via yt_oauth() first
 #' 
-#' get_comments(filter = c(comment_id="z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk"))
+#' get_comments(filter = c(comment_id = "z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk"))
 #' get_comments(filter = 
-#' c(comment_id="z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk, 
-#' 		         z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk"))
+#' c(comment_id = "z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk, 
+#'              z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk"))
 #' }
 
-get_comments <- function (filter = NULL, part = "snippet", max_results = 100, text_format = "html", page_token = NULL, simplify = TRUE, ...) {
+get_comments <- function (filter = NULL, part = "snippet", max_results = 100,
+                          text_format = "html", page_token = NULL,
+                          simplify = TRUE, ...) {
 
-	if (max_results < 20 | max_results > 100) stop("max_results only takes a value between 20 and 100.")
-	if (text_format != "html" & text_format !="plainText") stop("Provide a legitimate value of textFormat.")
+  if (max_results < 20 | max_results > 100) {
+    stop("max_results only takes a value between 20 and 100.")
+  }
 
-	if (!(names(filter) %in% c("parent_id", "comment_id"))) stop("filter can only take one of values: comment_id, parent_id.")
-	if ( length(filter) != 1) stop("filter must be a vector of length 1.")
+  if (text_format != "html" & text_format != "plainText") {
+    stop("Provide a legitimate value of textFormat.")
+  }
+  
+  if (!(names(filter) %in% c("parent_id", "comment_id"))) {
+    stop("filter can only take one of values: comment_id, parent_id.")
+  }
+  
+  if ( length(filter) != 1) stop("filter must be a vector of length 1.")
 
-	translate_filter   <- c('parent_id' ='parentId', 'comment_id' = 'id')
-	yt_filter_name     <- as.vector(translate_filter[match(names(filter), names(translate_filter))])
-	names(filter)      <- yt_filter_name
+  translate_filter   <- c('parent_id' = 'parentId', 'comment_id' = 'id')
+  yt_filter_name     <- as.vector(translate_filter[match(names(filter), 
+                                                      names(translate_filter))])
+  names(filter)      <- yt_filter_name
 
-	querylist <- list(part=part, maxResults=max_results, textFormat=text_format)
-	querylist <- c(querylist, filter)
+  querylist <- list(part = part, maxResults = max_results,
+                    textFormat = text_format)
+  querylist <- c(querylist, filter)
 
-	raw_res <- tuber_GET("comments", querylist, ...)
+  raw_res <- tuber_GET("comments", querylist, ...)
 
-	if (length(raw_res$items) ==0) { 
-    	warning("No comment information available. Likely cause: Incorrect ID. \n")
-    	if (simplify == TRUE) return(data.frame())
-    	return(list())
+  if (length(raw_res$items) == 0) { 
+      warning("No comment information available. Likely cause: Incorrect ID.\n")
+      if (simplify == TRUE) return(data.frame())
+      return(list())
     }
 
-	if (simplify==TRUE & part=="snippet") {
-		simple_res  <- lapply(raw_res$items, function(x) unlist(x$snippet))
-		simpler_res <- ldply(simple_res, rbind)
-		simpler_res$id <- raw_res$items[[1]]$id
-		return(simpler_res)
-	} 
-
-	raw_res
-
+  if (simplify == TRUE & part == "snippet") {
+    simple_res  <- lapply(raw_res$items, function(x) unlist(x$snippet))
+    simpler_res <- ldply(simple_res, rbind)
+    simpler_res$id <- raw_res$items[[1]]$id
+    return(simpler_res)
+  } 
+  raw_res
 }
-
