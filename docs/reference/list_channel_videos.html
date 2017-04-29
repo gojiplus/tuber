@@ -25,12 +25,14 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -81,28 +83,35 @@
     </div>
 
     
-    <p>Returns List of Requested Channel Videos</p>
+    Returns List of Requested Channel Videos
     
 
-    <pre><span class='fu'>list_channel_videos</span>(<span class='kw'>channel_id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>max_results</span> <span class='kw'>=</span> <span class='fl'>50</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>list_channel_videos</span>(<span class='kw'>channel_id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>max_results</span> <span class='kw'>=</span> <span class='fl'>50</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <dl class="dl-horizontal">
-      <dt>channel_id</dt>
-      <dd>String. ID of the channel. Required.</dd>
-      <dt>max_results</dt>
-      <dd>Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.</dd>
-      <dt>&#8230;</dt>
-      <dd>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</dd>
-    </dl>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>channel_id</th>
+      <td>String. ID of the channel. Required.</td>
+    </tr>
+    <tr>
+      <th>max_results</th>
+      <td>Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.</td>
+    </tr>
+    <tr>
+      <th>&#8230;</th>
+      <td>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>character vector of video IDs</p>
+    character vector of video IDs
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p><a href = 'https://developers.google.com/youtube/v3/docs/channels/list'>https://developers.google.com/youtube/v3/docs/channels/list</a></p>
+    <a href = 'https://developers.google.com/youtube/v3/docs/channels/list'>https://developers.google.com/youtube/v3/docs/channels/list</a>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -112,7 +121,7 @@
 <span class='co'># # Set API token via yt_oauth() first</span>
 <span class='co'># </span>
 <span class='co'># list_channel_videos(channel_id = "UCT5Cx1l4IS3wHkJXNyuj4TA")</span>
-<span class='co'># list_channel_videos(channel_id = "UCT5Cx1l4IS3wHkJXNyuj4TA", max_results=10)</span>
+<span class='co'># list_channel_videos(channel_id = "UCT5Cx1l4IS3wHkJXNyuj4TA", max_results = 10)</span>
 <span class='co'>## ---------------------------------------------</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

@@ -25,12 +25,14 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -81,42 +83,55 @@
     </div>
 
     
-    <p>Returns List of Requested Channel Resources</p>
+    Returns List of Requested Channel Resources
     
 
-    <pre><span class='fu'>list_channel_resources</span>(<span class='kw'>filter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>part</span> <span class='kw'>=</span> <span class='st'>"contentDetails"</span>,
+    <pre class="usage"><span class='fu'>list_channel_resources</span>(<span class='kw'>filter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>part</span> <span class='kw'>=</span> <span class='st'>"contentDetails"</span>,
   <span class='kw'>max_results</span> <span class='kw'>=</span> <span class='fl'>50</span>, <span class='kw'>page_token</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>hl</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <dl class="dl-horizontal">
-      <dt>filter</dt>
-      <dd>string; Required.
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>filter</th>
+      <td>string; Required.
 named vector of length 1
 potential names of the entry in the vector: 
 <code>category_id</code>: YouTube guide category that returns channels associated with that category
 <code>username</code>:  YouTube username that returns channel associated with that username.
-<code>channel_id</code>: a comma-separated list of the YouTube channel ID(s) for the resource(s) that are being retrieved</dd>
-      <dt>part</dt>
-      <dd>a comma separated list of channel resource properties that response will include string. Required. 
+<code>channel_id</code>: a comma-separated list of the YouTube channel ID(s) for the resource(s) that are being retrieved</td>
+    </tr>
+    <tr>
+      <th>part</th>
+      <td>a comma separated list of channel resource properties that response will include string. Required. 
 One of the following: <code>auditDetails, brandingSettings, contentDetails, contentOwnerDetails, id, invideoPromotion, localizations, snippet, statistics, status, topicDetails</code>.
-Default is <code>contentDetails</code>.</dd>
-      <dt>max_results</dt>
-      <dd>Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.</dd>
-      <dt>page_token</dt>
-      <dd>specific page in the result set that should be returned, optional</dd>
-      <dt>hl</dt>
-      <dd>Language used for text values. Optional. Default is <code>en-US</code>. For other allowed language codes, see <code><a href='list_langs.html'>list_langs</a></code>.</dd>
-      <dt>&#8230;</dt>
-      <dd>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</dd>
-    </dl>
+Default is <code>contentDetails</code>.</td>
+    </tr>
+    <tr>
+      <th>max_results</th>
+      <td>Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.</td>
+    </tr>
+    <tr>
+      <th>page_token</th>
+      <td>specific page in the result set that should be returned, optional</td>
+    </tr>
+    <tr>
+      <th>hl</th>
+      <td>Language used for text values. Optional. Default is <code>en-US</code>. For other allowed language codes, see <code><a href='list_langs.html'>list_langs</a></code>.</td>
+    </tr>
+    <tr>
+      <th>&#8230;</th>
+      <td>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>list</p>
+    list
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p><a href = 'https://developers.google.com/youtube/v3/docs/channels/list'>https://developers.google.com/youtube/v3/docs/channels/list</a></p>
+    <a href = 'https://developers.google.com/youtube/v3/docs/channels/list'>https://developers.google.com/youtube/v3/docs/channels/list</a>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -126,9 +141,9 @@ Default is <code>contentDetails</code>.</dd>
 <span class='co'># # Set API token via yt_oauth() first</span>
 <span class='co'># </span>
 <span class='co'># list_channel_resources(filter = c(channel_id = "UCT5Cx1l4IS3wHkJXNyuj4TA"))</span>
-<span class='co'># list_channel_resources(filter = c(username = "latenight"), part="id, contentDetails")</span>
-<span class='co'># list_channel_resources(filter = c(username = "latenight"), part="id, contentDetails", </span>
-<span class='co'># max_results=10)</span>
+<span class='co'># list_channel_resources(filter = c(username = "latenight"), part = "id, contentDetails")</span>
+<span class='co'># list_channel_resources(filter = c(username = "latenight"), part = "id, contentDetails", </span>
+<span class='co'># max_results = 10)</span>
 <span class='co'>## ---------------------------------------------</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

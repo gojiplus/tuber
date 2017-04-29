@@ -25,12 +25,14 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -81,34 +83,43 @@
     </div>
 
     
-    <p>Returns list of channel sections that channel id belongs to.</p>
+    Returns list of channel sections that channel id belongs to.
     
 
-    <pre><span class='fu'>list_channel_sections</span>(<span class='kw'>filter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>part</span> <span class='kw'>=</span> <span class='st'>"snippet"</span>, <span class='kw'>hl</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>list_channel_sections</span>(<span class='kw'>filter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>part</span> <span class='kw'>=</span> <span class='st'>"snippet"</span>, <span class='kw'>hl</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <dl class="dl-horizontal">
-      <dt>filter</dt>
-      <dd>string; Required.
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>filter</th>
+      <td>string; Required.
 named vector of length 1
 potential names of the entry in the vector: 
 <code>channel_id</code>: Channel ID
-<code>id</code>: Section ID</dd>
-      <dt>part</dt>
-      <dd>specify which part do you want. It can only be one of the following: <code>contentDetails, id, localizations, snippet, targeting</code>. Default is <code>snippet</code>.</dd>
-      <dt>hl</dt>
-      <dd>language that will be used for text values, optional, default is en-US. See also <code><a href='list_langs.html'>list_langs</a></code></dd>
-      <dt>&#8230;</dt>
-      <dd>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</dd>
-    </dl>
+<code>id</code>: Section ID</td>
+    </tr>
+    <tr>
+      <th>part</th>
+      <td>specify which part do you want. It can only be one of the following: <code>contentDetails, id, localizations, snippet, targeting</code>. Default is <code>snippet</code>.</td>
+    </tr>
+    <tr>
+      <th>hl</th>
+      <td>language that will be used for text values, optional, default is en-US. See also <code><a href='list_langs.html'>list_langs</a></code></td>
+    </tr>
+    <tr>
+      <th>&#8230;</th>
+      <td>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>captions for the video from one of the first track</p>
+    captions for the video from one of the first track
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p><a href = 'https://developers.google.com/youtube/v3/docs/activities/list'>https://developers.google.com/youtube/v3/docs/activities/list</a></p>
+    <a href = 'https://developers.google.com/youtube/v3/docs/activities/list'>https://developers.google.com/youtube/v3/docs/activities/list</a>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -117,7 +128,7 @@ potential names of the entry in the vector:
 <span class='co'># </span>
 <span class='co'># # Set API token via yt_oauth() first</span>
 <span class='co'># </span>
-<span class='co'># list_channel_sections(c(channel_id="UCRw8bIz2wMLmfgAgWm903cA"))</span>
+<span class='co'># list_channel_sections(c(channel_id = "UCRw8bIz2wMLmfgAgWm903cA"))</span>
 <span class='co'>## ---------------------------------------------</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

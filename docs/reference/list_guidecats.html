@@ -25,12 +25,14 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -81,32 +83,39 @@
     </div>
 
     
-    <p>Get list of categories that can be associated with YouTube channels</p>
+    Get list of categories that can be associated with YouTube channels
     
 
-    <pre><span class='fu'>list_guidecats</span>(<span class='kw'>filter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>hl</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>list_guidecats</span>(<span class='kw'>filter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>hl</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <dl class="dl-horizontal">
-      <dt>filter</dt>
-      <dd>string; Required.
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>filter</th>
+      <td>string; Required.
 named vector of length 1
 potential names of the entry in the vector: 
 <code>region_code</code>: Character. Required. Has to be a ISO 3166-1 alpha-2 code (see <a href = 'https://www.iso.org/obp/ui/#search'>https://www.iso.org/obp/ui/#search</a>)
-<code>category_id</code>: YouTube channel category ID</dd>
-      <dt>hl</dt>
-      <dd>Language used for text values. Optional. Default is <code>en-US</code>. For other allowed language codes, see <code><a href='list_langs.html'>list_langs</a></code>.</dd>
-      <dt>&#8230;</dt>
-      <dd>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</dd>
-    </dl>
+<code>category_id</code>: YouTube channel category ID</td>
+    </tr>
+    <tr>
+      <th>hl</th>
+      <td>Language used for text values. Optional. Default is <code>en-US</code>. For other allowed language codes, see <code><a href='list_langs.html'>list_langs</a></code>.</td>
+    </tr>
+    <tr>
+      <th>&#8230;</th>
+      <td>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>data.frame with 5 columns: <code>region_code, channelId, title, etag, id</code></p>
+    data.frame with 5 columns: <code>region_code, channelId, title, etag, id</code>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p><a href = 'https://developers.google.com/youtube/v3/docs/guideCategories/list'>https://developers.google.com/youtube/v3/docs/guideCategories/list</a></p>
+    <a href = 'https://developers.google.com/youtube/v3/docs/guideCategories/list'>https://developers.google.com/youtube/v3/docs/guideCategories/list</a>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>

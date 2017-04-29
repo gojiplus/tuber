@@ -25,12 +25,14 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -81,43 +83,58 @@
     </div>
 
     
-    <p>Get Subscriptions</p>
+    Get Subscriptions
     
 
-    <pre><span class='fu'>get_subscriptions</span>(<span class='kw'>filter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>part</span> <span class='kw'>=</span> <span class='st'>"contentDetails"</span>,
+    <pre class="usage"><span class='fu'>get_subscriptions</span>(<span class='kw'>filter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>part</span> <span class='kw'>=</span> <span class='st'>"contentDetails"</span>,
   <span class='kw'>max_results</span> <span class='kw'>=</span> <span class='fl'>50</span>, <span class='kw'>for_channel_id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>order</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>page_token</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <dl class="dl-horizontal">
-      <dt>filter</dt>
-      <dd>string; Required.
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>filter</th>
+      <td>string; Required.
 named vector of length 1
 potential names of the entry in the vector: 
 <code>channel_id</code>: ID of the channel. Required. No default.
-<code>subscription_id</code>: YouTube subscription ID</dd>
-      <dt>part</dt>
-      <dd>Part of the resource requested. Required. Character. 
-A comma separated list of one or more of the following: <code>contentDetails, id, snippet, subscriberSnippet</code>. e.g. &quot;id, snippet&quot;, &quot;id&quot;, etc. Default: <code>contentDetails</code>.</dd>
-      <dt>max_results</dt>
-      <dd>Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.</dd>
-      <dt>for_channel_id</dt>
-      <dd>Optional. String. A comma-separated list of channel IDs. Limits response to subscriptions matching those channels.</dd>
-      <dt>order</dt>
-      <dd>method that will be used to sort resources in the API response. Takes one of the following: alphabetical, relevance, unread</dd>
-      <dt>page_token</dt>
-      <dd>Specific page in the result set that should be returned. Optional. String.</dd>
-      <dt>&#8230;</dt>
-      <dd>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</dd>
-    </dl>
+<code>subscription_id</code>: YouTube subscription ID</td>
+    </tr>
+    <tr>
+      <th>part</th>
+      <td>Part of the resource requested. Required. Character. 
+A comma separated list of one or more of the following: <code>contentDetails, id, snippet, subscriberSnippet</code>. e.g. &quot;id, snippet&quot;, &quot;id&quot;, etc. Default: <code>contentDetails</code>.</td>
+    </tr>
+    <tr>
+      <th>max_results</th>
+      <td>Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.</td>
+    </tr>
+    <tr>
+      <th>for_channel_id</th>
+      <td>Optional. String. A comma-separated list of channel IDs. Limits response to subscriptions matching those channels.</td>
+    </tr>
+    <tr>
+      <th>order</th>
+      <td>method that will be used to sort resources in the API response. Takes one of the following: alphabetical, relevance, unread</td>
+    </tr>
+    <tr>
+      <th>page_token</th>
+      <td>Specific page in the result set that should be returned. Optional. String.</td>
+    </tr>
+    <tr>
+      <th>&#8230;</th>
+      <td>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>named list of subscriptions</p>
+    named list of subscriptions
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p><a href = 'https://developers.google.com/youtube/v3/docs/subscriptions/list'>https://developers.google.com/youtube/v3/docs/subscriptions/list</a></p>
+    <a href = 'https://developers.google.com/youtube/v3/docs/subscriptions/list'>https://developers.google.com/youtube/v3/docs/subscriptions/list</a>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -125,7 +142,7 @@ A comma separated list of one or more of the following: <code>contentDetails, id
 <span class='co'># </span>
 <span class='co'># # Set API token via yt_oauth() first</span>
 <span class='co'># </span>
-<span class='co'># get_subscriptions(filter=c(channel_id="UChTJTbr5kf3hYazJZO-euHg"))</span>
+<span class='co'># get_subscriptions(filter = c(channel_id = "UChTJTbr5kf3hYazJZO-euHg"))</span>
 <span class='co'>## ---------------------------------------------</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

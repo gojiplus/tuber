@@ -25,12 +25,14 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -81,49 +83,64 @@
     </div>
 
     
-    <p>Get Comments Threads</p>
+    Get Comments Threads
     
 
-    <pre><span class='fu'>get_comment_threads</span>(<span class='kw'>filter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>part</span> <span class='kw'>=</span> <span class='st'>"snippet"</span>, <span class='kw'>text_format</span> <span class='kw'>=</span> <span class='st'>"html"</span>,
+    <pre class="usage"><span class='fu'>get_comment_threads</span>(<span class='kw'>filter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>part</span> <span class='kw'>=</span> <span class='st'>"snippet"</span>, <span class='kw'>text_format</span> <span class='kw'>=</span> <span class='st'>"html"</span>,
   <span class='kw'>simplify</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>max_results</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>page_token</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <dl class="dl-horizontal">
-      <dt>filter</dt>
-      <dd>string; Required.
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>filter</th>
+      <td>string; Required.
 named vector of length 1
 potential names of the entry in the vector: 
 <code>video_id</code>: video ID.
 <code>channel_id</code>: channel ID.
 <code>thread_id</code>: comma-separated list of comment thread IDs
-<code>threads_related_to_channel</code>: channel ID.</dd>
-      <dt>part</dt>
-      <dd>Comment resource requested. Required. Comma separated list of one or more of the 
-following: <code>id, snippet</code>. e.g., <code>&quot;id, snippet&quot;</code>, <code>&quot;id&quot;</code>, etc. Default: <code>snippet</code>.</dd>
-      <dt>text_format</dt>
-      <dd>Data Type: Character. Default is <code>&quot;html&quot;</code>. Only takes <code>&quot;html&quot;</code> or <code>&quot;plainText&quot;</code>. Optional.</dd>
-      <dt>simplify</dt>
-      <dd>Data Type: Boolean. Default is <code>TRUE</code>. If <code>TRUE</code>, the function returns a data frame. Else a list with all the information returned.</dd>
-      <dt>max_results</dt>
-      <dd>Maximum number of items that should be returned. Integer. Optional. Can be between 20 and 100. Default is 100.</dd>
-      <dt>page_token</dt>
-      <dd>Specific page in the result set that should be returned. Optional.</dd>
-      <dt>&#8230;</dt>
-      <dd>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</dd>
-    </dl>
+<code>threads_related_to_channel</code>: channel ID.</td>
+    </tr>
+    <tr>
+      <th>part</th>
+      <td>Comment resource requested. Required. Comma separated list of one or more of the 
+following: <code>id, snippet</code>. e.g., <code>&quot;id, snippet&quot;</code>, <code>&quot;id&quot;</code>, etc. Default: <code>snippet</code>.</td>
+    </tr>
+    <tr>
+      <th>text_format</th>
+      <td>Data Type: Character. Default is <code>&quot;html&quot;</code>. Only takes <code>&quot;html&quot;</code> or <code>&quot;plainText&quot;</code>. Optional.</td>
+    </tr>
+    <tr>
+      <th>simplify</th>
+      <td>Data Type: Boolean. Default is <code>TRUE</code>. If <code>TRUE</code>, the function returns a data frame. Else a list with all the information returned.</td>
+    </tr>
+    <tr>
+      <th>max_results</th>
+      <td>Maximum number of items that should be returned. Integer. Optional. Can be between 20 and 100. Default is 100.</td>
+    </tr>
+    <tr>
+      <th>page_token</th>
+      <td>Specific page in the result set that should be returned. Optional.</td>
+    </tr>
+    <tr>
+      <th>&#8230;</th>
+      <td>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Nested named list. The entry <code>items</code> is a list of comments along with meta information. 
+    Nested named list. The entry <code>items</code> is a list of comments along with meta information. 
 Within each of the <code>items</code> is an item <code>snippet</code> which has an item <code>topLevelComment$snippet$textDisplay</code>
-that contains the actual comment.</p>
-    <p>If simplify is <code>TRUE</code>, a <code>data.frame</code> with the following columns:
+that contains the actual comment.
+    If simplify is <code>TRUE</code>, a <code>data.frame</code> with the following columns:
 <code>authorDisplayName, authorProfileImageUrl, authorChannelUrl, authorChannelId.value, videoId, textDisplay,          
-canRate, viewerRating, likeCount, publishedAt, updatedAt</code></p>
+canRate, viewerRating, likeCount, publishedAt, updatedAt</code>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p><a href = 'https://developers.google.com/youtube/v3/docs/commentThreads/list'>https://developers.google.com/youtube/v3/docs/commentThreads/list</a></p>
+    <a href = 'https://developers.google.com/youtube/v3/docs/commentThreads/list'>https://developers.google.com/youtube/v3/docs/commentThreads/list</a>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -131,7 +148,7 @@ canRate, viewerRating, likeCount, publishedAt, updatedAt</code></p>
 <span class='co'># </span>
 <span class='co'># # Set API token via yt_oauth() first</span>
 <span class='co'># </span>
-<span class='co'># get_comment_threads(filter = c(video_id="N708P-A45D0"))</span>
+<span class='co'># get_comment_threads(filter = c(video_id = "N708P-A45D0"))</span>
 <span class='co'>## ---------------------------------------------</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
