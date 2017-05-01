@@ -15,23 +15,31 @@
 #' @param type Character. Optional. Takes one of three values: \code{'video', 'channel', 'playlist'}. Default is \code{'video'}.
 #' @param video_caption Character. Optional. Takes one of three values: \code{'any'} (return all videos; Default), \code{'closedCaption', 'none'}. Type must be set to video.
 #' @param video_type Character. Optional. Takes one of three values: \code{'any'} (return all videos; Default), \code{'episode'} (return episode of shows), 'movie' (return movies)
-#' @param video_syndicated Character. Optional. Takes one of two values: \code{'any'} (return all videos; Default), \code{'true'} (return only syndicated videos)
-#' @param video_definition Character. Optional. Takes one of three values: \code{'any'} (return all videos; Default), \code{'high', 'standard'}
-#' @param video_license Character. Optional. Takes one of three values: \code{'any'} (return all videos; Default), \code{'creativeCommon'} (return videos with Creative Commons 
+#' @param video_syndicated Character. Optional. Takes one of two values: 
+#' \code{'any'} (return all videos; Default), \code{'true'} (return only syndicated videos)
+#' @param video_definition Character. Optional. 
+#' Takes one of three values: \code{'any'} (return all videos; Default), \code{'high', 'standard'}
+#' @param video_license Character. Optional. 
+#' Takes one of three values: \code{'any'} (return all videos; Default), \code{'creativeCommon'} (return videos with Creative Commons 
 #' license), \code{'youtube'} (return videos with standard YouTube license).
-#' @param simplify Boolean. Return a data.frame if \code{TRUE}. Default is \code{TRUE}. If \code{TRUE}, it returns a list that carries additional information. 
+#' @param simplify Boolean. Return a data.frame if \code{TRUE}. Default is \code{TRUE}. 
+#' If \code{TRUE}, it returns a list that carries additional information. 
 #' @param page_token specific page in the result set that should be returned, optional
-#' @param get_all get all results, iterating through all the results pages. Default is \code{TRUE}. Result is a \code{data.frame}. Optional.
+#' @param get_all get all results, iterating through all the results pages. Default is \code{TRUE}. 
+#' Result is a \code{data.frame}. Optional.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
-#' @return data.frame with 16 elements: \code{video_id, publishedAt, channelId, title, description, thumbnails.default.url, thumbnails.default.width, 
-#' thumbnails.default.height, thumbnails.medium.url, thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url, thumbnails.high.width, 
+#' @return data.frame with 16 elements: \code{video_id, publishedAt, channelId, title, description, 
+#' thumbnails.default.url, thumbnails.default.width, thumbnails.default.height, thumbnails.medium.url, 
+#' thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url, thumbnails.high.width, 
 #' thumbnails.high.height, channelTitle, liveBroadcastContent} 
+#' 
 #' @export
 #' 
 #' @references \url{https://developers.google.com/youtube/v3/docs/search/list}
 #' 
 #' @examples
+#' 
 #' \dontrun{
 #' 
 #' # Set API token via yt_oauth() first
@@ -103,7 +111,7 @@ yt_search <- function (term = NULL, max_results = 50, channel_id = NULL,
                     videoLicense = video_license, pageToken = page_token)
 
   # Sending NULLs to Google seems to short its wiring
-  querylist <- querylist[names(querylist)[sapply(querylist, is.character)]]
+  querylist <- querylist[names(querylist)[sapply(querylist, function (x) !is.null(x))]]
 
   res <- tuber_GET("search", querylist, ...)
 
