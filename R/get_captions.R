@@ -30,7 +30,7 @@ get_captions <- function (video_id = NULL, lang = "en", id = NULL, ...) {
   }
 
   # Try getting captions directly
-  req <- GET(paste0("http://video.google.com/timedtext?lang=", lang, "&v=", 
+  req <- GET(paste0("http://video.google.com/timedtext?lang=", lang, "&v=",
                                                                       video_id))
   req <- content(req)
 
@@ -39,14 +39,13 @@ get_captions <- function (video_id = NULL, lang = "en", id = NULL, ...) {
 
     querylist <- list(id = id)
     raw_res <- tuber_GET("captions", query = querylist, ...)
-    
-    if (length(raw_res$items) == 0) { 
-        warning("No caption tracks available. Likely cause: 
+
+    if (length(raw_res$items) == 0) {
+        warning("No caption tracks available. Likely cause:
           Incorrect video ID. \n")
         return(list())
       }
     return(raw_res)
   }
-
   req
 }

@@ -11,3 +11,4 @@
 ^\.httr-oauth$
 ^_pkgdown\.yml$
 ^revdep$
+.lintr

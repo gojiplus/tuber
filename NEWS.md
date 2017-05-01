@@ -1,6 +1,6 @@
 # version 0.9.0
 
-* Extensive linting
+* Extensive linting. Passes expect_lint_free
 
 # version 0.8.0 
 

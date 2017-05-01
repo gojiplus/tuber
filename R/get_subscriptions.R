@@ -38,20 +38,20 @@ get_subscriptions <- function (filter = NULL, part = "contentDetails",
   if (!(names(filter) %in% c("channel_id", "subscription_id"))) {
     stop("filter can only take one of values: channel_id, subscription_id.")
   }
-  
+
   if ( length(filter) != 1) stop("filter must be a vector of length 1.")
-  
+
   translate_filter   <- c(channel_id = "channelId", subscription_id = "id")
   yt_filter_name     <- as.vector(translate_filter[match(names(filter),
                                                       names(translate_filter))])
   names(filter)      <- yt_filter_name
-  
+
   querylist <- list(part = part, maxResults = max_results,
                    pageToken = page_token, order = order,
                    forChannelId = for_channel_id)
   querylist <- c(querylist, filter)
 
   res <- tuber_GET("subscriptions", querylist, ...)
- 
+
   res
 }

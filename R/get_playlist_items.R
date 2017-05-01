@@ -38,8 +38,8 @@ get_playlist_items <- function (filter = NULL, part = "contentDetails",
 
   if ( length(filter) != 1) stop("filter must be a vector of length 1.")
 
-  translate_filter   <- c(item_id = 'id', playlist_id ='playlistId')
-  yt_filter_name     <- as.vector(translate_filter[match(names(filter), 
+  translate_filter   <- c(item_id = "id", playlist_id = "playlistId")
+  yt_filter_name     <- as.vector(translate_filter[match(names(filter),
                                                       names(translate_filter))])
   names(filter)      <- yt_filter_name
 

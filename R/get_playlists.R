@@ -30,9 +30,10 @@
 #' get_playlists(filter=c(channel_id="UCMtFAi84ehTSYSE9X")) # incorrect Channel ID
 #' }
 
-get_playlists <- function (filter = NULL, part = 
-                          c("contentDetails", "id", "localizations", "player",
-                            "snippet", "status"), max_results = 50, hl = NULL, 
+get_playlists <- function (filter = NULL,
+                          part = c("contentDetails", "id", "localizations",
+                                   "player", "snippet", "status"),
+                          max_results = 50, hl = NULL,
                           page_token = NULL, simplify = TRUE, ...) {
 
   if (max_results < 0 | max_results > 50) {
@@ -42,11 +43,12 @@ get_playlists <- function (filter = NULL, part =
   if (!(names(filter) %in% c("channel_id", "playlist_id"))) {
     stop("filter can only take one of values: channel_id, playlist_id.")
   }
-  
+
   if ( length(filter) != 1) stop("filter must be a vector of length 1.\n")
 
-  translate_filter   <- c(channel_id = 'channelId', playlist_id ='id')
-  yt_filter_name     <- as.vector(translate_filter[match(names(filter), names(translate_filter))])
+  translate_filter   <- c(channel_id = "channelId", playlist_id = "id")
+  yt_filter_name     <- as.vector(translate_filter[match(names(filter),
+                                                      names(translate_filter))])
   names(filter)      <- yt_filter_name
 
   part      <- match.arg(part)
@@ -56,8 +58,8 @@ get_playlists <- function (filter = NULL, part =
   querylist <- c(querylist, filter)
 
   raw_res <- tuber_GET("playlists", querylist, ...)
-   
-   if (length(raw_res$items) == 0) { 
+
+   if (length(raw_res$items) == 0) {
       cat("No playlists available.\n")
       if (simplify == TRUE) return(data.frame())
       return(list())
@@ -67,6 +69,6 @@ get_playlists <- function (filter = NULL, part =
     simple_res  <- lapply(raw_res$items, function(x) unlist(x))
     simpler_res <- ldply(simple_res, rbind)
     return(simpler_res)
-  } 
+  }
   raw_res
 }

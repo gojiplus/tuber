@@ -49,15 +49,15 @@ get_comments <- function (filter = NULL, part = "snippet", max_results = 100,
   if (text_format != "html" & text_format != "plainText") {
     stop("Provide a legitimate value of textFormat.")
   }
-  
+
   if (!(names(filter) %in% c("parent_id", "comment_id"))) {
     stop("filter can only take one of values: comment_id, parent_id.")
   }
-  
+
   if ( length(filter) != 1) stop("filter must be a vector of length 1.")
 
-  translate_filter   <- c('parent_id' = 'parentId', 'comment_id' = 'id')
-  yt_filter_name     <- as.vector(translate_filter[match(names(filter), 
+  translate_filter   <- c("parent_id" = "parentId", "comment_id" = "id")
+  yt_filter_name     <- as.vector(translate_filter[match(names(filter),
                                                       names(translate_filter))])
   names(filter)      <- yt_filter_name
 
@@ -67,7 +67,7 @@ get_comments <- function (filter = NULL, part = "snippet", max_results = 100,
 
   raw_res <- tuber_GET("comments", querylist, ...)
 
-  if (length(raw_res$items) == 0) { 
+  if (length(raw_res$items) == 0) {
       warning("No comment information available. Likely cause: Incorrect ID.\n")
       if (simplify == TRUE) return(data.frame())
       return(list())
@@ -78,6 +78,6 @@ get_comments <- function (filter = NULL, part = "snippet", max_results = 100,
     simpler_res <- ldply(simple_res, rbind)
     simpler_res$id <- raw_res$items[[1]]$id
     return(simpler_res)
-  } 
+  }
   raw_res
 }

@@ -48,19 +48,19 @@ get_comment_threads <- function (filter = NULL, part = "snippet",
     stop("Provide a legitimate value of textFormat.")
   }
 
-  if (!(names(filter) %in% 
+  if (!(names(filter) %in%
     c("video_id", "channel_id", "thread_id", "threads_related_to_channel"))) {
-    stop("filter can only take one of values: channel_id, video_id, parent_id, 
+    stop("filter can only take one of values: channel_id, video_id, parent_id,
       threads_related_to_channel.")
   }
 
   if ( length(filter) != 1) stop("filter must be a vector of length 1.")
 
-  translate_filter <- c(video_id = "videoId", thread_id = "id", 
+  translate_filter <- c(video_id = "videoId", thread_id = "id",
                     threads_related_to_channel = "allThreadsRelatedToChannelId",
                     channel_id = "channelId")
 
-  yt_filter_name     <- as.vector(translate_filter[match(names(filter), 
+  yt_filter_name     <- as.vector(translate_filter[match(names(filter),
                                                       names(translate_filter))])
   names(filter)      <- yt_filter_name
 
@@ -69,7 +69,7 @@ get_comment_threads <- function (filter = NULL, part = "snippet",
   querylist <- c(querylist, filter)
 
   res <- tuber_GET("commentThreads", querylist, ...)
-  
+
   if (simplify == TRUE & part == "snippet") {
     simple_res  <- lapply(res$items, function(x) {
                                      unlist(x$snippet$topLevelComment$snippet)
@@ -78,6 +78,5 @@ get_comment_threads <- function (filter = NULL, part = "snippet",
     simpler_res <- ldply(simple_res, rbind)
     return(simpler_res)
   }
-
   res
 }
