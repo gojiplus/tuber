@@ -1,4 +1,4 @@
-#' Get Captions of a Video
+#' List Captions of a Video
 #' 
 #' @param part  Caption resource requested. Required. Comma separated list of one or more of the 
 #' following: \code{id, snippet}. e.g., "id, snippet", "id" Default: \code{snippet}.  

@@ -2,7 +2,7 @@
 % Please edit documentation in R/list_caption_tracks.R
 \name{list_caption_tracks}
 \alias{list_caption_tracks}
-\title{Get Captions of a Video}
+\title{List Captions of a Video}
 \usage{
 list_caption_tracks(part = "snippet", video_id = NULL, lang = "en",
   id = NULL, simplify = TRUE, ...)
@@ -27,7 +27,7 @@ following columns: \code{videoId, lastUpdated, trackKind, language, name, audioT
 isLarge, isEasyReader, isDraft, isAutoSynced, status, id} (caption id)
 }
 \description{
-Get Captions of a Video
+List Captions of a Video
 }
 \examples{
 \dontrun{
