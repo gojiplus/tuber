@@ -27,7 +27,7 @@ get_captions <- function (id = NULL, lang = "en", format = "sbv", ...) {
   if ( !is.character(id)) {
     stop("Must specify a valid id.")
   }
-  
+
   querylist <- list(tlang = lang, tfmt = format)
   raw_res <- tuber_GET(paste0("captions", "/", id), query = querylist, ...)
 
