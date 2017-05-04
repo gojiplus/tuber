@@ -83,7 +83,7 @@
     </div>
 
     
-    List reasons that can be used to report abusive videos
+    <p>List reasons that can be used to report abusive videos</p>
     
 
     <pre class="usage"><span class='fu'>list_abuse_report_reasons</span>(<span class='kw'>part</span> <span class='kw'>=</span> <span class='st'>"id, snippet"</span>, <span class='kw'>hl</span> <span class='kw'>=</span> <span class='st'>"en-US"</span>, <span class='no'>...</span>)</pre>
@@ -93,40 +93,40 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>part</th>
-      <td>Caption resource requested. Required. Comma separated list of one or more of the 
-following: <code>id, snippet</code>. e.g., <code>&quot;id, snippet&quot;</code>, <code>&quot;id&quot;</code>, etc. Default: <code>snippet</code>.</td>
+      <td><p>Caption resource requested. Required. Comma separated list of one or more of the 
+following: <code>id, snippet</code>. e.g., <code>"id, snippet"</code>, <code>"id"</code>, etc. Default: <code>snippet</code>.</p></td>
     </tr>
     <tr>
       <th>hl</th>
-      <td>Language used for text values. Optional. Default is <code>en-US</code>. For other allowed language codes, see <code><a href='list_langs.html'>list_langs</a></code>.</td>
+      <td><p>Language used for text values. Optional. Default is <code>en-US</code>. For other allowed language codes, see <code><a href='list_langs.html'>list_langs</a></code>.</p></td>
     </tr>
     <tr>
       <th>&#8230;</th>
-      <td>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</td>
+      <td><p>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    If no results, empty data.frame returned
-If part requested = &quot;id, snippet&quot; or &quot;snippet&quot;, 
+    <p>If no results, empty data.frame returned
+If part requested = "id, snippet" or "snippet", 
 <code>data.frame</code> with 4 columns: <code>etag, id, label, secReasons</code>
-If part requested = &quot;id&quot;, data.frame with 2 columns: <code>etag, id</code>
+If part requested = "id", data.frame with 2 columns: <code>etag, id</code></p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <a href = 'https://developers.google.com/youtube/v3/docs/videoAbuseReportReasons/list'>https://developers.google.com/youtube/v3/docs/videoAbuseReportReasons/list</a>
+    <p><a href = 'https://developers.google.com/youtube/v3/docs/videoAbuseReportReasons/list'>https://developers.google.com/youtube/v3/docs/videoAbuseReportReasons/list</a></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># </span>
-<span class='co'># # Set API token via yt_oauth() first</span>
-<span class='co'># </span>
-<span class='co'># list_abuse_report_reasons()</span>
-<span class='co'># list_abuse_report_reasons(part="id")</span>
-<span class='co'># list_abuse_report_reasons(part="snippet")</span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>not_run</span>({
+
+  <span class='co'># Set API token via yt_oauth() first</span>
+
+  <span class='fu'>list_abuse_report_reasons</span>()
+  <span class='fu'>list_abuse_report_reasons</span>(<span class='kw'>part</span><span class='kw'>=</span><span class='st'>"id"</span>)
+  <span class='fu'>list_abuse_report_reasons</span>(<span class='kw'>part</span><span class='kw'>=</span><span class='st'>"snippet"</span>)
+})</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

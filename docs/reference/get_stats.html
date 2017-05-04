@@ -83,7 +83,7 @@
     </div>
 
     
-    Get statistics of a Video
+    <p>Get statistics of a Video</p>
     
 
     <pre class="usage"><span class='fu'>get_stats</span>(<span class='kw'>video_id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
@@ -93,30 +93,30 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>video_id</th>
-      <td>Character. Id of the video. Required.</td>
+      <td><p>Character. Id of the video. Required.</p></td>
     </tr>
     <tr>
       <th>&#8230;</th>
-      <td>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</td>
+      <td><p>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    list with 6 elements: <code>id, viewCount, likeCount, dislikeCount, favoriteCount, commentCount</code>
+    <p>list with 6 elements: <code>id, viewCount, likeCount, dislikeCount, favoriteCount, commentCount</code></p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <a href = 'https://developers.google.com/youtube/v3/docs/videos/list#parameters'>https://developers.google.com/youtube/v3/docs/videos/list#parameters</a>
+    <p><a href = 'https://developers.google.com/youtube/v3/docs/videos/list#parameters'>https://developers.google.com/youtube/v3/docs/videos/list#parameters</a></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># </span>
-<span class='co'># # Set API token via yt_oauth() first</span>
-<span class='co'># </span>
-<span class='co'># get_stats(video_id="N708P-A45D0")</span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>not_run</span>({
+
+  <span class='co'># Set API token via yt_oauth() first</span>
+
+  <span class='fu'>get_stats</span>(<span class='kw'>video_id</span><span class='kw'>=</span><span class='st'>"N708P-A45D0"</span>)
+})</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

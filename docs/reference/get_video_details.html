@@ -83,7 +83,7 @@
     </div>
 
     
-    Get details such as when the video was published, the title, description, thumbnails, category etc.
+    <p>Get details such as when the video was published, the title, description, thumbnails, category etc.</p>
     
 
     <pre class="usage"><span class='fu'>get_video_details</span>(<span class='kw'>video_id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
@@ -93,31 +93,31 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>video_id</th>
-      <td>Comma separated list of IDs of the videos for which details are requested. Required.</td>
+      <td><p>Comma separated list of IDs of the videos for which details are requested. Required.</p></td>
     </tr>
     <tr>
       <th>&#8230;</th>
-      <td>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</td>
+      <td><p>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    list with the following elements: <code>id</code> (video id that was passed), <code>publishedAt, channelId, title, description, thumbnails, 
-channelTitle, categoryId, liveBroadcastContent, localized, defaultAudioLanguage</code>
+    <p>list with the following elements: <code>id</code> (video id that was passed), <code>publishedAt, channelId, title, description, thumbnails, 
+channelTitle, categoryId, liveBroadcastContent, localized, defaultAudioLanguage</code></p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <a href = 'https://developers.google.com/youtube/v3/docs/videos/list'>https://developers.google.com/youtube/v3/docs/videos/list</a>
+    <p><a href = 'https://developers.google.com/youtube/v3/docs/videos/list'>https://developers.google.com/youtube/v3/docs/videos/list</a></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># </span>
-<span class='co'># # Set API token via yt_oauth() first</span>
-<span class='co'># </span>
-<span class='co'># get_video_details(video_id = "yJXTXN4xrI8")</span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>not_run</span>({
+
+  <span class='co'># Set API token via yt_oauth() first</span>
+
+  <span class='fu'>get_video_details</span>(<span class='kw'>video_id</span> <span class='kw'>=</span> <span class='st'>"yJXTXN4xrI8"</span>)
+})</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

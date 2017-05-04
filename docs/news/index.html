@@ -86,14 +86,16 @@
     <div class="contents">
     <div id="version-0-9-0" class="section level1">
 <h1 class="hasAnchor">
-<a href="#version-0-9-0" class="anchor"> </a>version 0.9.0</h1>
+<a href="#version-0-9-0" class="anchor"></a>version 0.9.0</h1>
 <ul>
-<li>Extensive linting</li>
+<li>Extensive linting. Passes expect_lint_free</li>
+<li>Removed support for caption tracks from old Youtube API as client should only be for V3. Changed the get_captions API.</li>
+<li>support the deletes</li>
 </ul>
 </div>
     <div id="version-0-8-0" class="section level1">
 <h1 class="hasAnchor">
-<a href="#version-0-8-0" class="anchor"> </a>version 0.8.0</h1>
+<a href="#version-0-8-0" class="anchor"></a>version 0.8.0</h1>
 <ul>
 <li>get_all — iterate through the results and get all supported for various functions. supported for yt_search(). prints removed from yt_search()</li>
 <li>yt_search() for returns a data.frame with video_id when simplify is TRUE</li>
@@ -102,7 +104,7 @@
 </div>
     <div id="version-0-7-0" class="section level1">
 <h1 class="hasAnchor">
-<a href="#version-0-7-0" class="anchor"> </a>version 0.7.0</h1>
+<a href="#version-0-7-0" class="anchor"></a>version 0.7.0</h1>
 <ul>
 <li>No more invisible return</li>
 <li>Rather than is.null checks, !is.character checks for args expected to be chars</li>
@@ -122,7 +124,7 @@
 </div>
     <div id="version-0-6-0" class="section level1">
 <h1 class="hasAnchor">
-<a href="#version-0-6-0" class="anchor"> </a>version 0.6.0</h1>
+<a href="#version-0-6-0" class="anchor"></a>version 0.6.0</h1>
 <ul>
 <li>Based on CRAN feedback, add comment about yt_outh to all man pages</li>
 <li>video_id is returned as part of the list for get_stats, get_video_details</li>
@@ -134,7 +136,7 @@
 </div>
     <div id="version-0-5-0" class="section level1">
 <h1 class="hasAnchor">
-<a href="#version-0-5-0" class="anchor"> </a>version 0.5.0</h1>
+<a href="#version-0-5-0" class="anchor"></a>version 0.5.0</h1>
 <ul>
 <li>Added contributor code of conduct</li>
 <li>yt_search takes a new argument simplify which if TRUE returns a dataframe with 7 elements. Otherwise it returns a list with all the information.</li>
@@ -142,7 +144,7 @@
 </div>
     <div id="version-0-4-0-2016-10-04" class="section level1">
 <h1 class="hasAnchor">
-<a href="#version-0-4-0-2016-10-04" class="anchor"> </a>version 0.4.0 2016-10-04</h1>
+<a href="#version-0-4-0-2016-10-04" class="anchor"></a>version 0.4.0 2016-10-04</h1>
 <ul>
 <li>Filtering by different facets is now supported. This is via passing a named vector.</li>
 <li>Added a function to list_channel_videos</li>
@@ -152,7 +154,7 @@
 </div>
     <div id="version-0-3-0-2016-08-04" class="section level1">
 <h1 class="hasAnchor">
-<a href="#version-0-3-0-2016-08-04" class="anchor"> </a>version 0.3.0 2016-08-04</h1>
+<a href="#version-0-3-0-2016-08-04" class="anchor"></a>version 0.3.0 2016-08-04</h1>
 <ul>
 <li>Replaces list_channel_videos with list_channel_resources. Returns a list.</li>
 <li>Supports and documents all optional params except onBehalfOfContentOwner, for list_guidecats, list_channel_activities, get_captions, list_channel_sections, get_comments, list_langs, list_regions</li>
@@ -163,7 +165,7 @@
 </div>
     <div id="version-0-2-1-2016-06-20" class="section level1">
 <h1 class="hasAnchor">
-<a href="#version-0-2-1-2016-06-20" class="anchor"> </a>version 0.2.1 2016-06-20</h1>
+<a href="#version-0-2-1-2016-06-20" class="anchor"></a>version 0.2.1 2016-06-20</h1>
 <ul>
 <li>Support the dots — allow for passing of extra arguments to httr GET and POST</li>
 <li>More tests</li>
@@ -174,7 +176,7 @@
 </div>
     <div id="version-0-2-0-2016-01-16" class="section level1">
 <h1 class="hasAnchor">
-<a href="#version-0-2-0-2016-01-16" class="anchor"> </a>version 0.2.0 2016-01-16</h1>
+<a href="#version-0-2-0-2016-01-16" class="anchor"></a>version 0.2.0 2016-01-16</h1>
 <ul>
 <li>Deprecated Freebase Topic Search</li>
 <li>Supports many more functions of the API. For instance, list_langs, list_guidecats, list_videocats, list_regions</li>

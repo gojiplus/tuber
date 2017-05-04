@@ -83,7 +83,7 @@
     </div>
 
     
-    Get list of categories that can be associated with YouTube channels
+    <p>Get list of categories that can be associated with YouTube channels</p>
     
 
     <pre class="usage"><span class='fu'>list_guidecats</span>(<span class='kw'>filter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>hl</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
@@ -93,38 +93,38 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>filter</th>
-      <td>string; Required.
+      <td><p>string; Required.
 named vector of length 1
 potential names of the entry in the vector: 
 <code>region_code</code>: Character. Required. Has to be a ISO 3166-1 alpha-2 code (see <a href = 'https://www.iso.org/obp/ui/#search'>https://www.iso.org/obp/ui/#search</a>)
-<code>category_id</code>: YouTube channel category ID</td>
+<code>category_id</code>: YouTube channel category ID</p></td>
     </tr>
     <tr>
       <th>hl</th>
-      <td>Language used for text values. Optional. Default is <code>en-US</code>. For other allowed language codes, see <code><a href='list_langs.html'>list_langs</a></code>.</td>
+      <td><p>Language used for text values. Optional. Default is <code>en-US</code>. For other allowed language codes, see <code><a href='list_langs.html'>list_langs</a></code>.</p></td>
     </tr>
     <tr>
       <th>&#8230;</th>
-      <td>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</td>
+      <td><p>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    data.frame with 5 columns: <code>region_code, channelId, title, etag, id</code>
+    <p>data.frame with 5 columns: <code>region_code, channelId, title, etag, id</code></p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <a href = 'https://developers.google.com/youtube/v3/docs/guideCategories/list'>https://developers.google.com/youtube/v3/docs/guideCategories/list</a>
+    <p><a href = 'https://developers.google.com/youtube/v3/docs/guideCategories/list'>https://developers.google.com/youtube/v3/docs/guideCategories/list</a></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># </span>
-<span class='co'># # Set API token via yt_oauth() first</span>
-<span class='co'># </span>
-<span class='co'># list_guidecats(c(region_code = "JP"))</span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>not_run</span>({
+
+  <span class='co'># Set API token via yt_oauth() first</span>
+
+  <span class='fu'>list_guidecats</span>(<span class='fu'>c</span>(<span class='kw'>region_code</span> <span class='kw'>=</span> <span class='st'>"JP"</span>))
+})</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

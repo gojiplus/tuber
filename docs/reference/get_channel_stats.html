@@ -83,7 +83,7 @@
     </div>
 
     
-    Get statistics of a Channel
+    <p>Get statistics of a Channel</p>
     
 
     <pre class="usage"><span class='fu'>get_channel_stats</span>(<span class='kw'>channel_id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
@@ -93,33 +93,33 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>channel_id</th>
-      <td>Character. Id of the channel</td>
+      <td><p>Character. Id of the channel</p></td>
     </tr>
     <tr>
       <th>&#8230;</th>
-      <td>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</td>
+      <td><p>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    nested named list with top element names:
-<code>kind, etag, id, snippet (list of details of the channel including title), statistics (list of 5)</code>
-    If the <code>channel_id</code> is mistyped or there is no information, an empty list is returned
+    <p>nested named list with top element names:
+<code>kind, etag, id, snippet (list of details of the channel including title), statistics (list of 5)</code></p>
+<p>If the <code>channel_id</code> is mistyped or there is no information, an empty list is returned</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <a href = 'https://developers.google.com/youtube/v3/docs/channels/list'>https://developers.google.com/youtube/v3/docs/channels/list</a>
+    <p><a href = 'https://developers.google.com/youtube/v3/docs/channels/list'>https://developers.google.com/youtube/v3/docs/channels/list</a></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># </span>
-<span class='co'># # Set API token via yt_oauth() first</span>
-<span class='co'># </span>
-<span class='co'># get_channel_stats(channel_id="UCMtFAi84ehTSYSE9XoHefig")</span>
-<span class='co'># get_channel_stats(channel_id="UCMtFAi84ehTSYSE9Xo") # Incorrect channel ID</span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>not_run</span>({
+
+  <span class='co'># Set API token via yt_oauth() first</span>
+
+  <span class='fu'>get_channel_stats</span>(<span class='kw'>channel_id</span><span class='kw'>=</span><span class='st'>"UCMtFAi84ehTSYSE9XoHefig"</span>)
+  <span class='fu'>get_channel_stats</span>(<span class='kw'>channel_id</span><span class='kw'>=</span><span class='st'>"UCMtFAi84ehTSYSE9Xo"</span>) <span class='co'># Incorrect channel ID</span>
+})</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

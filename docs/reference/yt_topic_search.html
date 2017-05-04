@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Search YouTube by Topic
- — yt_topic_search â€¢ tuber</title>
+It uses the Freebase list of topics — yt_topic_search â€¢ tuber</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -81,12 +81,12 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Search YouTube by Topic
-</h1>
+It uses the Freebase list of topics</h1>
     </div>
 
     
-    Search YouTube by Topic
-It uses the Freebase list of topics
+    <p>Search YouTube by Topic
+It uses the Freebase list of topics</p>
     
 
     <pre class="usage"><span class='fu'>yt_topic_search</span>(<span class='kw'>topic</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
@@ -96,26 +96,26 @@ It uses the Freebase list of topics
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>topic</th>
-      <td>topic being searched for; required; no default</td>
+      <td><p>topic being searched for; required; no default</p></td>
     </tr>
     <tr>
       <th>&#8230;</th>
-      <td>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</td>
+      <td><p>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    a list
+    <p>a list</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'> <span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># </span>
-<span class='co'># # Set API token via yt_oauth() first</span>
-<span class='co'># </span>
-<span class='co'># yt_topic_search(topic = "Barack Obama")</span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
+    <pre class="examples"><div class='input'> <span class='fu'>not_run</span>({
+
+  <span class='co'># Set API token via yt_oauth() first</span>
+
+  <span class='fu'>yt_topic_search</span>(<span class='kw'>topic</span> <span class='kw'>=</span> <span class='st'>"Barack Obama"</span>)
+})</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

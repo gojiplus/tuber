@@ -83,9 +83,9 @@
     </div>
 
     
-    The function looks for <code>.httr-oauth</code> in the working directory. If it doesn&#39;t find it, it expects an application ID and a secret.
+    <p>The function looks for <code>.httr-oauth</code> in the working directory. If it doesn't find it, it expects an application ID and a secret.
 If you want to remove the existing <code>.httr-oauth</code>, set remove_old_oauth to TRUE. By default, it is set to FALSE.
-The function launches a browser to allow you to authorize the application
+The function launches a browser to allow you to authorize the application</p>
     
 
     <pre class="usage"><span class='fu'>yt_oauth</span>(<span class='kw'>app_id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>app_secret</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>scope</span> <span class='kw'>=</span> <span class='st'>"ssl"</span>,
@@ -96,44 +96,44 @@ The function launches a browser to allow you to authorize the application
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>app_id</th>
-      <td>client id; required; no default</td>
+      <td><p>client id; required; no default</p></td>
     </tr>
     <tr>
       <th>app_secret</th>
-      <td>client secret; required; no default</td>
+      <td><p>client secret; required; no default</p></td>
     </tr>
     <tr>
       <th>scope</th>
-      <td>Character. <code>ssl</code>, <code>basic</code>, <code>own_account_readonly</code>, <code>upload_and_manage_own_videos</code> and <code>partner_audit</code>. 
-Required. <code>ssl</code> and <code>basic</code> are basically interchangeable. Default is <code>ssl</code>.</td>
+      <td><p>Character. <code>ssl</code>, <code>basic</code>, <code>own_account_readonly</code>, <code>upload_and_manage_own_videos</code> and <code>partner_audit</code>. 
+Required. <code>ssl</code> and <code>basic</code> are basically interchangeable. Default is <code>ssl</code>.</p></td>
     </tr>
     <tr>
       <th>token</th>
-      <td>path to file containing the token. If a path is given, the function will first try to read from it. 
+      <td><p>path to file containing the token. If a path is given, the function will first try to read from it. 
 Default is <code>.httr-oauth</code> in the local directory.
-So if there is such a file, the function will first try to read from it.</td>
+So if there is such a file, the function will first try to read from it.</p></td>
     </tr>
     <tr>
       <th>&#8230;</th>
-      <td>Additional arguments passed to <code>oauth2.0_token</code></td>
+      <td><p>Additional arguments passed to <code>oauth2.0_token</code></p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    sets the google_token option and also saves <code>.httr_oauth</code> in the working directory (find out the working directory via <code>getwd()</code>)
+    <p>sets the google_token option and also saves <code>.httr_oauth</code> in the working directory (find out the working directory via <code>getwd()</code>)</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <a href = 'https://developers.google.com/youtube/v3/docs/'>https://developers.google.com/youtube/v3/docs/</a>
-    <a href = 'https://developers.google.com/youtube/v3/guides/auth/client-side-web-apps'>https://developers.google.com/youtube/v3/guides/auth/client-side-web-apps</a> for different scopes
+    <p><a href = 'https://developers.google.com/youtube/v3/docs/'>https://developers.google.com/youtube/v3/docs/</a>
+    <a href = 'https://developers.google.com/youtube/v3/guides/auth/client-side-web-apps'>https://developers.google.com/youtube/v3/guides/auth/client-side-web-apps</a> for different scopes</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'> <span class='co'>## Not run: ------------------------------------</span>
-<span class='co'>#    yt_oauth("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.com", </span>
-<span class='co'>#             "MbOSt6cQhhFkwETXKur-L9rN")</span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
+    <pre class="examples"><div class='input'> <span class='fu'>not_run</span>({
+     <span class='fu'>yt_oauth</span>(<span class='st'>"998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.com"</span>,
+              <span class='st'>"MbOSt6cQhhFkwETXKur-L9rN"</span>)
+})</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

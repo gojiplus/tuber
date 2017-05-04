@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get Captions of a Video — get_captions â€¢ tuber</title>
+<title>Get Particular Caption Track — get_captions â€¢ tuber</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -79,52 +79,53 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get Captions of a Video</h1>
+    <h1>Get Particular Caption Track</h1>
     </div>
 
     
-    A few of Youtube videos have caption tracks available from an older 
-YouTube API. If that caption track is available, this function returns that,
-Or it returns caption track specified by id resource. Check <code><a href='list_caption_tracks.html'>list_caption_tracks</a></code> for more
-information.
+    <p>For getting captions from the v3 API, you must specify the id resource. 
+Check <code><a href='list_caption_tracks.html'>list_caption_tracks</a></code> for more information.</p>
     
 
-    <pre class="usage"><span class='fu'>get_captions</span>(<span class='kw'>video_id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>lang</span> <span class='kw'>=</span> <span class='st'>"en"</span>, <span class='kw'>id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>get_captions</span>(<span class='kw'>id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>lang</span> <span class='kw'>=</span> <span class='st'>"en"</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"sbv"</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>video_id</th>
-      <td>ID of the video whose captions are requested. Required. No default.</td>
+      <th>id</th>
+      <td><p>String. Required. id of the caption track that is being retrieved</p></td>
     </tr>
     <tr>
       <th>lang</th>
-      <td>Language of the caption; required; default is <code>&quot;en&quot;</code> (English)</td>
+      <td><p>Optional. Default is <code>en</code>.</p></td>
     </tr>
     <tr>
-      <th>id</th>
-      <td>String. id of the caption track that is being retrieved</td>
+      <th>format</th>
+      <td><p>Optional. Default is <code>sbv</code>.</p></td>
     </tr>
     <tr>
       <th>&#8230;</th>
-      <td>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</td>
+      <td><p>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    String.
+    <p>String.</p>
+    
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p><a href = 'https://developers.google.com/youtube/v3/docs/captions/download'>https://developers.google.com/youtube/v3/docs/captions/download</a></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># </span>
-<span class='co'># # Set API token via yt_oauth() first</span>
-<span class='co'># </span>
-<span class='co'># get_captions(video_id = "yJXTXN4xrI8")</span>
-<span class='co'># get_captions(id = "y3ElXcEME3lSISz6izkWVT5GvxjPu8pA")</span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>not_run</span>({
+
+  <span class='co'># Set API token via yt_oauth() first</span>
+
+  <span class='fu'>get_captions</span>(<span class='kw'>id</span> <span class='kw'>=</span> <span class='st'>"y3ElXcEME3lSISz6izkWVT5GvxjPu8pA"</span>)
+})</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -132,6 +133,8 @@ information.
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#references">References</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

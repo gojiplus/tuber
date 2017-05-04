@@ -60,7 +60,7 @@
       <h1>Using tuber</h1>
                         <h4 class="author">Gaurav Sood</h4>
             
-            <h4 class="date">2017-04-29</h4>
+            <h4 class="date">2017-05-04</h4>
           </div>
 
     
@@ -68,10 +68,10 @@
 <div class="contents">
 <div id="tuber-access-youtube-via-r" class="section level2">
 <h2 class="hasAnchor">
-<html><body><a href="#tuber-access-youtube-via-r" class="anchor"> </a></body></html>tuber: Access YouTube via R</h2>
+<a href="#tuber-access-youtube-via-r" class="anchor"></a>tuber: Access YouTube via R</h2>
 <div id="install-load-the-package" class="section level3">
 <h3 class="hasAnchor">
-<html><body><a href="#install-load-the-package" class="anchor"> </a></body></html>Install, Load the package</h3>
+<a href="#install-load-the-package" class="anchor"></a>Install, Load the package</h3>
 <p>To install the latest version from CRAN:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">"tuber"</span>)</code></pre></div>
 <p>The latest development version of the package will always be on GitHub. Instructions for installing the package from Github are provided below.</p>
@@ -82,7 +82,7 @@ devtools::<span class="kw">install_github</span>(<span class="st">"soodoku/tuber
 </div>
 <div id="using-the-package" class="section level3">
 <h3 class="hasAnchor">
-<html><body><a href="#using-the-package" class="anchor"> </a></body></html>Using the package</h3>
+<a href="#using-the-package" class="anchor"></a>Using the package</h3>
 <p>To get going, get the application id and password from Google Developer Console (see <a href="https://developers.google.com/youtube/v3/getting-started" class="uri">https://developers.google.com/youtube/v3/getting-started</a>). Enable YouTube APIs. Then set the application id and password via the <code>yt_oauth</code> function. For more information about YouTube OAuth, see <a href="https://developers.google.com/youtube/v3/guides/authentication">YouTube OAuth Guide</a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/yt_oauth.html">yt_oauth</a></span>(<span class="st">"998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.com"</span>, <span class="st">"MbOSt6cQhhFkwETXKur-L9rN"</span>)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Waiting for authentication in browser...
@@ -90,7 +90,7 @@ devtools::<span class="kw">install_github</span>(<span class="st">"soodoku/tuber
 ## Authentication complete.</code></pre></div>
 <div id="get-statistics-of-a-video" class="section level4">
 <h4 class="hasAnchor">
-<html><body><a href="#get-statistics-of-a-video" class="anchor"> </a></body></html>Get Statistics of a Video</h4>
+<a href="#get-statistics-of-a-video" class="anchor"></a>Get Statistics of a Video</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/get_stats.html">get_stats</a></span>(<span class="dt">video_id=</span><span class="st">"N708P-A45D0"</span>)</code></pre></div>
 <pre><code>## No. of Views 525112 
 ## No. of Likes 5576 
@@ -100,12 +100,12 @@ devtools::<span class="kw">install_github</span>(<span class="st">"soodoku/tuber
 </div>
 <div id="get-information-about-a-video" class="section level4">
 <h4 class="hasAnchor">
-<html><body><a href="#get-information-about-a-video" class="anchor"> </a></body></html>Get Information About a Video</h4>
+<a href="#get-information-about-a-video" class="anchor"></a>Get Information About a Video</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/get_video_details.html">get_video_details</a></span>(<span class="dt">video_id=</span><span class="st">"N708P-A45D0"</span>)</code></pre></div>
 </div>
 <div id="get-caption-of-a-video" class="section level4">
 <h4 class="hasAnchor">
-<html><body><a href="#get-caption-of-a-video" class="anchor"> </a></body></html>Get Caption of a Video</h4>
+<a href="#get-caption-of-a-video" class="anchor"></a>Get Caption of a Video</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/get_captions.html">get_captions</a></span>(<span class="dt">video_id=</span><span class="st">"yJXTXN4xrI8"</span>)</code></pre></div>
 <pre><code>## &lt;?xml version="1.0" encoding="utf-8"?&gt;
 ## &lt;transcript&gt;
@@ -205,7 +205,7 @@ devtools::<span class="kw">install_github</span>(<span class="st">"soodoku/tuber
 </div>
 <div id="search-videos" class="section level4">
 <h4 class="hasAnchor">
-<html><body><a href="#search-videos" class="anchor"> </a></body></html>Search Videos</h4>
+<a href="#search-videos" class="anchor"></a>Search Videos</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res &lt;-<span class="st"> </span><span class="kw"><a href="../reference/yt_search.html">yt_search</a></span>(<span class="st">"Barack Obama"</span>)
 <span class="kw">head</span>(res[, <span class="dv">1</span>:<span class="dv">3</span>])</code></pre></div>
 <pre><code>##                publishedAt                channelId                                                                           title
@@ -218,7 +218,7 @@ devtools::<span class="kw">install_github</span>(<span class="st">"soodoku/tuber
 </div>
 <div id="get-comments-on-a-video" class="section level4">
 <h4 class="hasAnchor">
-<html><body><a href="#get-comments-on-a-video" class="anchor"> </a></body></html>Get Comments on a video</h4>
+<a href="#get-comments-on-a-video" class="anchor"></a>Get Comments on a video</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_comment_threads.html">get_comment_threads</a></span>(<span class="kw">c</span>(<span class="dt">video_id=</span><span class="st">"N708P-A45D0"</span>))
 <span class="kw">head</span>(res)</code></pre></div>
 <pre><code>##    authorDisplayName                                                                              authorProfileImageUrl                                        authorChannelUrl
@@ -232,7 +232,7 @@ devtools::<span class="kw">install_github</span>(<span class="st">"soodoku/tuber
 </div>
 <div id="get-statistics-of-all-the-videos-in-a-channel" class="section level3">
 <h3 class="hasAnchor">
-<html><body><a href="#get-statistics-of-all-the-videos-in-a-channel" class="anchor"> </a></body></html>Get statistics of all the videos in a channel</h3>
+<a href="#get-statistics-of-all-the-videos-in-a-channel" class="anchor"></a>Get statistics of all the videos in a channel</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a &lt;-<span class="st"> </span><span class="kw"><a href="../reference/list_channel_resources.html">list_channel_resources</a></span>(<span class="dt">filter =</span> <span class="kw">c</span>(<span class="dt">channel_id =</span> <span class="st">"UCT5Cx1l4IS3wHkJXNyuj4TA"</span>), <span class="dt">part=</span><span class="st">"contentDetails"</span>)
 
 <span class="co"># Uploaded playlists:</span>

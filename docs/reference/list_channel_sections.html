@@ -83,7 +83,7 @@
     </div>
 
     
-    Returns list of channel sections that channel id belongs to.
+    <p>Returns list of channel sections that channel id belongs to.</p>
     
 
     <pre class="usage"><span class='fu'>list_channel_sections</span>(<span class='kw'>filter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>part</span> <span class='kw'>=</span> <span class='st'>"snippet"</span>, <span class='kw'>hl</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
@@ -93,43 +93,43 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>filter</th>
-      <td>string; Required.
+      <td><p>string; Required.
 named vector of length 1
 potential names of the entry in the vector: 
 <code>channel_id</code>: Channel ID
-<code>id</code>: Section ID</td>
+<code>id</code>: Section ID</p></td>
     </tr>
     <tr>
       <th>part</th>
-      <td>specify which part do you want. It can only be one of the following: <code>contentDetails, id, localizations, snippet, targeting</code>. Default is <code>snippet</code>.</td>
+      <td><p>specify which part do you want. It can only be one of the following: <code>contentDetails, id, localizations, snippet, targeting</code>. Default is <code>snippet</code>.</p></td>
     </tr>
     <tr>
       <th>hl</th>
-      <td>language that will be used for text values, optional, default is en-US. See also <code><a href='list_langs.html'>list_langs</a></code></td>
+      <td><p>language that will be used for text values, optional, default is en-US. See also <code><a href='list_langs.html'>list_langs</a></code></p></td>
     </tr>
     <tr>
       <th>&#8230;</th>
-      <td>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</td>
+      <td><p>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    captions for the video from one of the first track
+    <p>captions for the video from one of the first track</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <a href = 'https://developers.google.com/youtube/v3/docs/activities/list'>https://developers.google.com/youtube/v3/docs/activities/list</a>
+    <p><a href = 'https://developers.google.com/youtube/v3/docs/activities/list'>https://developers.google.com/youtube/v3/docs/activities/list</a></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># </span>
-<span class='co'># # Set API token via yt_oauth() first</span>
-<span class='co'># </span>
-<span class='co'># list_channel_sections(c(channel_id = "UCRw8bIz2wMLmfgAgWm903cA"))</span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
+<span class='fu'>not_run</span>({
+
+  <span class='co'># Set API token via yt_oauth() first</span>
+
+  <span class='fu'>list_channel_sections</span>(<span class='fu'>c</span>(<span class='kw'>channel_id</span> <span class='kw'>=</span> <span class='st'>"UCRw8bIz2wMLmfgAgWm903cA"</span>))
+})</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

@@ -83,7 +83,7 @@
     </div>
 
     
-    Search for videos, channels and playlists. (By default, the function searches for videos.)
+    <p>Search for videos, channels and playlists. (By default, the function searches for videos.)</p>
     
 
     <pre class="usage"><span class='fu'>yt_search</span>(<span class='kw'>term</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>max_results</span> <span class='kw'>=</span> <span class='fl'>50</span>, <span class='kw'>channel_id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
@@ -99,108 +99,115 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>term</th>
-      <td>Character. Search term; required; no default</td>
+      <td><p>Character. Search term; required; no default</p></td>
     </tr>
     <tr>
       <th>max_results</th>
-      <td>Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.
-Search results are constrained to a maximum of 500 videos if type is video and we have a value of <code>channel_id</code>.</td>
+      <td><p>Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.
+Search results are constrained to a maximum of 500 videos if type is video and we have a value of <code>channel_id</code>.</p></td>
     </tr>
     <tr>
       <th>channel_id</th>
-      <td>Character. Only return search results from this channel; Optional.</td>
+      <td><p>Character. Only return search results from this channel; Optional.</p></td>
     </tr>
     <tr>
       <th>channel_type</th>
-      <td>Character. Optional. Takes one of two values: <code>&#39;any&#39;, &#39;show&#39;</code>. Default is <code>&#39;any&#39;</code></td>
+      <td><p>Character. Optional. Takes one of two values: <code>'any', 'show'</code>. Default is <code>'any'</code></p></td>
     </tr>
     <tr>
       <th>type</th>
-      <td>Character. Optional. Takes one of three values: <code>&#39;video&#39;, &#39;channel&#39;, &#39;playlist&#39;</code>. Default is <code>&#39;video&#39;</code>.</td>
+      <td><p>Character. Optional. Takes one of three values: <code>'video', 'channel', 'playlist'</code>. Default is <code>'video'</code>.</p></td>
     </tr>
     <tr>
       <th>event_type</th>
-      <td>Character. Optional. Takes one of three values: <code>&#39;completed&#39;, &#39;live&#39;, &#39;upcoming&#39;</code></td>
+      <td><p>Character. Optional. Takes one of three values: <code>'completed', 'live', 'upcoming'</code></p></td>
     </tr>
     <tr>
       <th>location</th>
-      <td>Character.  Optional. Latitude and Longitude within parentheses, e.g. &quot;(37.42307,-122.08427)&quot;</td>
+      <td><p>Character.  Optional. Latitude and Longitude within parentheses, e.g. "(37.42307,-122.08427)"</p></td>
     </tr>
     <tr>
       <th>location_radius</th>
-      <td>Character.  Optional. e.g. &quot;1500m&quot;, &quot;5km&quot;, &quot;10000ft&quot;, &quot;0.75mi&quot;</td>
+      <td><p>Character.  Optional. e.g. "1500m", "5km", "10000ft", "0.75mi"</p></td>
     </tr>
     <tr>
       <th>published_after</th>
-      <td>Character. Optional. RFC 339 Format. For instance, &quot;1970-01-01T00:00:00Z&quot;</td>
+      <td><p>Character. Optional. RFC 339 Format. For instance, "1970-01-01T00:00:00Z"</p></td>
     </tr>
     <tr>
       <th>published_before</th>
-      <td>Character. Optional. RFC 339 Format. For instance, &quot;1970-01-01T00:00:00Z&quot;</td>
+      <td><p>Character. Optional. RFC 339 Format. For instance, "1970-01-01T00:00:00Z"</p></td>
     </tr>
     <tr>
       <th>video_definition</th>
-      <td>Character. Optional. Takes one of three values: <code>&#39;any&#39;</code> (return all videos; Default), <code>&#39;high&#39;, &#39;standard&#39;</code></td>
+      <td><p>Character. Optional. 
+Takes one of three values: <code>'any'</code> (return all videos; Default), <code>'high', 'standard'</code></p></td>
     </tr>
     <tr>
       <th>video_caption</th>
-      <td>Character. Optional. Takes one of three values: <code>&#39;any&#39;</code> (return all videos; Default), <code>&#39;closedCaption&#39;, &#39;none&#39;</code>. Type must be set to video.</td>
+      <td><p>Character. Optional. Takes one of three values: <code>'any'</code> (return all videos; Default), <code>'closedCaption', 'none'</code>. Type must be set to video.</p></td>
     </tr>
     <tr>
       <th>video_license</th>
-      <td>Character. Optional. Takes one of three values: <code>&#39;any&#39;</code> (return all videos; Default), <code>&#39;creativeCommon&#39;</code> (return videos with Creative Commons 
-license), <code>&#39;youtube&#39;</code> (return videos with standard YouTube license).</td>
+      <td><p>Character. Optional. 
+Takes one of three values: <code>'any'</code> (return all videos; Default), <code>'creativeCommon'</code> (return videos with Creative Commons 
+license), <code>'youtube'</code> (return videos with standard YouTube license).</p></td>
     </tr>
     <tr>
       <th>video_syndicated</th>
-      <td>Character. Optional. Takes one of two values: <code>&#39;any&#39;</code> (return all videos; Default), <code>&#39;true&#39;</code> (return only syndicated videos)</td>
+      <td><p>Character. Optional. Takes one of two values: 
+<code>'any'</code> (return all videos; Default), <code>'true'</code> (return only syndicated videos)</p></td>
     </tr>
     <tr>
       <th>video_type</th>
-      <td>Character. Optional. Takes one of three values: <code>&#39;any&#39;</code> (return all videos; Default), <code>&#39;episode&#39;</code> (return episode of shows), &#39;movie&#39; (return movies)</td>
+      <td><p>Character. Optional. Takes one of three values: <code>'any'</code> (return all videos; Default), <code>'episode'</code> (return episode of shows), 'movie' (return movies)</p></td>
     </tr>
     <tr>
       <th>simplify</th>
-      <td>Boolean. Return a data.frame if <code>TRUE</code>. Default is <code>TRUE</code>. If <code>TRUE</code>, it returns a list that carries additional information.</td>
+      <td><p>Boolean. Return a data.frame if <code>TRUE</code>. Default is <code>TRUE</code>. 
+If <code>TRUE</code>, it returns a list that carries additional information.</p></td>
     </tr>
     <tr>
       <th>get_all</th>
-      <td>get all results, iterating through all the results pages. Default is <code>TRUE</code>. Result is a <code>data.frame</code>. Optional.</td>
+      <td><p>get all results, iterating through all the results pages. Default is <code>TRUE</code>. 
+Result is a <code>data.frame</code>. Optional.</p></td>
     </tr>
     <tr>
       <th>page_token</th>
-      <td>specific page in the result set that should be returned, optional</td>
+      <td><p>specific page in the result set that should be returned, optional</p></td>
     </tr>
     <tr>
       <th>&#8230;</th>
-      <td>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</td>
+      <td><p>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    data.frame with 16 elements: <code>video_id, publishedAt, channelId, title, description, thumbnails.default.url, thumbnails.default.width, 
-thumbnails.default.height, thumbnails.medium.url, thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url, thumbnails.high.width, 
-thumbnails.high.height, channelTitle, liveBroadcastContent</code>
+    <p>data.frame with 16 elements: <code>video_id, publishedAt, channelId, title, description, 
+thumbnails.default.url, thumbnails.default.width, thumbnails.default.height, thumbnails.medium.url, 
+thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url, thumbnails.high.width, 
+thumbnails.high.height, channelTitle, liveBroadcastContent</code></p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <a href = 'https://developers.google.com/youtube/v3/docs/search/list'>https://developers.google.com/youtube/v3/docs/search/list</a>
+    <p><a href = 'https://developers.google.com/youtube/v3/docs/search/list'>https://developers.google.com/youtube/v3/docs/search/list</a></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># </span>
-<span class='co'># # Set API token via yt_oauth() first</span>
-<span class='co'># </span>
-<span class='co'># yt_search(term = "Barack Obama")</span>
-<span class='co'># yt_search(term = "Barack Obama", published_after = "2016-10-01T00:00:00Z")</span>
-<span class='co'># yt_search(term = "Barack Obama", published_before = "2016-09-01T00:00:00Z")</span>
-<span class='co'># yt_search(term = "Barack Obama", published_before = "2016-03-01T00:00:00Z", </span>
-<span class='co'>#                                published_after = "2016-02-01T00:00:00Z")</span>
-<span class='co'># yt_search(term = "Barack Obama", published_before = "2016-02-10T00:00:00Z", </span>
-<span class='co'>#                                published_after = "2016-01-01T00:00:00Z")</span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
+    <pre class="examples"><div class='input'>
+<span class='fu'>not_run</span>({
+
+  <span class='co'># Set API token via yt_oauth() first</span>
+
+  <span class='fu'>yt_search</span>(<span class='kw'>term</span> <span class='kw'>=</span> <span class='st'>"Barack Obama"</span>)
+  <span class='fu'>yt_search</span>(<span class='kw'>term</span> <span class='kw'>=</span> <span class='st'>"Barack Obama"</span>, <span class='kw'>published_after</span> <span class='kw'>=</span> <span class='st'>"2016-10-01T00:00:00Z"</span>)
+  <span class='fu'>yt_search</span>(<span class='kw'>term</span> <span class='kw'>=</span> <span class='st'>"Barack Obama"</span>, <span class='kw'>published_before</span> <span class='kw'>=</span> <span class='st'>"2016-09-01T00:00:00Z"</span>)
+  <span class='fu'>yt_search</span>(<span class='kw'>term</span> <span class='kw'>=</span> <span class='st'>"Barack Obama"</span>, <span class='kw'>published_before</span> <span class='kw'>=</span> <span class='st'>"2016-03-01T00:00:00Z"</span>,
+                                 <span class='kw'>published_after</span> <span class='kw'>=</span> <span class='st'>"2016-02-01T00:00:00Z"</span>)
+  <span class='fu'>yt_search</span>(<span class='kw'>term</span> <span class='kw'>=</span> <span class='st'>"Barack Obama"</span>, <span class='kw'>published_before</span> <span class='kw'>=</span> <span class='st'>"2016-02-10T00:00:00Z"</span>,
+                                 <span class='kw'>published_after</span> <span class='kw'>=</span> <span class='st'>"2016-01-01T00:00:00Z"</span>)
+})</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

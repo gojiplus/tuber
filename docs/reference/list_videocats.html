@@ -83,7 +83,7 @@
     </div>
 
     
-    List of Categories That Can be Associated with Videos
+    <p>List of Categories That Can be Associated with Videos</p>
     
 
     <pre class="usage"><span class='fu'>list_videocats</span>(<span class='kw'>filter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
@@ -93,35 +93,35 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>filter</th>
-      <td>string; Required.
+      <td><p>string; Required.
 named vector of length 1
 potential names of the entry in the vector: 
 <code>region_code</code>: Character. Required. Has to be a ISO 3166-1 alpha-2 code (see <a href = 'https://www.iso.org/obp/ui/#search'>https://www.iso.org/obp/ui/#search</a>)
-<code>category_id</code>: video category ID</td>
+<code>category_id</code>: video category ID</p></td>
     </tr>
     <tr>
       <th>&#8230;</th>
-      <td>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</td>
+      <td><p>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    data.frame with 6 columns: <code>region_code, channelId, title, assignable, etag, id</code>
+    <p>data.frame with 6 columns: <code>region_code, channelId, title, assignable, etag, id</code></p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <a href = 'https://developers.google.com/youtube/v3/docs/videoCategories/list'>https://developers.google.com/youtube/v3/docs/videoCategories/list</a>
+    <p><a href = 'https://developers.google.com/youtube/v3/docs/videoCategories/list'>https://developers.google.com/youtube/v3/docs/videoCategories/list</a></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># </span>
-<span class='co'># # Set API token via yt_oauth() first</span>
-<span class='co'># </span>
-<span class='co'># list_videocats(c(region_code = "JP"))</span>
-<span class='co'># list_videocats() # Will throw an error asking for a valid filter with valid region_code</span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>not_run</span>({
+
+  <span class='co'># Set API token via yt_oauth() first</span>
+
+  <span class='fu'>list_videocats</span>(<span class='fu'>c</span>(<span class='kw'>region_code</span> <span class='kw'>=</span> <span class='st'>"JP"</span>))
+  <span class='fu'>list_videocats</span>() <span class='co'># Will throw an error asking for a valid filter with valid region_code</span>
+})</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

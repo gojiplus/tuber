@@ -83,7 +83,7 @@
     </div>
 
     
-    Takes a video id and returns related videos
+    <p>Takes a video id and returns related videos</p>
     
 
     <pre class="usage"><span class='fu'>get_related_videos</span>(<span class='kw'>video_id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>max_results</span> <span class='kw'>=</span> <span class='fl'>50</span>,
@@ -94,41 +94,41 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>video_id</th>
-      <td>Character. Required. No default.</td>
+      <td><p>Character. Required. No default.</p></td>
     </tr>
     <tr>
       <th>max_results</th>
-      <td>Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.</td>
+      <td><p>Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.</p></td>
     </tr>
     <tr>
       <th>safe_search</th>
-      <td>Character. Optional. Takes one of three values: <code>&#39;moderate&#39;</code>, <code>&#39;none&#39;</code> (default) or <code>&#39;strict&#39;</code></td>
+      <td><p>Character. Optional. Takes one of three values: <code>'moderate'</code>, <code>'none'</code> (default) or <code>'strict'</code></p></td>
     </tr>
     <tr>
       <th>&#8230;</th>
-      <td>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</td>
+      <td><p>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <code>data.frame</code> with 16 columns: <code>video_id, publishedAt, channelId, title, description, 
+    <p><code>data.frame</code> with 16 columns: <code>video_id, publishedAt, channelId, title, description, 
 thumbnails.default.url, thumbnails.default.width, thumbnails.default.height, thumbnails.medium.url, 
 thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url, thumbnails.high.width, 
-thumbnails.high.height, channelTitle, liveBroadcastContent</code>
+thumbnails.high.height, channelTitle, liveBroadcastContent</code></p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <a href = 'https://developers.google.com/youtube/v3/docs/search/list'>https://developers.google.com/youtube/v3/docs/search/list</a>
+    <p><a href = 'https://developers.google.com/youtube/v3/docs/search/list'>https://developers.google.com/youtube/v3/docs/search/list</a></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># </span>
-<span class='co'># # Set API token via yt_oauth() first</span>
-<span class='co'># </span>
-<span class='co'># get_related_videos(video_id = "yJXTXN4xrI8")</span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>not_run</span>({
+
+  <span class='co'># Set API token via yt_oauth() first</span>
+
+  <span class='fu'>get_related_videos</span>(<span class='kw'>video_id</span> <span class='kw'>=</span> <span class='st'>"yJXTXN4xrI8"</span>)
+})</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

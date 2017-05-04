@@ -1,6 +1,6 @@
 context("Get Details")
 
-test_that("get_details runs successfully", {
+test_that("get_related_videos runs successfully", {
 
   skip_on_cran()
 

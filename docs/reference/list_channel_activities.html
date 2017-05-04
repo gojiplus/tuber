@@ -83,7 +83,7 @@
     </div>
 
     
-    Returns a list of channel events that match the request criteria.
+    <p>Returns a list of channel events that match the request criteria.</p>
     
 
     <pre class="usage"><span class='fu'>list_channel_activities</span>(<span class='kw'>filter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>part</span> <span class='kw'>=</span> <span class='st'>"snippet"</span>, <span class='kw'>max_results</span> <span class='kw'>=</span> <span class='fl'>50</span>,
@@ -95,70 +95,70 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>filter</th>
-      <td>string; Required.
+      <td><p>string; Required.
 named vector of length 1
 potential names of the entry in the vector: 
-<code>channel_id</code>: ID of the channel. Required. No default.</td>
+<code>channel_id</code>: ID of the channel. Required. No default.</p></td>
     </tr>
     <tr>
       <th>part</th>
-      <td>specify which part do you want. It can only be one of the three: <code>contentDetails, id, snippet</code>. Default is <code>snippet</code>.</td>
+      <td><p>specify which part do you want. It can only be one of the three: <code>contentDetails, id, snippet</code>. Default is <code>snippet</code>.</p></td>
     </tr>
     <tr>
       <th>max_results</th>
-      <td>Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.</td>
+      <td><p>Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.</p></td>
     </tr>
     <tr>
       <th>page_token</th>
-      <td>specific page in the result set that should be returned, optional</td>
+      <td><p>specific page in the result set that should be returned, optional</p></td>
     </tr>
     <tr>
       <th>published_after</th>
-      <td>Character. Optional. RFC 339 Format. For instance, &quot;1970-01-01T00:00:00Z&quot;</td>
+      <td><p>Character. Optional. RFC 339 Format. For instance, "1970-01-01T00:00:00Z"</p></td>
     </tr>
     <tr>
       <th>published_before</th>
-      <td>Character. Optional. RFC 339 Format. For instance, &quot;1970-01-01T00:00:00Z&quot;</td>
+      <td><p>Character. Optional. RFC 339 Format. For instance, "1970-01-01T00:00:00Z"</p></td>
     </tr>
     <tr>
       <th>region_code</th>
-      <td>ISO 3166-1 alpha-2 country code, optional, see also <code><a href='list_regions.html'>list_regions</a></code></td>
+      <td><p>ISO 3166-1 alpha-2 country code, optional, see also <code><a href='list_regions.html'>list_regions</a></code></p></td>
     </tr>
     <tr>
       <th>simplify</th>
-      <td>Data Type: Boolean. Default is <code>TRUE</code>. If <code>TRUE</code> and if part requested is <code>contentDetails</code>, 
-the function returns a <code>data.frame</code>. Else a list with all the information returned.</td>
+      <td><p>Data Type: Boolean. Default is <code>TRUE</code>. If <code>TRUE</code> and if part requested is <code>contentDetails</code>, 
+the function returns a <code>data.frame</code>. Else a list with all the information returned.</p></td>
     </tr>
     <tr>
       <th>&#8230;</th>
-      <td>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</td>
+      <td><p>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    named list
+    <p>named list
 If <code>simplify</code> is <code>TRUE</code>, a data.frame is returned with 18 columns:
 <code>publishedAt, channelId, title, description, thumbnails.default.url, thumbnails.default.width, thumbnails.default.height,
 thumbnails.medium.url, thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url, thumbnails.high.width, 
-thumbnails.high.height, thumbnails.standard.url, thumbnails.standard.width, thumbnails.standard.height, channelTitle, type</code>
+thumbnails.high.height, thumbnails.standard.url, thumbnails.standard.width, thumbnails.standard.height, channelTitle, type</code></p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <a href = 'https://developers.google.com/youtube/v3/docs/activities/list'>https://developers.google.com/youtube/v3/docs/activities/list</a>
+    <p><a href = 'https://developers.google.com/youtube/v3/docs/activities/list'>https://developers.google.com/youtube/v3/docs/activities/list</a></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># </span>
-<span class='co'># # Set API token via yt_oauth() first</span>
-<span class='co'># </span>
-<span class='co'># list_channel_activities(filter = c(channel_id = "UCRw8bIz2wMLmfgAgWm903cA"))</span>
-<span class='co'># list_channel_activities(filter = c(channel_id = "UCRw8bIz2wMLmfgAgWm903cA", regionCode="US"))</span>
-<span class='co'># list_channel_activities(filter = c(channel_id = "UCMtFAi84ehTSYSE9XoHefig"),  </span>
-<span class='co'>#                         published_before = "2016-02-10T00:00:00Z", </span>
-<span class='co'>#                         published_after = "2016-01-01T00:00:00Z")</span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>not_run</span>({
+
+  <span class='co'># Set API token via yt_oauth() first</span>
+
+  <span class='fu'>list_channel_activities</span>(<span class='kw'>filter</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='kw'>channel_id</span> <span class='kw'>=</span> <span class='st'>"UCRw8bIz2wMLmfgAgWm903cA"</span>))
+  <span class='fu'>list_channel_activities</span>(<span class='kw'>filter</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='kw'>channel_id</span> <span class='kw'>=</span> <span class='st'>"UCRw8bIz2wMLmfgAgWm903cA"</span>, <span class='kw'>regionCode</span><span class='kw'>=</span><span class='st'>"US"</span>))
+  <span class='fu'>list_channel_activities</span>(<span class='kw'>filter</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='kw'>channel_id</span> <span class='kw'>=</span> <span class='st'>"UCMtFAi84ehTSYSE9XoHefig"</span>),
+                          <span class='kw'>published_before</span> <span class='kw'>=</span> <span class='st'>"2016-02-10T00:00:00Z"</span>,
+                          <span class='kw'>published_after</span> <span class='kw'>=</span> <span class='st'>"2016-01-01T00:00:00Z"</span>)
+})</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

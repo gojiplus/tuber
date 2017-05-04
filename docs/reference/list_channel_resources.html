@@ -83,7 +83,7 @@
     </div>
 
     
-    Returns List of Requested Channel Resources
+    <p>Returns List of Requested Channel Resources</p>
     
 
     <pre class="usage"><span class='fu'>list_channel_resources</span>(<span class='kw'>filter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>part</span> <span class='kw'>=</span> <span class='st'>"contentDetails"</span>,
@@ -94,57 +94,57 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>filter</th>
-      <td>string; Required.
+      <td><p>string; Required.
 named vector of length 1
 potential names of the entry in the vector: 
 <code>category_id</code>: YouTube guide category that returns channels associated with that category
 <code>username</code>:  YouTube username that returns channel associated with that username.
-<code>channel_id</code>: a comma-separated list of the YouTube channel ID(s) for the resource(s) that are being retrieved</td>
+<code>channel_id</code>: a comma-separated list of the YouTube channel ID(s) for the resource(s) that are being retrieved</p></td>
     </tr>
     <tr>
       <th>part</th>
-      <td>a comma separated list of channel resource properties that response will include string. Required. 
+      <td><p>a comma separated list of channel resource properties that response will include string. Required. 
 One of the following: <code>auditDetails, brandingSettings, contentDetails, contentOwnerDetails, id, invideoPromotion, localizations, snippet, statistics, status, topicDetails</code>.
-Default is <code>contentDetails</code>.</td>
+Default is <code>contentDetails</code>.</p></td>
     </tr>
     <tr>
       <th>max_results</th>
-      <td>Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.</td>
+      <td><p>Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.</p></td>
     </tr>
     <tr>
       <th>page_token</th>
-      <td>specific page in the result set that should be returned, optional</td>
+      <td><p>specific page in the result set that should be returned, optional</p></td>
     </tr>
     <tr>
       <th>hl</th>
-      <td>Language used for text values. Optional. Default is <code>en-US</code>. For other allowed language codes, see <code><a href='list_langs.html'>list_langs</a></code>.</td>
+      <td><p>Language used for text values. Optional. Default is <code>en-US</code>. For other allowed language codes, see <code><a href='list_langs.html'>list_langs</a></code>.</p></td>
     </tr>
     <tr>
       <th>&#8230;</th>
-      <td>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</td>
+      <td><p>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    list
+    <p>list</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <a href = 'https://developers.google.com/youtube/v3/docs/channels/list'>https://developers.google.com/youtube/v3/docs/channels/list</a>
+    <p><a href = 'https://developers.google.com/youtube/v3/docs/channels/list'>https://developers.google.com/youtube/v3/docs/channels/list</a></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># </span>
-<span class='co'># # Set API token via yt_oauth() first</span>
-<span class='co'># </span>
-<span class='co'># list_channel_resources(filter = c(channel_id = "UCT5Cx1l4IS3wHkJXNyuj4TA"))</span>
-<span class='co'># list_channel_resources(filter = c(username = "latenight"), part = "id, contentDetails")</span>
-<span class='co'># list_channel_resources(filter = c(username = "latenight"), part = "id, contentDetails", </span>
-<span class='co'># max_results = 10)</span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
+<span class='fu'>not_run</span>({
+
+  <span class='co'># Set API token via yt_oauth() first</span>
+
+  <span class='fu'>list_channel_resources</span>(<span class='kw'>filter</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='kw'>channel_id</span> <span class='kw'>=</span> <span class='st'>"UCT5Cx1l4IS3wHkJXNyuj4TA"</span>))
+  <span class='fu'>list_channel_resources</span>(<span class='kw'>filter</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='kw'>username</span> <span class='kw'>=</span> <span class='st'>"latenight"</span>), <span class='kw'>part</span> <span class='kw'>=</span> <span class='st'>"id, contentDetails"</span>)
+  <span class='fu'>list_channel_resources</span>(<span class='kw'>filter</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='kw'>username</span> <span class='kw'>=</span> <span class='st'>"latenight"</span>), <span class='kw'>part</span> <span class='kw'>=</span> <span class='st'>"id, contentDetails"</span>,
+  <span class='kw'>max_results</span> <span class='kw'>=</span> <span class='fl'>10</span>)
+})</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

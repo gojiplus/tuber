@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Base POST AND GET functions. Not exported. — tuber_GET â€¢ tuber</title>
+<title>Delete a Particular Caption Track — delete_captions â€¢ tuber</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -79,37 +79,46 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Base POST AND GET functions. Not exported.</h1>
+    <h1>Delete a Particular Caption Track</h1>
     </div>
 
     
-    <p>GET</p>
+    <p>Delete a Particular Caption Track</p>
     
 
-    <pre class="usage"><span class='fu'>tuber_GET</span>(<span class='no'>path</span>, <span class='no'>query</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>delete_captions</span>(<span class='kw'>id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>path</th>
-      <td><p>path to specific API request URL</p></td>
-    </tr>
-    <tr>
-      <th>query</th>
-      <td><p>query list</p></td>
+      <th>id</th>
+      <td><p>String. Required. id of the caption track that is being retrieved</p></td>
     </tr>
     <tr>
       <th>&#8230;</th>
-      <td><p>Additional arguments passed to <code><a href='http://www.rdocumentation.org/packages/httr/topics/GET'>GET</a></code>.</p></td>
+      <td><p>Additional arguments passed to <code><a href='tuber_DELETE.html'>tuber_DELETE</a></code>.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>list</p>
     
 
+
+    
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p><a href = 'https://developers.google.com/youtube/v3/docs/captions/delete'>https://developers.google.com/youtube/v3/docs/captions/delete</a></p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>not_run</span>({
+
+  <span class='co'># Set API token via yt_oauth() first</span>
+
+  <span class='fu'>delete_captions</span>(<span class='kw'>id</span> <span class='kw'>=</span> <span class='st'>"y3ElXcEME3lSISz6izkWVT5GvxjPu8pA"</span>)
+})</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -117,7 +126,11 @@
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-          </ul>
+
+      <li><a href="#references">References</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>
