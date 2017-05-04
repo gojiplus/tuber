@@ -2,6 +2,8 @@
 
 export(delete_captions)
 export(delete_channel_sections)
+export(delete_comments)
+export(delete_playlists)
 export(get_captions)
 export(get_channel_stats)
 export(get_comment_threads)
