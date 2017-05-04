@@ -66,6 +66,27 @@ tuber_POST <- function(path, query, body = "", ...) {
 }
 
 #'
+#' DELETE
+#' 
+#' @param path path to specific API request URL 
+#' @param query query list 
+#' @param \dots Additional arguments passed to \code{\link[httr]{GET}}.
+#' @return list
+
+tuber_DELETE <- function(path, query, ...) {
+
+  yt_check_token()
+
+  req <- DELETE("https://www.googleapis.com", path = paste0("youtube/v3/", path),
+                  query = query, config(token = getOption("google_token")), ...)
+
+  tuber_check(req)
+  res <- content(req)
+
+  res
+}
+
+#'
 #' Request Response Verification
 #' 
 #' @param  req request
