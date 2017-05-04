@@ -1,14 +1,16 @@
-#' Get Captions of a Video
+#' Get Particular Caption Track
 #' 
 #' For getting captions from the v3 API, you must specify the id resource. 
 #' Check \code{\link{list_caption_tracks}} for more information.
 #' 
-#' @param video_id ID of the video whose captions are requested. Required. No default.
-#' @param id    String. Optional. id of the caption track that is being retrieved
-#' @param part Required. Default is \code{snippet}. It can also be \code{id}.
+#' @param id   String. Required. id of the caption track that is being retrieved
+#' @param lang Optional. Default is \code{en}.
+#' @param format Optional. Default is \code{sbv}.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
 #' @return String. 
+#' 
+#' @references \url{https://developers.google.com/youtube/v3/docs/captions/download}
 #' 
 #' @export
 #'  
@@ -17,23 +19,17 @@
 #' 
 #' # Set API token via yt_oauth() first
 #' 
-#' get_captions(video_id = "yJXTXN4xrI8")
+#' get_captions(id = "y3ElXcEME3lSISz6izkWVT5GvxjPu8pA")
 #' }
 
-get_captions <- function (video_id = NULL, part = "snippet", id = NULL, ...) {
+get_captions <- function (id = NULL, lang = "en", format = "sbv", ...) {
 
-  if ( !is.character(video_id)) {
-    stop("Must specify a valid video_id.")
+  if ( !is.character(id)) {
+    stop("Must specify a valid id.")
   }
   
-  querylist <- list(videoId = video_id, part = part, id = id)
-  raw_res <- tuber_GET("captions", query = querylist, ...)
-
-  if (length(raw_res$items) == 0) {
-    warning("No caption tracks available. Likely cause:
-             Incorrect video ID. \n")
-    return(list())
-  }
+  querylist <- list(tlang = lang, tfmt = format)
+  raw_res <- tuber_GET(paste0("captions", "/", id), query = querylist, ...)
 
   raw_res
 }
