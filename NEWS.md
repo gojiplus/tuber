@@ -1,6 +1,7 @@
 # version 0.9.0
 
 * Extensive linting. Passes expect_lint_free
+* Removed support for caption tracks from old Youtube API as client should only be for V3. Changed the get_captions API.
 
 # version 0.8.0 
 
