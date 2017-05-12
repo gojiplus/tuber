@@ -64,8 +64,14 @@ get_comment_threads <- function (filter = NULL, part = "snippet",
                                                       names(translate_filter))])
   names(filter)      <- yt_filter_name
 
-  querylist <- list(part = part, maxResults = max_results,
-                                                       textFormat = text_format)
+  if(is.null(page_token)){
+    querylist <- list(part = part, maxResults = max_results,
+                                 textFormat = text_format)
+  } else {
+    querylist <- list(part = part, maxResults = max_results,
+                                 textFormat = text_format,
+                                 pageToken = page_token)
+  }
   querylist <- c(querylist, filter)
 
   res <- tuber_GET("commentThreads", querylist, ...)
