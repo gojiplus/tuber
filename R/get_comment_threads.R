@@ -58,20 +58,15 @@ get_comment_threads <- function (filter = NULL, part = "snippet",
 
   translate_filter <- c(video_id = "videoId", thread_id = "id",
                     threads_related_to_channel = "allThreadsRelatedToChannelId",
-                    channel_id = "channelId")
+                    channel_id = "channelId", page_token = "pageToken")
 
   yt_filter_name     <- as.vector(translate_filter[match(names(filter),
                                                       names(translate_filter))])
   names(filter)      <- yt_filter_name
 
-  if(is.null(page_token)){
-    querylist <- list(part = part, maxResults = max_results,
-                                 textFormat = text_format)
-  } else {
-    querylist <- list(part = part, maxResults = max_results,
+  querylist <- list(part = part, maxResults = max_results,
                                  textFormat = text_format,
                                  pageToken = page_token)
-  }
   querylist <- c(querylist, filter)
 
   res <- tuber_GET("commentThreads", querylist, ...)

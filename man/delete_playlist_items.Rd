@@ -11,9 +11,6 @@ delete_playlist_items(id = NULL, ...)
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_DELETE}}.}
 }
-\value{
-
-}
 \description{
 Delete a Playlist Item
 }

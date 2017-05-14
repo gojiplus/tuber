@@ -3,7 +3,6 @@
 #' @param id   String. Required. id of the caption track that is being retrieved
 #' @param \dots Additional arguments passed to \code{\link{tuber_DELETE}}.
 #' 
-#' @return 
 #' 
 #' @references \url{https://developers.google.com/youtube/v3/docs/captions/delete}
 #' 

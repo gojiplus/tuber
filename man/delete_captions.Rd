@@ -11,9 +11,6 @@ delete_captions(id = NULL, ...)
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_DELETE}}.}
 }
-\value{
-
-}
 \description{
 Delete a Particular Caption Track
 }

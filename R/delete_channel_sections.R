@@ -5,7 +5,6 @@
 #' @param id Required. ID of the channel section.
 #' @param \dots Additional arguments passed to \code{\link{tuber_DELETE}}.
 #' 
-#' @return captions for the video from one of the first track
 #' @export
 #' @references \url{https://developers.google.com/youtube/v3/docs/channelSections/delete}
 #' @examples

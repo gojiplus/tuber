@@ -3,6 +3,7 @@
 * Extensive linting. Passes expect_lint_free
 * Removed support for caption tracks from old Youtube API as client should only be for V3. Changed the get_captions API.
 * support the deletes
+* translate_filter in get_comment_threads also supports pagetoken, which it didn't. 
 
 # version 0.8.0 
 

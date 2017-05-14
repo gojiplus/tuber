@@ -11,9 +11,6 @@ delete_channel_sections(id = NULL, ...)
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_DELETE}}.}
 }
-\value{
-captions for the video from one of the first track
-}
 \description{
 Delete a Channel Section
 }
