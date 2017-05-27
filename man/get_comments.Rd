@@ -32,8 +32,8 @@ Nested named list. The entry \code{items} is a list of comments along with meta 
 Within each of the \code{items} is an item \code{snippet} which has an item \code{topLevelComment$snippet$textDisplay}
 that contains the actual comment.
 
-When filter is \code{comment_id}, and \code{simplify} is \code{TRUE}, and there is a correct comment id, it returns a \code{data.frame} with 
-following cols: 
+When filter is \code{comment_id}, and \code{simplify} is \code{TRUE}, and there is a correct comment id, 
+it returns a \code{data.frame} with the following cols: 
 \code{id, authorDisplayName, authorProfileImageUrl, authorChannelUrl, value, textDisplay, canRate, viewerRating, likeCount
 publishedAt, updatedAt}
 }
@@ -46,6 +46,7 @@ Get Comments
 # Set API token via yt_oauth() first
 
 get_comments(filter = c(comment_id = "z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk"))
+get_comments(filter = c(parent_id = "z13ds5yxjq3zzptyx04chlkbhx2yh3ezxtc0k"))
 get_comments(filter = 
 c(comment_id = "z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk, 
              z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk"))

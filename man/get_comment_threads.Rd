@@ -23,7 +23,8 @@ following: \code{id, snippet}. e.g., \code{"id, snippet"}, \code{"id"}, etc. Def
 
 \item{simplify}{Data Type: Boolean. Default is \code{TRUE}. If \code{TRUE}, the function returns a data frame. Else a list with all the information returned.}
 
-\item{max_results}{Maximum number of items that should be returned. Integer. Optional. Can be between 20 and 100. Default is 100.}
+\item{max_results}{Maximum number of items that should be returned. Integer. Optional. Default is 100.
+If the value is greater than 100 then the function fetches all the results. The outcome is a simplified \code{data.frame}.}
 
 \item{page_token}{Specific page in the result set that should be returned. Optional.}
 
@@ -47,6 +48,7 @@ Get Comments Threads
 # Set API token via yt_oauth() first
 
 get_comment_threads(filter = c(video_id = "N708P-A45D0"))
+get_comment_threads(filter = c(video_id = "N708P-A45D0"), max_results = 101)
 }
 }
 \references{

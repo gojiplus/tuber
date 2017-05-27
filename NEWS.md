@@ -7,7 +7,7 @@
 * removes cats (prints) from get_stats based on user feedback
 * list_channel_videos now supports getting all the videos from the playlists
 * get_playlist_items supports simplify, defaults to simplify, and also allows getting all the videos from the playlist easily.
-
+* get_comment_threads allows getting all the comment_threads
 
 # version 0.8.0 
 
