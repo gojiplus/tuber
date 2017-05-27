@@ -86,6 +86,7 @@ get_comment_threads <- function (filter = NULL, part = "snippet",
     return(simpler_res)
 
   } else if (simplify == TRUE & part == "snippet" & max_results > 100) {
+
     simple_res  <- lapply(res$items, function(x) {
                                      unlist(x$snippet$topLevelComment$snippet)
                                      }
@@ -94,6 +95,7 @@ get_comment_threads <- function (filter = NULL, part = "snippet",
 
     agg_res <- simpler_res
     page_token  <- res$nextPageToken
+
     while ( is.character(page_token)) {
 
       a_res <- get_comment_threads(orig_filter,
@@ -108,6 +110,7 @@ get_comment_threads <- function (filter = NULL, part = "snippet",
                                      }
                                      )
       simpler_res <- ldply(simple_res, rbind)
+
       agg_res <- rbind(simpler_res, agg_res)
       page_token  <- a_res$nextPageToken
     }
