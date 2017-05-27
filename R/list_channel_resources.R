@@ -32,7 +32,7 @@
 #' }
 
 list_channel_resources <- function (filter = NULL, part = "contentDetails",
-                         max_results = 50, page_token = NULL, hl =  NULL, ...) {
+                         max_results = 50, page_token = NULL, hl = "en-US", ...) {
 
   if (max_results < 0 | max_results > 50) {
     stop("max_results only takes a value between 0 and 50.")

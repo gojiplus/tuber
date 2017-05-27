@@ -4,20 +4,27 @@
 \alias{list_channel_videos}
 \title{Returns List of Requested Channel Videos}
 \usage{
-list_channel_videos(channel_id = NULL, max_results = 50, ...)
+list_channel_videos(channel_id = NULL, max_results = 50,
+  page_token = NULL, hl = "en-US", ...)
 }
 \arguments{
 \item{channel_id}{String. ID of the channel. Required.}
 
 \item{max_results}{Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.}
 
+\item{page_token}{Specific page in the result set that should be returned. Optional.}
+
+\item{hl}{Language used for text values. Optional. Default is \code{en-US}. For other allowed language codes, see \code{\link{list_langs}}}
+
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-character vector of video IDs
+list of \code{data.frame} with each list corresponding to a different
+playlist
 }
 \description{
-Returns List of Requested Channel Videos
+Iterate through the \code{max_results} number of playlists in channel and get
+the videos for each of the playlists.
 }
 \examples{
 
@@ -25,8 +32,8 @@ Returns List of Requested Channel Videos
 
 # Set API token via yt_oauth() first
 
-list_channel_videos(channel_id = "UCT5Cx1l4IS3wHkJXNyuj4TA")
-list_channel_videos(channel_id = "UCT5Cx1l4IS3wHkJXNyuj4TA", max_results = 10)
+list_channel_videos(channel_id = "UCXOKEdfOFxsHO_-Su3K8SHg")
+list_channel_videos(channel_id = "UCXOKEdfOFxsHO_-Su3K8SHg", max_results = 10)
 }
 }
 \references{

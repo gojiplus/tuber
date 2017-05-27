@@ -5,7 +5,8 @@
 \title{Get Playlist Items}
 \usage{
 get_playlist_items(filter = NULL, part = "contentDetails",
-  max_results = 50, video_id = NULL, page_token = NULL, ...)
+  max_results = 50, video_id = NULL, page_token = NULL, simplify = TRUE,
+  ...)
 }
 \arguments{
 \item{filter}{string; Required.
@@ -16,11 +17,14 @@ potential names of the entry in the vector:
 
 \item{part}{Required. Comma separated string including one or more of the following: \code{contentDetails, id, snippet, status}. Default: \code{contentDetails}.}
 
-\item{max_results}{Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.}
+\item{max_results}{Maximum number of items that should be returned. Integer. Optional. Default is 50. 
+If over 50, all the results are returned.}
 
 \item{video_id}{Optional. request should return only the playlist items that contain the specified video.}
 
 \item{page_token}{specific page in the result set that should be returned, optional}
+
+\item{simplify}{returns a data.frame rather than a list.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
@@ -35,7 +39,11 @@ Get Playlist Items
 
 # Set API token via yt_oauth() first
 
-get_playlist_items(filter =  c(playlist_id = "PLrEnWoR732-CN09YykVof2lxdI3MLOZda"))
+get_playlist_items(filter = 
+                       c(playlist_id = "PLrEnWoR732-CN09YykVof2lxdI3MLOZda"))
+get_playlist_items(filter = 
+                       c(playlist_id = "PL0fOlXVeVW9QMO3GoESky4yDgQfK2SsXN"),
+                       max_results = 51)
 }
 }
 \references{

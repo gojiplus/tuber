@@ -5,7 +5,7 @@
 \title{Returns List of Requested Channel Resources}
 \usage{
 list_channel_resources(filter = NULL, part = "contentDetails",
-  max_results = 50, page_token = NULL, hl = NULL, ...)
+  max_results = 50, page_token = NULL, hl = "en-US", ...)
 }
 \arguments{
 \item{filter}{string; Required.
