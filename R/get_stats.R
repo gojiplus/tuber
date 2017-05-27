@@ -34,11 +34,5 @@ get_stats <- function (video_id = NULL, ...) {
   res      <- raw_res$items[[1]]
   stat_res <- res$statistics
 
-  cat("No. of Views", stat_res$viewCount, "\n")
-  cat("No. of Likes", stat_res$likeCount, "\n")
-  cat("No. of Dislikes", stat_res$dislikeCount, "\n")
-  cat("No. of Favorites", stat_res$favoriteCount, "\n")
-  cat("No. of Comments", stat_res$commentCount, "\n")
-
   c(id = res$id, stat_res)
 }
