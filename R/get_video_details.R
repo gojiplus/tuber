@@ -39,5 +39,5 @@ get_video_details <- function(video_id = NULL, part = "snippet", ...) {
       return(list())
     }
 
-  raw_res 
+  raw_res
 }
