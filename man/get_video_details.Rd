@@ -4,15 +4,20 @@
 \alias{get_video_details}
 \title{Get Details of a Video or Videos}
 \usage{
-get_video_details(video_id = NULL, ...)
+get_video_details(video_id = NULL, part = "snippet", ...)
 }
 \arguments{
 \item{video_id}{Comma separated list of IDs of the videos for which details are requested. Required.}
 
+\item{part}{Comma-separated list of video resource properties requested. Options include:
+\code{contentDetails, fileDetails, id, liveStreamingDetails, localizations, player, processingDetails, 
+recordingDetails, snippet, statistics, status, suggestions, topicDetails}}
+
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-list with the following elements: \code{id} (video id that was passed), \code{publishedAt, channelId, title, description, thumbnails, 
+list. If part is snippet, the list will have the following elements: 
+\code{id} (video id that was passed), \code{publishedAt, channelId, title, description, thumbnails, 
 channelTitle, categoryId, liveBroadcastContent, localized, defaultAudioLanguage}
 }
 \description{
@@ -24,6 +29,7 @@ Get details such as when the video was published, the title, description, thumbn
 # Set API token via yt_oauth() first
 
 get_video_details(video_id = "yJXTXN4xrI8")
+get_video_details(video_id = "yJXTXN4xrI8", part = "contentDetails")
 }
 }
 \references{

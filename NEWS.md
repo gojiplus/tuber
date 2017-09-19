@@ -1,3 +1,7 @@
+# version 0.9.1
+
+* get_video_detail doesn't hardcode part = 'snippet'. 
+
 # version 0.9.0
 
 * Extensive linting. Passes expect_lint_free
