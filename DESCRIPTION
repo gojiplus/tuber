@@ -1,6 +1,6 @@
 Package: tuber
 Title: Client for the YouTube API
-Version: 0.9.0
+Version: 0.9.1
 Authors@R: person("Gaurav", "Sood", email = "gsood07@gmail.com", role = c("aut", "cre"))
 Maintainer: Gaurav Sood <gsood07@gmail.com>
 Description: Get comments posted on YouTube videos, information on how many 
@@ -10,7 +10,7 @@ Description: Get comments posted on YouTube videos, information on how many
 URL: http://github.com/soodoku/tuber
 BugReports: http://github.com/soodoku/tuber/issues
 Depends:
-    R (>= 3.2.0)
+    R (>= 3.4.1)
 License: MIT + file LICENSE
 LazyData: true
 Imports:
