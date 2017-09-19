@@ -1,6 +1,7 @@
 # version 0.9.1
 
 * get_video_detail doesn't hardcode part = 'snippet'. 
+* get_playlists was trying to do argument matching w/ part which can be a comma separated list. So obviously it failed big time. Fixed now.
 
 # version 0.9.0
 

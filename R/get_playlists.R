@@ -31,8 +31,7 @@
 #' }
 
 get_playlists <- function (filter = NULL,
-                          part = c("contentDetails", "id", "localizations",
-                                   "player", "snippet", "status"),
+                          part = "snippet",
                           max_results = 50, hl = NULL,
                           page_token = NULL, simplify = TRUE, ...) {
 
@@ -50,8 +49,6 @@ get_playlists <- function (filter = NULL,
   yt_filter_name     <- as.vector(translate_filter[match(names(filter),
                                                       names(translate_filter))])
   names(filter)      <- yt_filter_name
-
-  part      <- match.arg(part)
 
   querylist <- list(part = part, maxResults = max_results,
                    pageToken = page_token, hl = hl)
