@@ -1,3 +1,7 @@
+# version 0.9.2
+
+* fixed list_channel_videos. it used to iterate over all the playlists. You don't need to do that. All the uploaded videos of a channel are available in a playlist with the same id as channel id except the first two letters are switched.
+
 # version 0.9.1
 
 * get_video_detail doesn't hardcode part = 'snippet'. 

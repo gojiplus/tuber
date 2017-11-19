@@ -4,8 +4,8 @@
 #' the videos for each of the playlists. 
 #' 
 #' @param channel_id String. ID of the channel. Required. 
-#' @param max_results Maximum number of playlists from which the videos
-#' should be returned. Integer. Default is 50.
+#' @param max_results Maximum number of videos returned. Integer. Default is 50. 
+#' If the number is over 50, all the videos will be returned.
 #' @param page_token  Specific page in the result set that should be returned. Optional.
 #' @param hl  Language used for text values. Optional. Default is \code{en-US}. For other allowed language codes, see \code{\link{list_langs}}
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
@@ -32,19 +32,12 @@ list_channel_videos <- function (channel_id = NULL, max_results = 50,
 
   if (!is.character(channel_id)) stop("Must specify a channel ID.")
 
-  res <- get_playlists(filter = c(channel_id = channel_id),
-                                  part = "contentDetails",
-                                  max_results = max_results,
-                                  page_token = page_token,
-                                  hl =  hl)
-
-  # List of playlists (till max_results)
-  playlist_ids <- res$id
+  playlist_id <- gsub("^..", "UU", channel_id)
 
   # Get videos on all the playlists
-  videos <- lapply(playlist_ids, function(x)
-                            get_playlist_items(filter = c(playlist_id = x),
-                                               max_results = 51))
-
+  videos <- get_playlist_items(filter = c(playlist_id = playlist_id),
+                               max_results = max_results,
+                               page_token = page_token,
+                               hl = hl, ...)
   videos
 }

@@ -10,8 +10,8 @@ list_channel_videos(channel_id = NULL, max_results = 50,
 \arguments{
 \item{channel_id}{String. ID of the channel. Required.}
 
-\item{max_results}{Maximum number of playlists from which the videos
-should be returned. Integer. Default is 50.}
+\item{max_results}{Maximum number of videos returned. Integer. Default is 50. 
+If the number is over 50, all the videos will be returned.}
 
 \item{page_token}{Specific page in the result set that should be returned. Optional.}
 

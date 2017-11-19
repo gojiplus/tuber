@@ -1,4 +1,5 @@
 ^.*\.Rproj$
+^README.Rmd$
 ^\.Rproj\.user$
 ^.httr-oauth$
 ^dev$
