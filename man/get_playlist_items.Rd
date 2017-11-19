@@ -29,7 +29,7 @@ If over 50, all the results are returned.}
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-captions for the video from one of the first track
+playlist items
 }
 \description{
 Get Playlist Items

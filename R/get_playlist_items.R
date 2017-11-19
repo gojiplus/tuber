@@ -14,7 +14,7 @@
 #' @param video_id  Optional. request should return only the playlist items that contain the specified video.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
-#' @return captions for the video from one of the first track
+#' @return playlist items
 #' @export
 #' @references \url{https://developers.google.com/youtube/v3/docs/playlists/list}
 #' 
@@ -82,7 +82,7 @@ get_playlist_items <- function (filter = NULL, part = "contentDetails",
                                                                  recursive = F),
                                                                  as.data.frame))
     } else {
-       res <- plyr::ldply(lapply(unlist(res[5], recursive = F), as.data.frame))
+       res <- plyr::ldply(lapply(unlist(res[length(res)], recursive = F), as.data.frame))
     }
   }
   res
