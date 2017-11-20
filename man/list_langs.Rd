@@ -2,7 +2,7 @@
 % Please edit documentation in R/list_langs.R
 \name{list_langs}
 \alias{list_langs}
-\title{List Languages That Youtube Currently Supports}
+\title{List Languages That YouTube Currently Supports}
 \usage{
 list_langs(hl = NULL, ...)
 }
@@ -15,7 +15,7 @@ list_langs(hl = NULL, ...)
 data.frame with 3 columns: \code{hl} (two letter abbreviation), \code{name} (of the language), \code{etag}
 }
 \description{
-List Languages That Youtube Currently Supports
+List Languages That YouTube Currently Supports
 }
 \examples{
 \dontrun{

@@ -2,7 +2,7 @@
 % Please edit documentation in R/list_regions.R
 \name{list_regions}
 \alias{list_regions}
-\title{List Content Regions That Youtube Currently Supports}
+\title{List Content Regions That YouTube Currently Supports}
 \usage{
 list_regions(hl = NULL, ...)
 }
@@ -16,7 +16,7 @@ data.frame with 3 columns:
 \code{gl} (two letter abbreviation), \code{name} (of the region), \code{etag}
 }
 \description{
-List Content Regions That Youtube Currently Supports
+List Content Regions That YouTube Currently Supports
 }
 \examples{
 \dontrun{

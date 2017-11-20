@@ -1,4 +1,4 @@
-#' List Languages That Youtube Currently Supports
+#' List Languages That YouTube Currently Supports
 #' 
 #' @param hl  Language used for text values. Optional. Default is \code{en-US}. For other allowed language codes, see \code{\link{list_langs}}.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.

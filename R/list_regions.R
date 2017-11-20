@@ -1,4 +1,4 @@
-#' List Content Regions That Youtube Currently Supports
+#' List Content Regions That YouTube Currently Supports
 #' 
 #' 
 #' @param hl  Language used for text values. Optional. Default is \code{en-US}. For other allowed language codes, see \code{\link{list_langs}}.
