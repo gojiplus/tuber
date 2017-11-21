@@ -1,3 +1,18 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+set.seed(1014)
+```
+
 ## :sweet_potato: tuber: Access YouTube API via R
 
 [![Build status](https://ci.appveyor.com/api/projects/status/pgr0wih12gtwvvvx?svg=true)](https://ci.appveyor.com/project/soodoku/tuber)
@@ -18,9 +33,11 @@ To get the current development version from GitHub:
 devtools::install_github("soodoku/tuber", build_vignettes = TRUE)
 ```
 
-To get a quick overview of some important functions in tuber, see the vignette:
+To get a quick overview of some important functions in tuber, check out the [main features vignette](https://github.com/soodoku/tuber/blob/master/vignettes/tuber-ex.md). For a fun vignette about how to analyze emojis in YouTube comments, check out the [emoji vignette](https://github.com/soodoku/tuber/blob/master/vignettes/emoji_vignette.md). Or launch the vignettes from within R:
+
 ```r
-vignette("tuber-ex", package="tuber")
+vignette("tuber-ex", package = "tuber")
+vignette("emoji_vignette", package = "tuber")
 ```
 
 ### Using tuber
@@ -34,19 +51,19 @@ yt_oauth("app_id", "app_password")
 **Get Statistics of a Video**
 
 ```r
-get_stats(video_id="N708P-A45D0")
+get_stats(video_id = "N708P-A45D0")
 ```
 
 **Get Information About a Video**
 
 ```r
-get_video_details(video_id="N708P-A45D0")
+get_video_details(video_id = "N708P-A45D0")
 ```
 
 **Get Captions of a Video**
 
 ```r
-get_captions(video_id="yJXTXN4xrI8")
+get_captions(video_id = "yJXTXN4xrI8")
 ```
 
 **Search Videos**
@@ -56,7 +73,7 @@ yt_search("Barack Obama")
 
 **Get Comments**
 ```r
-get_comment_threads(filter=c(video_id="N708P-A45D0"))
+get_comment_threads(filter = c(video_id = "N708P-A45D0"))
 ```
 
 ### License
