@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 set.seed(3145)
 ```
 
-```{r setup, include=FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -43,7 +43,7 @@ I wanted to choose something that had lots of comments containing emojis. So let
 
 If you don't have access to the YouTube API set up, please see instructions on how [here](https://developers.google.com/youtube/v3/).
 
-```{r Set Up YouTube + Get Comments, echo=FALSE, results='hide', message=FALSE, warning=FALSE, error=FALSE}
+```{r Set Up YouTube + Get Comments, echo = FALSE, results = 'hide', message = FALSE, warning = FALSE, error = FALSE}
 yt_oauth("389417729099-ps9gvfjg0p43j0roloqrpkhbvpu4kb4n.apps.googleusercontent.com", "9UMvY0_zEDzSXrWlVrAT52Tm", token = '')
 ```
 
@@ -66,7 +66,7 @@ Now we have some (~10,300) comments to play with. Let's identify the emojis in o
 
 [Patrick Perry](https://stackoverflow.com/questions/47243155/get-r-to-keep-utf-8-codepoint-representation/47243425#47243425) helped figure out the emoji encoding issue--- thanks Patrick! `r emo::ji("smiling_face_with_smiling_eyes")`
 
-```{r Emojis in YouTube Comments, echo=TRUE, results='hide', message=FALSE, warning=FALSE, error=FALSE}
+```{r Emojis in YouTube Comments, echo=TRUE, results='hide', message = FALSE, warning = FALSE, error = FALSE}
 # change U+1F469 U+200D U+1F467 to \U1F469\U200D\U1F467
 emojis <- read.csv(url("https://raw.githubusercontent.com/lyons7/emojidictionary/master/Emoji%20Dictionary%205.0.csv")) 
 
@@ -95,7 +95,7 @@ emoemo <- FindReplace(data = emojimovie,
 
 Now that you have identified comments with emojis, let's look at the top emojis in our data set.
 
-```{r YouTube Emoji Comments, echo=TRUE, message=FALSE, warning=FALSE, error=FALSE}
+```{r YouTube Emoji Comments, echo = TRUE, message = FALSE, warning = FALSE, error = FALSE}
 
 # Have to do keep the "to_lower" parameter FALSE so our emojis in our dictionary are kept separate from words that happen to be the same as emoji names
 emotidy_tube <- emoemo %>%
@@ -127,7 +127,7 @@ Graphs constructed with help from [here](http://www.cyclismo.org/tutorial/R/time
 
 We will also use the [anytime](https://cran.r-project.org/web/packages/anytime/index.html) package to format time. 
 
-```{r, echo=TRUE, message=FALSE, warning=FALSE}
+```{r, echo = TRUE, message = FALSE, warning = FALSE}
 
 # Subset to just have posts that have our top ten emojis
 top_ten <- subset(tube_emojis_total, word == "FACEWITHTEARSOFJOY" | word == "BOY"| word == "MOBILEPHONE" | word == "FACETHROWINGAKISS" | word == "MAN" | word == "SKULLANDCROSSBONES" | word == "ATOMSYMBOL" | word == "COLONEWOMANWITHBUNNYEARS"| word == "GRIMACINGFACE" | word == "KISSINGFACEWITHSMILINGEYES")
