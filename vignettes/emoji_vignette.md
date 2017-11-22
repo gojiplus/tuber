@@ -6,7 +6,7 @@ Depending on the video(s) you are exploring, it might be useful to account for a
 Getting YouTube Data
 --------------------
 
-I wanted to choose something that had lots of comments containing emojis. So let's look at the comments from the ill-advised (and ill-fated) 'Emoji Movie' trailer. The comments also vary a lot in sentiment. Sample this: "The movie is a such disgrace to the animation film industry."<f0><U+009F><U+0098><U+00B9> <f0><U+009F><U+0098><U+00B9> <f0><U+009F><U+0098><U+00B9>).
+I wanted to choose something that had lots of comments containing emojis. So let's look at the comments from the ill-advised (and ill-fated) 'Emoji Movie' trailer. The comments also vary a lot in sentiment. Sample this: "The movie is a such disgrace to the animation film industry." `<f0><U+009F><U+0098><U+00B9>`
 
 If you don't have access to the YouTube API set up, please see instructions on how [here](https://developers.google.com/youtube/v3/).
 
@@ -94,7 +94,7 @@ tube_freqe[1:10, ]
 #> 10 TAGLATINSMALLLETTERL   284
 ```
 
-So, our ten most frequent emojis in the comments of the Emoji Movie trailer are <f0><U+009F><U+0098><U+0082>, <f0><U+009F><U+0091><U+00A6>, <f0><U+009F><U+0093><U+00B1>, <f0><U+009F><U+0098><U+0098>, <f0><U+009F><U+0091><U+00A8>, <U+2620><U+FE0F>, <U+269B><U+FE0F>, <f0><U+009F><U+0091><U+00AF>, <f0><U+009F><U+0098><U+00AC> and <f0><U+009F><U+0098><U+0099>. Read into that what you will! <f0><U+009F><U+0098><U+0082>
+So, our ten most frequent emojis in the comments of the Emoji Movie trailer are `<f0><U+009F><U+0098><U+0082>`, `<f0><U+009F><U+0091><U+00A6>`, `<f0><U+009F><U+0093><U+00B1>`, `<f0><U+009F><U+0098><U+0098>`, `<f0><U+009F><U+0091><U+00A8>`, `<U+2620><U+FE0F>`, `<U+269B><U+FE0F>`, `<f0><U+009F><U+0091><U+00AF>`, `<f0><U+009F><U+0098><U+00AC>`, and `<f0><U+009F><U+0098><U+0099>`. Read into that what you will! `<f0><U+009F><U+0098><U+0082>`
 
 What if we want to look at how the use of these emojis has changed over time? We can also look at WHEN comments were posted. We can also graph frequency of comments over time.
 

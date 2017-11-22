@@ -2,9 +2,8 @@
 title: "Emojis in YouTube Comments"
 output: github_document
 vignette: >
-  %\VignetteIndexEntry{Identifying Emojis in YouTube Comments}
+  %\VignetteIndexEntry{Emojis in YouTube Comments}
   %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
 ---
 
 ```{r, echo = FALSE}
@@ -26,7 +25,9 @@ library(tuber)
 library(emo)
 library(emoGG)
 library(anytime)
-library(emo) #devtools::install_github("hadley/emo")
+library(devtools)
+devtools::install_github("hadley/emo")
+library(emo)
 library(DataCombine)
 library(tidytext)
 library(dplyr)
@@ -36,7 +37,7 @@ Depending on the video(s) you are exploring, it might be useful to account for a
 
 ## Getting YouTube Data
 
-I wanted to choose something that had lots of comments containing emojis. So let's look at the comments from the ill-advised (and ill-fated) 'Emoji Movie' trailer. The comments also vary a lot in sentiment. Sample this: "The movie is a such disgrace to the animation film industry."`r emo::ji("joy_cat")` `r emo::ji("joy_cat")` `r emo::ji("joy_cat")`).
+I wanted to choose something that had lots of comments containing emojis. So let's look at the comments from the ill-advised (and ill-fated) 'Emoji Movie' trailer. The comments also vary a lot in sentiment. Sample this: "The movie is a such disgrace to the animation film industry." ```r emo::ji("joy_cat"); emo::ji("joy_cat"); emo::ji("joy_cat")```
 
 If you don't have access to the YouTube API set up, please see instructions on how [here](https://developers.google.com/youtube/v3/).
 
@@ -115,7 +116,7 @@ tube_freqe <- tube_emojis_total %>%
 tube_freqe[1:10, ]
 ```
 
-So, our ten most frequent emojis in the comments of the Emoji Movie trailer are `r emo::ji("face_with_tears_of_joy")`, `r emo::ji("boy")`, `r emo::ji("mobile_phone")`, `r emo::ji("kissing_heart")`, `r emo::ji("man")`, `r emo::ji("skull_and_crossbones")`, `r emo::ji("atom_symbol")`, `r emo::ji("dancing_women")`, `r emo::ji("grimacing")` and `r emo::ji("kissing_smiling_eyes")`. Read into that what you will! `r emo::ji("face_with_tears_of_joy")`
+So, our ten most frequent emojis in the comments of the Emoji Movie trailer are ```r emo::ji("face_with_tears_of_joy")```, ```r emo::ji("boy")```, ```r emo::ji("mobile_phone")```, ```r emo::ji("kissing_heart")```, ```r emo::ji("man")```, ```r emo::ji("skull_and_crossbones")```, ```r emo::ji("atom_symbol")```, ```r emo::ji("dancing_women")```, ```r emo::ji("grimacing")```, and ```r emo::ji("kissing_smiling_eyes")```. Read into that what you will! ```r emo::ji("face_with_tears_of_joy")```
 
 What if we want to look at how the use of these emojis has changed over time? We can also look at WHEN comments were posted. We can also graph frequency of comments over time. 
 
