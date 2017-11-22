@@ -1,7 +1,9 @@
 Emojis in YouTube Comments
 ================
 
-Depending on the video(s) you are exploring, it might be useful to account for and analyze the use of emojis in comments. As emojis become more popular and more complex in the meanings they signify, the more important it becomes to analyze them in text. Here's how you can do this with YouTube data!
+Depending on the video you are exploring, it may be useful to analyze emojis in comments. As emojis become more popular, and more complex in the meanings they signify, it becomes more important to analyze them.
+
+Here's how you can do this with YouTube data!
 
 Getting YouTube Data
 --------------------
