@@ -6,28 +6,9 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
-```{r, echo = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  echo = TRUE,
-  comment = "#>"
-)
-```
 
-```{r Setup 0, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
 
-# Load the libs.
-library(tuber)
-library(emo)
-library(emoGG)
-library(anytime)
-library(devtools)
-devtools::install_github("hadley/emo")
-library(emo)
-library(DataCombine)
-library(tidytext)
-library(dplyr)
-```
+
 
 Depending on the video you are exploring, it may be useful to analyze emojis in comments.
 
@@ -35,16 +16,15 @@ Here's how you can do this with YouTube data!
 
 ## Getting YouTube Data
 
-I wanted to choose something that had lots of comments containing emojis. So let's look at the comments from the ill-advised and ill-fated Emoji Movie's trailer. The comments about the movie vary a lot in sentiment. Sample this: "The movie is a such disgrace to the animation film industry." `r emo::ji('poop')`
+I wanted to choose something that had lots of comments containing emojis. So let's look at the comments from the ill-advised and ill-fated Emoji Movie's trailer. The comments about the movie vary a lot in sentiment. Sample this: "The movie is a such disgrace to the animation film industry." <f0><U+009F><U+0092><U+00A9>
 ```r emo::ji("joy_cat"); emo::ji("joy_cat")```
 
 If you don't know how to access the YouTube API, please see the [instructions here](https://developers.google.com/youtube/v3/).
 
-```{r Set Up YouTube + Get Comments, echo = FALSE, results = 'hide', message = FALSE, warning = FALSE, error = FALSE}
-yt_oauth("389417729099-ps9gvfjg0p43j0roloqrpkhbvpu4kb4n.apps.googleusercontent.com", "9UMvY0_zEDzSXrWlVrAT52Tm", token = '')
-```
 
-```{r Get YouTube Comments, echo = TRUE, results = 'hide', message = FALSE, warning = FALSE, error = FALSE}
+
+
+```r
 # Connect to YouTube API
 # Leave token blank
 # yt_oauth("app_id", "app_password", token='')
@@ -61,9 +41,10 @@ emojimovie <- get_comment_threads(c(video_id = "o_nfdzMhmrA"), max_results = 100
 
 Now we have some (~10,300) comments to play with. Let's identify the emojis in our data. To do that, we'll use the `FindReplace` function from the [DataCombine package](https://cran.r-project.org/web/packages/DataCombine/DataCombine.pdf) and an [emoji dictionary](https://lyons7.github.io/portfolio/2017-10-04-emoji-dictionary/) that I put together. The dictionary has each emoji's prose name, UTF-8 encoding, and R encoding---the R encoding is specifically for emojis in the Twitter data. There are a couple of steps to change the dictionary to be able to identify emojis in YouTube data, but depending on your computer you might be able to just search by UTF-8 encoding. 
 
-[Patrick Perry](https://stackoverflow.com/questions/47243155/get-r-to-keep-utf-8-codepoint-representation/47243425#47243425) helped figure out the emoji encoding issue--- thanks Patrick! `r emo::ji("smiling_face_with_smiling_eyes")`
+[Patrick Perry](https://stackoverflow.com/questions/47243155/get-r-to-keep-utf-8-codepoint-representation/47243425#47243425) helped figure out the emoji encoding issue--- thanks Patrick! <f0><U+009F><U+0098><U+008A>
 
-```{r Emojis in YouTube Comments, echo = TRUE, results = 'hide', message = FALSE, warning = FALSE, error = FALSE}
+
+```r
 
 # change U+1F469 U+200D U+1F467 to \U1F469\U200D\U1F467
 emojis <- read.csv(url("https://raw.githubusercontent.com/lyons7/emojidictionary/master/Emoji%20Dictionary%205.0.csv")) 
@@ -93,7 +74,8 @@ emoemo <- FindReplace(data = emojimovie,
 
 Now that you have identified comments with emojis, let's look at the top emojis in our data set.
 
-```{r YouTube Emoji Comments, echo = TRUE, message = FALSE, warning = FALSE, error = FALSE}
+
+```r
 
 # Have to do keep the "to_lower" parameter FALSE so our emojis in our dictionary are kept separate from words that happen to be the same as emoji names
 emotidy_tube <- emoemo %>%
@@ -112,9 +94,22 @@ tube_freqe <- tube_emojis_total %>%
    count(word, sort = TRUE)
 
 tube_freqe[1:10, ]
+#> # A tibble: 10 x 2
+#>                    word     n
+#>                   <chr> <int>
+#>  1 TAGLATINSMALLLETTERE   953
+#>  2 TAGLATINSMALLLETTERT   605
+#>  3 TAGLATINSMALLLETTERO   599
+#>  4 TAGLATINSMALLLETTERI   575
+#>  5 TAGLATINSMALLLETTERA   475
+#>  6 TAGLATINSMALLLETTERS   453
+#>  7 TAGLATINSMALLLETTERH   419
+#>  8 TAGLATINSMALLLETTERN   388
+#>  9 TAGLATINSMALLLETTERR   321
+#> 10 TAGLATINSMALLLETTERL   287
 ```
 
-So, our ten most frequent emojis in the comments of the Emoji Movie trailer are ```r emo::ji("face_with_tears_of_joy")```, ```r emo::ji("boy")```, ```r emo::ji("mobile_phone")```, ```r emo::ji("kissing_heart")```, ```r emo::ji("man")```, ```r emo::ji("skull_and_crossbones")```, ```r emo::ji("atom_symbol")```, ```r emo::ji("dancing_women")```, ```r emo::ji("grimacing")```, and ```r emo::ji("kissing_smiling_eyes")```. Read into that what you will! ```r emo::ji("face_with_tears_of_joy")```
+So, our ten most frequent emojis in the comments of the Emoji Movie trailer are ``<f0><U+009F><U+0098><U+0082>``, ``<f0><U+009F><U+0091><U+00A6>``, ``<f0><U+009F><U+0093><U+00B1>``, ``<f0><U+009F><U+0098><U+0098>``, ``<f0><U+009F><U+0091><U+00A8>``, ``<U+2620><U+FE0F>``, ``<U+269B><U+FE0F>``, ``<f0><U+009F><U+0091><U+00AF>``, ``<f0><U+009F><U+0098><U+00AC>``, and ``<f0><U+009F><U+0098><U+0099>``. Read into that what you will! ``<f0><U+009F><U+0098><U+0082>``
 
 What if we want to look at how the use of these emojis has changed over time? We can also look at WHEN comments were posted. We can also graph frequency of comments over time. 
 
@@ -123,7 +118,8 @@ Graphs constructed with help from [here](http://www.cyclismo.org/tutorial/R/time
 
 We will also use the [anytime](https://cran.r-project.org/web/packages/anytime/index.html) package to format time. 
 
-```{r, echo = TRUE, message = FALSE, warning = FALSE}
+
+```r
 
 # Subset to just have posts that have our top ten emojis
 top_ten <- subset(tube_emojis_total, word %in% c("FACEWITHTEARSOFJOY", "BOY", "MOBILEPHONE", "FACETHROWINGAKISS", "MAN", "SKULLANDCROSSBONES", "ATOMSYMBOL", "COLONEWOMANWITHBUNNYEARS", "GRIMACINGFACE", "KISSINGFACEWITHSMILINGEYES"))
@@ -135,6 +131,11 @@ minutes <- 60
 
 ggplot(top_ten, aes(created, color = top_ten$word)) + 
   geom_freqpoly(binwidth = 10080*minutes)
+```
+
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
+
+```r
 
 # We can look at these one by one too and use the emoGG package to use actual emojis to show which ones we are talking about 
 # The code you use in emoGG is the same as UTF-8 but without "U+" etc, and all letters lowercase
@@ -144,25 +145,50 @@ tearsofjoy <- top_ten[top_ten$word == "FACEWITHTEARSOFJOY", ]
 ggplot(tearsofjoy, aes(created)) + 
   geom_freqpoly(binwidth = 10080*minutes) +
   add_emoji(emoji = "1f602")
+```
+
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-2.png)
+
+```r
 
 boy <- top_ten[top_ten$word == "BOY",]
 ggplot(boy, aes(created)) + 
   geom_freqpoly(binwidth = 10080*minutes) +
   add_emoji(emoji = "1f466")
+```
+
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-3.png)
+
+```r
 
 boy <- top_ten[top_ten$word == "BOY",]
 ggplot(boy, aes(created)) + 
   geom_freqpoly(binwidth = 10080*minutes) +
   add_emoji(emoji = "1f466")
+```
+
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-4.png)
+
+```r
 
 # Sometimes emoGG doesn't have your emoji -- here we have to use skull, not skull and crossbones
 skull <- top_ten[top_ten$word == "SKULLANDCROSSBONES",]
 ggplot(skull, aes(created)) + 
   geom_freqpoly(binwidth = 10080*minutes) + add_emoji(emoji = "1f480")
+```
+
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-5.png)
+
+```r
 
 grimace <- top_ten[top_ten$word == "GRIMACINGFACE",]
 ggplot(grimace, aes(created)) + 
   geom_freqpoly(binwidth = 10080*minutes) + add_emoji(emoji = "1f62c")
+```
+
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-6.png)
+
+```r
 
 # ad infinitum!
 ```
