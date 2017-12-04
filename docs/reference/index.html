@@ -23,7 +23,8 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -51,10 +52,28 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
 </li>
 <li>
-  <a href="../articles/index.html">Articles</a>
+  <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/emoji_vignette.html">Identifying Emojis in YouTube Comments</a>
+    </li>
+    <li>
+      <a href="../articles/tuber-ex.html">Using tuber</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="../news/index.html">News</a>
@@ -81,7 +100,7 @@
     <div class="page-header">
       <h1>
         Reference
-        <small>version&nbsp;0.9.0</small>
+        <small>version&nbsp;0.9.3</small>
       </h1>
     </div>
 
@@ -136,6 +155,12 @@
             <p><code><a href="delete_videos.html">delete_videos</a></code> </p>
           </td>
           <td><p>Delete a Video</p></td>
+        </tr><tr>
+          <!--  -->
+          <td>
+            <p><code><a href="get_all_comments.html">get_all_comments</a></code> </p>
+          </td>
+          <td><p>Get all the comments for a video including replies</p></td>
         </tr><tr>
           <!--  -->
           <td>
@@ -243,13 +268,13 @@
           <td>
             <p><code><a href="list_langs.html">list_langs</a></code> </p>
           </td>
-          <td><p>List Languages That Youtube Currently Supports</p></td>
+          <td><p>List Languages That YouTube Currently Supports</p></td>
         </tr><tr>
           <!--  -->
           <td>
             <p><code><a href="list_regions.html">list_regions</a></code> </p>
           </td>
-          <td><p>List Content Regions That Youtube Currently Supports</p></td>
+          <td><p>List Content Regions That YouTube Currently Supports</p></td>
         </tr><tr>
           <!--  -->
           <td>

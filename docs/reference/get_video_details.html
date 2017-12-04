@@ -23,7 +23,8 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -51,10 +52,28 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
 </li>
 <li>
-  <a href="../articles/index.html">Articles</a>
+  <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/emoji_vignette.html">Identifying Emojis in YouTube Comments</a>
+    </li>
+    <li>
+      <a href="../articles/tuber-ex.html">Using tuber</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="../news/index.html">News</a>
@@ -86,7 +105,7 @@
     <p>Get details such as when the video was published, the title, description, thumbnails, category etc.</p>
     
 
-    <pre class="usage"><span class='fu'>get_video_details</span>(<span class='kw'>video_id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>get_video_details</span>(<span class='kw'>video_id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>part</span> <span class='kw'>=</span> <span class='st'>"snippet"</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -96,6 +115,12 @@
       <td><p>Comma separated list of IDs of the videos for which details are requested. Required.</p></td>
     </tr>
     <tr>
+      <th>part</th>
+      <td><p>Comma-separated list of video resource properties requested. Options include:
+<code>contentDetails, fileDetails, id, liveStreamingDetails, localizations, player, processingDetails, 
+recordingDetails, snippet, statistics, status, suggestions, topicDetails</code></p></td>
+    </tr>
+    <tr>
       <th>&#8230;</th>
       <td><p>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</p></td>
     </tr>
@@ -103,21 +128,22 @@
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>list with the following elements: <code>id</code> (video id that was passed), <code>publishedAt, channelId, title, description, thumbnails, 
+    <p>list. If part is snippet, the list will have the following elements: 
+<code>id</code> (video id that was passed), <code>publishedAt, channelId, title, description, thumbnails, 
 channelTitle, categoryId, liveBroadcastContent, localized, defaultAudioLanguage</code></p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p><a href = 'https://developers.google.com/youtube/v3/docs/videos/list'>https://developers.google.com/youtube/v3/docs/videos/list</a></p>
+    <p><a href='https://developers.google.com/youtube/v3/docs/videos/list'>https://developers.google.com/youtube/v3/docs/videos/list</a></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>not_run</span>({
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='co'># Set API token via yt_oauth() first</span>
 
-  <span class='co'># Set API token via yt_oauth() first</span>
-
-  <span class='fu'>get_video_details</span>(<span class='kw'>video_id</span> <span class='kw'>=</span> <span class='st'>"yJXTXN4xrI8"</span>)
-})</div></pre>
+<span class='fu'>get_video_details</span>(<span class='kw'>video_id</span> <span class='kw'>=</span> <span class='st'>"yJXTXN4xrI8"</span>)
+<span class='fu'>get_video_details</span>(<span class='kw'>video_id</span> <span class='kw'>=</span> <span class='st'>"yJXTXN4xrI8"</span>, <span class='kw'>part</span> <span class='kw'>=</span> <span class='st'>"contentDetails"</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

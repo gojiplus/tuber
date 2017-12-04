@@ -23,7 +23,8 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -51,10 +52,28 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
 </li>
 <li>
-  <a href="../articles/index.html">Articles</a>
+  <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/emoji_vignette.html">Identifying Emojis in YouTube Comments</a>
+    </li>
+    <li>
+      <a href="../articles/tuber-ex.html">Using tuber</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="../news/index.html">News</a>
@@ -87,7 +106,8 @@
     
 
     <pre class="usage"><span class='fu'>get_playlist_items</span>(<span class='kw'>filter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>part</span> <span class='kw'>=</span> <span class='st'>"contentDetails"</span>,
-  <span class='kw'>max_results</span> <span class='kw'>=</span> <span class='fl'>50</span>, <span class='kw'>video_id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>page_token</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>max_results</span> <span class='kw'>=</span> <span class='fl'>50</span>, <span class='kw'>video_id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>page_token</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>simplify</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -106,7 +126,8 @@ potential names of the entry in the vector:
     </tr>
     <tr>
       <th>max_results</th>
-      <td><p>Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.</p></td>
+      <td><p>Maximum number of items that should be returned. Integer. Optional. Default is 50. 
+If over 50, all the results are returned.</p></td>
     </tr>
     <tr>
       <th>video_id</th>
@@ -117,6 +138,10 @@ potential names of the entry in the vector:
       <td><p>specific page in the result set that should be returned, optional</p></td>
     </tr>
     <tr>
+      <th>simplify</th>
+      <td><p>returns a data.frame rather than a list.</p></td>
+    </tr>
+    <tr>
       <th>&#8230;</th>
       <td><p>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</p></td>
     </tr>
@@ -124,20 +149,23 @@ potential names of the entry in the vector:
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>captions for the video from one of the first track</p>
+    <p>playlist items</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p><a href = 'https://developers.google.com/youtube/v3/docs/playlists/list'>https://developers.google.com/youtube/v3/docs/playlists/list</a></p>
+    <p><a href='https://developers.google.com/youtube/v3/docs/playlists/list'>https://developers.google.com/youtube/v3/docs/playlists/list</a></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>not_run</span>({
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='co'># Set API token via yt_oauth() first</span>
 
-  <span class='co'># Set API token via yt_oauth() first</span>
-
-  <span class='fu'>get_playlist_items</span>(<span class='kw'>filter</span> <span class='kw'>=</span>  <span class='fu'>c</span>(<span class='kw'>playlist_id</span> <span class='kw'>=</span> <span class='st'>"PLrEnWoR732-CN09YykVof2lxdI3MLOZda"</span>))
-})</div></pre>
+<span class='fu'>get_playlist_items</span>(<span class='kw'>filter</span> <span class='kw'>=</span>
+                       <span class='fu'>c</span>(<span class='kw'>playlist_id</span> <span class='kw'>=</span> <span class='st'>"PLrEnWoR732-CN09YykVof2lxdI3MLOZda"</span>))
+<span class='fu'>get_playlist_items</span>(<span class='kw'>filter</span> <span class='kw'>=</span>
+                       <span class='fu'>c</span>(<span class='kw'>playlist_id</span> <span class='kw'>=</span> <span class='st'>"PL0fOlXVeVW9QMO3GoESky4yDgQfK2SsXN"</span>),
+                       <span class='kw'>max_results</span> <span class='kw'>=</span> <span class='fl'>51</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
