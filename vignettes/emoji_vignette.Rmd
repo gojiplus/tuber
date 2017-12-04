@@ -1,56 +1,38 @@
 ---
-title: "Emojis in YouTube Comments"
-output: github_document
+title: "Identifying Emojis in YouTube Comments"
+output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Emojis in YouTube Comments}
+  %\VignetteIndexEntry{Identifying Emojis in YouTube Comments}
   %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
 
-```{r, echo = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  echo = TRUE,
-  comment = "#>"
-)
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r Setup 0, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
-
-# Load the libs.
-library(tuber)
-library(emo)
-library(emoGG)
-library(anytime)
-library(devtools)
-devtools::install_github("hadley/emo")
-library(emo)
-library(DataCombine)
-library(tidytext)
-library(dplyr)
+packs = c("tuber","ggplot2","RCurl","DataCombine","tidyverse","tidytext","emoGG","anytime","emo", "jsonlite", "tm", "stringr")
+lapply(packs, library, character.only=T)
 ```
 
-Depending on the video you are exploring, it may be useful to analyze emojis in comments.
-
-Here's how you can do this with YouTube data!
+Depending on the video(s) you are exploring, it might be useful to account for and analyze the use of emojis in comments. As emojis become more and more popular and more complex in the meanings they are able to signify, the more important it is to at least account for emojis and include them in textual analyses. Here's how you can do this with YouTube data!
 
 ## Getting YouTube Data
+I wanted to choose something that had both 1) a lot of comments and 2) a strong liklihood of comments containing emojis, so let's look at the comments from the ill-advised (and ill-fated) 'Emoji Movie' trailer. This also has a lot of varying sentiment (one of the comments is "The movie is a such disgrace to the animation film industry."`r emo::ji("joy_cat")``r emo::ji("joy_cat")``r emo::ji("joy_cat")`).
 
-I wanted to choose something that had lots of comments containing emojis. So let's look at the comments from the ill-advised and ill-fated Emoji Movie's trailer. The comments about the movie vary a lot in sentiment. Sample this: "The movie is a such disgrace to the animation film industry." `r emo::ji('poop')`
-```r emo::ji("joy_cat"); emo::ji("joy_cat")```
+If you don't have the YouTube API set up, please see instructions on how to do so [here](https://developers.google.com/youtube/v3/).
 
-If you don't know how to access the YouTube API, please see the [instructions here](https://developers.google.com/youtube/v3/).
-
-```{r Set Up YouTube + Get Comments, echo = FALSE, results = 'hide', message = FALSE, warning = FALSE, error = FALSE}
-yt_oauth("389417729099-ps9gvfjg0p43j0roloqrpkhbvpu4kb4n.apps.googleusercontent.com", "9UMvY0_zEDzSXrWlVrAT52Tm", token = '')
+```{r Set Up Youtube + Get Comments, echo=FALSE, results='hide', message=FALSE, warning=FALSE, error=FALSE, eval=FALSE}
+ yt_oauth("915000562434-icqct3vs9q2rpid1p7v1j5lp9sjmacij.apps.googleusercontent.com","_iW5ie44Bj4BECvbB-94A1Ix", token='')
 ```
-
-```{r Get YouTube Comments, echo = TRUE, results = 'hide', message = FALSE, warning = FALSE, error = FALSE}
+```{r Get YouTube Comments, echo=TRUE, results='hide', message=FALSE, warning=FALSE, error=FALSE, eval=FALSE}
 # Connect to YouTube API
 # Leave token blank
 # yt_oauth("app_id", "app_password", token='')
 
 # Get comments. 'max_results = 101' ensures I get all of the comments on the video.
-emojimovie <- get_comment_threads(c(video_id = "o_nfdzMhmrA"), max_results = 100)
+emojimovie <- get_comment_threads(c(video_id="o_nfdzMhmrA"), max_results = 101)
 
 # Save data (if you want)
 # save(emojimovie,file=paste("sampletubedata.Rda"))
@@ -59,110 +41,273 @@ emojimovie <- get_comment_threads(c(video_id = "o_nfdzMhmrA"), max_results = 100
 # load('sampletubedata.Rda')
 ```
 
-Now we have some (~10,300) comments to play with. Let's identify the emojis in our data. To do that, we'll use the `FindReplace` function from the [DataCombine package](https://cran.r-project.org/web/packages/DataCombine/DataCombine.pdf) and an [emoji dictionary](https://lyons7.github.io/portfolio/2017-10-04-emoji-dictionary/) that I put together. The dictionary has each emoji's prose name, UTF-8 encoding, and R encoding---the R encoding is specifically for emojis in the Twitter data. There are a couple of steps to change the dictionary to be able to identify emojis in YouTube data, but depending on your computer you might be able to just search by UTF-8 encoding. 
+Now we have some (~10,300) comments to play with -- let's identify the emojis in our data. To do so, we'll use the FindReplace function from the [DataCombine package](https://cran.r-project.org/web/packages/DataCombine/DataCombine.pdf) and an [emoji dictionary](https://lyons7.github.io/portfolio/2017-10-04-emoji-dictionary/) I put together that has each emoji's prose name, UTF-8 encoding and R encoding (the R encoding is specifically for emojis in Twitter data). There are a couple of steps to change the dictionary to be able to identify emojis in our YouTube data, but depending on your computer you might be able to just search by UTF-8 encoding. 
 
-[Patrick Perry](https://stackoverflow.com/questions/47243155/get-r-to-keep-utf-8-codepoint-representation/47243425#47243425) helped figure out the emoji encoding issue--- thanks Patrick! `r emo::ji("smiling_face_with_smiling_eyes")`
+Help figuring out the emoji encoding issue from [Patrick Perry](https://stackoverflow.com/questions/47243155/get-r-to-keep-utf-8-codepoint-representation/47243425#47243425) -- thanks Patrick! `r emo::ji("smiling_face_with_smiling_eyes")`
 
-```{r Emojis in YouTube Comments, echo = TRUE, results = 'hide', message = FALSE, warning = FALSE, error = FALSE}
-
-# change U+1F469 U+200D U+1F467 to \U1F469\U200D\U1F467
-emojis <- read.csv(url("https://raw.githubusercontent.com/lyons7/emojidictionary/master/Emoji%20Dictionary%205.0.csv")) 
+```{r Emojis in YouTube Comments, echo=TRUE, results='hide', message=FALSE, warning=FALSE, error=FALSE}
+xemo <- getURL("https://raw.githubusercontent.com/lyons7/emojidictionary/master/emoji_dictionary.csv")
+emojis <- read.csv(text = xemo)
 
 # Specific to YouTube data
-emojis <- emojis[!emojis$Name == " SHRUGFACE ", ]
+emojis <- emojis[!emojis$Name == " SHRUGFACE ",]
+
+# change U+1F469 U+200D U+1F467 to \U1F469\U200D\U1F467
 emojis$escapes <- gsub("[[:space:]]*\\U\\+", "\\\\U", emojis$Codepoint)
 
 # convert to UTF-8 using the R parser
 emojis$codes <- sapply(parse(text = paste0("'", emojis$escapes, "'"),
-                       keep.source = FALSE), eval)
+                      keep.source = FALSE), eval)
+```
 
+Now we'll use the FindReplace function to go through and identify emojis.
+
+```{r Emojis in YouTube Comments 2, echo=TRUE, results='hide', message=FALSE, warning=FALSE, error=FALSE, eval=FALSE}
+# First have to change class of comment text to character from factor
 emojimovie$text <- as.character(emojimovie$textOriginal)
 
 # Go through and identify emojis
-emoemo <- FindReplace(data = emojimovie,
-                      Var = "text",
-                      replaceData = emojis,
-                      from = "codes",
-                      to = "Name", 
-                      exact = FALSE)
-
+emoemo <- FindReplace(data = emojimovie, Var = "text", 
+                            replaceData = emojis,
+                       from = "codes", to = "Name", 
+                       exact = FALSE)
 # This might take some time, we have a big data set. 
 # Save if you want
-# save(emoemo, file = "sampletubedataemojis.Rda")
+# save(emoemo,file=paste("sampletubedataemojis.Rda"))
+```
+```{r, echo=TRUE, results='hide', message=FALSE, warning=FALSE, error=FALSE}
+load("sampletubedataemojis.Rda")
 ```
 
-Now that you have identified comments with emojis, let's look at the top emojis in our data set.
+Now you have your comments with emojis identified. Let's look at the top emojis in our data set.
 
-```{r YouTube Emoji Comments, echo = TRUE, message = FALSE, warning = FALSE, error = FALSE}
-
+```{r YouTube Emoji Comments, echo=TRUE, message=FALSE, warning=FALSE, error=FALSE}
 # Have to do keep the "to_lower" parameter FALSE so our emojis in our dictionary are kept separate from words that happen to be the same as emoji names
+
+# First want an id for each comment -- this will come in handy later on
+emoemo$comment_id <- 1:nrow(emoemo)
 emotidy_tube <- emoemo %>%
   unnest_tokens(word, text, to_lower = FALSE)
 
-# Nuke extra spaces
-emojis$Name <- gsub("^\\s+|\\s+$", "", emojis$Name)
+# Put emojis in tidy format too so as to use a join function
+emojis$Name <- as.character(emojis$Name)
+
+tube_tidy_emojis <- emojis %>%
+  unnest_tokens(word, Name, to_lower = FALSE)
 
 # Now we will use inner_join to keep matches and get rid of non-matches
-tube_emojis_total <- 
-emotidy_tube %>%
-  inner_join(emojis, by = c("word" = "Name"))
+tube_emojis_total <- tube_tidy_emojis %>%
+  inner_join(emotidy_tube)
 
 # What is the most frequent emoji?
 tube_freqe <- tube_emojis_total %>% 
    count(word, sort = TRUE)
 
-tube_freqe[1:10, ]
+tube_freqe[1:10,]
 ```
 
-So, our ten most frequent emojis in the comments of the Emoji Movie trailer are ```r emo::ji("face_with_tears_of_joy")```, ```r emo::ji("boy")```, ```r emo::ji("mobile_phone")```, ```r emo::ji("kissing_heart")```, ```r emo::ji("man")```, ```r emo::ji("skull_and_crossbones")```, ```r emo::ji("atom_symbol")```, ```r emo::ji("dancing_women")```, ```r emo::ji("grimacing")```, and ```r emo::ji("kissing_smiling_eyes")```. Read into that what you will! ```r emo::ji("face_with_tears_of_joy")```
+So, our ten most frequent emojis in the comments of the Emoji Movie trailer are `r emo::ji("face_with_tears_of_joy")`, `r emo::ji("boy")`, `r emo::ji("mobile_phone")`, `r emo::ji("kissing_heart")`, `r emo::ji("man")`, `r emo::ji("skull_and_crossbones")`, `r emo::ji("atom_symbol")`, `r emo::ji("dancing_women")`, `r emo::ji("grimacing")` and `r emo::ji("kissing_smiling_eyes")`. Read into that what you will! `r emo::ji("face_with_tears_of_joy")`
 
-What if we want to look at how the use of these emojis has changed over time? We can also look at WHEN comments were posted. We can also graph frequency of comments over time. 
-
-Graphs constructed with help from [here](http://www.cyclismo.org/tutorial/R/time.html), [here](https://gist.github.com/stephenturner/3132596),
+What if we want to look at how the use of these emojis has changed over time? We can also look at WHEN the posts were generated. We can make a graph of comment frequency over time. Graphs constructed with help from [here](http://www.cyclismo.org/tutorial/R/time.html), [here](https://gist.github.com/stephenturner/3132596),
 [here](http://stackoverflow.com/questions/27626915/r-graph-frequency-of-observations-over-time-with-small-value-range), [here](http://michaelbommarito.com/2011/03/12/a-quick-look-at-march11-saudi-tweets/), [here](http://stackoverflow.com/questions/31796744/plot-count-frequency-of-tweets-for-word-by-month), [here](https://stat.ethz.ch/R-manual/R-devel/library/base/html/as.POSIXlt.html), [here](http://sape.inf.usi.ch/quick-reference/ggplot2/geom) and [here](http://stackoverflow.com/questions/3541713/how-to-plot-two-histograms-together-in-r).
 
-We will also use the [anytime](https://cran.r-project.org/web/packages/anytime/index.html) package to format time. 
+We will also use the [anytime](https://cran.r-project.org/web/packages/anytime/index.html) package to format the time in a useable way. 
 
-```{r, echo = TRUE, message = FALSE, warning = FALSE}
-
+```{r, echo=TRUE, message=FALSE, warning=FALSE, fig.width=8, fig.height=4}
 # Subset to just have posts that have our top ten emojis
-top_ten <- subset(tube_emojis_total, word %in% c("FACEWITHTEARSOFJOY", "BOY", "MOBILEPHONE", "FACETHROWINGAKISS", "MAN", "SKULLANDCROSSBONES", "ATOMSYMBOL", "COLONEWOMANWITHBUNNYEARS", "GRIMACINGFACE", "KISSINGFACEWITHSMILINGEYES"))
+top_ten <- subset(tube_emojis_total, word == "FACEWITHTEARSOFJOY" | word == "BOY"| word == "MOBILEPHONE" | word == "FACETHROWINGAKISS" | word == "MAN" | word == "SKULLANDCROSSBONES" | word == "ATOMSYMBOL" | word == "COLONEWOMANWITHBUNNYEARS"| word == "GRIMACINGFACE" | word == "KISSINGFACEWITHSMILINGEYES")
 
 # Now use the 'anytime' package to convert to time format we can use
 top_ten$created <- anytime(as.factor(top_ten$publishedAt))
 
+Emoji <- top_ten$word
 minutes <- 60
+ggplot(top_ten, aes(created, color = Emoji)) + 
+  geom_freqpoly(binwidth=10080*minutes)
+```
 
-ggplot(top_ten, aes(created, color = top_ten$word)) + 
-  geom_freqpoly(binwidth = 10080*minutes)
+We can look at these one by one too and use the emoGG package to use actual emojis to show which ones we are talking about.
 
-# We can look at these one by one too and use the emoGG package to use actual emojis to show which ones we are talking about 
+```{r, echo=TRUE, message=FALSE, warning=FALSE, fig.width=7, fig.height=4}
 # The code you use in emoGG is the same as UTF-8 but without "U+" etc, and all letters lowercase
-
-tearsofjoy <- top_ten[top_ten$word == "FACEWITHTEARSOFJOY", ]
-
+tearsofjoy <- top_ten[top_ten$word == "FACEWITHTEARSOFJOY",]
 ggplot(tearsofjoy, aes(created)) + 
-  geom_freqpoly(binwidth = 10080*minutes) +
-  add_emoji(emoji = "1f602")
+  geom_freqpoly(binwidth=10080*minutes) + add_emoji(emoji="1f602")
 
 boy <- top_ten[top_ten$word == "BOY",]
 ggplot(boy, aes(created)) + 
-  geom_freqpoly(binwidth = 10080*minutes) +
-  add_emoji(emoji = "1f466")
-
-boy <- top_ten[top_ten$word == "BOY",]
-ggplot(boy, aes(created)) + 
-  geom_freqpoly(binwidth = 10080*minutes) +
-  add_emoji(emoji = "1f466")
+  geom_freqpoly(binwidth=10080*minutes) + add_emoji(emoji="1f466")
 
 # Sometimes emoGG doesn't have your emoji -- here we have to use skull, not skull and crossbones
 skull <- top_ten[top_ten$word == "SKULLANDCROSSBONES",]
 ggplot(skull, aes(created)) + 
-  geom_freqpoly(binwidth = 10080*minutes) + add_emoji(emoji = "1f480")
+  geom_freqpoly(binwidth=10080*minutes) + add_emoji(emoji="1f480")
 
 grimace <- top_ten[top_ten$word == "GRIMACINGFACE",]
 ggplot(grimace, aes(created)) + 
-  geom_freqpoly(binwidth = 10080*minutes) + add_emoji(emoji = "1f62c")
+  geom_freqpoly(binwidth=10080*minutes) + add_emoji(emoji="1f62c")
 
 # ad infinitum!
 ```
+
+Let's do some sentiment analysis. We will use [this](https://github.com/words/emoji-emotion) dictionary of emojis rated for valence in between -5 and 5. This dictionary is in JSON format so it takes a couple of steps from the [jsonlite package](https://cran.r-project.org/web/packages/jsonlite/vignettes/json-aaquickstart.html) to get it in a format we can use for sentiment analysis. The bad news is that this dictionary just has 118 emojis, but it's a good start. 
+
+```{r Emoji Valence, echo=TRUE, message=FALSE, warning=FALSE, error=FALSE, fig.width=7, fig.height=4}
+emovalx <- getURL("https://raw.githubusercontent.com/words/emoji-emotion/master/index.json")
+emoval <- fromJSON(emovalx)
+names(tube_emojis_total)[names(tube_emojis_total)=="codes"] <- "emoji"
+
+senti <- tube_emojis_total %>%
+  inner_join(emoval) 
+# Cuts our data set in half
+
+# Look at how sentiment of emojis has changed over time
+# Again use the 'anytime' package to convert to time format we can use
+senti$created <- anytime(as.factor(senti$publishedAt))
+
+test <- senti %>%
+  group_by(created) %>%
+  summarise(sentiment = sum(polarity))
+
+ggplot(test, aes(x=created, y=sentiment)) +
+  geom_line(color='steelblue', size=1) 
+
+# How about our most negative emojis and most positive emojis?
+negs <- senti[senti$polarity == "-2",]
+pos <- senti[senti$polarity == "2",]
+
+# Top 10 of each
+negfreq <- negs %>% 
+   count(word, sort = TRUE)
+
+negfreq[1:10,]
+
+posfreq <- pos %>% 
+   count(word, sort = TRUE)
+
+posfreq[1:10,]
+
+# Graph and compare
+negs10 <- subset(negs, word == "GRIMACINGFACE" | word == "THUMBSDOWNSIGN"| word == "FACEWITHHEADBANDAGE" | word == "FACEWITHOPENMOUTH" | word == "CRYINGFACE" | word == "FLUSHEDFACE" | word == "LYINGFACE" | word == "PERSEVERINGFACE"| word == "WEARYFACE" | word == "CONFOUNDEDFACE")
+
+pos10 <- subset(pos, word == "KISSINGFACEWITHSMILINGEYES" | word == "GRINNINGFACE"| word == "SMILINGFACEWITHOPENMOUTH" | word == "GRINNINGFACEWITHSMILINGEYES" | word == "RELIEVEDFACE" | word == "SMIRKINGFACE" | word == "ASTONISHEDFACE" | word == "FACEWITHCOWBOYHAT"| word == "HUGGINGFACE" | word == "KISSINGFACE")
+
+negsp <- negs10 %>%
+  group_by(created) %>%
+  summarise(sentiment = sum(polarity))
+
+posp <- pos10 %>%
+  group_by(created) %>%
+  summarise(sentiment = sum(polarity))
+
+ggplot(negsp, aes(x=created, y=sentiment)) +
+  geom_line(color='darkred', size=2) +
+  geom_line(data = posp, aes(x=created, y=sentiment), color='steelblue', size=2)
+```
+
+What about a graph of the biggest emoji contributers to positive and negative sentiment? 
+
+```{r Emoji Sentiment Analysis Contributers to Sentiment, echo=TRUE, message=FALSE, warning=FALSE, error=FALSE, fig.width=7, fig.height=4}
+# Combine your posfreq and negfreq data frames together
+posfreq["sentiment"] <- "positive"
+negfreq["sentiment"] <- "negative"
+
+senti_total <- plyr::rbind.fill(posfreq,negfreq)
+
+# bing_word_counts
+
+# Now we can graph these
+# Change 'filter' parameter depending on the size of your data set
+senti_total %>%
+  filter(n > 200) %>%
+  mutate(n = ifelse(sentiment == "negative", -n, n)) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word, n, fill = sentiment)) +
+  geom_bar(alpha = 0.8, stat = "identity") +
+  labs(y = "Contribution to sentiment",
+       x = NULL) +
+  coord_flip()
+```
+
+How does this compare to the sentiment in the text of our data? Does our analysis of emoji sentiment mirror that in the actual words? (Sentiment analysis technique adapted from [Silge and Robinson 2017](http://tidytextmining.com/sentiment.html).)
+
+First we have to clean our data -- get rid of stop words, etc.
+
+```{r Text Sentiment Analysis, echo=TRUE, message=FALSE, warning=FALSE, error=FALSE, fig.width=7, fig.height=4}
+# First have to clean the data
+emoemo$text = gsub( "<.*?>", "", emoemo$text)
+
+# Get stop words
+data(stop_words)
+mystopwords <- c(stopwords('english'),stop_words$word, "im")
+
+# Following is from Silge and Robinson. This keeps @ mentions and hashtags intact
+reg <- "([^A-Za-z_\\d#@']|'(?![A-Za-z_\\d#@]))"
+tidy_tube <- emoemo %>% 
+  filter(!str_detect(text, "^RT")) %>%
+  mutate(text = str_replace_all(text, "https://t.co/[A-Za-z\\d]+|http://[A-Za-z\\d]+|&amp;|&lt;|&gt;|RT|https", "")) %>%
+  unnest_tokens(word, text, token = "regex", pattern = reg) %>%
+  filter(!word %in% mystopwords,
+         str_detect(word, "[a-z]"))
+
+# Check out most frequent terms if you want
+# freqtube <- tidy_tube %>% 
+#   count(word, sort = TRUE) 
+
+# head(freqtube)
+```
+
+Now we will use the AFINN lexicon which is coded similarly to our emojis (scores from -5 to 5). The AFINN lexicon comes with the tidytext package, so no need to find it / load it in. 
+
+```{r Text Sentiment Plots, echo=TRUE, message=FALSE, warning=FALSE, error=FALSE, fig.width=7, fig.height=4}
+text_senti <- tidy_tube %>%
+  inner_join(get_sentiments("afinn")) 
+
+text_senti$created <- anytime(as.factor(text_senti$publishedAt))
+
+text_test <- text_senti %>%
+  group_by(created) %>%
+  summarise(sentiment = sum(score))
+
+ggplot(text_test, aes(x=created, y=sentiment)) +
+  geom_line(color='steelblue', size=1) 
+
+# Compare to emoji plot
+ggplot(test, aes(x=created, y=sentiment)) +
+  geom_line(color='steelblue', size=1) 
+```
+
+When compared to the text, we can see that that emojis don't give us as much detail as actual words do in terms of sentiment, but we can see some more general trends. We can also combine our emoji sentiment dictionary with the AFINN one so we can do a sentiment analysis all together.
+
+```{r Total Sentiment Plots, echo=TRUE, message=FALSE, warning=FALSE, error=FALSE, fig.width=7, fig.height=4}
+# AFINN is 'word'; 'score'
+# Emoji one is 'emoji; 'polarity'
+
+# First we have to transform our emoval data frame so it has the same names as our emoji dictionary encodings. This didn't matter before because we used the actual emojis themselves as our common vector in inner_join -- we might not want to do that now because we want to look at both emojis AND text, so it's better to just be able to work with the 'word' vector
+names(emojis)[names(emojis)=="codes"] <- "emoji"
+
+# Combine emojis dictionary with valence lexicon, just keep those things that are in the lexicon. This would be a case for left_join.
+
+# Get rid of some white space in emoji dictionary so everything will match (help from here: https://stackoverflow.com/questions/34591329/remove-white-space-from-a-data-frame-column-and-add-path)
+emojis$emoji <- gsub('\\s+', '', emojis$emoji)
+
+emojilex <- emoval %>%
+  left_join(emojis)
+
+# Create data frame with afinn lexicon
+afinn <- get_sentiments("afinn")
+biglexi <- plyr::rbind.fill(afinn, emojilex)
+
+text_senti_total <- tidy_tube %>%
+  inner_join(biglexi) 
+
+text_senti_total$created <- anytime(as.factor(text_senti_total$publishedAt))
+
+text_test_total <- text_senti_total %>%
+  group_by(created) %>%
+  summarise(sentiment = sum(score))
+
+ggplot(text_test_total, aes(x=created, y=sentiment)) +
+  geom_line(color='steelblue', size=1)
+```
+
