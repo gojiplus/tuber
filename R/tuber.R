@@ -17,9 +17,6 @@ yt_check_token <- function() {
 
 }
 
-#' 
-#' Base POST AND GET functions. Not exported.
-
 #'
 #' GET
 #' 

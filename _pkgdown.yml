@@ -1,0 +1,90 @@
+templates:
+  params:
+    bootswatch: cerulean
+  default_assets: false
+
+navbar:
+    menu:
+    - text: Using tuber
+      href: articles/tuber-ex.html
+    - text: Analyzing Emojis in Comments
+      href: articles/emoji_vignette.html
+
+articles:
+  - title: "Articles"
+    contents:
+    - tuber-ex
+    - emoji_vignette
+
+reference:
+  - title: "Authorization"
+    desc: >
+      Get permissions to access the API. Set up the right scope.
+    contents:
+      - yt_oauth
+      - yt_check_token
+  - title: "Captions"
+    desc: >
+      Closed Captions of Videos
+    contents:
+      - delete_captions
+      - get_captions
+      - list_caption_tracks
+  - title: "Comments"
+    desc: >
+      Work with YouTube Comments
+    contents:
+      - get_comment_threads
+      - get_comments
+      - get_all_comments
+      - delete_comments
+  - title: "Playlists"
+    desc: >
+      Working with Playlists
+    contents:
+      - get_playlists
+      - get_playlist_items
+      - delete_playlists
+      - delete_playlist_items
+  - title: "Channels"
+    desc: >
+      Working with Channels
+    contents:
+      - list_channel_videos
+      - list_channel_sections
+      - list_channel_resources
+      - list_channel_activities
+      - get_channel_stats
+      - get_subscriptions
+      - delete_channel_sections
+  - title: "Videos"
+    desc: >
+      Working with Videos
+    contents:
+      - get_video_details
+      - delete_videos
+  - title: "Search"
+    desc: >
+      Search for Videos etc.
+    contents:
+      - get_related_videos
+      - yt_search
+      - yt_topic_search
+  - title: "Misc. Utility Functions"
+    desc: >
+      Find out more about the YouTube Data API
+    contents:
+      - list_langs
+      - list_guidecats
+      - list_regions
+      - list_videocats
+      - list_abuse_report_reasons
+  - title: "Programming using the YouTube Data API"
+    desc: >
+      Low-level functions used internally
+    contents:
+      - tuber_GET
+      - tuber_DELETE
+      - tuber_POST
+      - tuber_check
+      - yt_check_token

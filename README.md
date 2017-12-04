@@ -5,7 +5,7 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/pgr0wih12gtwvvvx?svg=true)](https://ci.appveyor.com/project/soodoku/tuber) [![Build Status](https://travis-ci.org/soodoku/tuber.svg?branch=master)](https://travis-ci.org/soodoku/tuber) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/tuber)](https://cran.r-project.org/package=tuber) ![](http://cranlogs.r-pkg.org/badges/grand-total/tuber) [![codecov](https://codecov.io/gh/soodoku/tuber/branch/master/graph/badge.svg)](https://codecov.io/gh/soodoku/tuber)
 
-Access YouTube API via R. Get comments posted on YouTube videos, information on how many times a video has been liked, search for videos with particular content, and much more. You can also scrape captions from a few videos. To learn more about the YouTube API, see <https://developers.google.com/youtube/v3/>.
+Access YouTube API via R. Get comments posted on YouTube videos, get information on how many times a video has been liked, search for videos with particular content, and much more. You can also get closed captions of videos you own. To learn more about the YouTube API, see <https://developers.google.com/youtube/v3/>.
 
 ### Installation
 
@@ -16,12 +16,7 @@ To get the current development version from GitHub:
 devtools::install_github("soodoku/tuber", build_vignettes = TRUE)
 ```
 
-To get a quick overview of some important functions in tuber, check out the [main features vignette](https://github.com/soodoku/tuber/blob/master/vignettes/tuber-ex.md). For a fun vignette about how to analyze emojis in YouTube comments, check out the [emoji vignette](https://github.com/soodoku/tuber/blob/master/vignettes/emoji_vignette.md). Or launch the vignettes from within R:
-
-``` r
-vignette("tuber-ex", package = "tuber")
-vignette("emoji_vignette", package = "tuber")
-```
+To get a quick overview of some important functions in tuber, check out [this article](http://soodoku.github.io/tuber/articles/tuber-ex.html). For a fun vignette about how to analyze emojis in YouTube comments, see [here](http://soodoku.github.io/tuber/articles/emoji_vignette.html).
 
 ### Using tuber
 
@@ -55,10 +50,10 @@ get_captions(video_id = "yJXTXN4xrI8")
 yt_search("Barack Obama")
 ```
 
-**Get Comment Threads**
+**Get All the Comments Including Replies**
 
 ``` r
-get_comment_threads(filter = c(video_id = "N708P-A45D0"))
+get_all_comments(video_id = "a-UQz7fqR3w")
 ```
 
 ### License

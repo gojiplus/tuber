@@ -2,7 +2,7 @@
 % Please edit documentation in R/tuber.R
 \name{tuber_GET}
 \alias{tuber_GET}
-\title{Base POST AND GET functions. Not exported.}
+\title{GET}
 \usage{
 tuber_GET(path, query, ...)
 }
