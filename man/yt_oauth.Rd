@@ -12,7 +12,8 @@ yt_oauth(app_id = NULL, app_secret = NULL, scope = "ssl",
 
 \item{app_secret}{client secret; required; no default}
 
-\item{scope}{Character. \code{ssl}, \code{basic}, \code{own_account_readonly}, \code{upload_and_manage_own_videos} and \code{partner_audit}. 
+\item{scope}{Character. \code{ssl}, \code{basic}, \code{own_account_readonly}, \code{upload_and_manage_own_videos},
+\code{partner}, and \code{partner_audit}. 
 Required. \code{ssl} and \code{basic} are basically interchangeable. Default is \code{ssl}.}
 
 \item{token}{path to file containing the token. If a path is given, the function will first try to read from it. 

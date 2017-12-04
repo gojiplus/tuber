@@ -6,7 +6,8 @@
 #' 
 #' @param app_id client id; required; no default
 #' @param app_secret client secret; required; no default
-#' @param scope Character. \code{ssl}, \code{basic}, \code{own_account_readonly}, \code{upload_and_manage_own_videos} and \code{partner_audit}. 
+#' @param scope Character. \code{ssl}, \code{basic}, \code{own_account_readonly}, \code{upload_and_manage_own_videos},
+#' \code{partner}, and \code{partner_audit}. 
 #' Required. \code{ssl} and \code{basic} are basically interchangeable. Default is \code{ssl}.
 #' @param token path to file containing the token. If a path is given, the function will first try to read from it. 
 #' Default is \code{.httr-oauth} in the local directory.
@@ -71,6 +72,11 @@ yt_oauth <- function (app_id = NULL, app_secret = NULL, scope = "ssl",
 
       google_token <- oauth2.0_token(oauth_endpoints("google"), myapp,
         scope = "https://www.googleapis.com/auth/youtubepartner-channel-audit",
+        ...)
+    } else if (scope == "partner") {
+
+       google_token <- oauth2.0_token(oauth_endpoints("google"), myapp,
+        scope = "https://www.googleapis.com/auth/youtubepartner",
         ...)
     }
   }

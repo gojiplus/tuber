@@ -2,6 +2,7 @@
 
 * A new vignette for tuber that shows how to deal with emojis in tuber
 * A new function for fetching all the comments, including replies.
+* Added the missing partner scope fixing #41.
 
 # version 0.9.2
 
