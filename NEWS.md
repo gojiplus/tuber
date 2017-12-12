@@ -1,8 +1,9 @@
 # version 0.9.3
 
 * A new vignette for tuber that shows how to deal with emojis in tuber
-* A new function for fetching all the comments, including replies.
+* A new function for fetching all the comments, including replies. Also fixes #43
 * Added the missing partner scope fixing #41.
+* New pkgdown documentation released with functions organized by purpose.
 
 # version 0.9.2
 
