@@ -8,7 +8,7 @@
 #' @return  
 #' a \code{data.frame} with the following columns:
 #' \code{authorDisplayName, authorProfileImageUrl, authorChannelUrl, authorChannelId.value, videoId, textDisplay,          
-#' canRate, viewerRating, likeCount, publishedAt, updatedAt, parentId}
+#' canRate, viewerRating, likeCount, publishedAt, updatedAt, id, moderationStatus, parentId}
 #' 
 #' @export
 #' @references \url{https://developers.google.com/youtube/v3/docs/commentThreads/list}
@@ -32,9 +32,15 @@ get_all_comments <- function (video_id = NULL, ...) {
                                      }
                                      )
   simpler_res <- ldply(simple_res, rbind)
-  
-  # just add parent_id
+  simpler_res <- cbind(simpler_res, id = sapply(res$items, `[[`, "id"))
+
+  # just add parent_id 
   simpler_res$parentId <- NA
+  
+  # add moderation status where missing
+  if (! ("moderationStatus" %in% names(simpler_res))) {
+    simpler_res$moderationStatus <- NA
+  }
 
   n_replies   <- sapply(res$items, function(x) {
                                      unlist(x$snippet$totalReplyCount)
@@ -47,7 +53,12 @@ get_all_comments <- function (video_id = NULL, ...) {
                                      )
     simpler_rep <- ldply(replies, rbind)
     names(simpler_rep) <- gsub("snippet.", "", names(simpler_rep))
-    simpler_rep <-  subset(simpler_rep, select = -c(kind, etag, id))
+    simpler_rep <-  subset(simpler_rep, select = -c(kind, etag))
+
+    # add moderation status where missing
+    if (! ("moderationStatus" %in% names(simpler_rep))) {
+      simpler_rep$moderationStatus <- NA
+    }
 
     agg_res <- rbind(simpler_res, simpler_rep)
   }
@@ -66,9 +77,15 @@ get_all_comments <- function (video_id = NULL, ...) {
                                      }
                                      )
     simpler_res <- ldply(simple_res, rbind)
-    
-    # just add parent_id
+    simpler_res <- cbind(simpler_res, id = sapply(res$items, `[[`, "id"))
+
+    # just add parent_id 
     simpler_res$parentId <- NA
+  
+    # add moderation status where missing
+    if (! ("moderationStatus" %in% names(simpler_res))) {
+      simpler_res$moderationStatus <- NA
+    }
 
     n_replies   <- sapply(a_res$items, function(x) {
                                      unlist(x$snippet$totalReplyCount)
@@ -82,7 +99,13 @@ get_all_comments <- function (video_id = NULL, ...) {
                                      )
       simpler_rep <- ldply(replies, rbind)
       names(simpler_rep) <- gsub("snippet.", "", names(simpler_rep))
-      simpler_rep <-  subset(simpler_rep, select = -c(kind, etag, id))
+      simpler_rep <-  subset(simpler_rep, select = -c(kind, etag))
+      
+      # add moderation status where missing
+      if (! ("moderationStatus" %in% names(simpler_rep))) {
+        simpler_rep$moderationStatus <- NA
+      }
+
       agg_res <- rbind(simpler_res, simpler_rep, agg_res)
       page_token  <- a_res$nextPageToken
     }

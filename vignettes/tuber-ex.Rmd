@@ -9,8 +9,15 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-## tuber: Access YouTube via R
 
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## tuber: Access YouTube from R
 
 ### Install, Load the package
 
