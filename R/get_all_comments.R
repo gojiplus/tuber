@@ -77,7 +77,7 @@ get_all_comments <- function (video_id = NULL, ...) {
                                      }
                                      )
     simpler_res <- ldply(simple_res, rbind)
-    simpler_res <- cbind(simpler_res, id = sapply(res$items, `[[`, "id"))
+    simpler_res <- cbind(simpler_res, id = sapply(a_res$items, `[[`, "id"))
 
     # just add parent_id 
     simpler_res$parentId <- NA
@@ -114,5 +114,5 @@ get_all_comments <- function (video_id = NULL, ...) {
     page_token  <- a_res$nextPageToken
   }
 
-  agg_res
+  agg_res[!duplicated(agg_res$id), ]
 }
