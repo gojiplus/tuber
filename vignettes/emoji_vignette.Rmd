@@ -1,8 +1,8 @@
 ---
-title: "Identifying Emojis in YouTube Comments"
+title: "Analyzing Emojis in YouTube Comments"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Identifying Emojis in YouTube Comments}
+  %\VignetteIndexEntry{Analyzing Emojis in YouTube Comments}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -11,9 +11,9 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r Setup 0, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
-packs = c("tuber","ggplot2","RCurl","DataCombine","tidyverse","tidytext","emoGG","anytime","emo", "jsonlite", "tm", "stringr")
-lapply(packs, library, character.only=T)
+```{r Setup 0, echo = FALSE, message = FALSE, warning = FALSE, results = 'hide'}
+packs = c("tuber", "ggplot2", "RCurl", "DataCombine", "tidyverse", "tidytext", "emoGG", "anytime", "emo", "jsonlite", "tm", "stringr")
+lapply(packs, library, character.only = T)
 ```
 
 Depending on the video(s) you are exploring, it might be useful to account for and analyze the use of emojis in comments. As emojis become more and more popular and more complex in the meanings they are able to signify, the more important it is to at least account for emojis and include them in textual analyses. Here's how you can do this with YouTube data!
@@ -24,7 +24,7 @@ I wanted to choose something that had both 1) a lot of comments and 2) a strong 
 If you don't have the YouTube API set up, please see instructions on how to do so [here](https://developers.google.com/youtube/v3/).
 
 ```{r Set Up Youtube + Get Comments, echo=FALSE, results='hide', message=FALSE, warning=FALSE, error=FALSE, eval=FALSE}
- yt_oauth("915000562434-icqct3vs9q2rpid1p7v1j5lp9sjmacij.apps.googleusercontent.com","_iW5ie44Bj4BECvbB-94A1Ix", token='')
+ yt_oauth()
 ```
 ```{r Get YouTube Comments, echo=TRUE, results='hide', message=FALSE, warning=FALSE, error=FALSE, eval=FALSE}
 # Connect to YouTube API
@@ -76,7 +76,7 @@ emoemo <- FindReplace(data = emojimovie, Var = "text",
 # save(emoemo,file=paste("sampletubedataemojis.Rda"))
 ```
 ```{r, echo=TRUE, results='hide', message=FALSE, warning=FALSE, error=FALSE}
-load("sampletubedataemojis.Rda")
+#load("sampletubedataemojis.Rda")
 ```
 
 Now you have your comments with emojis identified. Let's look at the top emojis in our data set.
@@ -111,7 +111,7 @@ So, our ten most frequent emojis in the comments of the Emoji Movie trailer are 
 What if we want to look at how the use of these emojis has changed over time? We can also look at WHEN the posts were generated. We can make a graph of comment frequency over time. Graphs constructed with help from [here](http://www.cyclismo.org/tutorial/R/time.html), [here](https://gist.github.com/stephenturner/3132596),
 [here](http://stackoverflow.com/questions/27626915/r-graph-frequency-of-observations-over-time-with-small-value-range), [here](http://michaelbommarito.com/2011/03/12/a-quick-look-at-march11-saudi-tweets/), [here](http://stackoverflow.com/questions/31796744/plot-count-frequency-of-tweets-for-word-by-month), [here](https://stat.ethz.ch/R-manual/R-devel/library/base/html/as.POSIXlt.html), [here](http://sape.inf.usi.ch/quick-reference/ggplot2/geom) and [here](http://stackoverflow.com/questions/3541713/how-to-plot-two-histograms-together-in-r).
 
-We will also use the [anytime](https://cran.r-project.org/web/packages/anytime/index.html) package to format the time in a useable way. 
+We will also use the [anytime](https://cran.r-project.org/web/packages/anytime/index.html) package to format the time in a usable way. 
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE, fig.width=8, fig.height=4}
 # Subset to just have posts that have our top ten emojis
