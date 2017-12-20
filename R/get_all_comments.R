@@ -40,7 +40,7 @@ get_all_comments <- function (video_id = NULL, ...) {
     page_token  <- a_res$nextPageToken
    }
 
-  agg_res[!duplicated(agg_res$id), ]
+  agg_res
 }
 
 process_page <- function(res = NULL) {
