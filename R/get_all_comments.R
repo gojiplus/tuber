@@ -68,14 +68,25 @@ process_page <- function(res = NULL) {
     agg_res <- simpler_res
 
   } else {
-      replies     <- lapply(res$items[n_replies > 0], function(x) {
+      replies_1  <- lapply(res$items[n_replies == 1], function(x) {
                                      unlist(x$replies$comments)
                                      }
                                      )
+      replies_1  <- ldply(replies_1, rbind)
+      names(replies_1) <- gsub("snippet.", "", names(replies_1))
+      replies_1p  <- lapply(res$items[n_replies > 1], function(x) {
+                                     x$replies$comments
+                                     }
+                                     )
+
+      replies_1p  <- lapply(replies_1p[[1]], function(x) c(unlist(x$snippet), id = x$id, etag = x$etag, kind = x$kind))
+      replies_1p  <- ldply(replies_1p, rbind) 
       
-      simpler_rep <- ldply(replies, rbind)
-      names(simpler_rep) <- gsub("snippet.", "", names(simpler_rep))
-      simpler_rep <-  subset(simpler_rep, select = -c(kind, etag))
+      replies     <- rbind(replies_1, replies_1p)
+
+      #simpler_rep <- ldply(replies, rbind)
+      #names(simpler_rep) <- gsub("snippet.", "", names(simpler_rep))
+      simpler_rep <-  subset(replies, select = -c(kind, etag))
 
       if (! ("moderationStatus" %in% names(simpler_rep))) {
         simpler_rep$moderationStatus <- NA
