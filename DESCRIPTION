@@ -23,5 +23,8 @@ Suggests:
     testthat,
     rmarkdown,
     xml2,
-    lintr
+    lintr,
+    DataCombine,
+    emo,
+    emoGG
 RoxygenNote: 6.0.1

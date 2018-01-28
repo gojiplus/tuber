@@ -3,6 +3,7 @@
 ^\.Rproj\.user$
 ^.httr-oauth$
 ^dev$
+^figure$
 ^docs$
 ^.travis.yml$
 ^codecov.yml$

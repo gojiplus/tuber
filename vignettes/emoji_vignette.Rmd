@@ -14,13 +14,16 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r Setup 0, echo = FALSE, message = FALSE, warning = FALSE, results = 'hide'}
 library(tuber)
 library(ggplot2)
-packs = c("tuber", "ggplot2", "RCurl", "DataCombine", "tidyverse", "tidytext", "emoGG", "anytime", "emo", "jsonlite", "tm", "stringr")
-lapply(packs, library, character.only = T)
+library(DataCombine)
+library(tidyverse)
+library(emoGG)
+library(emo)
 ```
 
 Depending on the video(s) you are exploring, it might be useful to account for and analyze the use of emojis in comments. As emojis become more and more popular and more complex in the meanings they are able to signify, the more important it is to at least account for emojis and include them in textual analyses. Here's how you can do this with YouTube data!
 
 ## Getting YouTube Data
+
 I wanted to choose something that had both 1) a lot of comments and 2) a strong likelihood of comments containing emojis, so let's look at the comments from the ill-advised (and ill-fated) 'Emoji Movie' trailer. This also has a lot of varying sentiment (one of the comments is "The movie is a such disgrace to the animation film industry."`r emo::ji("joy_cat")``r emo::ji("joy_cat")``r emo::ji("joy_cat")`).
 
 If you don't have the YouTube API set up, please see instructions on how to do so [here](https://developers.google.com/youtube/v3/).
@@ -63,6 +66,7 @@ Now we'll use the FindReplace function to go through and identify emojis.
 
 ```{r Emojis in YouTube Comments 2, echo = TRUE, results = 'hide', message = FALSE, warning = FALSE, error = FALSE}
 emojimovie <- read_csv("https://github.com/soodoku/tuber/blob/master/data-raw/sampletubedata.csv?raw=TRUE")
+emojimovie <- as.data.frame(emojimovie)
 # First have to change class of comment text to character from factor
 emojimovie$text <- as.character(emojimovie$textOriginal)
 
@@ -145,165 +149,3 @@ ggplot(grimace, aes(created)) +
 
 # ad infinitum!
 ```
-
-Let's do some sentiment analysis. We will use [this](https://github.com/words/emoji-emotion) dictionary of emojis rated for valence in between -5 and 5. This dictionary is in JSON format so it takes a couple of steps from the [jsonlite package](https://cran.r-project.org/web/packages/jsonlite/vignettes/json-aaquickstart.html) to get it in a format we can use for sentiment analysis. The bad news is that this dictionary just has 118 emojis, but it's a good start. 
-
-```{r Emoji Valence, echo=TRUE, message=FALSE, warning=FALSE, error=FALSE, fig.width=7, fig.height=4}
-emovalx <- getURL("https://raw.githubusercontent.com/words/emoji-emotion/master/index.json")
-emoval <- fromJSON(emovalx)
-names(tube_emojis_total)[names(tube_emojis_total)=="codes"] <- "emoji"
-
-senti <- tube_emojis_total %>%
-  inner_join(emoval) 
-# Cuts our data set in half
-
-# Look at how sentiment of emojis has changed over time
-# Again use the 'anytime' package to convert to time format we can use
-senti$created <- anytime(as.factor(senti$publishedAt))
-
-test <- senti %>%
-  group_by(created) %>%
-  summarise(sentiment = sum(polarity))
-
-ggplot(test, aes(x=created, y=sentiment)) +
-  geom_line(color='steelblue', size=1) 
-
-# How about our most negative emojis and most positive emojis?
-negs <- senti[senti$polarity == "-2",]
-pos  <- senti[senti$polarity == "2",]
-
-# Top 10 of each
-negfreq <- negs %>% 
-   count(word, sort = TRUE)
-
-negfreq[1:10,]
-
-posfreq <- pos %>% 
-   count(word, sort = TRUE)
-
-posfreq[1:10, ]
-
-# Graph and compare
-negs10 <- subset(negs, word == "GRIMACINGFACE" | word == "THUMBSDOWNSIGN"| word == "FACEWITHHEADBANDAGE" | word == "FACEWITHOPENMOUTH" | word == "CRYINGFACE" | word == "FLUSHEDFACE" | word == "LYINGFACE" | word == "PERSEVERINGFACE"| word == "WEARYFACE" | word == "CONFOUNDEDFACE")
-
-pos10 <- subset(pos, word == "KISSINGFACEWITHSMILINGEYES" | word == "GRINNINGFACE"| word == "SMILINGFACEWITHOPENMOUTH" | word == "GRINNINGFACEWITHSMILINGEYES" | word == "RELIEVEDFACE" | word == "SMIRKINGFACE" | word == "ASTONISHEDFACE" | word == "FACEWITHCOWBOYHAT"| word == "HUGGINGFACE" | word == "KISSINGFACE")
-
-negsp <- negs10 %>%
-  group_by(created) %>%
-  summarise(sentiment = sum(polarity))
-
-posp <- pos10 %>%
-  group_by(created) %>%
-  summarise(sentiment = sum(polarity))
-
-ggplot(negsp, aes(x=created, y=sentiment)) +
-  geom_line(color='darkred', size=2) +
-  geom_line(data = posp, aes(x=created, y=sentiment), color='steelblue', size=2)
-```
-
-What about a graph of the biggest emoji contributers to positive and negative sentiment? 
-
-```{r Emoji Sentiment Analysis Contributers to Sentiment, echo = TRUE, message = FALSE, warning = FALSE, error = FALSE, fig.width = 7, fig.height = 4}
-# Combine your posfreq and negfreq data frames together
-posfreq["sentiment"] <- "positive"
-negfreq["sentiment"] <- "negative"
-
-senti_total <- plyr::rbind.fill(posfreq,negfreq)
-
-# bing_word_counts
-
-# Now we can graph these
-# Change 'filter' parameter depending on the size of your data set
-senti_total %>%
-  filter(n > 200) %>%
-  mutate(n = ifelse(sentiment == "negative", -n, n)) %>%
-  mutate(word = reorder(word, n)) %>%
-  ggplot(aes(word, n, fill = sentiment)) +
-  geom_bar(alpha = 0.8, stat = "identity") +
-  labs(y = "Contribution to sentiment",
-       x = NULL) +
-  coord_flip()
-```
-
-How does this compare to the sentiment in the text of our data? Does our analysis of emoji sentiment mirror that in the actual words? (Sentiment analysis technique adapted from [Silge and Robinson 2017](http://tidytextmining.com/sentiment.html).)
-
-First we have to clean our data -- get rid of stop words, etc.
-
-```{r Text Sentiment Analysis, echo=TRUE, message=FALSE, warning=FALSE, error=FALSE, fig.width=7, fig.height=4}
-# First have to clean the data
-emoemo$text = gsub( "<.*?>", "", emoemo$text)
-
-# Get stop words
-data(stop_words)
-mystopwords <- c(stopwords('english'),stop_words$word, "im")
-
-# Following is from Silge and Robinson. This keeps @ mentions and hashtags intact
-reg <- "([^A-Za-z_\\d#@']|'(?![A-Za-z_\\d#@]))"
-tidy_tube <- emoemo %>% 
-  filter(!str_detect(text, "^RT")) %>%
-  mutate(text = str_replace_all(text, "https://t.co/[A-Za-z\\d]+|http://[A-Za-z\\d]+|&amp;|&lt;|&gt;|RT|https", "")) %>%
-  unnest_tokens(word, text, token = "regex", pattern = reg) %>%
-  filter(!word %in% mystopwords,
-         str_detect(word, "[a-z]"))
-
-# Check out most frequent terms if you want
-# freqtube <- tidy_tube %>% 
-#   count(word, sort = TRUE) 
-
-# head(freqtube)
-```
-
-Now we will use the AFINN lexicon which is coded similarly to our emojis (scores from -5 to 5). The AFINN lexicon comes with the tidytext package, so no need to find it / load it in. 
-
-```{r Text Sentiment Plots, echo=TRUE, message=FALSE, warning=FALSE, error=FALSE, fig.width=7, fig.height=4}
-text_senti <- tidy_tube %>%
-  inner_join(get_sentiments("afinn")) 
-
-text_senti$created <- anytime(as.factor(text_senti$publishedAt))
-
-text_test <- text_senti %>%
-  group_by(created) %>%
-  summarise(sentiment = sum(score))
-
-ggplot(text_test, aes(x=created, y=sentiment)) +
-  geom_line(color='steelblue', size=1) 
-
-# Compare to emoji plot
-ggplot(test, aes(x=created, y=sentiment)) +
-  geom_line(color='steelblue', size=1) 
-```
-
-When compared to the text, we can see that that emojis don't give us as much detail as actual words do in terms of sentiment, but we can see some more general trends. We can also combine our emoji sentiment dictionary with the AFINN one so we can do a sentiment analysis all together.
-
-```{r Total Sentiment Plots, echo=TRUE, message=FALSE, warning=FALSE, error=FALSE, fig.width=7, fig.height=4}
-# AFINN is 'word'; 'score'
-# Emoji one is 'emoji; 'polarity'
-
-# First we have to transform our emoval data frame so it has the same names as our emoji dictionary encodings. This didn't matter before because we used the actual emojis themselves as our common vector in inner_join -- we might not want to do that now because we want to look at both emojis AND text, so it's better to just be able to work with the 'word' vector
-names(emojis)[names(emojis)=="codes"] <- "emoji"
-
-# Combine emojis dictionary with valence lexicon, just keep those things that are in the lexicon. This would be a case for left_join.
-
-# Get rid of some white space in emoji dictionary so everything will match (help from here: https://stackoverflow.com/questions/34591329/remove-white-space-from-a-data-frame-column-and-add-path)
-emojis$emoji <- gsub('\\s+', '', emojis$emoji)
-
-emojilex <- emoval %>%
-  left_join(emojis)
-
-# Create data frame with afinn lexicon
-afinn <- get_sentiments("afinn")
-biglexi <- plyr::rbind.fill(afinn, emojilex)
-
-text_senti_total <- tidy_tube %>%
-  inner_join(biglexi) 
-
-text_senti_total$created <- anytime(as.factor(text_senti_total$publishedAt))
-
-text_test_total <- text_senti_total %>%
-  group_by(created) %>%
-  summarise(sentiment = sum(score))
-
-ggplot(text_test_total, aes(x=created, y=sentiment)) +
-  geom_line(color='steelblue', size=1)
-```
-
