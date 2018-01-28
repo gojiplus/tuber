@@ -26,7 +26,9 @@ Suggests:
     lintr,
     DataCombine,
     tidyverse,
-    ggplot2,
-    emo,
-    emoGG
+    tidytext,
+    ggplot2
+Remotes: 
+    hadley/emo,
+    dill/emoGG
 RoxygenNote: 6.0.1
