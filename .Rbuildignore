@@ -13,3 +13,4 @@
 ^_pkgdown\.yml$
 ^revdep$
 .lintr
+^data-raw$
