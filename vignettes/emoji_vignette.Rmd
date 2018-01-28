@@ -16,6 +16,7 @@ library(tuber)
 library(ggplot2)
 library(DataCombine)
 library(tidyverse)
+library(tidytext)
 library(emoGG)
 library(emo)
 ```
