@@ -25,6 +25,8 @@ Suggests:
     xml2,
     lintr,
     DataCombine,
+    tidyverse,
+    ggplot2,
     emo,
     emoGG
 RoxygenNote: 6.0.1
