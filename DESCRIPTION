@@ -27,6 +27,7 @@ Suggests:
     DataCombine,
     tidyverse,
     tidytext,
+    anytime,
     ggplot2
 Remotes: 
     hadley/emo,
