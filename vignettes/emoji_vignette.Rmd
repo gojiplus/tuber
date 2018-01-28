@@ -48,8 +48,7 @@ Now we have some (~10,300) comments to play with -- let's identify the emojis in
 Help figuring out the emoji encoding issue from [Patrick Perry](https://stackoverflow.com/questions/47243155/get-r-to-keep-utf-8-codepoint-representation/47243425#47243425) -- thanks Patrick! `r emo::ji("smiling_face_with_smiling_eyes")`
 
 ```{r Emojis in YouTube Comments, echo=TRUE, results='hide', message=FALSE, warning=FALSE, error=FALSE}
-xemo <- getURL("https://raw.githubusercontent.com/lyons7/emojidictionary/master/emoji_dictionary.csv")
-emojis <- read.csv(text = xemo)
+emojis <- read_csv("https://raw.githubusercontent.com/lyons7/emojidictionary/master/emoji_dictionary.csv")
 
 # Specific to YouTube data
 emojis <- emojis[!emojis$Name == " SHRUGFACE ",]
