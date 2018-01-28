@@ -28,7 +28,8 @@ Suggests:
     tidyverse,
     tidytext,
     anytime,
-    ggplot2
+    ggplot2,
+    devtools
 Remotes: 
     hadley/emo,
     dill/emoGG

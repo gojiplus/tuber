@@ -4,6 +4,7 @@
 * A new function for fetching all the comments, including replies. Also fixes #43
 * Added the missing partner scope fixing #41.
 * New pkgdown documentation released with functions organized by purpose.
+* get_related_videos returns related video id in addition to other cols.
 
 # version 0.9.2
 

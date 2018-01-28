@@ -45,7 +45,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/emoji_vignette.html">Identifying Emojis in YouTube Comments</a>
+      <a href="articles/emoji_vignette.html">Analyzing Emojis in YouTube Comments</a>
     </li>
     <li>
       <a href="articles/tuber-ex.html">Using tuber</a>
@@ -98,6 +98,8 @@ devtools::<span class="kw">install_github</span>(<span class="st">"soodoku/tuber
 <a href="#using-tuber" class="anchor"></a>Using tuber</h3>
 <p>To get going, get the application id and password from Google Developer Console (see <a href="https://developers.google.com/youtube/v3/getting-started" class="uri">https://developers.google.com/youtube/v3/getting-started</a>). Enable all the YouTube APIs. Also enable Freebase API. Then set the application id and password via the <code>yt_oauth</code> function. For more information about YouTube OAuth, see <a href="https://developers.google.com/youtube/v3/guides/authentication">YouTube OAuth Guide</a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/yt_oauth.html">yt_oauth</a></span>(<span class="st">"app_id"</span>, <span class="st">"app_password"</span>)</code></pre></div>
+<p><strong>Note:</strong> If you are on ubuntu, you may have to run the following before doing anything:</p>
+<pre><code><a href="http://www.rdocumentation.org/packages/httr/topics/set_config">httr::set_config( config( ssl_verifypeer = 0L ) )</a></code></pre>
 <p><strong>Get Statistics of a Video</strong></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/get_stats.html">get_stats</a></span>(<span class="dt">video_id =</span> <span class="st">"N708P-A45D0"</span>)</code></pre></div>
 <p><strong>Get Information About a Video</strong></p>

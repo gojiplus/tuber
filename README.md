@@ -26,6 +26,10 @@ To get going, get the application id and password from Google Developer Console 
 yt_oauth("app_id", "app_password")
 ```
 
+**Note:** If you are on ubuntu, you may have to run the following before doing anything:
+
+    httr::set_config( config( ssl_verifypeer = 0L ) )
+
 **Get Statistics of a Video**
 
 ``` r
