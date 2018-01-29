@@ -30,7 +30,4 @@ Suggests:
     anytime,
     ggplot2,
     devtools
-Remotes: 
-    hadley/emo,
-    dill/emoGG
 RoxygenNote: 6.0.1
