@@ -54,7 +54,7 @@ process_page <- function(res = NULL) {
   simpler_res <- cbind(simpler_res, id = sapply(res$items, `[[`, "id"))
 
   agg_res <- simpler_res$parentId <- NA
-  
+
   if ( !("moderationStatus" %in% names(simpler_res))) {
     simpler_res$moderationStatus <- NA
   }
@@ -64,7 +64,7 @@ process_page <- function(res = NULL) {
                                      }
                                      )
   if (sum(n_replies) == 0) {
-    
+
     agg_res <- simpler_res
 
   } else {
@@ -74,7 +74,7 @@ process_page <- function(res = NULL) {
                                      )
       replies_1  <- ldply(replies_1, rbind)
       names(replies_1) <- gsub("snippet.", "", names(replies_1))
-      replies_1   <- subset(replies_1, select = -c(kind, etag)) 
+      replies_1   <- subset(replies_1, select = -c(kind, etag))
 
       replies_1p  <- lapply(res$items[n_replies > 1], function(x) {
                                      x$replies$comments
@@ -82,7 +82,7 @@ process_page <- function(res = NULL) {
                                      )
 
       replies_1p  <- lapply(replies_1p[[1]], function(x) c(unlist(x$snippet), id = x$id))
-      replies_1p  <- ldply(replies_1p, rbind) 
+      replies_1p  <- ldply(replies_1p, rbind)
       
       simpler_rep <- rbind(replies_1, replies_1p)
 

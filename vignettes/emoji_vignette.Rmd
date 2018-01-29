@@ -48,7 +48,7 @@ emojimovie <- get_comment_threads(c(video_id="o_nfdzMhmrA"), max_results = 101)
 # write_csv(emojimovie, path = "sampletubedata.csv")
 ```
 
-Now we have some (~10,300) comments to play with -- let's identify the emojis in our data. To do so, we'll use the FindReplace function from the [DataCombine package](https://cran.r-project.org/web/packages/DataCombine/DataCombine.pdf) and an [emoji dictionary](https://lyons7.github.io/portfolio/2017-10-04-emoji-dictionary/) I put together that has each emoji's prose name, UTF-8 encoding and R encoding (the R encoding is specifically for emojis in Twitter data). There are a couple of steps to change the dictionary to be able to identify emojis in our YouTube data, but depending on your computer you might be able to just search by UTF-8 encoding. 
+Now we have some (~10,300) comments to play with -- let's identify the emojis in our data. To do so, we'll use the FindReplace function from the [DataCombine package](https://CRAN.R-project.org/package=DataCombine) and an [emoji dictionary](https://lyons7.github.io/portfolio/2017-10-04-emoji-dictionary/) I put together that has each emoji's prose name, UTF-8 encoding and R encoding (the R encoding is specifically for emojis in Twitter data). There are a couple of steps to change the dictionary to be able to identify emojis in our YouTube data, but depending on your computer you might be able to just search by UTF-8 encoding. 
 
 Help figuring out the emoji encoding issue from [Patrick Perry](https://stackoverflow.com/questions/47243155/get-r-to-keep-utf-8-codepoint-representation/47243425#47243425) -- thanks Patrick! `r emo::ji("smiling_face_with_smiling_eyes")`
 
@@ -115,7 +115,7 @@ So, our ten most frequent emojis in the comments of the Emoji Movie trailer are 
 What if we want to look at how the use of these emojis has changed over time? We can also look at WHEN the posts were generated. We can make a graph of comment frequency over time. Graphs constructed with help from [here](http://www.cyclismo.org/tutorial/R/time.html), [here](https://gist.github.com/stephenturner/3132596),
 [here](http://stackoverflow.com/questions/27626915/r-graph-frequency-of-observations-over-time-with-small-value-range), [here](http://michaelbommarito.com/2011/03/12/a-quick-look-at-march11-saudi-tweets/), [here](http://stackoverflow.com/questions/31796744/plot-count-frequency-of-tweets-for-word-by-month), [here](https://stat.ethz.ch/R-manual/R-devel/library/base/html/as.POSIXlt.html), [here](http://sape.inf.usi.ch/quick-reference/ggplot2/geom) and [here](http://stackoverflow.com/questions/3541713/how-to-plot-two-histograms-together-in-r).
 
-We will also use the [anytime](https://cran.r-project.org/web/packages/anytime/index.html) package to format the time in a usable way. 
+We will also use the [anytime](https://CRAN.R-project.org/package=anytime) package to format the time in a usable way. 
 
 ```{r, echo = TRUE, message = FALSE, warning = FALSE, fig.width = 8, fig.height = 4}
 # Subset to just have posts that have our top ten emojis
