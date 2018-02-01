@@ -23,11 +23,5 @@ Suggests:
     testthat,
     rmarkdown,
     xml2,
-    lintr,
-    DataCombine,
-    tidyverse,
-    tidytext,
-    anytime,
-    ggplot2,
-    devtools
+    lintr
 RoxygenNote: 6.0.1

@@ -47,7 +47,7 @@ get_related_videos <- function (video_id = NULL, max_results = 50,
                              "channelTitle", "liveBroadcastContent"))
 
   if (res$pageInfo$totalResults != 0) {
- 
+
     rel_video_id <- sapply(res$items, function(x) unlist(x$id$videoId))
     simple_res   <- lapply(res$items, function(x) unlist(x$snippet))
     resdf        <- cbind(video_id = video_id,

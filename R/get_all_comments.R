@@ -83,7 +83,7 @@ process_page <- function(res = NULL) {
 
       replies_1p  <- lapply(replies_1p[[1]], function(x) c(unlist(x$snippet), id = x$id))
       replies_1p  <- ldply(replies_1p, rbind)
-      
+
       simpler_rep <- rbind(replies_1, replies_1p)
 
       if (! ("moderationStatus" %in% names(simpler_rep))) {
