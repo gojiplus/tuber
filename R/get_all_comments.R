@@ -74,7 +74,6 @@ process_page <- function(res = NULL) {
                                      )
       replies_1  <- ldply(replies_1, rbind)
       names(replies_1) <- gsub("snippet.", "", names(replies_1))
-      replies_1   <- subset(replies_1, select = -c(kind, etag))
 
       replies_1p  <- lapply(res$items[n_replies > 1], function(x) {
                                      x$replies$comments
