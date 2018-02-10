@@ -230,26 +230,26 @@ playlist_id <- a$items[[1]]$contentDetails$relatedPlaylists$uploads
 vids <- get_playlist_items(filter= c(playlist_id=playlist_id)) 
 
 # Video ids
-vid_ids <- as.vector(unlist(sapply(vids$items, "[", "contentDetails")))
+vid_ids <- as.vector(vids$contentDetails.videoId)
 
-# get stats:
-res <- data.frame()
-for (i in vid_ids) {
+# Function to scrape stats for all vids
+get_all_stats <- function(id) {
+  get_stats(id)
+} 
 
-	temp <- get_stats(i)
-	temp$vid_id <- i
-	res  <- rbind(res, temp)
-}
+# Get stats and convert results to data frame 
+res <- lapply(vid_ids, get_all_stats)
+res_df <- do.call(rbind, lapply(res, data.frame))
 
-head(res)
+head(res_df)
 ```
 
 ```
-##            id viewCount likeCount dislikeCount favoriteCount commentCount      vid_id
-## 1 91gZ4taDiDE       906         4            1             0            0 91gZ4taDiDE
-## 2 bHPCvSqTxn4       706         0            0             0            0 bHPCvSqTxn4
-## 3 h2UPH87kjhc       458         1            0             0            0 h2UPH87kjhc
-## 4 E2VtxjljZCE       391         0            0             0            0 E2VtxjljZCE
-## 5 5Ajfk620fA0    175000         5            0             0            0 5Ajfk620fA0
-## 6 PdI3HjulcA4       575         3            2             0            3 PdI3HjulcA4
+##            id viewCount likeCount dislikeCount favoriteCount commentCount
+## 1 91gZ4taDiDE       906         4            1             0            0 
+## 2 bHPCvSqTxn4       706         0            0             0            0 
+## 3 h2UPH87kjhc       458         1            0             0            0
+## 4 E2VtxjljZCE       391         0            0             0            0 
+## 5 5Ajfk620fA0    175000         5            0             0            0 
+## 6 PdI3HjulcA4       575         3            2             0            3
 ```
