@@ -1,3 +1,7 @@
+# version 0.9.4
+
+* fix bug(s) in get_all_comments
+
 # version 0.9.3
 
 * A new vignette for tuber that shows how to deal with emojis in tuber

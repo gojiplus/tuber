@@ -14,7 +14,7 @@
 #' @references \url{https://developers.google.com/youtube/v3/docs/commentThreads/list}
 #' 
 #' @examples
-#' \dontrun
+#' \dontrun{
 #' 
 #' # Set API token via yt_oauth() first
 #' 
@@ -88,18 +88,17 @@ process_page <- function(res = NULL) {
         replies_1p$moderationStatus <- NA
       }
 
-     if (nrow(replies_1) > 0 & ! ("moderationStatus" %in% names(replies_1))) {
+      if (nrow(replies_1) > 0 & ! ("moderationStatus" %in% names(replies_1))) {
         replies_1$moderationStatus <- NA
       }
 
       simpler_rep <- rbind(replies_1, replies_1p)
 
-     if (! ("moderationStatus" %in% names(simpler_rep))) {
+      if (! ("moderationStatus" %in% names(simpler_rep))) {
         simpler_rep$moderationStatus <- NA
       }
 
-    agg_res <- rbind(simpler_res, simpler_rep)
-   }
-
-   agg_res
+      agg_res <- rbind(simpler_res, simpler_rep)
+   } 
+  agg_res
 }
