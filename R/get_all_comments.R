@@ -76,20 +76,28 @@ process_page <- function(res = NULL) {
       names(replies_1) <- gsub("snippet.", "", names(replies_1))
       replies_1   <- replies_1[, - which(names(replies_1) %in% c("kind", "etag"))]
 
+      if (nrow(replies_1) > 0 & ! ("moderationStatus" %in% names(replies_1))) {
+        replies_1$moderationStatus <- NA
+      }
+
       replies_1p  <- lapply(res$items[n_replies > 1], function(x) {
                                      x$replies$comments
                                      }
                                      )
 
-      replies_1p  <- lapply(replies_1p[[1]], function(x) c(unlist(x$snippet), id = x$id))
-      replies_1p  <- ldply(replies_1p, rbind)
+      if (length(replies_1p) == 0 ) {
+
+        replies_1p <- setNames(data.frame(matrix(ncol = length(replies_1), nrow = 0)), 
+                              names(replies_1))
+      }
+
+      else {
+        replies_1p  <- lapply(replies_1p[[1]], function(x) c(unlist(x$snippet), id = x$id))
+        replies_1p  <- ldply(replies_1p, rbind)
+      }
 
       if (! ("moderationStatus" %in% names(replies_1p))) {
         replies_1p$moderationStatus <- NA
-      }
-
-      if (nrow(replies_1) > 0 & ! ("moderationStatus" %in% names(replies_1))) {
-        replies_1$moderationStatus <- NA
       }
 
       simpler_rep <- rbind(replies_1, replies_1p)
