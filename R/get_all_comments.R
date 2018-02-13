@@ -99,6 +99,6 @@ process_page <- function(res = NULL) {
       }
 
       agg_res <- rbind(simpler_res, simpler_rep)
-   } 
+   }
   agg_res
 }
