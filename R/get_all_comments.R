@@ -50,63 +50,43 @@ process_page <- function(res = NULL) {
                                      }
                                      )
 
-  simpler_res <- ldply(simple_res, rbind)
-  simpler_res <- cbind(simpler_res, id = sapply(res$items, `[[`, "id"))
+  agg_res <- ldply(simple_res, rbind)
+  agg_res <- cbind(agg_res, id = sapply(res$items, `[[`, "id"))
 
-  agg_res <- simpler_res$parentId <- NA
+  agg_res$parentId <- NA
 
-  if ( !("moderationStatus" %in% names(simpler_res))) {
-    simpler_res$moderationStatus <- NA
+  if ( !("moderationStatus" %in% names(agg_res))) {
+    agg_res$moderationStatus <- NA
   }
 
   n_replies   <- sapply(res$items, function(x) {
                                      unlist(x$snippet$totalReplyCount)
                                      }
                                      )
-  if (sum(n_replies) == 0) {
 
-    agg_res <- simpler_res
+  for (i in 1:length(n_replies)) {
 
-  } else {
-      replies_1  <- lapply(res$items[n_replies == 1], function(x) {
-                                     unlist(x$replies$comments)
-                                     }
-                                     )
+    if (n_replies[i] == 1) {
+
+      replies_1  <- lapply(res$items[[i]]$replies$comments, function(x) c(unlist(x$snippet), id = x$id))
       replies_1  <- ldply(replies_1, rbind)
-      names(replies_1) <- gsub("snippet.", "", names(replies_1))
-      replies_1   <- replies_1[, - which(names(replies_1) %in% c("kind", "etag"))]
 
       if (nrow(replies_1) > 0 & ! ("moderationStatus" %in% names(replies_1))) {
         replies_1$moderationStatus <- NA
       }
+      agg_res    <- rbind(agg_res, replies_1)
+    } 
 
-      replies_1p  <- lapply(res$items[n_replies > 1], function(x) {
-                                     x$replies$comments
-                                     }
-                                     )
+    if (n_replies[i] > 1) {
 
-      if (length(replies_1p) == 0 ) {
+      replies_1p  <- lapply(res$items[[i]]$replies$comments, function(x) c(unlist(x$snippet), id = x$id))
+      replies_1p  <- ldply(replies_1p, rbind)
 
-        replies_1p <- setNames(data.frame(matrix(ncol = length(replies_1), nrow = 0)), 
-                              names(replies_1))
-      }
-
-      else {
-        replies_1p  <- lapply(replies_1p[[1]], function(x) c(unlist(x$snippet), id = x$id))
-        replies_1p  <- ldply(replies_1p, rbind)
-      }
-
-      if (! ("moderationStatus" %in% names(replies_1p))) {
+      if (nrow(replies_1p) > 0 & ! ("moderationStatus" %in% names(replies_1p))) {
         replies_1p$moderationStatus <- NA
       }
-
-      simpler_rep <- rbind(replies_1, replies_1p)
-
-      if (! ("moderationStatus" %in% names(simpler_rep))) {
-        simpler_rep$moderationStatus <- NA
-      }
-
-      agg_res <- rbind(simpler_res, simpler_rep)
-   }
+      agg_res     <- rbind(agg_res, replies_1p)
+    }
+  }
   agg_res
 }
