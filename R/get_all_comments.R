@@ -68,18 +68,20 @@ process_page <- function(res = NULL) {
 
     if (n_replies[i] == 1) {
 
-      replies_1  <- lapply(res$items[[i]]$replies$comments, function(x) c(unlist(x$snippet), id = x$id))
+      replies_1  <- lapply(res$items[[i]]$replies$comments,
+                                  function(x) c(unlist(x$snippet), id = x$id))
       replies_1  <- ldply(replies_1, rbind)
 
       if (nrow(replies_1) > 0 & ! ("moderationStatus" %in% names(replies_1))) {
         replies_1$moderationStatus <- NA
       }
       agg_res    <- rbind(agg_res, replies_1)
-    } 
+    }
 
     if (n_replies[i] > 1) {
 
-      replies_1p  <- lapply(res$items[[i]]$replies$comments, function(x) c(unlist(x$snippet), id = x$id))
+      replies_1p  <- lapply(res$items[[i]]$replies$comments,
+                                    function(x) c(unlist(x$snippet), id = x$id))
       replies_1p  <- ldply(replies_1p, rbind)
 
       if (nrow(replies_1p) > 0 & ! ("moderationStatus" %in% names(replies_1p))) {
