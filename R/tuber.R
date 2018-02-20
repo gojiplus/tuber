@@ -4,7 +4,8 @@
 #' @importFrom httr GET POST DELETE authenticate config stop_for_status upload_file content oauth_endpoints oauth_app oauth2.0_token
 #' @importFrom utils read.table
 #' @importFrom plyr ldply
-#' @importFrom dplyr map_df bind_rows
+#' @importFrom dplyr bind_rows
+#' @importFrom purrr map_df
 #' @docType package
 NULL
 

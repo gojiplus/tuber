@@ -23,9 +23,6 @@
 
 get_all_comments <- function (video_id = NULL, ...) {
 
-  factors <- getOption("stringsAsFactors")
-  options(stringsAsFactors = FALSE)
-
   querylist <- list(videoId = video_id, part = "id,replies,snippet", maxResults = 100)
 
   res <- tuber_GET("commentThreads", querylist, ...)
@@ -43,7 +40,6 @@ get_all_comments <- function (video_id = NULL, ...) {
     page_token  <- a_res$nextPageToken
    }
 
-  options(stringsAsFactors = factors)
   agg_res
 }
 
@@ -55,7 +51,8 @@ process_page <- function(res = NULL) {
                                      )
 
   agg_res <- map_df(simple_res, bind_rows)
-  agg_res <- cbind(agg_res, id = sapply(res$items, `[[`, "id"))
+  agg_res <- cbind(agg_res, id = sapply(res$items, `[[`, "id"),
+                            stringsAsFactors = FALSE)
 
   agg_res$parentId <- NA
 

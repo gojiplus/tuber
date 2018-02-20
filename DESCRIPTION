@@ -17,7 +17,8 @@ LazyData: true
 Imports:
     httr,
     plyr,
-    dplyr
+    dplyr,
+    purrr
 VignetteBuilder: knitr
 Suggests:
     knitr (>= 1.11),
