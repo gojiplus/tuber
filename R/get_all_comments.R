@@ -54,7 +54,7 @@ process_page <- function(res = NULL) {
                                      }
                                      )
 
-  agg_res <- ldply(simple_res, rbind)
+  agg_res <- map_df(simple_res, bind_rows)
   agg_res <- cbind(agg_res, id = sapply(res$items, `[[`, "id"))
 
   agg_res$parentId <- NA
@@ -74,7 +74,7 @@ process_page <- function(res = NULL) {
 
       replies_1  <- lapply(res$items[[i]]$replies$comments,
                                   function(x) c(unlist(x$snippet), id = x$id))
-      replies_1  <- ldply(replies_1, rbind)
+      replies_1  <- map_df(replies_1, bind_rows)
 
       if (nrow(replies_1) > 0 & ! ("moderationStatus" %in% names(replies_1))) {
         replies_1$moderationStatus <- NA
@@ -86,7 +86,7 @@ process_page <- function(res = NULL) {
 
       replies_1p  <- lapply(res$items[[i]]$replies$comments,
                                     function(x) c(unlist(x$snippet), id = x$id))
-      replies_1p  <- ldply(replies_1p, rbind)
+      replies_1p  <- map_df(replies_1p, bind_rows)
 
       if (nrow(replies_1p) > 0 & ! ("moderationStatus" %in% names(replies_1p))) {
         replies_1p$moderationStatus <- NA

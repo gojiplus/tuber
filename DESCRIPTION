@@ -16,7 +16,8 @@ License: MIT + file LICENSE
 LazyData: true
 Imports:
     httr,
-    plyr
+    plyr,
+    dplyr
 VignetteBuilder: knitr
 Suggests:
     knitr (>= 1.11),
