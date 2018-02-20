@@ -23,6 +23,9 @@
 
 get_all_comments <- function (video_id = NULL, ...) {
 
+  factors <- getOption("stringsAsFactors")
+  options(stringsAsFactors = FALSE)
+
   querylist <- list(videoId = video_id, part = "id,replies,snippet", maxResults = 100)
 
   res <- tuber_GET("commentThreads", querylist, ...)
@@ -35,11 +38,12 @@ get_all_comments <- function (video_id = NULL, ...) {
 
     querylist$pageToken <- page_token
     a_res <- tuber_GET("commentThreads", querylist, ...)
-    agg_res <- rbind(agg_res, process_page(a_res))
+    agg_res <- rbind(agg_res, process_page(a_res), stringsAsFactors = FALSE)
 
     page_token  <- a_res$nextPageToken
    }
 
+  options(stringsAsFactors = factors)
   agg_res
 }
 
@@ -75,7 +79,7 @@ process_page <- function(res = NULL) {
       if (nrow(replies_1) > 0 & ! ("moderationStatus" %in% names(replies_1))) {
         replies_1$moderationStatus <- NA
       }
-      agg_res    <- rbind(agg_res, replies_1)
+      agg_res    <- rbind(agg_res, replies_1, stringsAsFactors = FALSE)
     }
 
     if (n_replies[i] > 1) {
@@ -87,7 +91,7 @@ process_page <- function(res = NULL) {
       if (nrow(replies_1p) > 0 & ! ("moderationStatus" %in% names(replies_1p))) {
         replies_1p$moderationStatus <- NA
       }
-      agg_res     <- rbind(agg_res, replies_1p)
+      agg_res     <- rbind(agg_res, replies_1p, stringsAsFactors = FALSE)
     }
   }
   agg_res
