@@ -1,3 +1,8 @@
+# version 0.9.5
+
+* add some other util functions for getting details on all videos from a channel
+* mine = TRUE
+
 # version 0.9.4
 
 * fix bug(s) in get_all_comments
