@@ -32,7 +32,7 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
 
   playlist_id <- a$items[[1]]$contentDetails$relatedPlaylists$uploads
 
-  vids <- get_playlist_items(filter= c(playlist_id = playlist_id), max_results = 100)
+  vids <- get_playlist_items(filter = c(playlist_id = playlist_id), max_results = 100)
 
   vid_ids <- as.vector(vids$contentDetails.videoId)
 
