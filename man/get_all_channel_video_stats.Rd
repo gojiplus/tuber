@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_all_channel_video_stats.R
 \name{get_all_channel_video_stats}
 \alias{get_all_channel_video_stats}
-\title{Get statistics on all videos in a Channel}
+\title{Get statistics on all the videos in a Channel}
 \usage{
 get_all_channel_video_stats(channel_id = NULL, mine = FALSE, ...)
 }
@@ -20,7 +20,7 @@ nested named list with top element names:
 If the \code{channel_id} is mistyped or there is no information, an empty list is returned
 }
 \description{
-Get statistics on all videos in a Channel
+Get statistics on all the videos in a Channel
 }
 \examples{
 \dontrun{

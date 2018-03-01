@@ -1,4 +1,4 @@
-#' Get statistics on all videos in a Channel
+#' Get statistics on all the videos in a Channel
 #'
 #' @param channel_id Character. Id of the channel
 #' @param mine Boolean. TRUE if you want to fetch stats of your own channel. Default is FALSE.
@@ -29,35 +29,31 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
     }
 
   a <- list_channel_resources(filter = c(channel_id = channel_id), part = "contentDetails")
-  
+
   playlist_id <- a$items[[1]]$contentDetails$relatedPlaylists$uploads
-  
+
   vids <- get_playlist_items(filter= c(playlist_id=playlist_id), max_results = 100) 
-  
+
   vid_ids <- as.vector(vids$contentDetails.videoId)
-  
-  get_all_stats <- function(id) {
-    get_stats(id)
-  } 
-  
-  res <- lapply(vid_ids, get_all_stats)
+
+  res <- lapply(vid_ids, function(x) get_stats(x))
   details <- lapply(vid_ids, get_video_details)
   res_df <- do.call(what = bind_rows, lapply(res, data.frame))
-  
+
   details_tot <- data.frame(id = NA, titulo = NA, Fechasubida = NA)
-  
+
   for (p in 1:length(details)) {
     id <- details[[p]]$items[[1]]$id
     Title <- details[[p]]$items[[1]]$snippet$title
     Publish_date <- details[[p]]$items[[1]]$snippet$publishedAt
-    
+ 
     detail <- data_frame(id = id, titulo = Title, Fechasubida = Publish_date)
     details_tot <- rbind(detail, details_tot)
   }
-  
+
   res_df$url <- paste0("https://www.youtube.com/watch?v=", res_df$id)
-  
+
   res_df <- merge(details_tot, res_df, by = "id")
-  
-  res_df  
+
+  res_df
 }

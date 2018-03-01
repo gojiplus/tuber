@@ -13,7 +13,7 @@ following: \code{id, snippet}. e.g., "id, snippet", "id" Default: \code{snippet}
 
 \item{video_id}{ID of the video whose captions are requested. Required. No default.}
 
-\item{lang}{Language of the caption; required; default is english ("en")}
+\item{lang}{Language of the caption; required; default is English ("en")}
 
 \item{id}{comma-separated list of IDs that identify the caption resources that should be retrieved; optional; string}
 
