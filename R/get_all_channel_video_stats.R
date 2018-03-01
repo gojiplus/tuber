@@ -32,7 +32,7 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
 
   playlist_id <- a$items[[1]]$contentDetails$relatedPlaylists$uploads
 
-  vids <- get_playlist_items(filter= c(playlist_id=playlist_id), max_results = 100) 
+  vids <- get_playlist_items(filter= c(playlist_id = playlist_id), max_results = 100)
 
   vid_ids <- as.vector(vids$contentDetails.videoId)
 
@@ -40,14 +40,14 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
   details <- lapply(vid_ids, get_video_details)
   res_df <- do.call(what = bind_rows, lapply(res, data.frame))
 
-  details_tot <- data.frame(id = NA, titulo = NA, Fechasubida = NA)
+  details_tot <- data.frame(id = NA, title = NA, publication_date = NA)
 
   for (p in 1:length(details)) {
     id <- details[[p]]$items[[1]]$id
-    Title <- details[[p]]$items[[1]]$snippet$title
-    Publish_date <- details[[p]]$items[[1]]$snippet$publishedAt
- 
-    detail <- data_frame(id = id, titulo = Title, Fechasubida = Publish_date)
+    title <- details[[p]]$items[[1]]$snippet$title
+    publication_date <- details[[p]]$items[[1]]$snippet$publishedAt
+
+    detail <- data.frame(id = id, title = title, publication_date = publication_date)
     details_tot <- rbind(detail, details_tot)
   }
 
