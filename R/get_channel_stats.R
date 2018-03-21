@@ -1,7 +1,7 @@
 #' Get statistics of a Channel
 #'
 #' @param channel_id Character. Id of the channel
-#' @param mine Boolean. TRUE if you want to fetch stats of your own channel. Default is FALSE.
+#' @param mine Boolean. TRUE if you want to fetch stats of your own channel. Default is NULL. 
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'
 #' @return nested named list with top element names:
@@ -22,11 +22,15 @@
 #' get_channel_stats(channel_id="UCMtFAi84ehTSYSE9Xo") # Incorrect channel ID
 #' }
 
-get_channel_stats <- function(channel_id = NULL, mine = FALSE, ...) {
+get_channel_stats <- function(channel_id = NULL, mine = NULL, ...) {
+
+  if (identical(tolower(mine),  "false")) {
+      mine <- NULL  
+  }
 
   if (!is.character(channel_id) & !identical(tolower(mine),  "true")) {
           stop("Must specify a channel ID or specify mine = 'true'.")
-    }
+  }
 
   querylist <- list(part = "statistics,snippet", id = channel_id, mine = mine)
 

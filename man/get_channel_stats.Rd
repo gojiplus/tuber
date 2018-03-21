@@ -4,12 +4,12 @@
 \alias{get_channel_stats}
 \title{Get statistics of a Channel}
 \usage{
-get_channel_stats(channel_id = NULL, mine = FALSE, ...)
+get_channel_stats(channel_id = NULL, mine = NULL, ...)
 }
 \arguments{
 \item{channel_id}{Character. Id of the channel}
 
-\item{mine}{Boolean. TRUE if you want to fetch stats of your own channel. Default is FALSE.}
+\item{mine}{Boolean. TRUE if you want to fetch stats of your own channel. Default is NULL.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }

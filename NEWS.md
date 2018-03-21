@@ -1,3 +1,7 @@
+# version 0.9.6
+
+* default of mine changed to NULL from FALSE thank to advice from Miguel Arribas
+
 # version 0.9.5
 
 * add some other util functions for getting details on all videos from a channel
