@@ -25,7 +25,7 @@
 get_channel_stats <- function(channel_id = NULL, mine = NULL, ...) {
 
   if (identical(tolower(mine),  "false")) {
-      mine <- NULL  
+      mine <- NULL
   }
 
   if (!is.character(channel_id) & !identical(tolower(mine),  "true")) {
