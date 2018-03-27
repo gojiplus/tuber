@@ -68,9 +68,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/emoji_vignette.html">Analyzing Emojis in YouTube Comments</a>
-    </li>
-    <li>
       <a href="../articles/tuber-ex.html">Using tuber</a>
     </li>
   </ul>
@@ -105,7 +102,7 @@
     <p>Get statistics of a Channel</p>
     
 
-    <pre class="usage"><span class='fu'>get_channel_stats</span>(<span class='kw'>channel_id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>get_channel_stats</span>(<span class='kw'>channel_id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>mine</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -113,6 +110,10 @@
     <tr>
       <th>channel_id</th>
       <td><p>Character. Id of the channel</p></td>
+    </tr>
+    <tr>
+      <th>mine</th>
+      <td><p>Boolean. TRUE if you want to fetch stats of your own channel. Default is NULL.</p></td>
     </tr>
     <tr>
       <th>&#8230;</th>

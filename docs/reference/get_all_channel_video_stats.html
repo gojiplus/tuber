@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get all the comments for a video including replies — get_all_comments â€¢ tuber</title>
+<title>Get statistics on all the videos in a Channel — get_all_channel_video_stats â€¢ tuber</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -95,22 +95,25 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get all the comments for a video including replies</h1>
+    <h1>Get statistics on all the videos in a Channel</h1>
     </div>
 
     
-    <p>Get all the comments for a video including replies</p>
+    <p>Get statistics on all the videos in a Channel</p>
     
 
-    <pre class="usage"><span class='fu'>get_all_comments</span>(<span class='kw'>video_id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>get_all_channel_video_stats</span>(<span class='kw'>channel_id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>mine</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>video_id</th>
-      <td><p>string; Required.
-<code>video_id</code>: video ID.</p></td>
+      <th>channel_id</th>
+      <td><p>Character. Id of the channel</p></td>
+    </tr>
+    <tr>
+      <th>mine</th>
+      <td><p>Boolean. TRUE if you want to fetch stats of your own channel. Default is FALSE.</p></td>
     </tr>
     <tr>
       <th>&#8230;</th>
@@ -120,20 +123,21 @@
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a <code>data.frame</code> with the following columns:
-<code>authorDisplayName, authorProfileImageUrl, authorChannelUrl, authorChannelId.value, videoId, textDisplay,          
-canRate, viewerRating, likeCount, publishedAt, updatedAt, id, moderationStatus, parentId</code></p>
+    <p>nested named list with top element names:
+<code>kind, etag, id, snippet (list of details of the channel including title), statistics (list of 5)</code></p>
+<p>If the <code>channel_id</code> is mistyped or there is no information, an empty list is returned</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p><a href='https://developers.google.com/youtube/v3/docs/commentThreads/list'>https://developers.google.com/youtube/v3/docs/commentThreads/list</a></p>
+    <p><a href='https://developers.google.com/youtube/v3/docs/channels/list'>https://developers.google.com/youtube/v3/docs/channels/list</a></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='co'># NOT RUN {</span>
 <span class='co'># Set API token via yt_oauth() first</span>
 
-<span class='fu'>get_all_comments</span>(<span class='kw'>video_id</span> <span class='kw'>=</span> <span class='st'>"a-UQz7fqR3w"</span>)
+<span class='fu'>get_all_channel_video_stats</span>(<span class='kw'>channel_id</span><span class='kw'>=</span><span class='st'>"UCxOhDvtaoXDAB336AolWs3A"</span>)
+<span class='fu'>get_all_channel_video_stats</span>(<span class='kw'>channel_id</span><span class='kw'>=</span><span class='st'>"UCMtFAi84ehTSYSE9Xo"</span>) <span class='co'># Incorrect channel ID</span>
 <span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
