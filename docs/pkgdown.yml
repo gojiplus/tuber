@@ -3,4 +3,7 @@ pkgdown: 0.1.0.9000
 pkgdown_sha: d6ebaea156244a88bee4f14b4e8bcfb9e36f7727
 articles:
   tuber-ex: tuber-ex.html
+urls:
+  reference: http://soodoku.github.io/tuber//reference
+  article: http://soodoku.github.io/tuber//articles
 

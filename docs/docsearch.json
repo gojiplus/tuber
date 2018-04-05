@@ -1,11 +1,11 @@
 {
   "index_name": "tuber",
   "start_urls": [
-    {}
+    "http://soodoku.github.io/tuber/"
   ],
   "stop_urls": ["index.html", "authors.html", "/LICENSE", "/news/"],
   "sitemap_urls": [
-    "/sitemap.xml"
+    "http://soodoku.github.io/tuber//sitemap.xml"
   ],
   "selectors": {
     "lvl0": ".contents h1",
