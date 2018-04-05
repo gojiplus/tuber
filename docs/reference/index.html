@@ -18,13 +18,16 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+<meta property="og:title" content="Function reference" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -32,6 +35,8 @@
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
 
 
   </head>
@@ -47,8 +52,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">tuber</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">tuber</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.9.6</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -73,7 +82,7 @@
   </ul>
 </li>
 <li>
-  <a href="../news/index.html">News</a>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       
@@ -85,6 +94,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -92,309 +102,304 @@
       
       </header>
 
-      <div class="row">
-  <div class="col-md-9">
+<div class="row">
+  <div class="contents col-md-9">
     <div class="page-header">
-      <h1>
-        Reference
-        <small>version&nbsp;0.9.6</small>
-      </h1>
+      <h1>Reference</h1>
     </div>
 
-    <div class="contents">
-      <table class="ref-index">
+    <table class="ref-index">
 
-      <colgroup>
-        <col class="alias" />
-        <col class="title" />
-      </colgroup>
+    <colgroup>
+      <col class="alias" />
+      <col class="title" />
+    </colgroup>
 
-      <tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-authorization" class="hasAnchor"><a href="#section-authorization" class="anchor"></a>Authorization</h2>
-            <p class="section-desc"><p>Get permissions to access the API. Set up the right scope.</p></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="yt_oauth.html">yt_oauth</a></code> </p>
-          </td>
-          <td><p>Set up Authorization</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="yt_check_token.html">yt_check_token</a></code> </p>
-          </td>
-          <td><p>Check if authentication token is in options</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-captions" class="hasAnchor"><a href="#section-captions" class="anchor"></a>Captions</h2>
-            <p class="section-desc"><p>Closed Captions of Videos</p></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="delete_captions.html">delete_captions</a></code> </p>
-          </td>
-          <td><p>Delete a Particular Caption Track</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="get_captions.html">get_captions</a></code> </p>
-          </td>
-          <td><p>Get Particular Caption Track</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="list_caption_tracks.html">list_caption_tracks</a></code> </p>
-          </td>
-          <td><p>List Captions of a Video</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-comments" class="hasAnchor"><a href="#section-comments" class="anchor"></a>Comments</h2>
-            <p class="section-desc"><p>Work with YouTube Comments</p></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="get_comment_threads.html">get_comment_threads</a></code> </p>
-          </td>
-          <td><p>Get Comments Threads</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="get_comments.html">get_comments</a></code> </p>
-          </td>
-          <td><p>Get Comments</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="get_all_comments.html">get_all_comments</a></code> </p>
-          </td>
-          <td><p>Get all the comments for a video including replies</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="delete_comments.html">delete_comments</a></code> </p>
-          </td>
-          <td><p>Delete a Particular Comment</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-playlists" class="hasAnchor"><a href="#section-playlists" class="anchor"></a>Playlists</h2>
-            <p class="section-desc"><p>Working with Playlists</p></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="get_playlists.html">get_playlists</a></code> </p>
-          </td>
-          <td><p>Get Playlists</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="get_playlist_items.html">get_playlist_items</a></code> </p>
-          </td>
-          <td><p>Get Playlist Items</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="delete_playlists.html">delete_playlists</a></code> </p>
-          </td>
-          <td><p>Delete a Playlist</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="delete_playlist_items.html">delete_playlist_items</a></code> </p>
-          </td>
-          <td><p>Delete a Playlist Item</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-channels" class="hasAnchor"><a href="#section-channels" class="anchor"></a>Channels</h2>
-            <p class="section-desc"><p>Working with Channels</p></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="list_channel_videos.html">list_channel_videos</a></code> </p>
-          </td>
-          <td><p>Returns List of Requested Channel Videos</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="list_channel_sections.html">list_channel_sections</a></code> </p>
-          </td>
-          <td><p>List Channel Sections</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="list_channel_resources.html">list_channel_resources</a></code> </p>
-          </td>
-          <td><p>Returns List of Requested Channel Resources</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="list_channel_activities.html">list_channel_activities</a></code> </p>
-          </td>
-          <td><p>List Channel Activity</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="get_channel_stats.html">get_channel_stats</a></code> </p>
-          </td>
-          <td><p>Get statistics of a Channel</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="get_subscriptions.html">get_subscriptions</a></code> </p>
-          </td>
-          <td><p>Get Subscriptions</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="delete_channel_sections.html">delete_channel_sections</a></code> </p>
-          </td>
-          <td><p>Delete Channel Sections</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-videos" class="hasAnchor"><a href="#section-videos" class="anchor"></a>Videos</h2>
-            <p class="section-desc"><p>Working with Videos</p></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="get_video_details.html">get_video_details</a></code> </p>
-          </td>
-          <td><p>Get Details of a Video or Videos</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="delete_videos.html">delete_videos</a></code> </p>
-          </td>
-          <td><p>Delete a Video</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-search" class="hasAnchor"><a href="#section-search" class="anchor"></a>Search</h2>
-            <p class="section-desc"><p>Search for Videos etc.</p></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="get_related_videos.html">get_related_videos</a></code> </p>
-          </td>
-          <td><p>Get Related Videos</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="yt_search.html">yt_search</a></code> </p>
-          </td>
-          <td><p>Search YouTube</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="yt_topic_search.html">yt_topic_search</a></code> </p>
-          </td>
-          <td><p>Search YouTube by Topic
+    <tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-authorization" class="hasAnchor"><a href="#section-authorization" class="anchor"></a>Authorization</h2>
+          <p class="section-desc"><p>Get permissions to access the API. Set up the right scope.</p></p>
+        </th>
+      </tr>
+      <tr>
+        <!--  -->
+        <td>
+          <p><code><a href="yt_oauth.html">yt_oauth()</a></code> </p>
+        </td>
+        <td><p>Set up Authorization</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="yt_check_token.html">yt_check_token()</a></code> </p>
+        </td>
+        <td><p>Check if authentication token is in options</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-captions" class="hasAnchor"><a href="#section-captions" class="anchor"></a>Captions</h2>
+          <p class="section-desc"><p>Closed Captions of Videos</p></p>
+        </th>
+      </tr>
+      <tr>
+        <!--  -->
+        <td>
+          <p><code><a href="delete_captions.html">delete_captions()</a></code> </p>
+        </td>
+        <td><p>Delete a Particular Caption Track</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="get_captions.html">get_captions()</a></code> </p>
+        </td>
+        <td><p>Get Particular Caption Track</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="list_caption_tracks.html">list_caption_tracks()</a></code> </p>
+        </td>
+        <td><p>List Captions of a Video</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-comments" class="hasAnchor"><a href="#section-comments" class="anchor"></a>Comments</h2>
+          <p class="section-desc"><p>Work with YouTube Comments</p></p>
+        </th>
+      </tr>
+      <tr>
+        <!--  -->
+        <td>
+          <p><code><a href="get_comment_threads.html">get_comment_threads()</a></code> </p>
+        </td>
+        <td><p>Get Comments Threads</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="get_comments.html">get_comments()</a></code> </p>
+        </td>
+        <td><p>Get Comments</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="get_all_comments.html">get_all_comments()</a></code> </p>
+        </td>
+        <td><p>Get all the comments for a video including replies</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="delete_comments.html">delete_comments()</a></code> </p>
+        </td>
+        <td><p>Delete a Particular Comment</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-playlists" class="hasAnchor"><a href="#section-playlists" class="anchor"></a>Playlists</h2>
+          <p class="section-desc"><p>Working with Playlists</p></p>
+        </th>
+      </tr>
+      <tr>
+        <!--  -->
+        <td>
+          <p><code><a href="get_playlists.html">get_playlists()</a></code> </p>
+        </td>
+        <td><p>Get Playlists</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="get_playlist_items.html">get_playlist_items()</a></code> </p>
+        </td>
+        <td><p>Get Playlist Items</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="delete_playlists.html">delete_playlists()</a></code> </p>
+        </td>
+        <td><p>Delete a Playlist</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="delete_playlist_items.html">delete_playlist_items()</a></code> </p>
+        </td>
+        <td><p>Delete a Playlist Item</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-channels" class="hasAnchor"><a href="#section-channels" class="anchor"></a>Channels</h2>
+          <p class="section-desc"><p>Working with Channels</p></p>
+        </th>
+      </tr>
+      <tr>
+        <!--  -->
+        <td>
+          <p><code><a href="list_channel_videos.html">list_channel_videos()</a></code> </p>
+        </td>
+        <td><p>Returns List of Requested Channel Videos</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="list_channel_sections.html">list_channel_sections()</a></code> </p>
+        </td>
+        <td><p>List Channel Sections</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="list_channel_resources.html">list_channel_resources()</a></code> </p>
+        </td>
+        <td><p>Returns List of Requested Channel Resources</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="list_channel_activities.html">list_channel_activities()</a></code> </p>
+        </td>
+        <td><p>List Channel Activity</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="get_channel_stats.html">get_channel_stats()</a></code> </p>
+        </td>
+        <td><p>Get statistics of a Channel</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="get_subscriptions.html">get_subscriptions()</a></code> </p>
+        </td>
+        <td><p>Get Subscriptions</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="delete_channel_sections.html">delete_channel_sections()</a></code> </p>
+        </td>
+        <td><p>Delete Channel Sections</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-videos" class="hasAnchor"><a href="#section-videos" class="anchor"></a>Videos</h2>
+          <p class="section-desc"><p>Working with Videos</p></p>
+        </th>
+      </tr>
+      <tr>
+        <!--  -->
+        <td>
+          <p><code><a href="get_video_details.html">get_video_details()</a></code> </p>
+        </td>
+        <td><p>Get Details of a Video or Videos</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="delete_videos.html">delete_videos()</a></code> </p>
+        </td>
+        <td><p>Delete a Video</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-search" class="hasAnchor"><a href="#section-search" class="anchor"></a>Search</h2>
+          <p class="section-desc"><p>Search for Videos etc.</p></p>
+        </th>
+      </tr>
+      <tr>
+        <!--  -->
+        <td>
+          <p><code><a href="get_related_videos.html">get_related_videos()</a></code> </p>
+        </td>
+        <td><p>Get Related Videos</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="yt_search.html">yt_search()</a></code> </p>
+        </td>
+        <td><p>Search YouTube</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="yt_topic_search.html">yt_topic_search()</a></code> </p>
+        </td>
+        <td><p>Search YouTube by Topic
 It uses the Freebase list of topics</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-misc-utility-functions" class="hasAnchor"><a href="#section-misc-utility-functions" class="anchor"></a>Misc. Utility Functions</h2>
-            <p class="section-desc"><p>Find out more about the YouTube Data API</p></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="list_langs.html">list_langs</a></code> </p>
-          </td>
-          <td><p>List Languages That YouTube Currently Supports</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="list_guidecats.html">list_guidecats</a></code> </p>
-          </td>
-          <td><p>Get list of categories that can be associated with YouTube channels</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="list_regions.html">list_regions</a></code> </p>
-          </td>
-          <td><p>List Content Regions That YouTube Currently Supports</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="list_videocats.html">list_videocats</a></code> </p>
-          </td>
-          <td><p>List of Categories That Can be Associated with Videos</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="list_abuse_report_reasons.html">list_abuse_report_reasons</a></code> </p>
-          </td>
-          <td><p>List reasons that can be used to report abusive videos</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-programming-using-the-youtube-data-api" class="hasAnchor"><a href="#section-programming-using-the-youtube-data-api" class="anchor"></a>Programming using the YouTube Data API</h2>
-            <p class="section-desc"><p>Low-level functions used internally</p></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="tuber_GET.html">tuber_GET</a></code> </p>
-          </td>
-          <td><p>GET</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="tuber_DELETE.html">tuber_DELETE</a></code> </p>
-          </td>
-          <td><p>DELETE</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="tuber_POST.html">tuber_POST</a></code> </p>
-          </td>
-          <td><p>POST</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="tuber_check.html">tuber_check</a></code> </p>
-          </td>
-          <td><p>Request Response Verification</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="yt_check_token.html">yt_check_token</a></code> </p>
-          </td>
-          <td><p>Check if authentication token is in options</p></td>
-        </tr>
-      </tbody>
-      </table>
-    </div>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-misc-utility-functions" class="hasAnchor"><a href="#section-misc-utility-functions" class="anchor"></a>Misc. Utility Functions</h2>
+          <p class="section-desc"><p>Find out more about the YouTube Data API</p></p>
+        </th>
+      </tr>
+      <tr>
+        <!--  -->
+        <td>
+          <p><code><a href="list_langs.html">list_langs()</a></code> </p>
+        </td>
+        <td><p>List Languages That YouTube Currently Supports</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="list_guidecats.html">list_guidecats()</a></code> </p>
+        </td>
+        <td><p>Get list of categories that can be associated with YouTube channels</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="list_regions.html">list_regions()</a></code> </p>
+        </td>
+        <td><p>List Content Regions That YouTube Currently Supports</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="list_videocats.html">list_videocats()</a></code> </p>
+        </td>
+        <td><p>List of Categories That Can be Associated with Videos</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="list_abuse_report_reasons.html">list_abuse_report_reasons()</a></code> </p>
+        </td>
+        <td><p>List reasons that can be used to report abusive videos</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-programming-using-the-youtube-data-api" class="hasAnchor"><a href="#section-programming-using-the-youtube-data-api" class="anchor"></a>Programming using the YouTube Data API</h2>
+          <p class="section-desc"><p>Low-level functions used internally</p></p>
+        </th>
+      </tr>
+      <tr>
+        <!--  -->
+        <td>
+          <p><code><a href="tuber_GET.html">tuber_GET()</a></code> </p>
+        </td>
+        <td><p>GET</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="tuber_DELETE.html">tuber_DELETE()</a></code> </p>
+        </td>
+        <td><p>DELETE</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="tuber_POST.html">tuber_POST()</a></code> </p>
+        </td>
+        <td><p>POST</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="tuber_check.html">tuber_check()</a></code> </p>
+        </td>
+        <td><p>Request Response Verification</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="yt_check_token.html">yt_check_token()</a></code> </p>
+        </td>
+        <td><p>Check if authentication token is in options</p></td>
+      </tr>
+    </tbody>
+    </table>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -419,11 +424,14 @@ It uses the Freebase list of topics</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+
