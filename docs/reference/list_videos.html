@@ -42,6 +42,9 @@
 
 
 
+<!-- docsearch -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+
   </head>
 
   <body>
@@ -98,6 +101,12 @@
 </li>
       </ul>
       
+      <form class="navbar-form navbar-right" role="search">
+        <div class="form-group">
+          <input type="search" class="form-control" id="search-input" placeholder="Search..." aria-label="Search for..." autocomplete="off">
+        </div>
+      </form>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -139,7 +148,7 @@ snippet, statistics, status, suggestions, topicDetails</code>. Default: <code>co
     </tr>
     <tr>
       <th>hl</th>
-      <td><p>Language used for text values. Optional. Default is <code>en-US</code>. For other allowed language codes, see <code><a href='list_langs.html'>list_langs</a></code>.</p></td>
+      <td><p>Language used for text values. Optional. Default is <code>en-US</code>. For other allowed language codes, see <code>list_langs</code>.</p></td>
     </tr>
     <tr>
       <th>region_code</th>
@@ -147,11 +156,11 @@ snippet, statistics, status, suggestions, topicDetails</code>. Default: <code>co
     </tr>
     <tr>
       <th>video_category_id</th>
-      <td><p>the video category for which the chart should be retrieved. See also <code><a href='list_videocats.html'>list_videocats</a></code>.</p></td>
+      <td><p>the video category for which the chart should be retrieved. See also <code>list_videocats</code>.</p></td>
     </tr>
     <tr>
       <th>&#8230;</th>
-      <td><p>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</p></td>
+      <td><p>Additional arguments passed to <code>tuber_GET</code>.</p></td>
     </tr>
     </table>
     
@@ -199,6 +208,17 @@ snippet, statistics, status, suggestions, topicDetails</code>. Default: <code>co
    </div>
 
   
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script>
+  docsearch({
+    
+    apiKey: '538a7a5e70bcc75e8a2e8e817c03bd0f',
+    indexName: '',
+    inputSelector: 'input#search-input.form-control',
+    debug: false // Set debug to true if you want to inspect the dropdown
+  });
+</script>
+
 
   </body>
 </html>

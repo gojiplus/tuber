@@ -3,7 +3,9 @@ url: http://soodoku.github.io/tuber/
 template:
   params:
     bootswatch: cosmo
-  default_assets: false
+    docsearch:
+      api_key: 538a7a5e70bcc75e8a2e8e817c03bd0f
+      index: tuber
 
 navbar:
     menu:

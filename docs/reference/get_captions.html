@@ -43,6 +43,9 @@ Check list_caption_tracks for more information." />
 
 
 
+<!-- docsearch -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+
   </head>
 
   <body>
@@ -99,6 +102,12 @@ Check list_caption_tracks for more information." />
 </li>
       </ul>
       
+      <form class="navbar-form navbar-right" role="search">
+        <div class="form-group">
+          <input type="search" class="form-control" id="search-input" placeholder="Search..." aria-label="Search for..." autocomplete="off">
+        </div>
+      </form>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -116,7 +125,7 @@ Check list_caption_tracks for more information." />
 
     
     <p>For getting captions from the v3 API, you must specify the id resource. 
-Check <code><a href='list_caption_tracks.html'>list_caption_tracks</a></code> for more information.</p>
+Check <code>list_caption_tracks</code> for more information.</p>
     
 
     <pre class="usage"><span class='fu'>get_captions</span>(<span class='kw'>id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>lang</span> <span class='kw'>=</span> <span class='st'>"en"</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"sbv"</span>, <span class='no'>...</span>)</pre>
@@ -138,7 +147,7 @@ Check <code><a href='list_caption_tracks.html'>list_caption_tracks</a></code> fo
     </tr>
     <tr>
       <th>&#8230;</th>
-      <td><p>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</p></td>
+      <td><p>Additional arguments passed to <code>tuber_GET</code>.</p></td>
     </tr>
     </table>
     
@@ -186,6 +195,17 @@ Check <code><a href='list_caption_tracks.html'>list_caption_tracks</a></code> fo
    </div>
 
   
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script>
+  docsearch({
+    
+    apiKey: '538a7a5e70bcc75e8a2e8e817c03bd0f',
+    indexName: '',
+    inputSelector: 'input#search-input.form-control',
+    debug: false // Set debug to true if you want to inspect the dropdown
+  });
+</script>
+
 
   </body>
 </html>

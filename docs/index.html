@@ -18,7 +18,7 @@
 <!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<![endif]--><!-- docsearch --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css">
 </head>
 <body>
     <div class="container template-article">
@@ -71,7 +71,13 @@
   </a>
 </li>
       </ul>
+<form class="navbar-form navbar-right" role="search">
+        <div class="form-group">
+          <input type="search" class="form-control" id="search-input" placeholder="Search..." aria-label="Search for..." autocomplete="off">
 </div>
+      </form>
+      
+    </div>
 <!--/.nav-collapse -->
   </div>
 <!--/.container -->
@@ -95,27 +101,27 @@
 <h3 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h3>
 <p>To get the current development version from GitHub:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
-devtools::<span class="kw">install_github</span>(<span class="st">"soodoku/tuber"</span>, <span class="dt">build_vignettes =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># install.packages("devtools")</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"soodoku/tuber"</span>, <span class="dt">build_vignettes =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <p>To get a quick overview of some important functions in tuber, check out <a href="http://soodoku.github.io/tuber/articles/tuber-ex.html">this article</a>. For a fun vignette about how to analyze emojis in YouTube comments, see <a href="http://soodoku.github.io/tuber/articles/emoji_vignette.html">here</a>.</p>
 </div>
 <div id="using-tuber" class="section level3">
 <h3 class="hasAnchor">
 <a href="#using-tuber" class="anchor"></a>Using tuber</h3>
 <p>To get going, get the application id and password from Google Developer Console (see <a href="https://developers.google.com/youtube/v3/getting-started" class="uri">https://developers.google.com/youtube/v3/getting-started</a>). Enable all the YouTube APIs. Also enable Freebase API. Then set the application id and password via the <code>yt_oauth</code> function. For more information about YouTube OAuth, see <a href="https://developers.google.com/youtube/v3/guides/authentication">YouTube OAuth Guide</a>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/yt_oauth.html">yt_oauth</a></span>(<span class="st">"app_id"</span>, <span class="st">"app_password"</span>)</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">yt_oauth</span>(<span class="st">"app_id"</span>, <span class="st">"app_password"</span>)</a></code></pre></div>
 <p><strong>Note:</strong> If you are on ubuntu, you may have to run the following before doing anything:</p>
 <pre><code><a href="http://www.rdocumentation.org/packages/httr/topics/set_config">httr::set_config( config( ssl_verifypeer = 0L ) )</a></code></pre>
 <p><strong>Get Statistics of a Video</strong></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/get_stats.html">get_stats</a></span>(<span class="dt">video_id =</span> <span class="st">"N708P-A45D0"</span>)</code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw">get_stats</span>(<span class="dt">video_id =</span> <span class="st">"N708P-A45D0"</span>)</a></code></pre></div>
 <p><strong>Get Information About a Video</strong></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/get_video_details.html">get_video_details</a></span>(<span class="dt">video_id =</span> <span class="st">"N708P-A45D0"</span>)</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">get_video_details</span>(<span class="dt">video_id =</span> <span class="st">"N708P-A45D0"</span>)</a></code></pre></div>
 <p><strong>Get Captions of a Video</strong></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/get_captions.html">get_captions</a></span>(<span class="dt">video_id =</span> <span class="st">"yJXTXN4xrI8"</span>)</code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">get_captions</span>(<span class="dt">video_id =</span> <span class="st">"yJXTXN4xrI8"</span>)</a></code></pre></div>
 <p><strong>Search Videos</strong></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/yt_search.html">yt_search</a></span>(<span class="st">"Barack Obama"</span>)</code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">yt_search</span>(<span class="st">"Barack Obama"</span>)</a></code></pre></div>
 <p><strong>Get All the Comments Including Replies</strong></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/get_all_comments.html">get_all_comments</a></span>(<span class="dt">video_id =</span> <span class="st">"a-UQz7fqR3w"</span>)</code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw">get_all_comments</span>(<span class="dt">video_id =</span> <span class="st">"a-UQz7fqR3w"</span>)</a></code></pre></div>
 </div>
 <div id="license" class="section level3">
 <h3 class="hasAnchor">
@@ -181,6 +187,14 @@ devtools::<span class="kw">install_github</span>(<span class="st">"soodoku/tuber
 </div>
 
   
-
-  </body>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script><script>
+  docsearch({
+    
+    apiKey: '538a7a5e70bcc75e8a2e8e817c03bd0f',
+    indexName: '',
+    inputSelector: 'input#search-input.form-control',
+    debug: false // Set debug to true if you want to inspect the dropdown
+  });
+</script>
+</body>
 </html>
