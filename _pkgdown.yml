@@ -5,7 +5,7 @@ template:
     bootswatch: cosmo
     docsearch:
       api_key: 538a7a5e70bcc75e8a2e8e817c03bd0f
-      index: tuber
+      index_name: tuber
 
 navbar:
     menu:
