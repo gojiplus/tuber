@@ -13,8 +13,7 @@
 #' @param ... Additional arguments to send to \code{\link{tuber_POST}} and
 #' therefore \code{\link{POST}}
 #'
-#' @return A response object from the \code{POST}, where the
-#' content can be extracted using \code{httr::content}
+#' @return A list of the response object from the \code{POST} and content
 #' @export
 #'
 #' @importFrom jsonlite toJSON
@@ -28,11 +27,19 @@ upload_video = function(
 ) {
   query = as.list(query)
   query$part = part
-  body = list(snippet = toJSON(snippet),
+  body = list(snippet = jsonlite::toJSON(snippet),
               y = httr::upload_file(file))
-  req = tuber_POST(
-    path = "videos",
-    query = query,
-    body = body,
-    ...)
+
+  yt_check_token()
+  # need diff from regular tuber_POST because of upload/
+  req <- httr::POST("https://www.googleapis.com/upload/youtube/v3/videos",
+                    body = body, query = query,
+                    config(token = getOption("google_token")),
+                    ...)
+
+  tuber_check(req)
+  res <- content(req)
+  L = list(request = req,
+           content = res)
+  return(L)
 }
