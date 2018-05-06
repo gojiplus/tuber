@@ -1,20 +1,21 @@
-templates:
+url: http://soodoku.github.io/tuber/
+
+template:
   params:
-    bootswatch: cerulean
-  default_assets: false
+    bootswatch: cosmo
+    docsearch:
+      api_key: 538a7a5e70bcc75e8a2e8e817c03bd0f
+      index_name: tuber
 
 navbar:
     menu:
     - text: Using tuber
       href: articles/tuber-ex.html
-    - text: Analyzing Emojis in Comments
-      href: articles/emoji_vignette.html
 
 articles:
   - title: "Articles"
     contents:
     - tuber-ex
-    - emoji_vignette
 
 reference:
   - title: "Authorization"

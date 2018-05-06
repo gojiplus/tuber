@@ -3,7 +3,7 @@
 #' @param part  Caption resource requested. Required. Comma separated list of one or more of the 
 #' following: \code{id, snippet}. e.g., "id, snippet", "id" Default: \code{snippet}.  
 #' @param video_id ID of the video whose captions are requested. Required. No default.
-#' @param lang  Language of the caption; required; default is english ("en")
+#' @param lang  Language of the caption; required; default is English ("en")
 #' @param id    comma-separated list of IDs that identify the caption resources that should be retrieved; optional; string
 #' @param simplify Boolean. Default is TRUE. When TRUE, and part is \code{snippet}, a data.frame is returned
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
