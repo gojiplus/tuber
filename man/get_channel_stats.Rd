@@ -5,13 +5,9 @@
 \alias{list_my_channel}
 \title{Get statistics of a Channel}
 \usage{
-<<<<<<< HEAD
-get_channel_stats(channel_id = NULL, ...)
+get_channel_stats(channel_id = NULL, mine = NULL, ...)
 
 list_my_channel(...)
-=======
-get_channel_stats(channel_id = NULL, mine = NULL, ...)
->>>>>>> upstream/master
 }
 \arguments{
 \item{channel_id}{Character. Id of the channel}
