@@ -52,3 +52,31 @@ get_channel_stats <- function(channel_id = NULL, mine = NULL, ...) {
 
   res
 }
+
+
+#' @rdname get_channel_stats
+#' @export
+list_my_channel <- function(...) {
+
+
+  querylist <- list(part = "snippet,contentDetails,statistics",
+                    mine = "true")
+
+  raw_res  <- tuber_GET("channels", querylist, ...)
+
+  if (length(raw_res$items) == 0) {
+    warning("No channel stats available. Likely cause: No videos.\n")
+    return(list())
+  }
+
+  res  <- raw_res$items[[1]]
+  res1 <- res$statistics
+  res2 <- res$snippet
+
+  cat("Channel Title:", res2$title, "\n")
+  cat("No. of Views:", res1$viewCount, "\n")
+  cat("No. of Subscribers:", res1$subscriberCount, "\n")
+  cat("No. of Videos:", res1$videoCount, "\n")
+
+  res
+}

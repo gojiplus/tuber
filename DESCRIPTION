@@ -1,8 +1,9 @@
 Package: tuber
 Title: Client for the YouTube API
-Version: 0.9.6
+Version: 0.9.7
 Authors@R: c(person("Gaurav", "Sood", email = "gsood07@gmail.com", role = c("aut", "cre")),
-             person("Kate", "Lyons", email = "k.lyons7@gmail.com", role = "ctb"))
+             person("Kate", "Lyons", email = "k.lyons7@gmail.com", role = "ctb"),
+             person("John", "Muschelli", email = "muschellij2@gmail.com", role = "ctb"))
 Maintainer: Gaurav Sood <gsood07@gmail.com>
 Description: Get comments posted on YouTube videos, information on how many 
     times a video has been liked, search for videos with particular content, and 
@@ -18,7 +19,8 @@ Imports:
     httr,
     plyr,
     dplyr,
-    purrr
+    purrr,
+    jsonlite
 VignetteBuilder: knitr
 Suggests:
     knitr (>= 1.11),
@@ -26,4 +28,4 @@ Suggests:
     rmarkdown,
     xml2,
     lintr
-RoxygenNote: 6.0.1
+RoxygenNote: 6.0.1.9000
