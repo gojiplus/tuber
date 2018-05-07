@@ -26,8 +26,7 @@ See \url{https://developers.google.com/youtube/v3/docs/videos/insert#usage}}
 therefore \code{\link{POST}}}
 }
 \value{
-A response object from the \code{POST}, where the
-content can be extracted using \code{httr::content}
+A list of the response object from the \code{POST} and content
 }
 \description{
 Upload Video to Youtube

@@ -1,6 +1,7 @@
 ^.*\.Rproj$
 ^README.Rmd$
 ^\.Rproj\.user$
+^.github$
 ^.httr-oauth$
 ^dev$
 ^figure$
