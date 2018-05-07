@@ -3,7 +3,9 @@
 :sweet\_potato: tuber: Access YouTube API via R
 -----------------------------------------------
 
-[![Build status](https://ci.appveyor.com/api/projects/status/pgr0wih12gtwvvvx?svg=true)](https://ci.appveyor.com/project/soodoku/tuber) [![Build Status](https://travis-ci.org/soodoku/tuber.svg?branch=master)](https://travis-ci.org/soodoku/tuber) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/tuber)](https://cran.r-project.org/package=tuber) ![](http://cranlogs.r-pkg.org/badges/grand-total/tuber) [![codecov](https://codecov.io/gh/soodoku/tuber/branch/master/graph/badge.svg)](https://codecov.io/gh/soodoku/tuber)
+[![Build status](https://ci.appveyor.com/api/projects/status/pgr0wih12gtwvvvx?svg=true)](https://ci.appveyor.com/project/soodoku/tuber) 
+[![Build Status](https://travis-ci.org/soodoku/tuber.svg?branch=master)](https://travis-ci.org/soodoku/tuber) 
+[![codecov](https://codecov.io/gh/soodoku/tuber/branch/master/graph/badge.svg)](https://codecov.io/gh/soodoku/tuber)
 
 Access YouTube API via R. Get comments posted on YouTube videos, get information on how many times a video has been liked, search for videos with particular content, and much more. You can also get closed captions of videos you own. To learn more about the YouTube API, see <https://developers.google.com/youtube/v3/>.
 
@@ -16,7 +18,7 @@ To get the current development version from GitHub:
 devtools::install_github("soodoku/tuber", build_vignettes = TRUE)
 ```
 
-To get a quick overview of some important functions in tuber, check out [this article](http://soodoku.github.io/tuber/articles/tuber-ex.html). For a fun vignette about how to analyze emojis in YouTube comments, see [here](http://soodoku.github.io/tuber/articles/emoji_vignette.html).
+To get a quick overview of some important functions in tuber, check out [this article](http://soodoku.github.io/tuber/articles/tuber-ex.html). For a fun vignette about how to analyze emojis in YouTube comments, see [here](https://github.com/soodoku/tuber/blob/master/emoji_vignette/emoji_vignette.Rmd).
 
 ### Using tuber
 

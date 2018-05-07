@@ -18,16 +18,17 @@
 #'
 #' @importFrom jsonlite toJSON
 #' @importFrom httr upload_file
-upload_video = function(
+
+upload_video <- function(
   file,
   snippet = list(),
   query = NULL,
   part = "snippet,status",
   ...
 ) {
-  query = as.list(query)
-  query$part = part
-  body = list(snippet = jsonlite::toJSON(snippet),
+  query <- as.list(query)
+  query$part <- part
+  body <- list(snippet = jsonlite::toJSON(snippet),
               y = httr::upload_file(file))
 
   yt_check_token()
@@ -39,7 +40,6 @@ upload_video = function(
 
   tuber_check(req)
   res <- content(req)
-  L = list(request = req,
-           content = res)
-  return(L)
+  
+  list(request = req, content = res)
 }
