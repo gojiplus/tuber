@@ -2,34 +2,56 @@
 % Please edit documentation in R/get_comments.R
 \name{get_comments}
 \alias{get_comments}
-\title{Get Comments On a Video}
+\title{Get Comments}
 \usage{
-get_comments(video_id = NULL, simplify = TRUE, maxResults = 20,
-  textFormat = "html")
+get_comments(filter = NULL, part = "snippet", max_results = 100,
+  text_format = "html", page_token = NULL, simplify = TRUE, ...)
 }
 \arguments{
-\item{video_id}{Data Type: Character. ID of the video. Required.}
+\item{filter}{string; Required.
+named vector of length 1
+potential names of the entry in the vector: 
+\code{comment_id}: comment ID.
+\code{parent_id}: parent ID.}
+
+\item{part}{Comment resource requested. Required. Comma separated list of one or more of the 
+following: \code{id, snippet}. e.g., \code{"id, snippet"}, \code{"id"}, etc. Default: \code{snippet}.}
+
+\item{max_results}{Maximum number of items that should be returned. Integer. Optional. Can be between 20 and 100. Default is 100.}
+
+\item{text_format}{Data Type: Character. Default is \code{"html"}. Only takes \code{"html"} or \code{"plainText"}. Optional.}
+
+\item{page_token}{Specific page in the result set that should be returned. Optional.}
 
 \item{simplify}{Data Type: Boolean. Default is TRUE. If TRUE, the function returns a data frame. Else a list with all the information returned.}
 
-\item{maxResults}{Data Type: Numeric. Default is 20. Takes values between 20 and 100. Optional.}
-
-\item{textFormat}{Data Type: Character. Default is "html". Only takes "html" or "plainText." Optional.}
+\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
 Nested named list. The entry \code{items} is a list of comments along with meta information. 
 Within each of the \code{items} is an item \code{snippet} which has an item \code{topLevelComment$snippet$textDisplay}
 that contains the actual comment.
+
+When filter is \code{comment_id}, and \code{simplify} is \code{TRUE}, and there is a correct comment id, 
+it returns a \code{data.frame} with the following cols: 
+\code{id, authorDisplayName, authorProfileImageUrl, authorChannelUrl, value, textDisplay, canRate, viewerRating, likeCount
+publishedAt, updatedAt}
 }
 \description{
-Get Comments On a Video
+Get Comments
 }
 \examples{
 \dontrun{
-get_comments(video_id="N708P-A45D0")
+
+# Set API token via yt_oauth() first
+
+get_comments(filter = c(comment_id = "z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk"))
+get_comments(filter = c(parent_id = "z13ds5yxjq3zzptyx04chlkbhx2yh3ezxtc0k"))
+get_comments(filter = 
+c(comment_id = "z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk, 
+             z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk"))
 }
 }
 \references{
-\url{https://developers.google.com/youtube/v3/docs/}
+\url{https://developers.google.com/youtube/v3/docs/comments/list}
 }
-

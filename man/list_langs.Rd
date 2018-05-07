@@ -2,22 +2,29 @@
 % Please edit documentation in R/list_langs.R
 \name{list_langs}
 \alias{list_langs}
-\title{List Languages That Youtube Currently Supports}
+\title{List Languages That YouTube Currently Supports}
 \usage{
-list_langs()
+list_langs(hl = NULL, ...)
+}
+\arguments{
+\item{hl}{Language used for text values. Optional. Default is \code{en-US}. For other allowed language codes, see \code{\link{list_langs}}.}
+
+\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-data.frame with 3 columns: hl (two letter abbreviation), name (of the language), etag
+data.frame with 3 columns: \code{hl} (two letter abbreviation), \code{name} (of the language), \code{etag}
 }
 \description{
-List Languages That Youtube Currently Supports
+List Languages That YouTube Currently Supports
 }
 \examples{
 \dontrun{
+
+# Set API token via yt_oauth() first
+
 list_langs()
 }
 }
 \references{
 \url{https://developers.google.com/youtube/v3/docs/i18nLanguages/list}
 }
-

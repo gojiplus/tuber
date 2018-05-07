@@ -4,58 +4,84 @@
 \alias{yt_search}
 \title{Search YouTube}
 \usage{
-yt_search(term = NULL, maxResults = 5, channelId = NULL,
-  channelType = NULL, type = "video", eventType = NULL, location = NULL,
-  locationRadius = NULL, publishedAfter = NULL, publishedBefore = NULL,
-  videoDefinition = "any", videoCaption = "any", videoLicense = "any",
-  videoSyndicated = "any", videoType = "any")
+yt_search(term = NULL, max_results = 50, channel_id = NULL,
+  channel_type = NULL, type = "video", event_type = NULL,
+  location = NULL, location_radius = NULL, published_after = NULL,
+  published_before = NULL, video_definition = "any",
+  video_caption = "any", video_license = "any", video_syndicated = "any",
+  video_type = "any", simplify = TRUE, get_all = TRUE,
+  page_token = NULL, ...)
 }
 \arguments{
 \item{term}{Character. Search term; required; no default}
 
-\item{maxResults}{Numeric. 0 to 50. Acceptable values are 0 to 50, inclusive. 
-Search results are constrained to a maximum of 500 videos if type is video and we have a value of ChannelId.}
+\item{max_results}{Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.
+Search results are constrained to a maximum of 500 videos if type is video and we have a value of \code{channel_id}.}
 
-\item{channelId}{Character. Only return search results from this channel; Optional.}
+\item{channel_id}{Character. Only return search results from this channel; Optional.}
 
-\item{channelType}{Character. Optional. Takes one of two values: 'any' or 'show'. Default is 'any'}
+\item{channel_type}{Character. Optional. Takes one of two values: \code{'any', 'show'}. Default is \code{'any'}}
 
-\item{type}{Character. Optional. Takes one of three values: 'video', 'channel', or 'playlist'}
+\item{type}{Character. Optional. Takes one of three values: \code{'video', 'channel', 'playlist'}. Default is \code{'video'}.}
 
-\item{eventType}{Character. Optional. Takes one of three values: `completed', 'live' or 'upcoming'}
+\item{event_type}{Character. Optional. Takes one of three values: \code{'completed', 'live', 'upcoming'}}
 
 \item{location}{Character.  Optional. Latitude and Longitude within parentheses, e.g. "(37.42307,-122.08427)"}
 
-\item{locationRadius}{Character.  Optional. e.g. "1500m", "5km", "10000ft", "0.75mi"}
+\item{location_radius}{Character.  Optional. e.g. "1500m", "5km", "10000ft", "0.75mi"}
 
-\item{publishedAfter}{Character. Optional. RFC 339 Format. For instance, "1970-01-01T00:00:00Z"}
+\item{published_after}{Character. Optional. RFC 339 Format. For instance, "1970-01-01T00:00:00Z"}
 
-\item{publishedBefore}{Character. Optional. RFC 339 Format. For instance, "1970-01-01T00:00:00Z"}
+\item{published_before}{Character. Optional. RFC 339 Format. For instance, "1970-01-01T00:00:00Z"}
 
-\item{videoDefinition}{Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'high' and 'standard'}
+\item{video_definition}{Character. Optional. 
+Takes one of three values: \code{'any'} (return all videos; Default), \code{'high', 'standard'}}
 
-\item{videoCaption}{Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'closedCaption', 'none'. Type must be set to video.}
+\item{video_caption}{Character. Optional. Takes one of three values: \code{'any'} (return all videos; Default), \code{'closedCaption', 'none'}. Type must be set to video.}
 
-\item{videoLicense}{Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'creativeCommon' (return videos with Creative Commons 
-license), 'youtube' (return videos with standard YouTube license).}
+\item{video_license}{Character. Optional. 
+Takes one of three values: \code{'any'} (return all videos; Default), \code{'creativeCommon'} (return videos with Creative Commons 
+license), \code{'youtube'} (return videos with standard YouTube license).}
 
-\item{videoSyndicated}{Character. Optional. Takes one of two values: 'any' (return all videos; Default), 'true' (return only syndicated videos)}
+\item{video_syndicated}{Character. Optional. Takes one of two values: 
+\code{'any'} (return all videos; Default), \code{'true'} (return only syndicated videos)}
 
-\item{videoType}{Character. Optional. Takes one of three values: 'any' (return all videos; Default), 'episode' (return episode of shows), 'movie' (return movies)}
+\item{video_type}{Character. Optional. Takes one of three values: \code{'any'} (return all videos; Default), \code{'episode'} (return episode of shows), 'movie' (return movies)}
+
+\item{simplify}{Boolean. Return a data.frame if \code{TRUE}. Default is \code{TRUE}. 
+If \code{TRUE}, it returns a list that carries additional information.}
+
+\item{get_all}{get all results, iterating through all the results pages. Default is \code{TRUE}. 
+Result is a \code{data.frame}. Optional.}
+
+\item{page_token}{specific page in the result set that should be returned, optional}
+
+\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-data.frame with 13 elements - kind, etag, id.kind, id.videoId, snippet.publishedAt, snippet.channelId, snippet.title, snippet.description, 
-snippet.thumbnails.default.url, snippet.thumbnails.medium.url, snippet.thumbnails.high.url, snippet.channelTitle, snippet.liveBroadcastContent
+data.frame with 16 elements: \code{video_id, publishedAt, channelId, title, description, 
+thumbnails.default.url, thumbnails.default.width, thumbnails.default.height, thumbnails.medium.url, 
+thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url, thumbnails.high.width, 
+thumbnails.high.height, channelTitle, liveBroadcastContent}
 }
 \description{
 Search for videos, channels and playlists. (By default, the function searches for videos.)
 }
 \examples{
+
 \dontrun{
-yt_search(term="Barack Obama")
+
+# Set API token via yt_oauth() first
+
+yt_search(term = "Barack Obama")
+yt_search(term = "Barack Obama", published_after = "2016-10-01T00:00:00Z")
+yt_search(term = "Barack Obama", published_before = "2016-09-01T00:00:00Z")
+yt_search(term = "Barack Obama", published_before = "2016-03-01T00:00:00Z", 
+                               published_after = "2016-02-01T00:00:00Z")
+yt_search(term = "Barack Obama", published_before = "2016-02-10T00:00:00Z", 
+                               published_after = "2016-01-01T00:00:00Z")
 }
 }
 \references{
 \url{https://developers.google.com/youtube/v3/docs/search/list}
 }
-

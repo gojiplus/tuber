@@ -2,27 +2,34 @@
 % Please edit documentation in R/get_captions.R
 \name{get_captions}
 \alias{get_captions}
-\title{Get Captions of a Video}
+\title{Get Particular Caption Track}
 \usage{
-get_captions(video_id = NULL, lang = "en")
+get_captions(id = NULL, lang = "en", format = "sbv", ...)
 }
 \arguments{
-\item{video_id}{id of the video; required; no default}
+\item{id}{String. Required. id of the caption track that is being retrieved}
 
-\item{lang}{language of the caption; required; default is english ("en")}
+\item{lang}{Optional. Default is \code{en}.}
+
+\item{format}{Optional. Default is \code{sbv}.}
+
+\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-captions for the video from one of the first track
+String.
 }
 \description{
-Get Captions of a Video
+For getting captions from the v3 API, you must specify the id resource. 
+Check \code{\link{list_caption_tracks}} for more information.
 }
 \examples{
 \dontrun{
-get_captions(video_id="yJXTXN4xrI8")
+
+# Set API token via yt_oauth() first
+
+get_captions(id = "y3ElXcEME3lSISz6izkWVT5GvxjPu8pA")
 }
 }
 \references{
-\url{https://console.developers.google.com/project}
+\url{https://developers.google.com/youtube/v3/docs/captions/download}
 }
-

@@ -2,22 +2,30 @@
 % Please edit documentation in R/list_regions.R
 \name{list_regions}
 \alias{list_regions}
-\title{List Content Regions That Youtube Currently Supports}
+\title{List Content Regions That YouTube Currently Supports}
 \usage{
-list_regions()
+list_regions(hl = NULL, ...)
+}
+\arguments{
+\item{hl}{Language used for text values. Optional. Default is \code{en-US}. For other allowed language codes, see \code{\link{list_langs}}.}
+
+\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-data.frame with 3 columns: gl (two letter abbreviation), name (of the region), etag
+data.frame with 3 columns: 
+\code{gl} (two letter abbreviation), \code{name} (of the region), \code{etag}
 }
 \description{
-List Content Regions That Youtube Currently Supports
+List Content Regions That YouTube Currently Supports
 }
 \examples{
 \dontrun{
+
+# Set API token via yt_oauth() first
+
 list_regions()
 }
 }
 \references{
 \url{https://developers.google.com/youtube/v3/docs/i18nRegions/list}
 }
-

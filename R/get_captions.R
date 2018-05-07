@@ -1,36 +1,35 @@
-#' Get Captions of a Video
-#'
-#' @param video_id id of the video; required; no default
-#' @param lang  language of the caption; required; default is english ("en")
-#' @return captions for the video from one of the first track
+#' Get Particular Caption Track
+#' 
+#' For getting captions from the v3 API, you must specify the id resource. 
+#' Check \code{\link{list_caption_tracks}} for more information.
+#' 
+#' @param id   String. Required. id of the caption track that is being retrieved
+#' @param lang Optional. Default is \code{en}.
+#' @param format Optional. Default is \code{sbv}.
+#' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
+#' 
+#' @return String. 
+#' 
+#' @references \url{https://developers.google.com/youtube/v3/docs/captions/download}
+#' 
 #' @export
-#' @references \url{https://console.developers.google.com/project}
+#'  
 #' @examples
 #' \dontrun{
-#' get_captions(video_id="yJXTXN4xrI8")
+#' 
+#' # Set API token via yt_oauth() first
+#' 
+#' get_captions(id = "y3ElXcEME3lSISz6izkWVT5GvxjPu8pA")
 #' }
 
-get_captions <- function (video_id=NULL, lang="en") {
+get_captions <- function (id = NULL, lang = "en", format = "sbv", ...) {
 
-	if (is.null(video_id)) stop("Must specify a video ID")
+  if ( !is.character(id)) {
+    stop("Must specify a valid id.")
+  }
 
-	yt_check_token()
+  querylist <- list(tlang = lang, tfmt = format)
+  raw_res <- tuber_GET(paste0("captions", "/", id), query = querylist, ...)
 
-	# Try getting captions directly
-	req <- GET(paste0("http://video.google.com/timedtext?lang=", lang, "&v=", video_id))
-
-	# If not try other things
-	if (length(content(req))==0) {
-		querylist = list(part="snippet", videoId = video_id)
-		req <- GET("https://www.googleapis.com/youtube/v3/captions", query = querylist, config(token = getOption("google_token")))
-		stop_for_status(req)
-		# Multiple caption tracks possible but for now harvest just the first
-		caption_id <- content(req)$items[[1]]$id
-
-		caption <- GET(paste0("https://www.googleapis.com/youtube/v3/captions/", caption_id), config(token = getOption("google_token")))
-		if(caption$status!=200) stop("Caption Track Either Not Found or Not Accessible.")
-		req <- NA
-	}
-
-	content(req)
+  raw_res
 }

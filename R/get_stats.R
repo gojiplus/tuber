@@ -1,31 +1,38 @@
 #' Get statistics of a Video
 #'
 #' @param video_id Character. Id of the video. Required.
+#' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
-#' @return list with 5 elements: viewCount, likeCount, dislikeCount, favoriteCount, commentCount
+#' @return list with 6 elements: \code{id, viewCount, likeCount, dislikeCount, favoriteCount, commentCount}
+#'
 #' @export
-#' @references \url{https://console.developers.google.com/project}
+#' 
+#' @references \url{https://developers.google.com/youtube/v3/docs/videos/list#parameters}
+#' 
 #' @examples
 #' \dontrun{
+#' 
+#' # Set API token via yt_oauth() first
+#' 
 #' get_stats(video_id="N708P-A45D0")
 #' }
 
-get_stats <- function (video_id=NULL) {
+get_stats <- function (video_id = NULL, ...) {
 
-	if (is.null(video_id)) stop("Must specify a video ID")
+  if (!is.character(video_id)) stop("Must specify a video ID.")
 
-	yt_check_token()
-	
-	querylist <- list(part="statistics", id = video_id)
-    
-    res <- tuber_GET("videos", querylist)
-    res <- res$items[[1]]$statistics
+  querylist <- list(part = "statistics", id = video_id)
 
-	cat('No. of Views', res$viewCount, "\n")
-	cat('No. of Likes', res$likeCount, "\n")
-	cat('No. of Dislikes', res$dislikeCount, "\n")
-	cat('No. of Favorites', res$favoriteCount, "\n")
-	cat('No. of Comments', res$commentCount, "\n")
+  raw_res <- tuber_GET("videos", querylist, ...)
 
-	return(invisible(res))
+  if (length(raw_res$items) == 0) {
+    warning("No statistics for this video are available.
+             Likely cause: Incorrect ID. \n")
+    return(list())
+  }
+
+  res      <- raw_res$items[[1]]
+  stat_res <- res$statistics
+
+  c(id = res$id, stat_res)
 }

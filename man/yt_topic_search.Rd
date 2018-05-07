@@ -5,10 +5,12 @@
 \title{Search YouTube by Topic
 It uses the Freebase list of topics}
 \usage{
-yt_topic_search(topic = NULL)
+yt_topic_search(topic = NULL, ...)
 }
 \arguments{
 \item{topic}{topic being searched for; required; no default}
+
+\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
 a list
@@ -19,7 +21,9 @@ It uses the Freebase list of topics
 }
 \examples{
  \dontrun{
-yt_topic_search(topic="Barack Obama")
-}
-}
 
+# Set API token via yt_oauth() first
+
+yt_topic_search(topic = "Barack Obama")
+}
+}

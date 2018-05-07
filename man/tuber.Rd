@@ -8,4 +8,3 @@
 \description{
 \pkg{tuber} provides access to the YouTube API V3.
 }
-

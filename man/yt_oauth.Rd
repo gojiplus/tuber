@@ -5,34 +5,39 @@
 \title{Set up Authorization}
 \usage{
 yt_oauth(app_id = NULL, app_secret = NULL, scope = "ssl",
-  remove_old_oauth = FALSE)
+  token = ".httr-oauth", ...)
 }
 \arguments{
 \item{app_id}{client id; required; no default}
 
 \item{app_secret}{client secret; required; no default}
 
-\item{scope}{"ssl" or "basic"; required; default is ssl. The scopes are largely exchangeable but ssl yields extra authorizations that come in handy.}
+\item{scope}{Character. \code{ssl}, \code{basic}, \code{own_account_readonly}, \code{upload_and_manage_own_videos},
+\code{partner}, and \code{partner_audit}. 
+Required. \code{ssl} and \code{basic} are basically interchangeable. Default is \code{ssl}.}
 
-\item{remove_old_oauth}{required; default is FALSE. It will remove .httr-oauth if such a file exists in the working directory}
+\item{token}{path to file containing the token. If a path is given, the function will first try to read from it. 
+Default is \code{.httr-oauth} in the local directory.
+So if there is such a file, the function will first try to read from it.}
+
+\item{\dots}{Additional arguments passed to \code{\link{oauth2.0_token}}}
 }
 \value{
-sets the google_token option and also saves .httr_auth in the working directory (find out the working directory via getwd())
+sets the google_token option and also saves \code{.httr_oauth} in the working directory (find out the working directory via \code{getwd()})
 }
 \description{
-The function looks for .httr-oauth in the working directory. If it doesn't find it, it expects an application ID and a secret.
-If you want to remove the existing .httr-oauth, set remove_old_oauth to TRUE. By default, it is set to FALSE.
+The function looks for \code{.httr-oauth} in the working directory. If it doesn't find it, it expects an application ID and a secret.
+If you want to remove the existing \code{.httr-oauth}, set remove_old_oauth to TRUE. By default, it is set to FALSE.
 The function launches a browser to allow you to authorize the application
 }
 \examples{
  \dontrun{
-  yt_oauth("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.com", 
-           "MbOSt6cQhhFkwETXKur-L9rN")
+   yt_oauth("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.com", 
+            "MbOSt6cQhhFkwETXKur-L9rN")
 }
 }
 \references{
-\url{https://console.developers.google.com/project}
+\url{https://developers.google.com/youtube/v3/docs/}
 
 \url{https://developers.google.com/youtube/v3/guides/auth/client-side-web-apps} for different scopes
 }
-

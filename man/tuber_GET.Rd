@@ -2,14 +2,16 @@
 % Please edit documentation in R/tuber.R
 \name{tuber_GET}
 \alias{tuber_GET}
-\title{Base POST AND GET functions. Not exported.}
+\title{GET}
 \usage{
-tuber_GET(path, query)
+tuber_GET(path, query, ...)
 }
 \arguments{
 \item{path}{path to specific API request URL}
 
 \item{query}{query list}
+
+\item{\dots}{Additional arguments passed to \code{\link[httr]{GET}}.}
 }
 \value{
 list
@@ -17,4 +19,3 @@ list
 \description{
 GET
 }
-

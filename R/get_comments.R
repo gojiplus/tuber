@@ -1,39 +1,85 @@
-#' Get Comments On a Video
+#' Get Comments
 #'
-#' @param video_id Data Type: Character. ID of the video. Required.
+#' @param filter string; Required.
+#' named vector of length 1
+#' potential names of the entry in the vector: 
+#' \code{comment_id}: comment ID.
+#' \code{parent_id}: parent ID.
+#'  
+#' @param part  Comment resource requested. Required. Comma separated list of one or more of the 
+#' following: \code{id, snippet}. e.g., \code{"id, snippet"}, \code{"id"}, etc. Default: \code{snippet}.  
 #' @param simplify Data Type: Boolean. Default is TRUE. If TRUE, the function returns a data frame. Else a list with all the information returned.
-#' @param maxResults Data Type: Numeric. Default is 20. Takes values between 20 and 100. Optional.
-#' @param textFormat Data Type: Character. Default is "html". Only takes "html" or "plainText." Optional. 
-#' 
-#' @return Nested named list. The entry \code{items} is a list of comments along with meta information. 
+#' @param max_results  Maximum number of items that should be returned. Integer. Optional. Can be between 20 and 100. Default is 100.
+#' @param page_token  Specific page in the result set that should be returned. Optional.
+#' @param text_format Data Type: Character. Default is \code{"html"}. Only takes \code{"html"} or \code{"plainText"}. Optional. 
+#' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
+#'  
+#' @return 
+#' Nested named list. The entry \code{items} is a list of comments along with meta information. 
 #' Within each of the \code{items} is an item \code{snippet} which has an item \code{topLevelComment$snippet$textDisplay}
 #' that contains the actual comment.
+#' 
+#' When filter is \code{comment_id}, and \code{simplify} is \code{TRUE}, and there is a correct comment id, 
+#' it returns a \code{data.frame} with the following cols: 
+#' \code{id, authorDisplayName, authorProfileImageUrl, authorChannelUrl, value, textDisplay, canRate, viewerRating, likeCount
+#' publishedAt, updatedAt}
 #'  
 #' @export
-#' @references \url{https://developers.google.com/youtube/v3/docs/}
+#' @references \url{https://developers.google.com/youtube/v3/docs/comments/list}
+#' 
 #' @examples
 #' \dontrun{
-#' get_comments(video_id="N708P-A45D0")
+#' 
+#' # Set API token via yt_oauth() first
+#' 
+#' get_comments(filter = c(comment_id = "z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk"))
+#' get_comments(filter = c(parent_id = "z13ds5yxjq3zzptyx04chlkbhx2yh3ezxtc0k"))
+#' get_comments(filter = 
+#' c(comment_id = "z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk, 
+#'              z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk"))
 #' }
 
-get_comments <- function (video_id=NULL, simplify=TRUE, maxResults=20, textFormat="html") {
+get_comments <- function (filter = NULL, part = "snippet", max_results = 100,
+                          text_format = "html", page_token = NULL,
+                          simplify = TRUE, ...) {
 
-	if (is.null(video_id)) stop("Must specify a video ID")
-	if (maxResults < 20 | maxResults > 100) stop("maxResults only takes a value between 20 and 100")
-	if (textFormat != "html" & textFormat !="plainText") stop("Provide a legitimate value of textFormat.")
+  if (max_results < 20 | max_results > 100) {
+    stop("max_results only takes a value between 20 and 100.")
+  }
 
-	querylist <- list(part="snippet", videoId = video_id, maxResults=maxResults, textFormat=textFormat)
+  if (text_format != "html" & text_format != "plainText") {
+    stop("Provide a legitimate value of textFormat.")
+  }
 
-	res <- tuber_GET("commentThreads", querylist)
-	
-	if (simplify==TRUE) {
-		simple_res  <- lapply(res$items, function(x) x$snippet$topLevelComment$snippet)
-		simpler_res <- as.data.frame(do.call(rbind, simple_res))
+  if (!(names(filter) %in% c("parent_id", "comment_id"))) {
+    stop("filter can only take one of values: comment_id, parent_id.")
+  }
 
-		return(invisible(simpler_res))
-	}
+  if ( length(filter) != 1) stop("filter must be a vector of length 1.")
 
-	return(invisible(res))	
+  translate_filter   <- c("parent_id" = "parentId", "comment_id" = "id")
+  yt_filter_name     <- as.vector(translate_filter[match(names(filter),
+                                                      names(translate_filter))])
+  names(filter)      <- yt_filter_name
 
+  querylist <- list(part = part, maxResults = max_results,
+                    textFormat = text_format)
+  querylist <- c(querylist, filter)
+
+  raw_res <- tuber_GET("comments", querylist, ...)
+
+  if (length(raw_res$items) == 0) {
+      warning("No comment information available. Likely cause: Incorrect ID.\n")
+      if (simplify == TRUE) return(data.frame())
+      return(list())
+    }
+
+  if (simplify == TRUE & part == "snippet") {
+    simple_res  <- lapply(raw_res$items, function(x) unlist(x$snippet))
+    simpler_res <- ldply(simple_res, rbind)
+    simpler_res$id <- raw_res$items[[1]]$id
+    return(simpler_res)
+  }
+
+  raw_res
 }
-
