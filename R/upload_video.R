@@ -40,7 +40,7 @@
 
 upload_video <- function(
   file,
-  snippet = list(),
+  snippet = NULL,
   status = list(privacyStatus = "public"),
   query = NULL,
   part = "snippet,status",
@@ -74,8 +74,15 @@ upload_video <- function(
 
   metadata <- tempfile()
   body <- list()
+  if (length(snippet) == 0) {
+    snippet = NULL
+  }
+  if (length(status) == 0) {
+    status = NULL
+  }
   body$snippet = snippet
   body$status = status
+
 
   body <- jsonlite::toJSON(body, auto_unbox = TRUE)
   writeLines(body, metadata)

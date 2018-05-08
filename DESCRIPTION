@@ -1,6 +1,6 @@
 Package: tuber
 Title: Client for the YouTube API
-Version: 0.9.7.9000
+Version: 0.9.7.9001
 Authors@R: c(person("Gaurav", "Sood", email = "gsood07@gmail.com", role = c("aut", "cre")),
              person("Kate", "Lyons", email = "k.lyons7@gmail.com", role = "ctb"),
              person("John", "Muschelli", email = "muschellij2@gmail.com", role = "ctb"))
