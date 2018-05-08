@@ -20,7 +20,8 @@ Imports:
     plyr,
     dplyr,
     purrr,
-    jsonlite
+    jsonlite,
+    utils
 VignetteBuilder: knitr
 Suggests:
     knitr (>= 1.11),

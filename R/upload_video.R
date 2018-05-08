@@ -18,6 +18,7 @@
 #' See \url{https://developers.google.com/youtube/v3/docs/videos/insert#usage}
 #' @param ... Additional arguments to send to \code{\link{tuber_POST}} and
 #' therefore \code{\link{POST}}
+#' @param open_url Should the video be opened using \code{\link{browseURL}}
 #'
 #' @note The information for `status` and `snippet` are at
 #' \url{https://developers.google.com/youtube/v3/docs/videos#resource}
@@ -29,6 +30,7 @@
 #' @export
 #'
 #' @importFrom jsonlite toJSON
+#' @importFrom utils browseURL
 #' @importFrom httr upload_file
 #' @examples
 #' snippet = list(
@@ -44,6 +46,7 @@ upload_video <- function(
   query = NULL,
   part = "snippet,status",
   auto_unbox = TRUE,
+  open_url = FALSE,
   ...
 ) {
 
@@ -78,6 +81,9 @@ upload_video <- function(
   tuber_check(req)
   res <- content(req)
   url = paste0("https://www.youtube.com/watch?v=", res$id)
+  if (open_url) {
+    browseURL(url)
+  }
   list(request = req, content = res,
        url = url)
 }
