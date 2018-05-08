@@ -33,7 +33,8 @@
 #' @examples
 #' snippet = list(
 #' title = "Test Video",
-#' description = "This is just a random test."
+#' description = "This is just a random test.",
+#' tags = c("r language", "r programming", "data analysis")
 #' )
 #' status = list(privacyStatus = "private")
 
