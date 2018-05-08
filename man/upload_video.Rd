@@ -4,8 +4,8 @@
 \alias{upload_video}
 \title{Upload Video to Youtube}
 \usage{
-upload_video(file, snippet = list(), query = NULL,
-  part = "snippet,status", ...)
+upload_video(file, snippet = list(), status = list(privacyStatus =
+  "public"), query = NULL, part = "snippet,status", ...)
 }
 \arguments{
 \item{file}{Filename of the video locally}
@@ -14,6 +14,11 @@ upload_video(file, snippet = list(), query = NULL,
 and `title`.  See
 \url{https://developers.google.com/youtube/v3/docs/videos#resource} for
 other fields.  Coerced to a JSON object}
+
+\item{status}{Additional fields to be put into the \code{status} input.
+options for `status` are `license` (which should hold:
+`creativeCommon`, or `youtube`), `privacyStatus`, `publicStatsViewable`,
+`publishAt`.}
 
 \item{query}{Fields for `query` in `POST`}
 
@@ -26,8 +31,12 @@ See \url{https://developers.google.com/youtube/v3/docs/videos/insert#usage}}
 therefore \code{\link{POST}}}
 }
 \value{
-A list of the response object from the \code{POST} and content
+A list of the response object from the \code{POST}, content,
+and the URL of the uploaded
 }
 \description{
 Upload Video to Youtube
+}
+\note{
+
 }

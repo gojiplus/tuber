@@ -5,6 +5,10 @@
 #' and `title`.  See
 #' \url{https://developers.google.com/youtube/v3/docs/videos#resource} for
 #' other fields.  Coerced to a JSON object
+#' @param status Additional fields to be put into the \code{status} input.
+#' options for `status` are `license` (which should hold:
+#' `creativeCommon`, or `youtube`), `privacyStatus`, `publicStatsViewable`,
+#' `publishAt`.
 #' @param query Fields for `query` in `POST`
 #' @param part The part parameter serves two purposes in this operation.
 #' It identifies the properties that the write operation will set as
@@ -13,7 +17,10 @@
 #' @param ... Additional arguments to send to \code{\link{tuber_POST}} and
 #' therefore \code{\link{POST}}
 #'
-#' @return A list of the response object from the \code{POST} and content
+#' @note
+#'
+#' @return A list of the response object from the \code{POST}, content,
+#' and the URL of the uploaded
 #' @export
 #'
 #' @importFrom jsonlite toJSON
@@ -22,14 +29,32 @@
 upload_video <- function(
   file,
   snippet = list(),
+  status = list(privacyStatus = "public"),
   query = NULL,
   part = "snippet,status",
   ...
 ) {
+
+
   query <- as.list(query)
   query$part <- part
+
+  if ("privacyStatus" %in% names(status)) {
+    p = status$privacyStatus
+    p = match.arg(p, choices = c("private", "public", "unlisted"))
+  }
+
+  if ("license" %in% names(status)) {
+    p = status$license
+    p = match.arg(p, choices = c("creativeCommon", "youtube"))
+  }
+
+
   body <- list(snippet = jsonlite::toJSON(snippet),
+               status = jsonlite::toJSON(status),
               y = httr::upload_file(file))
+
+
 
   yt_check_token()
   # need diff from regular tuber_POST because of upload/
@@ -40,6 +65,7 @@ upload_video <- function(
 
   tuber_check(req)
   res <- content(req)
-
-  list(request = req, content = res)
+  url = paste0("https://www.youtube.com/watch?v=", content$id)
+  list(request = req, content = res,
+       url = url)
 }
