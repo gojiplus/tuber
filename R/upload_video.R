@@ -10,8 +10,6 @@
 #' `creativeCommon`, or `youtube`), `privacyStatus`, `publicStatsViewable`,
 #' `publishAt`.
 #' @param query Fields for `query` in `POST`
-#' @param auto_unbox Passed to \code{\link{toJSON}} to create `snippet` and
-#' `status` inputs for the `body`
 #' @param part The part parameter serves two purposes in this operation.
 #' It identifies the properties that the write operation will set as
 #' well as the properties that the API response will include.
@@ -45,7 +43,6 @@ upload_video <- function(
   status = list(privacyStatus = "public"),
   query = NULL,
   part = "snippet,status",
-  auto_unbox = TRUE,
   open_url = FALSE,
   ...
 ) {
@@ -55,21 +52,32 @@ upload_video <- function(
   query$part <- part
 
   if ("privacyStatus" %in% names(status)) {
-    p = status$privacyStatus
-    p = match.arg(p, choices = c("private", "public", "unlisted"))
+    p <- status$privacyStatus
+    p <- match.arg(p, choices = c("private", "public", "unlisted"))
   }
 
   if ("license" %in% names(status)) {
-    p = status$license
-    p = match.arg(p, choices = c("creativeCommon", "youtube"))
+    p <- status$license
+    p <- match.arg(p, choices = c("creativeCommon", "youtube"))
   }
 
 
+  metadata <- tempfile()
   body <- list(
-    list(snippet = jsonlite::toJSON(snippet, auto_unbox = auto_unbox),
-               status = jsonlite::toJSON(status, auto_unbox = auto_unbox)
-         ),
-              y = httr::upload_file(file))
+    snippet = snippet,
+    status = status
+  )
+  body <- jsonlite::toJSON(body, auto_unbox = TRUE)
+  writeLines(body, metadata)
+
+  # body <- list(
+  #   snippet = jsonlite::toJSON(snippet, auto_unbox = auto_unbox),
+  #   status = jsonlite::toJSON(status, auto_unbox = auto_unbox),
+  #   y = httr::upload_file(file))
+
+  body <- list(
+    metadata = upload_file(metadata, type = "application/json; charset=UTF-8"),
+    y = httr::upload_file(file))
 
 
 
@@ -79,7 +87,11 @@ upload_video <- function(
                     body = body, query = query,
                     config(token = getOption("google_token")),
                     ...)
-
+  if (httr::status_code(req) > 300)  {
+    print(body)
+    print(query)
+    stop("Request was bad")
+  }
   tuber_check(req)
   res <- content(req)
   url = paste0("https://www.youtube.com/watch?v=", res$id)
