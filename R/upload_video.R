@@ -65,8 +65,10 @@ upload_video <- function(
   }
 
 
-  body <- list(snippet = jsonlite::toJSON(snippet, auto_unbox = auto_unbox),
-               status = jsonlite::toJSON(status, auto_unbox = auto_unbox),
+  body <- list(
+    list(snippet = jsonlite::toJSON(snippet, auto_unbox = auto_unbox),
+               status = jsonlite::toJSON(status, auto_unbox = auto_unbox)
+         ),
               y = httr::upload_file(file))
 
 

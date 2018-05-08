@@ -5,7 +5,8 @@
 \title{Upload Video to Youtube}
 \usage{
 upload_video(file, snippet = list(), status = list(privacyStatus =
-  "public"), query = NULL, part = "snippet,status", ...)
+  "public"), query = NULL, part = "snippet,status", auto_unbox = TRUE,
+  open_url = FALSE, ...)
 }
 \arguments{
 \item{file}{Filename of the video locally}
@@ -27,6 +28,11 @@ It identifies the properties that the write operation will set as
 well as the properties that the API response will include.
 See \url{https://developers.google.com/youtube/v3/docs/videos/insert#usage}}
 
+\item{auto_unbox}{Passed to \code{\link{toJSON}} to create `snippet` and
+`status` inputs for the `body`}
+
+\item{open_url}{Should the video be opened using \code{\link{browseURL}}}
+
 \item{...}{Additional arguments to send to \code{\link{tuber_POST}} and
 therefore \code{\link{POST}}}
 }
@@ -42,4 +48,11 @@ The information for `status` and `snippet` are at
 \url{https://developers.google.com/youtube/v3/docs/videos#resource}
 but the subset of these fields to pass in are located at:
 \url{https://developers.google.com/youtube/v3/docs/videos/insert}
+}
+\examples{
+snippet = list(
+title = "Test Video",
+description = "This is just a random test."
+)
+status = list(privacyStatus = "private")
 }
