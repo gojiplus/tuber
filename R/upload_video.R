@@ -68,7 +68,7 @@ upload_video <- function(
 
   tuber_check(req)
   res <- content(req)
-  url = paste0("https://www.youtube.com/watch?v=", content$id)
+  url = paste0("https://www.youtube.com/watch?v=", res$id)
   list(request = req, content = res,
        url = url)
 }
