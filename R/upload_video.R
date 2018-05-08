@@ -10,10 +10,6 @@
 #' `creativeCommon`, or `youtube`), `privacyStatus`, `publicStatsViewable`,
 #' `publishAt`.
 #' @param query Fields for `query` in `POST`
-#' @param part The part parameter serves two purposes in this operation.
-#' It identifies the properties that the write operation will set as
-#' well as the properties that the API response will include.
-#' See \url{https://developers.google.com/youtube/v3/docs/videos/insert#usage}
 #' @param ... Additional arguments to send to \code{\link{tuber_POST}} and
 #' therefore \code{\link{POST}}
 #' @param open_url Should the video be opened using \code{\link{browseURL}}
@@ -22,7 +18,10 @@
 #' \url{https://developers.google.com/youtube/v3/docs/videos#resource}
 #' but the subset of these fields to pass in are located at:
 #' \url{https://developers.google.com/youtube/v3/docs/videos/insert}
-#'
+#' The `part`` parameter serves two purposes in this operation.
+#' It identifies the properties that the write operation will set, this will be
+#' automatically detected by the names of `body`.
+#' See \url{https://developers.google.com/youtube/v3/docs/videos/insert#usage}
 #' @return A list of the response object from the \code{POST}, content,
 #' and the URL of the uploaded
 #' @export
@@ -43,14 +42,11 @@ upload_video <- function(
   snippet = NULL,
   status = list(privacyStatus = "public"),
   query = NULL,
-  part = "snippet,status",
   open_url = FALSE,
   ...
 ) {
 
 
-  query <- as.list(query)
-  query$part <- part
 
   if ("privacyStatus" %in% names(status)) {
     p <- status$privacyStatus
@@ -83,6 +79,10 @@ upload_video <- function(
   body$snippet = snippet
   body$status = status
 
+  part = paste(names(body), collapse = ",")
+
+  query <- as.list(query)
+  query$part <- part
 
   body <- jsonlite::toJSON(body, auto_unbox = TRUE)
   writeLines(body, metadata)
@@ -106,7 +106,11 @@ upload_video <- function(
                     ...)
   if (httr::status_code(req) > 300)  {
     print(body)
+    print(paste0("File is: ", metadata))
+    cat(readLines(metadata))
+    cat("\n")
     print(query)
+    print(httr::content(req)$error)
     stop("Request was bad")
   }
   tuber_check(req)
