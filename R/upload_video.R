@@ -17,7 +17,10 @@
 #' @param ... Additional arguments to send to \code{\link{tuber_POST}} and
 #' therefore \code{\link{POST}}
 #'
-#' @note
+#' @note The information for `status` and `snippet` are at
+#' \url{https://developers.google.com/youtube/v3/docs/videos#resource}
+#' but the subset of these fields to pass in are located at:
+#' \url{https://developers.google.com/youtube/v3/docs/videos/insert}
 #'
 #' @return A list of the response object from the \code{POST}, content,
 #' and the URL of the uploaded
