@@ -10,6 +10,8 @@
 #' `creativeCommon`, or `youtube`), `privacyStatus`, `publicStatsViewable`,
 #' `publishAt`.
 #' @param query Fields for `query` in `POST`
+#' @param auto_unbox Passed to \code{\link{toJSON}} to create `snippet` and
+#' `status` inputs for the `body`
 #' @param part The part parameter serves two purposes in this operation.
 #' It identifies the properties that the write operation will set as
 #' well as the properties that the API response will include.
@@ -28,6 +30,12 @@
 #'
 #' @importFrom jsonlite toJSON
 #' @importFrom httr upload_file
+#' @examples
+#' snippet = list(
+#' title = "Test Video",
+#' description = "This is just a random test."
+#' )
+#' status = list(privacyStatus = "private")
 
 upload_video <- function(
   file,
@@ -35,6 +43,7 @@ upload_video <- function(
   status = list(privacyStatus = "public"),
   query = NULL,
   part = "snippet,status",
+  auto_unbox = TRUE,
   ...
 ) {
 
@@ -53,8 +62,8 @@ upload_video <- function(
   }
 
 
-  body <- list(snippet = jsonlite::toJSON(snippet),
-               status = jsonlite::toJSON(status),
+  body <- list(snippet = jsonlite::toJSON(snippet, auto_unbox = auto_unbox),
+               status = jsonlite::toJSON(status, auto_unbox = auto_unbox),
               y = httr::upload_file(file))
 
 
