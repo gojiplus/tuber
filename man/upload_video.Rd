@@ -5,8 +5,7 @@
 \title{Upload Video to Youtube}
 \usage{
 upload_video(file, snippet = list(), status = list(privacyStatus =
-  "public"), query = NULL, part = "snippet,status", auto_unbox = TRUE,
-  open_url = FALSE, ...)
+  "public"), query = NULL, part = "snippet,status", open_url = FALSE, ...)
 }
 \arguments{
 \item{file}{Filename of the video locally}
@@ -27,9 +26,6 @@ options for `status` are `license` (which should hold:
 It identifies the properties that the write operation will set as
 well as the properties that the API response will include.
 See \url{https://developers.google.com/youtube/v3/docs/videos/insert#usage}}
-
-\item{auto_unbox}{Passed to \code{\link{toJSON}} to create `snippet` and
-`status` inputs for the `body`}
 
 \item{open_url}{Should the video be opened using \code{\link{browseURL}}}
 

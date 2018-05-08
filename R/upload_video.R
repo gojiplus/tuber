@@ -61,12 +61,21 @@ upload_video <- function(
     p <- match.arg(p, choices = c("creativeCommon", "youtube"))
   }
 
+  if ("tags" %in% names(snippet)) {
+    tags <- snippet$tags
+    if (length(tags) == 1) {
+      tags = list(tags)
+    }
+    snippet$tags = tags
+  }
+
+
 
   metadata <- tempfile()
-  body <- list(
-    snippet = snippet,
-    status = status
-  )
+  body <- list()
+  body$snippet = snippet
+  body$status = status
+
   body <- jsonlite::toJSON(body, auto_unbox = TRUE)
   writeLines(body, metadata)
 
