@@ -38,5 +38,8 @@ and the URL of the uploaded
 Upload Video to Youtube
 }
 \note{
-
+The information for `status` and `snippet` are at
+\url{https://developers.google.com/youtube/v3/docs/videos#resource}
+but the subset of these fields to pass in are located at:
+\url{https://developers.google.com/youtube/v3/docs/videos/insert}
 }
