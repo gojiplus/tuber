@@ -1,6 +1,6 @@
 Package: tuber
 Title: Client for the YouTube API
-Version: 0.9.7
+Version: 0.9.7.9001
 Authors@R: c(person("Gaurav", "Sood", email = "gsood07@gmail.com", role = c("aut", "cre")),
              person("Kate", "Lyons", email = "k.lyons7@gmail.com", role = "ctb"),
              person("John", "Muschelli", email = "muschellij2@gmail.com", role = "ctb"))
@@ -20,7 +20,8 @@ Imports:
     plyr,
     dplyr,
     purrr,
-    jsonlite
+    jsonlite,
+    utils
 VignetteBuilder: knitr
 Suggests:
     knitr (>= 1.11),
@@ -29,3 +30,4 @@ Suggests:
     xml2,
     lintr
 RoxygenNote: 6.0.1.9000
+Encoding: UTF-8 

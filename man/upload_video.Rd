@@ -4,8 +4,8 @@
 \alias{upload_video}
 \title{Upload Video to Youtube}
 \usage{
-upload_video(file, snippet = list(), query = NULL,
-  part = "snippet,status", ...)
+upload_video(file, snippet = NULL, status = list(privacyStatus = "public"),
+  query = NULL, open_url = FALSE, ...)
 }
 \arguments{
 \item{file}{Filename of the video locally}
@@ -15,19 +15,40 @@ and `title`.  See
 \url{https://developers.google.com/youtube/v3/docs/videos#resource} for
 other fields.  Coerced to a JSON object}
 
+\item{status}{Additional fields to be put into the \code{status} input.
+options for `status` are `license` (which should hold:
+`creativeCommon`, or `youtube`), `privacyStatus`, `publicStatsViewable`,
+`publishAt`.}
+
 \item{query}{Fields for `query` in `POST`}
 
-\item{part}{The part parameter serves two purposes in this operation.
-It identifies the properties that the write operation will set as
-well as the properties that the API response will include.
-See \url{https://developers.google.com/youtube/v3/docs/videos/insert#usage}}
+\item{open_url}{Should the video be opened using \code{\link{browseURL}}}
 
 \item{...}{Additional arguments to send to \code{\link{tuber_POST}} and
 therefore \code{\link{POST}}}
 }
 \value{
-A list of the response object from the \code{POST} and content
+A list of the response object from the \code{POST}, content,
+and the URL of the uploaded
 }
 \description{
 Upload Video to Youtube
+}
+\note{
+The information for `status` and `snippet` are at
+\url{https://developers.google.com/youtube/v3/docs/videos#resource}
+but the subset of these fields to pass in are located at:
+\url{https://developers.google.com/youtube/v3/docs/videos/insert}
+The `part`` parameter serves two purposes in this operation.
+It identifies the properties that the write operation will set, this will be
+automatically detected by the names of `body`.
+See \url{https://developers.google.com/youtube/v3/docs/videos/insert#usage}
+}
+\examples{
+snippet = list(
+title = "Test Video",
+description = "This is just a random test.",
+tags = c("r language", "r programming", "data analysis")
+)
+status = list(privacyStatus = "private")
 }
