@@ -46,8 +46,6 @@ upload_video <- function(
   ...
 ) {
 
-
-
   if ("privacyStatus" %in% names(status)) {
     p <- status$privacyStatus
     p <- match.arg(p, choices = c("private", "public", "unlisted"))
@@ -61,25 +59,26 @@ upload_video <- function(
   if ("tags" %in% names(snippet)) {
     tags <- snippet$tags
     if (length(tags) == 1) {
-      tags = list(tags)
+      tags <- list(tags)
     }
-    snippet$tags = tags
+    snippet$tags <- tags
   }
-
-
 
   metadata <- tempfile()
   body <- list()
-  if (length(snippet) == 0) {
-    snippet = NULL
-  }
-  if (length(status) == 0) {
-    status = NULL
-  }
-  body$snippet = snippet
-  body$status = status
 
-  part = paste(names(body), collapse = ",")
+  if (length(snippet) == 0) {
+    snippet <- NULL
+  }
+
+  if (length(status) == 0) {
+    status <- NULL
+  }
+
+  body$snippet <- snippet
+  body$status <- status
+
+  part <- paste(names(body), collapse = ",")
 
   query <- as.list(query)
   query$part <- part
@@ -87,23 +86,17 @@ upload_video <- function(
   body <- jsonlite::toJSON(body, auto_unbox = TRUE)
   writeLines(body, metadata)
 
-  # body <- list(
-  #   snippet = jsonlite::toJSON(snippet, auto_unbox = auto_unbox),
-  #   status = jsonlite::toJSON(status, auto_unbox = auto_unbox),
-  #   y = httr::upload_file(file))
-
   body <- list(
     metadata = upload_file(metadata, type = "application/json; charset=UTF-8"),
     y = httr::upload_file(file))
 
+  tuber:::yt_check_token()
 
-
-  yt_check_token()
-  # need diff from regular tuber_POST because of upload/
   req <- httr::POST("https://www.googleapis.com/upload/youtube/v3/videos",
                     body = body, query = query,
                     config(token = getOption("google_token")),
                     ...)
+
   if (httr::status_code(req) > 300)  {
     print(body)
     print(paste0("File is: ", metadata))
@@ -113,12 +106,16 @@ upload_video <- function(
     print(httr::content(req)$error)
     stop("Request was bad")
   }
-  tuber_check(req)
+
+  tuber:::tuber_check(req)
+
   res <- content(req)
-  url = paste0("https://www.youtube.com/watch?v=", res$id)
+  url <- paste0("https://www.youtube.com/watch?v=", res$id)
+
   if (open_url) {
     browseURL(url)
   }
+
   list(request = req, content = res,
        url = url)
 }
