@@ -45,7 +45,6 @@ upload_video <- function(
   open_url = FALSE,
   ...
 ) {
-
   if ("privacyStatus" %in% names(status)) {
     p <- status$privacyStatus
     p <- match.arg(p, choices = c("private", "public", "unlisted"))
@@ -90,7 +89,7 @@ upload_video <- function(
     metadata = upload_file(metadata, type = "application/json; charset=UTF-8"),
     y = httr::upload_file(file))
 
-  tuber:::yt_check_token()
+  yt_check_token()
 
   req <- httr::POST("https://www.googleapis.com/upload/youtube/v3/videos",
                     body = body, query = query,
@@ -107,7 +106,7 @@ upload_video <- function(
     stop("Request was bad")
   }
 
-  tuber:::tuber_check(req)
+  tuber_check(req)
 
   res <- content(req)
   url <- paste0("https://www.youtube.com/watch?v=", res$id)
