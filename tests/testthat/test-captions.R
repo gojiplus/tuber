@@ -9,5 +9,5 @@ test_that("list_captions runs successfully", {
 
   video_id <- "M7FIvfx5J10"
   get_info <- list_caption_tracks(video_id = video_id)
-  expect_that(get_info, is_a("list"))
+  expect_that(get_info, is_a("data.frame"))
 })

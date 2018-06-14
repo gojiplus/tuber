@@ -17,7 +17,7 @@ list_captions <- function(
   ...
 ) {
 
-  part = "id,snippet"
+  part <- "id,snippet"
 
   query <- as.list(query)
   query$part <- part

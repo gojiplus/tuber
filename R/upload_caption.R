@@ -34,18 +34,18 @@ upload_caption <- function(
   ...
 ) {
 
-  snippet = list(
+  snippet <- list(
     videoId = as.character(video_id)
   )
-  snippet$language = language
-  snippet$name = caption_name
-  snippet$isDraft = is_draft
+  snippet$language <- language
+  snippet$name <- caption_name
+  snippet$isDraft <- is_draft
 
   metadata <- tempfile()
 
   body <- list()
-  body$snippet = snippet
-  part = paste(names(body), collapse = ",")
+  body$snippet <- snippet
+  part <- paste(names(body), collapse = ",")
 
   query <- as.list(query)
   query$part <- part
@@ -76,7 +76,7 @@ upload_caption <- function(
   }
   tuber_check(req)
   res <- content(req)
-  url = paste0("https://www.youtube.com/watch?v=", video_id)
+  url <- paste0("https://www.youtube.com/watch?v=", video_id)
   if (open_url) {
     browseURL(url)
   }
