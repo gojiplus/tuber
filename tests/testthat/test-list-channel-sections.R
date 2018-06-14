@@ -16,6 +16,8 @@ test_that("list_channel_sections runs successfully", {
 
 test_that("list_my_channel runs successfully", {
 
+  skip_on_cran()
+
   google_token <- readRDS("token_file.rds")$google_token
   options(google_token = google_token)
 

@@ -6,10 +6,9 @@
 #' therefore \code{\link{GET}}
 #' @return A list of the response object from the \code{GET} and content
 #' about captions
-#' @export
 #'
 #' @examples \dontrun{
-#' video_id = "M7FIvfx5J10"
+#' video_id <- "M7FIvfx5J10"
 #' list_captions(video_id)
 #' }
 list_captions <- function(

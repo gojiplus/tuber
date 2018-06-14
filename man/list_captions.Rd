@@ -23,7 +23,7 @@ Upload Video to Youtube
 }
 \examples{
 \dontrun{
-video_id = "M7FIvfx5J10"
+video_id <- "M7FIvfx5J10"
 list_captions(video_id)
 }
 }
