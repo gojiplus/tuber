@@ -2,7 +2,7 @@
 #'
 #' The function looks for \code{.httr-oauth} in the working directory. If it doesn't find it, it expects an application ID and a secret.
 #' If you want to remove the existing \code{.httr-oauth}, set remove_old_oauth to TRUE. By default, it is set to FALSE.
-#' The function launches a browser to allow you to authorize the application 
+#' The function launches a browser to allow you to authorize the application
 #' 
 #' @param app_id client id; required; no default
 #' @param app_secret client secret; required; no default
