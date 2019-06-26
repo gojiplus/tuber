@@ -1,3 +1,10 @@
+# version 0.9.8
+
+* allows for caption uploading
+* list_my_videos
+* list_captions
+* 
+
 # version 0.9.6
 
 * default of mine changed to NULL from FALSE thank to advice from Miguel Arribas

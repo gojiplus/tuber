@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://soodoku.github.io/tuber//index.html</loc>
+  </url>
+  <url>
     <loc>http://soodoku.github.io/tuber//reference/delete_captions.html</loc>
   </url>
   <url>
@@ -58,6 +61,9 @@
     <loc>http://soodoku.github.io/tuber//reference/list_abuse_report_reasons.html</loc>
   </url>
   <url>
+    <loc>http://soodoku.github.io/tuber//reference/list_captions.html</loc>
+  </url>
+  <url>
     <loc>http://soodoku.github.io/tuber//reference/list_caption_tracks.html</loc>
   </url>
   <url>
@@ -77,6 +83,9 @@
   </url>
   <url>
     <loc>http://soodoku.github.io/tuber//reference/list_langs.html</loc>
+  </url>
+  <url>
+    <loc>http://soodoku.github.io/tuber//reference/list_my_videos.html</loc>
   </url>
   <url>
     <loc>http://soodoku.github.io/tuber//reference/list_regions.html</loc>
@@ -101,6 +110,12 @@
   </url>
   <url>
     <loc>http://soodoku.github.io/tuber//reference/tuber_POST.html</loc>
+  </url>
+  <url>
+    <loc>http://soodoku.github.io/tuber//reference/upload_caption.html</loc>
+  </url>
+  <url>
+    <loc>http://soodoku.github.io/tuber//reference/upload_video.html</loc>
   </url>
   <url>
     <loc>http://soodoku.github.io/tuber//reference/yt_check_token.html</loc>
