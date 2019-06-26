@@ -3,9 +3,14 @@
 :sweet\_potato: tuber: Access YouTube API via R
 -----------------------------------------------
 
-[![Build status](https://ci.appveyor.com/api/projects/status/pgr0wih12gtwvvvx?svg=true)](https://ci.appveyor.com/project/soodoku/tuber) 
-[![Build Status](https://travis-ci.org/soodoku/tuber.svg?branch=master)](https://travis-ci.org/soodoku/tuber) 
+[![Travis Build Status](https://travis-ci.org/soodoku/tuber.svg?branch=master)](https://travis-ci.org/soodoku/tuber)
+[![Appveyor Build status](https://ci.appveyor.com/api/projects/status/pgr0wih12gtwvvvx?svg=true)](https://ci.appveyor.com/project/soodoku/tuber) 
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/tuber)](https://cran.r-project.org/package=tuber) 
 [![codecov](https://codecov.io/gh/soodoku/tuber/branch/master/graph/badge.svg)](https://codecov.io/gh/soodoku/tuber)
+![](http://cranlogs.r-pkg.org/badges/grand-total/tuber)
+[![Research software impact](http://depsy.org/api/package/cran/tuber/badge.svg)](http://depsy.org/package/r/tuber)
+[![Github Stars](https://img.shields.io/github/stars/soodoku/tuber.svg?style=social&label=Github)](https://github.com/soodoku/tuber)
+
 
 Access YouTube API via R. Get comments posted on YouTube videos, get information on how many times a video has been liked, search for videos with particular content, and much more. You can also get closed captions of videos you own. To learn more about the YouTube API, see <https://developers.google.com/youtube/v3/>.
 
