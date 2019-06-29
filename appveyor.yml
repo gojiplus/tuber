@@ -20,6 +20,9 @@ environment:
     R_ARCH: x64
     USE_RTOOLS: true ## to be able to use Remotes (i.e. packages from non-CRAN sources)
 
+  matrix:
+    - R_VERSION: release
+
 artifacts:
   - path: '*.Rcheck\**\*.log'
     name: Logs
