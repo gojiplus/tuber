@@ -13,6 +13,13 @@ build_script:
 test_script:
   - travis-tool.sh run_tests
 
+environment:
+  global:
+    WARNINGS_ARE_ERRORS: 1
+    _R_CHECK_FORCE_SUGGESTS_: 0
+    R_ARCH: x64
+    USE_RTOOLS: true ## to be able to use Remotes (i.e. packages from non-CRAN sources)
+
 artifacts:
   - path: '*.Rcheck\**\*.log'
     name: Logs
