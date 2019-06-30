@@ -1,3 +1,5 @@
+# DO NOT CHANGE the "init" and "install" sections below
+
 # Download script file from GitHub
 init:
   ps: |
@@ -7,11 +9,23 @@ init:
 install:
   ps: Bootstrap
 
+# Adapt as necessary starting from here
+
 build_script:
+  - Rscript -e "source('http://bioconductor.org/biocLite.R')"
   - travis-tool.sh install_deps
+  - travis-tool.sh r_binary_install curl
 
 test_script:
   - travis-tool.sh run_tests
+
+on_failure:
+  - 7z a failure.zip *.Rcheck\*
+  - appveyor PushArtifact failure.zip
+
+before_test:
+  - cinst pandoc
+  - ps: $env:Path += ";C:\Program Files (x86)\Pandoc\"
 
 environment:
   global:
@@ -41,3 +55,6 @@ artifacts:
 
   - path: '\*_*.zip'
     name: Bits
+
+cache:
+  - C:\RLibrary
