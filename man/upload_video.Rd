@@ -4,8 +4,8 @@
 \alias{upload_video}
 \title{Upload Video to Youtube}
 \usage{
-upload_video(file, snippet = NULL, status = list(privacyStatus = "public"),
-  query = NULL, open_url = FALSE, ...)
+upload_video(file, snippet = NULL, status = list(privacyStatus =
+  "public"), query = NULL, open_url = FALSE, ...)
 }
 \arguments{
 \item{file}{Filename of the video locally}

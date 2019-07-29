@@ -4,8 +4,9 @@
 \alias{list_videos}
 \title{List (Most Popular) Videos}
 \usage{
-list_videos(part = "contentDetails", max_results = 50, page_token = NULL,
-  hl = NULL, region_code = NULL, video_category_id = NULL, ...)
+list_videos(part = "contentDetails", max_results = 50,
+  page_token = NULL, hl = NULL, region_code = NULL,
+  video_category_id = NULL, ...)
 }
 \arguments{
 \item{part}{Required. Comma separated string including one or more of the following: \code{contentDetails, 
