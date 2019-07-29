@@ -5,19 +5,19 @@
 \title{Get Playlist Items}
 \usage{
 get_playlist_items(filter = NULL, part = "contentDetails",
-  max_results = 50, video_id = NULL, page_token = NULL, simplify = TRUE,
-  ...)
+  max_results = 50, video_id = NULL, page_token = NULL,
+  simplify = TRUE, ...)
 }
 \arguments{
 \item{filter}{string; Required.
 named vector of length 1
-potential names of the entry in the vector: 
+potential names of the entry in the vector:
 \code{item_id}: comma-separated list of one or more unique playlist item IDs.
 \code{playlist_id}: YouTube playlist ID.}
 
 \item{part}{Required. Comma separated string including one or more of the following: \code{contentDetails, id, snippet, status}. Default: \code{contentDetails}.}
 
-\item{max_results}{Maximum number of items that should be returned. Integer. Optional. Default is 50. 
+\item{max_results}{Maximum number of items that should be returned. Integer. Optional. Default is 50.
 If over 50, all the results are returned.}
 
 \item{video_id}{Optional. request should return only the playlist items that contain the specified video.}
@@ -39,9 +39,9 @@ Get Playlist Items
 
 # Set API token via yt_oauth() first
 
-get_playlist_items(filter = 
+get_playlist_items(filter =
                        c(playlist_id = "PLrEnWoR732-CN09YykVof2lxdI3MLOZda"))
-get_playlist_items(filter = 
+get_playlist_items(filter =
                        c(playlist_id = "PL0fOlXVeVW9QMO3GoESky4yDgQfK2SsXN"),
                        max_results = 51)
 }

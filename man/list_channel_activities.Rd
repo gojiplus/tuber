@@ -4,9 +4,9 @@
 \alias{list_channel_activities}
 \title{List Channel Activity}
 \usage{
-list_channel_activities(filter = NULL, part = "snippet", max_results = 50,
-  page_token = NULL, published_after = NULL, published_before = NULL,
-  region_code = NULL, simplify = TRUE, ...)
+list_channel_activities(filter = NULL, part = "snippet",
+  max_results = 50, page_token = NULL, published_after = NULL,
+  published_before = NULL, region_code = NULL, simplify = TRUE, ...)
 }
 \arguments{
 \item{filter}{string; Required.
