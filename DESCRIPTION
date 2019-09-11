@@ -1,6 +1,6 @@
 Package: tuber
 Title: Client for the YouTube API
-Version: 0.9.8
+Version: 0.9.9
 Authors@R: c(person("Gaurav", "Sood", email = "gsood07@gmail.com", role = c("aut", "cre")),
              person("Kate", "Lyons", email = "k.lyons7@gmail.com", role = "ctb"),
              person("John", "Muschelli", email = "muschellij2@gmail.com", role = "ctb"))
@@ -28,5 +28,8 @@ Suggests:
     testthat,
     rmarkdown,
     xml2,
-    lintr
+    lintr,
+    hms
 RoxygenNote: 6.1.1
+Encoding: UTF-8
+
