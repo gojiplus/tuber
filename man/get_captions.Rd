@@ -4,7 +4,8 @@
 \alias{get_captions}
 \title{Get Particular Caption Track}
 \usage{
-get_captions(id = NULL, lang = "en", format = "sbv", ...)
+get_captions(id = NULL, lang = "en", format = "sbv", as_raw = TRUE,
+  ...)
 }
 \arguments{
 \item{id}{String. Required. id of the caption track that is being retrieved}
@@ -13,13 +14,16 @@ get_captions(id = NULL, lang = "en", format = "sbv", ...)
 
 \item{format}{Optional. Default is \code{sbv}.}
 
+\item{as_raw}{If \code{FALSE} the captions be converted to a character
+string versus a raw vector}
+
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
 String.
 }
 \description{
-For getting captions from the v3 API, you must specify the id resource. 
+For getting captions from the v3 API, you must specify the id resource.
 Check \code{\link{list_caption_tracks}} for more information.
 }
 \examples{

@@ -10,20 +10,32 @@
 NULL
 
 #' Check if authentication token is in options
-#'
+#' @return A Token2.0 class
+#' @export
+yt_token <- function() {
+  getOption("google_token")
+}
 
+#' @export
+#' @rdname yt_token
+yt_authorized <- function() {
+  !is.null(yt_token())
+}
+
+#' @rdname yt_token
 yt_check_token <- function() {
 
-  app_token <- getOption("google_token")
-    if (is.null(app_token)) stop("Please get a token using yt_oauth().\n")
+  if (!yt_authorized()) {
+    stop("Please get a token using yt_oauth().\n")
+  }
 
 }
 
 #'
 #' GET
-#' 
-#' @param path path to specific API request URL 
-#' @param query query list 
+#'
+#' @param path path to specific API request URL
+#' @param query query list
 #' @param \dots Additional arguments passed to \code{\link[httr]{GET}}.
 #' @return list
 
@@ -42,12 +54,12 @@ tuber_GET <- function(path, query, ...) {
 
 #'
 #' POST
-#' 
-#' @param path path to specific API request URL 
+#'
+#' @param path path to specific API request URL
 #' @param query query list
-#' @param body passing image through body 
+#' @param body passing image through body
 #' @param \dots Additional arguments passed to \code{\link[httr]{GET}}.
-#' 
+#'
 #' @return list
 
 tuber_POST <- function(path, query, body = "", ...) {
@@ -66,9 +78,9 @@ tuber_POST <- function(path, query, body = "", ...) {
 
 #'
 #' DELETE
-#' 
-#' @param path path to specific API request URL 
-#' @param query query list 
+#'
+#' @param path path to specific API request URL
+#' @param query query list
 #' @param \dots Additional arguments passed to \code{\link[httr]{GET}}.
 #' @return list
 
@@ -87,7 +99,7 @@ tuber_DELETE <- function(path, query, ...) {
 
 #'
 #' Request Response Verification
-#' 
+#'
 #' @param  req request
 #' @return in case of failure, a message
 
