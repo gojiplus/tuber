@@ -1,6 +1,6 @@
-^.*\.Rproj$
+^.*/.Rproj$
 ^README.Rmd$
-^\.Rproj\.user$
+^/.Rproj/.user$
 ^.github$
 ^.httr-oauth$
 ^dev$
@@ -10,9 +10,9 @@
 ^codecov.yml$
 ^appveyor.yml$
 ^cran-comments.md$
-^tests\testthat\yt_key.enc$
-^\.httr-oauth$
-^_pkgdown\.yml$
+^tests/testthat/yt_key.enc$
+^/.httr-oauth$
+^_pkgdown/.yml$
 ^revdep$
 .lintr
 ^data-raw$
