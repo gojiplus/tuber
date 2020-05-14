@@ -82,5 +82,6 @@ get_playlist_items <- function (filter = NULL, part = "contentDetails",
         recursive = FALSE),
       as.data.frame, stringsAsFactors = FALSE)
     )
-  }  res
+  }  
+  res
 }
