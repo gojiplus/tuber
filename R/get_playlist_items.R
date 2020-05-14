@@ -76,20 +76,11 @@ get_playlist_items <- function (filter = NULL, part = "contentDetails",
   }
 
   if (simplify == TRUE) {
-    if (length(res) > 5) {
-      res <- append(res, list(NA), length(res) - 1)
-      res <- plyr::ldply(lapply(
-        unlist(
-          res[seq(5, length(res), 6)],
-          recursive = FALSE),
-        as.data.frame, stringsAsFactors = FALSE)
-      )
-    } else {
-      res <- plyr::ldply(lapply(
-        unlist(res[length(res)], recursive = FALSE),
-        as.data.frame, stringsAsFactors = FALSE)
-      )
-    }
-  }
-  res
+    res <- do.call(rbind,lapply(
+      unlist(
+        res[which(names(res) == "items")],
+        recursive = FALSE),
+      as.data.frame, stringsAsFactors = FALSE)
+    )
+  }  res
 }
