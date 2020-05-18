@@ -4,9 +4,15 @@
 \alias{get_subscriptions}
 \title{Get Subscriptions}
 \usage{
-get_subscriptions(filter = NULL, part = "contentDetails",
-  max_results = 50, for_channel_id = NULL, order = NULL,
-  page_token = NULL, ...)
+get_subscriptions(
+  filter = NULL,
+  part = "contentDetails",
+  max_results = 50,
+  for_channel_id = NULL,
+  order = NULL,
+  page_token = NULL,
+  ...
+)
 }
 \arguments{
 \item{filter}{string; Required.

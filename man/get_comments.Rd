@@ -4,8 +4,15 @@
 \alias{get_comments}
 \title{Get Comments}
 \usage{
-get_comments(filter = NULL, part = "snippet", max_results = 100,
-  text_format = "html", page_token = NULL, simplify = TRUE, ...)
+get_comments(
+  filter = NULL,
+  part = "snippet",
+  max_results = 100,
+  text_format = "html",
+  page_token = NULL,
+  simplify = TRUE,
+  ...
+)
 }
 \arguments{
 \item{filter}{string; Required.

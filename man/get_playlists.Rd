@@ -4,8 +4,15 @@
 \alias{get_playlists}
 \title{Get Playlists}
 \usage{
-get_playlists(filter = NULL, part = "snippet", max_results = 50,
-  hl = NULL, page_token = NULL, simplify = TRUE, ...)
+get_playlists(
+  filter = NULL,
+  part = "snippet",
+  max_results = 50,
+  hl = NULL,
+  page_token = NULL,
+  simplify = TRUE,
+  ...
+)
 }
 \arguments{
 \item{filter}{string; Required.

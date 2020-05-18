@@ -4,8 +4,14 @@
 \alias{list_caption_tracks}
 \title{List Captions of a Video}
 \usage{
-list_caption_tracks(part = "snippet", video_id = NULL, lang = "en",
-  id = NULL, simplify = TRUE, ...)
+list_caption_tracks(
+  part = "snippet",
+  video_id = NULL,
+  lang = "en",
+  id = NULL,
+  simplify = TRUE,
+  ...
+)
 }
 \arguments{
 \item{part}{Caption resource requested. Required. Comma separated list of one or more of the 

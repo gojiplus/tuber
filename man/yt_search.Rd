@@ -4,13 +4,27 @@
 \alias{yt_search}
 \title{Search YouTube}
 \usage{
-yt_search(term = NULL, max_results = 50, channel_id = NULL,
-  channel_type = NULL, type = "video", event_type = NULL,
-  location = NULL, location_radius = NULL, published_after = NULL,
-  published_before = NULL, video_definition = "any",
-  video_caption = "any", video_license = "any",
-  video_syndicated = "any", video_type = "any", simplify = TRUE,
-  get_all = TRUE, page_token = NULL, ...)
+yt_search(
+  term = NULL,
+  max_results = 50,
+  channel_id = NULL,
+  channel_type = NULL,
+  type = "video",
+  event_type = NULL,
+  location = NULL,
+  location_radius = NULL,
+  published_after = NULL,
+  published_before = NULL,
+  video_definition = "any",
+  video_caption = "any",
+  video_license = "any",
+  video_syndicated = "any",
+  video_type = "any",
+  simplify = TRUE,
+  get_all = TRUE,
+  page_token = NULL,
+  ...
+)
 }
 \arguments{
 \item{term}{Character. Search term; required; no default

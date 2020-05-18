@@ -3,8 +3,8 @@
 \docType{package}
 \name{tuber}
 \alias{tuber}
-\alias{tuber-package}
 \title{\pkg{tuber} provides access to the YouTube API V3.}
 \description{
-\pkg{tuber} provides access to the YouTube API V3.
+\pkg{tuber} provides access to the YouTube API V3 via
+RESTful calls.
 }

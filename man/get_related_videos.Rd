@@ -4,8 +4,12 @@
 \alias{get_related_videos}
 \title{Get Related Videos}
 \usage{
-get_related_videos(video_id = NULL, max_results = 50,
-  safe_search = "none", ...)
+get_related_videos(
+  video_id = NULL,
+  max_results = 50,
+  safe_search = "none",
+  ...
+)
 }
 \arguments{
 \item{video_id}{Character. Required. No default.}
