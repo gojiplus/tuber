@@ -4,9 +4,15 @@
 \alias{get_comment_threads}
 \title{Get Comments Threads}
 \usage{
-get_comment_threads(filter = NULL, part = "snippet",
-  text_format = "html", simplify = TRUE, max_results = 100,
-  page_token = NULL, ...)
+get_comment_threads(
+  filter = NULL,
+  part = "snippet",
+  text_format = "html",
+  simplify = TRUE,
+  max_results = 100,
+  page_token = NULL,
+  ...
+)
 }
 \arguments{
 \item{filter}{string; Required.

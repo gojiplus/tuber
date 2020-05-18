@@ -4,8 +4,13 @@
 \alias{list_channel_videos}
 \title{Returns List of Requested Channel Videos}
 \usage{
-list_channel_videos(channel_id = NULL, max_results = 50,
-  page_token = NULL, hl = "en-US", ...)
+list_channel_videos(
+  channel_id = NULL,
+  max_results = 50,
+  page_token = NULL,
+  hl = "en-US",
+  ...
+)
 }
 \arguments{
 \item{channel_id}{String. ID of the channel. Required.}

@@ -4,8 +4,16 @@
 \alias{upload_caption}
 \title{Upload Video Caption to Youtube}
 \usage{
-upload_caption(file, video_id, language = "en-US", caption_name,
-  is_draft = FALSE, query = NULL, open_url = FALSE, ...)
+upload_caption(
+  file,
+  video_id,
+  language = "en-US",
+  caption_name,
+  is_draft = FALSE,
+  query = NULL,
+  open_url = FALSE,
+  ...
+)
 }
 \arguments{
 \item{file}{Filename of the caption, probably `.srt`}

@@ -4,8 +4,7 @@
 \alias{get_captions}
 \title{Get Particular Caption Track}
 \usage{
-get_captions(id = NULL, lang = "en", format = "sbv", as_raw = TRUE,
-  ...)
+get_captions(id = NULL, lang = "en", format = "sbv", as_raw = TRUE, ...)
 }
 \arguments{
 \item{id}{String. Required. id of the caption track that is being retrieved}

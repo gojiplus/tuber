@@ -4,8 +4,7 @@
 \alias{list_channel_sections}
 \title{List Channel Sections}
 \usage{
-list_channel_sections(filter = NULL, part = "snippet", hl = NULL,
-  ...)
+list_channel_sections(filter = NULL, part = "snippet", hl = NULL, ...)
 }
 \arguments{
 \item{filter}{string; Required.

@@ -4,8 +4,13 @@
 \alias{yt_oauth}
 \title{Set up Authorization}
 \usage{
-yt_oauth(app_id = NULL, app_secret = NULL, scope = "ssl",
-  token = ".httr-oauth", ...)
+yt_oauth(
+  app_id = NULL,
+  app_secret = NULL,
+  scope = "ssl",
+  token = ".httr-oauth",
+  ...
+)
 }
 \arguments{
 \item{app_id}{client id; required; no default}
