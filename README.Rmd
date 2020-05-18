@@ -45,7 +45,7 @@ yt_oauth("app_id", "app_password")
 **Note:** If you are on ubuntu, you may have to run the following before doing anything:
 
 ```
-httr::set_config( config( ssl_verifypeer = 0L ) )
+httr::set_config(httr::config( ssl_verifypeer = 0L ) )
 ```
 
 **Get Statistics of a Video**
