@@ -179,7 +179,16 @@ yt_search <- function (term = NULL, max_results = 50, channel_id = NULL,
   if (identical(simplify, TRUE)) {
 
     if (res$pageInfo$totalResults != 0) {
-      simple_res  <- lapply(res$items, function(x) unlist(x$snippet))
+      if (type == "video") {
+
+      simple_res  <- lapply(res$items,
+                                   function(x) {
+                                   c(video_id = x$id$videoId, unlist(x$snippet))
+                              })
+      } else {
+
+       simple_res  <- lapply(res$items, function(x) unlist(x$snippet))
+      }
       resdf       <- ldply(simple_res, rbind)
       return(resdf)
     } else {
