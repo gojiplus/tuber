@@ -102,11 +102,8 @@ yt_search <- function (term = NULL, max_results = 50, channel_id = NULL,
     video_caption <- video_license <- video_definition <-
     video_type <- video_syndicated <- NULL
   }
-
-  # For queries with spaces
-  format_term <- paste0(unlist(strsplit(term, " ")), collapse = "%20")
-
-  querylist <- list(part = "snippet", q = format_term, maxResults = max_results,
+  
+  querylist <- list(part = "snippet", q = term, maxResults = max_results,
                     channelId = channel_id, type = type,
                     channelType = channel_type, eventType = event_type,
                     location = location,
