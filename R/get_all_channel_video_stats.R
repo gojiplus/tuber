@@ -41,19 +41,19 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
   res_df <- do.call(what = bind_rows, lapply(res, data.frame))
 
   details_tot <- data.frame(id = NA, title = NA,
-                            publishedAt = NA, description = NA,
+                            publication_date = NA, description = NA,
                             channelId = NA, channelTitle = NA)
 
   for (p in 1:length(details)) {
     id <- details[[p]]$items[[1]]$id
     title <- details[[p]]$items[[1]]$snippet$title
-    publishedAt <- details[[p]]$items[[1]]$snippet$publishedAt
+    publication_date <- details[[p]]$items[[1]]$snippet$publishedAt
     description <- details[[p]]$items[[1]]$snippet$description
     channelId <- details[[p]]$items[[1]]$snippet$channelId
     channelTitle <- details[[p]]$items[[1]]$snippet$channelTitle
 
     detail <- data.frame(id = id, title = title,
-                         publishedAt = publishedAt, description = description,
+                         publication_date = publication_date, description = description,
                          channelId = channelId, channelTitle = channelTitle)
     details_tot <- rbind(detail, details_tot)
   }
