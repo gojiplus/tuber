@@ -109,6 +109,13 @@ tuber_DELETE <- function(path, query, ...) {
 tuber_check <- function(req) {
 
   if (req$status_code < 400) return(invisible())
-
-  stop("HTTP failure: ", req$status_code, "\n", call. = FALSE)
+  out = jsonlite::fromJSON(httr::content(req, as = "text"), flatten = TRUE)
+  msg = try({
+    out$error$message
+  }, silent = TRUE)
+  if (inherits(msg, "try-error")) {
+    msg = ""
+  }
+  msg = paste0(msg, "\n")
+  stop("HTTP failure: ", req$status_code, "\n", msg, call. = FALSE)
 }

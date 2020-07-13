@@ -30,5 +30,5 @@ Suggests:
     xml2,
     lintr,
     hms
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Encoding: UTF-8
