@@ -47,7 +47,7 @@ tuber_GET <- function(path, query, ...) {
   yt_check_token()
 
   req <- GET("https://www.googleapis.com", path = paste0("youtube/v3/", path),
-                  query = query, config(token = getOption("google_token")), ...)
+             query = query, config(token = getOption("google_token")), ...)
 
   tuber_check(req)
   res <- content(req)
@@ -92,7 +92,7 @@ tuber_DELETE <- function(path, query, ...) {
   yt_check_token()
 
   req <- DELETE("https://www.googleapis.com", path = paste0("youtube/v3/", path),
-                  query = query, config(token = getOption("google_token")), ...)
+                query = query, config(token = getOption("google_token")), ...)
 
   tuber_check(req)
   res <- content(req)
@@ -108,13 +108,17 @@ tuber_DELETE <- function(path, query, ...) {
 
 tuber_check <- function(req) {
 
-  if (req$status_code < 400) return(invisible())
-  out = jsonlite::fromJSON(httr::content(req, as = "text"), flatten = TRUE)
-  msg = try({
-    out$error$message
+  if (req$status_code < 400) return(invisible(NULL))
+  orig_out =  httr::content(req, as = "text")
+  out = try({
+    jsonlite::fromJSON(
+      orig_out,
+      flatten = TRUE)
   }, silent = TRUE)
-  if (inherits(msg, "try-error")) {
-    msg = ""
+  if (inherits(out, "try-error")) {
+    msg = orig_out
+  } else {
+    msg = out$error$message
   }
   msg = paste0(msg, "\n")
   stop("HTTP failure: ", req$status_code, "\n", msg, call. = FALSE)
