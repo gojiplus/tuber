@@ -21,3 +21,5 @@
 ^\.Rproj\.user$
 _pkgdown.yml
 ^CRAN-RELEASE$
+^doc$
+^Meta$

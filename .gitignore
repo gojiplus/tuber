@@ -6,3 +6,5 @@ dev
 tests/testthat/yt_key
 tests/testthat/token_file.rds
 vignettes/.httr-oauth
+doc
+Meta
