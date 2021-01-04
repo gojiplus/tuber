@@ -76,12 +76,12 @@ get_playlist_items <- function (filter = NULL, part = "contentDetails",
   }
 
   if (simplify == TRUE) {
-    res <- do.call(rbind,lapply(
+    res <- lapply(
       unlist(
         res[which(names(res) == "items")],
         recursive = FALSE),
       as.data.frame, stringsAsFactors = FALSE)
-    )
+    res <- dplyr::bind_rows(res)
   }
   res
 }
