@@ -244,6 +244,21 @@ res_df <- do.call(rbind, lapply(res, data.frame))
 head(res_df)
 ```
 
+If you need to find a channel ID from a `username`, the `list_channel_resources` function can help. You can use it like:
+
+```{r, eval=FALSE}
+res = list_channel_resources(filter = c(username = "GoogleDevelopers"), part="id")
+
+# Parse out channel_id
+if( !is.null(res$items[[1]]$id) ){
+  channel_id = res$items[[1]]$id
+} else {
+  stop("User not found") 
+}
+# channel_id should be UC_x5XG1OV2P6uZZ5FSM9Ttw
+```
+
+
 ```
 ##            id viewCount likeCount dislikeCount favoriteCount commentCount
 ## 1 91gZ4taDiDE       906         4            1             0            0 
