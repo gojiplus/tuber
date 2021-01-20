@@ -76,12 +76,23 @@ get_playlist_items <- function (filter = NULL, part = "contentDetails",
   }
 
   if (simplify == TRUE) {
-    res <- do.call(rbind,lapply(
-      unlist(
-        res[which(names(res) == "items")],
-        recursive = FALSE),
-      as.data.frame, stringsAsFactors = FALSE)
-    )
+
+    # Merge the separate results lists as one large list
+
+    allResultsList <- unlist(
+      res[which(names(res) == "items")],
+      recursive = FALSE)
+
+    # The lists are hierachical. Flatten them as vectors
+    allResultsList <- lapply(allResultsList, unlist)
+
+    # Unpublished videos do not have a publication date. To take this into account
+    # we must use rbind.fill that can accomodate missing data
+    res <- do.call(plyr::rbind.fill,
+                   lapply(allResultsList, function(x){
+                     as.data.frame(t(x), stringsAsFactor = FALSE)
+                   }))
+
   }
   res
 }
