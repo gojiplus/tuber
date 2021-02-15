@@ -32,7 +32,7 @@
 #' list_videos()
 #' }
 
-list_videos <- function (part = "contentDetails", max_results = 50,
+list_videos <- function(part = "contentDetails", max_results = 50,
                          page_token = NULL, hl = NULL, region_code = NULL,
                          video_category_id = NULL, ...) {
 

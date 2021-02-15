@@ -31,7 +31,7 @@
 #' list_caption_tracks(video_id = "yJXTXN4xrI8")
 #' }
 
-list_caption_tracks <- function (part = "snippet", video_id = NULL, lang = "en",
+list_caption_tracks <- function(part = "snippet", video_id = NULL, lang = "en",
                                  id = NULL, simplify = TRUE, ...) {
 
   if (!is.character(video_id)) stop("Must specify a video ID.")

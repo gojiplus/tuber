@@ -19,7 +19,7 @@
 #' list_langs()
 #' }
 
-list_langs <- function (hl = NULL, ...) {
+list_langs <- function(hl = NULL, ...) {
 
   querylist <- list(part = "snippet", hl = hl)
 

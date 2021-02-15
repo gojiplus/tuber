@@ -27,7 +27,7 @@
 #' list_guidecats(c(region_code = "JP"))
 #' }
 
-list_guidecats <- function (filter = NULL, hl = NULL, ...) {
+list_guidecats <- function(filter = NULL, hl = NULL, ...) {
 
   if (!is.character(filter)) {
     stop("filter must be a character vector of length 1.")
@@ -38,7 +38,7 @@ list_guidecats <- function (filter = NULL, hl = NULL, ...) {
                                                       names(translate_filter))])
   names(filter)      <- yt_filter_name
 
-  if (sum(is.na(names(filter)) > 0 )) {
+  if (sum(is.na(names(filter)) > 0)) {
     stop("Filter can only have region_code or category_id.")
   }
 

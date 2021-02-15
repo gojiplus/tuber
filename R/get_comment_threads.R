@@ -49,7 +49,7 @@
 #' get_comment_threads(filter = c(video_id = "N708P-A45D0"), max_results = 101)
 #' }
 
-get_comment_threads <- function (filter = NULL, part = "snippet",
+get_comment_threads <- function(filter = NULL, part = "snippet",
                                 text_format = "html", simplify = TRUE,
                                 max_results = 100, page_token = NULL, ...) {
 

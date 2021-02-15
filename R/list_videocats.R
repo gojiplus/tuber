@@ -22,7 +22,7 @@
 #' list_videocats() # Will throw an error asking for a valid filter with valid region_code
 #' }
 
-list_videocats <- function (filter = NULL, ...) {
+list_videocats <- function(filter = NULL, ...) {
 
   if (!is.character(filter)) {
     stop("Specify by a valid filter with a valid region code.")

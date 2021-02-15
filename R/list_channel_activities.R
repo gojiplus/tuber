@@ -49,7 +49,7 @@
 #'                         published_after = "2016-01-01T00:00:00Z")
 #' }
 
-list_channel_activities <- function (filter = NULL, part = "snippet",
+list_channel_activities <- function(filter = NULL, part = "snippet",
                                     max_results = 50, page_token = NULL,
                                     published_after = NULL,
                                     published_before = NULL, region_code = NULL,

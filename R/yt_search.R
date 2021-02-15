@@ -81,7 +81,7 @@
 #'                                published_after = "2016-01-01T00:00:00Z")
 #' }
 
-yt_search <- function (term = NULL, max_results = 50, channel_id = NULL,
+yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
                       channel_type = NULL, type = "video", event_type = NULL,
                       location = NULL, location_radius = NULL,
                       published_after = NULL, published_before = NULL,
@@ -141,7 +141,7 @@ yt_search <- function (term = NULL, max_results = 50, channel_id = NULL,
                     videoLicense = video_license, pageToken = page_token)
 
   # Sending NULLs to Google seems to short its wiring
-  querylist <- querylist[names(querylist)[sapply(querylist, function (x) !is.null(x))]]
+  querylist <- querylist[names(querylist)[sapply(querylist, function(x) !is.null(x))]]
 
   res <- tuber_GET("search", querylist, ...)
 

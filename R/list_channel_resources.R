@@ -40,7 +40,7 @@
 #' max_results = 10)
 #' }
 
-list_channel_resources <- function (filter = NULL, part = "contentDetails",
+list_channel_resources <- function(filter = NULL, part = "contentDetails",
                          max_results = 50, page_token = NULL, hl = "en-US", ...) {
 
   if (max_results < 0 | max_results > 50) {
@@ -52,7 +52,7 @@ list_channel_resources <- function (filter = NULL, part = "contentDetails",
       username or channel_id.")
   }
 
-  if ( length(filter) != 1) stop("filter must be a vector of length 1.")
+  if (length(filter) != 1) stop("filter must be a vector of length 1.")
 
   translate_filter   <- c(channel_id = "id", category_id = "categoryId",
                           username = "forUsername")

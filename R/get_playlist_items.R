@@ -35,7 +35,7 @@
 #'                        max_results = 51)
 #' }
 
-get_playlist_items <- function (filter = NULL, part = "contentDetails",
+get_playlist_items <- function(filter = NULL, part = "contentDetails",
                                 max_results = 50, video_id = NULL,
                                 page_token = NULL, simplify = TRUE, ...) {
 

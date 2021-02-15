@@ -18,7 +18,7 @@
 #' get_stats(video_id="N708P-A45D0")
 #' }
 
-get_stats <- function (video_id = NULL, ...) {
+get_stats <- function(video_id = NULL, ...) {
 
   if (!is.character(video_id)) stop("Must specify a video ID.")
 

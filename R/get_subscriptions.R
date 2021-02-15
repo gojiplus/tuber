@@ -33,7 +33,7 @@
 #' get_subscriptions(filter = c(channel_id = "UChTJTbr5kf3hYazJZO-euHg"))
 #' }
 
-get_subscriptions <- function (filter = NULL, part = "contentDetails",
+get_subscriptions <- function(filter = NULL, part = "contentDetails",
                                max_results = 50, for_channel_id = NULL,
                                order = NULL, page_token = NULL, ...) {
 

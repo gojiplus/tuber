@@ -27,7 +27,7 @@
 #' list_channel_sections(c(channel_id = "UCRw8bIz2wMLmfgAgWm903cA"))
 #' }
 
-list_channel_sections <- function (filter = NULL, part = "snippet",
+list_channel_sections <- function(filter = NULL, part = "snippet",
                                    hl = NULL, ...) {
 
   translate_filter   <- c(id = "id", channel_id = "channelId")

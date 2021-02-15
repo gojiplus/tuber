@@ -37,7 +37,7 @@
 #' get_playlists(filter=c(channel_id="UCMtFAi84ehTSYSE9X")) # incorrect Channel ID
 #' }
 
-get_playlists <- function (filter = NULL,
+get_playlists <- function(filter = NULL,
                           part = "snippet",
                           max_results = 50, hl = NULL,
                           page_token = NULL, simplify = TRUE, ...) {

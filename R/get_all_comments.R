@@ -23,7 +23,7 @@
 #' get_all_comments(video_id = "a-UQz7fqR3w")
 #' }
 
-get_all_comments <- function (video_id = NULL, ...) {
+get_all_comments <- function(video_id = NULL, ...) {
 
   querylist <- list(videoId = video_id, part = "id,replies,snippet", maxResults = 100)
 

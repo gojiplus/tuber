@@ -20,7 +20,7 @@
 #' list_regions()
 #' }
 
-list_regions <- function (hl = NULL, ...) {
+list_regions <- function(hl = NULL, ...) {
 
   querylist <- list(part = "snippet")
 

@@ -29,7 +29,7 @@
 #' list_channel_videos(channel_id = "UCXOKEdfOFxsHO_-Su3K8SHg", max_results = 10)
 #' }
 
-list_channel_videos <- function (channel_id = NULL, max_results = 50,
+list_channel_videos <- function(channel_id = NULL, max_results = 50,
                                  page_token = NULL, hl = "en-US", ...) {
 
   if (!is.character(channel_id)) stop("Must specify a channel ID.")

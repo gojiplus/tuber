@@ -49,7 +49,7 @@
 #'              z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk"))
 #' }
 
-get_comments <- function (filter = NULL, part = "snippet", max_results = 100,
+get_comments <- function(filter = NULL, part = "snippet", max_results = 100,
                           text_format = "html", page_token = NULL,
                           simplify = TRUE, ...) {
 

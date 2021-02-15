@@ -34,7 +34,7 @@
 #'             "MbOSt6cQhhFkwETXKur-L9rN")
 #' }
 
-yt_oauth <- function (app_id = NULL, app_secret = NULL, scope = "ssl",
+yt_oauth <- function(app_id = NULL, app_secret = NULL, scope = "ssl",
                       token = ".httr-oauth", ...) {
 
   if (file.exists(token)) {

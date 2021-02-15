@@ -27,7 +27,7 @@
 #' get_related_videos(video_id = "yJXTXN4xrI8")
 #' }
 
-get_related_videos <- function (video_id = NULL, max_results = 50,
+get_related_videos <- function(video_id = NULL, max_results = 50,
                                 safe_search = "none", ...) {
 
   if (!is.character(video_id)) stop("Must specify a video ID.")
