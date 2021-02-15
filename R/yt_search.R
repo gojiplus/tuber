@@ -9,35 +9,57 @@
 #' for videos matching either "boating" or "sailing", set the q parameter value to boating|sailing.
 #' Similarly, to search for videos matching either "boating" or "sailing" but not "fishing",
 #' set the q parameter value to boating|sailing -fishing"
-#' @param max_results Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.
-#' Search results are constrained to a maximum of 500 videos if type is video and we have a value of \code{channel_id}.
+#' @param max_results Maximum number of items that should be returned.
+#' Integer. Optional. Can be between 0 and 50. Default is 50.
+#' Search results are constrained to a maximum of 500 videos if type is
+#' video and we have a value of \code{channel_id}.
 #' @param channel_id Character. Only return search results from this channel; Optional.
-#' @param channel_type Character. Optional. Takes one of two values: \code{'any', 'show'}. Default is \code{'any'}
-#' @param event_type Character. Optional. Takes one of three values: \code{'completed', 'live', 'upcoming'}
-#' @param location  Character.  Optional. Latitude and Longitude within parentheses, e.g. "(37.42307,-122.08427)"
-#' @param location_radius Character.  Optional. e.g. "1500m", "5km", "10000ft", "0.75mi"
-#' @param published_after Character. Optional. RFC 339 Format. For instance, "1970-01-01T00:00:00Z"
-#' @param published_before Character. Optional. RFC 339 Format. For instance, "1970-01-01T00:00:00Z"
-#' @param type Character. Optional. Takes one of three values: \code{'video', 'channel', 'playlist'}. Default is \code{'video'}.
-#' @param video_caption Character. Optional. Takes one of three values: \code{'any'} (return all videos; Default), \code{'closedCaption', 'none'}. Type must be set to video.
-#' @param video_type Character. Optional. Takes one of three values: \code{'any'} (return all videos; Default), \code{'episode'} (return episode of shows), 'movie' (return movies)
+#' @param channel_type Character. Optional. Takes one of two values:
+#' \code{'any', 'show'}. Default is \code{'any'}
+#' @param event_type Character. Optional. Takes one of three values:
+#' \code{'completed', 'live', 'upcoming'}
+#' @param location  Character.  Optional. Latitude and Longitude within
+#' parentheses, e.g. "(37.42307,-122.08427)"
+#' @param location_radius Character.  Optional. e.g. "1500m", "5km",
+#' "10000ft", "0.75mi"
+#' @param published_after Character. Optional. RFC 339 Format.
+#' For instance, "1970-01-01T00:00:00Z"
+#' @param published_before Character. Optional. RFC 339 Format.
+#' For instance, "1970-01-01T00:00:00Z"
+#' @param type Character. Optional. Takes one of three values:
+#' \code{'video', 'channel', 'playlist'}. Default is \code{'video'}.
+#' @param video_caption Character. Optional. Takes one of three values:
+#' \code{'any'} (return all videos; Default), \code{'closedCaption', 'none'}.
+#' Type must be set to video.
+#' @param video_type Character. Optional. Takes one of three values:
+#' \code{'any'} (return all videos; Default), \code{'episode'}
+#' (return episode of shows), 'movie' (return movies)
 #' @param video_syndicated Character. Optional. Takes one of two values:
-#' \code{'any'} (return all videos; Default), \code{'true'} (return only syndicated videos)
+#' \code{'any'} (return all videos; Default), \code{'true'}
+#' (return only syndicated videos)
 #' @param video_definition Character. Optional.
-#' Takes one of three values: \code{'any'} (return all videos; Default), \code{'high', 'standard'}
+#' Takes one of three values: \code{'any'} (return all videos; Default),
+#' \code{'high', 'standard'}
 #' @param video_license Character. Optional.
-#' Takes one of three values: \code{'any'} (return all videos; Default), \code{'creativeCommon'} (return videos with Creative Commons
+#' Takes one of three values: \code{'any'} (return all videos; Default),
+#' \code{'creativeCommon'} (return videos with Creative Commons
 #' license), \code{'youtube'} (return videos with standard YouTube license).
-#' @param simplify Boolean. Return a data.frame if \code{TRUE}. Default is \code{TRUE}.
+#' @param simplify Boolean. Return a data.frame if \code{TRUE}.
+#' Default is \code{TRUE}.
 #' If \code{TRUE}, it returns a list that carries additional information.
-#' @param page_token specific page in the result set that should be returned, optional
-#' @param get_all get all results, iterating through all the results pages. Default is \code{TRUE}.
+#' @param page_token specific page in the result set that should be
+#' returned, optional
+#' @param get_all get all results, iterating through all the results
+#' pages. Default is \code{TRUE}.
 #' Result is a \code{data.frame}. Optional.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'
-#' @return data.frame with 16 elements: \code{video_id, publishedAt, channelId, title, description,
-#' thumbnails.default.url, thumbnails.default.width, thumbnails.default.height, thumbnails.medium.url,
-#' thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url, thumbnails.high.width,
+#' @return data.frame with 16 elements: \code{video_id, publishedAt,
+#' channelId, title, description,
+#' thumbnails.default.url, thumbnails.default.width, thumbnails.default.height,
+#' thumbnails.medium.url,
+#' thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url,
+#' thumbnails.high.width,
 #' thumbnails.high.height, channelTitle, liveBroadcastContent}
 #'
 #' @export

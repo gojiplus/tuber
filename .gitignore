@@ -8,3 +8,4 @@ tests/testthat/token_file.rds
 vignettes/.httr-oauth
 doc
 Meta
+.lintr_cache

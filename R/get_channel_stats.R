@@ -1,11 +1,12 @@
 #' Get statistics of a Channel
 #'
 #' @param channel_id Character. Id of the channel
-#' @param mine Boolean. TRUE if you want to fetch stats of your own channel. Default is NULL. 
+#' @param mine Boolean. TRUE if you want to fetch stats of your own channel. Default is NULL.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'
 #' @return nested named list with top element names:
-#' \code{kind, etag, id, snippet (list of details of the channel including title), statistics (list of 5)}
+#' \code{kind, etag, id, snippet (list of details of the channel
+#' including title), statistics (list of 5)}
 #'
 #' If the \code{channel_id} is mistyped or there is no information, an empty list is returned
 #'

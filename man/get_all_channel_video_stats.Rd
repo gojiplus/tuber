@@ -15,7 +15,9 @@ get_all_channel_video_stats(channel_id = NULL, mine = FALSE, ...)
 }
 \value{
 nested named list with top element names:
-\code{kind, etag, id, snippet (list of details of the channel including title), statistics (list of 5)}
+\code{kind, etag, id,}
+\code{snippet (list of details of the channel including title)}
+\code{, statistics (list of 5)}
 
 If the \code{channel_id} is mistyped or there is no information, an empty list is returned
 }

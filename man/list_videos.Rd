@@ -15,19 +15,27 @@ list_videos(
 )
 }
 \arguments{
-\item{part}{Required. Comma separated string including one or more of the following: \code{contentDetails, 
-fileDetails, id, liveStreamingDetails, localizations, player, processingDetails, recordingDetails, 
-snippet, statistics, status, suggestions, topicDetails}. Default: \code{contentDetails}.}
+\item{part}{Required. Comma separated string including one or more of the
+following: \code{contentDetails,
+fileDetails, id, liveStreamingDetails, localizations, player,
+processingDetails, recordingDetails,
+snippet, statistics, status, suggestions, topicDetails}. Default:
+\code{contentDetails}.}
 
-\item{max_results}{Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.}
+\item{max_results}{Maximum number of items that should be returned. Integer.
+Optional. Can be between 0 and 50. Default is 50.}
 
-\item{page_token}{specific page in the result set that should be returned, optional}
+\item{page_token}{specific page in the result set that should be returned,
+optional}
 
-\item{hl}{Language used for text values. Optional. Default is \code{en-US}. For other allowed language codes, see \code{\link{list_langs}}.}
+\item{hl}{Language used for text values. Optional. Default is \code{en-US}.
+For other allowed language codes, see \code{\link{list_langs}}.}
 
-\item{region_code}{Character. Required. Has to be a ISO 3166-1 alpha-2 code (see \url{https://www.iso.org/obp/ui/#search}).}
+\item{region_code}{Character. Required. Has to be a ISO 3166-1 alpha-2 code
+(see \url{https://www.iso.org/obp/ui/#search}).}
 
-\item{video_category_id}{the video category for which the chart should be retrieved. See also \code{\link{list_videocats}}.}
+\item{video_category_id}{the video category for which the chart should be
+retrieved. See also \code{\link{list_videocats}}.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }

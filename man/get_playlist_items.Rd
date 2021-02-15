@@ -21,14 +21,19 @@ potential names of the entry in the vector:
 \code{item_id}: comma-separated list of one or more unique playlist item IDs.
 \code{playlist_id}: YouTube playlist ID.}
 
-\item{part}{Required. Comma separated string including one or more of the following: \code{contentDetails, id, snippet, status}. Default: \code{contentDetails}.}
+\item{part}{Required. Comma separated string including one or more of the
+following: \code{contentDetails, id, snippet, status}. Default:
+\code{contentDetails}.}
 
-\item{max_results}{Maximum number of items that should be returned. Integer. Optional. Default is 50.
+\item{max_results}{Maximum number of items that should be returned.
+Integer. Optional. Default is 50.
 If over 50, all the results are returned.}
 
-\item{video_id}{Optional. request should return only the playlist items that contain the specified video.}
+\item{video_id}{Optional. request should return only the playlist
+items that contain the specified video.}
 
-\item{page_token}{specific page in the result set that should be returned, optional}
+\item{page_token}{specific page in the result set that should be
+returned, optional}
 
 \item{simplify}{returns a data.frame rather than a list.}
 

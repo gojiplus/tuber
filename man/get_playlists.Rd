@@ -17,26 +17,33 @@ get_playlists(
 \arguments{
 \item{filter}{string; Required.
 named vector of length 1
-potential names of the entry in the vector: 
+potential names of the entry in the vector:
 \code{channel_id}: ID of the channel
 \code{playlist_id}: YouTube playlist ID.}
 
-\item{part}{Required. One of the following: \code{contentDetails, id, localizations, player, snippet, status}. Default: \code{contentDetails}.}
+\item{part}{Required. One of the following: \code{contentDetails, id,
+localizations, player, snippet, status}. Default: \code{contentDetails}.}
 
-\item{max_results}{Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.}
+\item{max_results}{Maximum number of items that should be returned.
+Integer. Optional. Can be between 0 and 50. Default is 50.}
 
-\item{hl}{Language used for text values. Optional. Default is \code{en-US}. For other allowed language codes, see \code{\link{list_langs}}.}
+\item{hl}{Language used for text values. Optional. Default is \code{en-US}.
+For other allowed language codes, see \code{\link{list_langs}}.}
 
-\item{page_token}{specific page in the result set that should be returned, optional}
+\item{page_token}{specific page in the result set that should be returned,
+optional}
 
-\item{simplify}{Data Type: Boolean. Default is \code{TRUE}. If \code{TRUE} and if part requested is \code{contentDetails}, 
-the function returns a \code{data.frame}. Else a list with all the information returned.}
+\item{simplify}{Data Type: Boolean. Default is \code{TRUE}. If
+\code{TRUE} and if part requested is \code{contentDetails},
+the function returns a \code{data.frame}. Else a list with all the
+information returned.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
 playlists
-When \code{simplify} is \code{TRUE}, a \code{data.frame} with 4 columns is returned:
+When \code{simplify} is \code{TRUE}, a \code{data.frame} with 4
+columns is returned:
 \code{kind, etag, id, contentDetails.itemCount}
 }
 \description{

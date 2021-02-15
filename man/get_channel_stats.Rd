@@ -18,7 +18,8 @@ list_my_channel(...)
 }
 \value{
 nested named list with top element names:
-\code{kind, etag, id, snippet (list of details of the channel including title), statistics (list of 5)}
+\code{kind, etag, id, snippet (list of details of the channel
+including title), statistics (list of 5)}
 
 If the \code{channel_id} is mistyped or there is no information, an empty list is returned
 }

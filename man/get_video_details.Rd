@@ -7,21 +7,27 @@
 get_video_details(video_id = NULL, part = "snippet", ...)
 }
 \arguments{
-\item{video_id}{Comma separated list of IDs of the videos for which details are requested. Required.}
+\item{video_id}{Comma separated list of IDs of the videos for which
+details are requested. Required.}
 
-\item{part}{Comma-separated list of video resource properties requested. Options include:
-\code{contentDetails, fileDetails, id, liveStreamingDetails, localizations, player, processingDetails, 
+\item{part}{Comma-separated list of video resource properties requested.
+Options include:
+\code{contentDetails, fileDetails, id, liveStreamingDetails,
+localizations, player, processingDetails,
 recordingDetails, snippet, statistics, status, suggestions, topicDetails}}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-list. If part is snippet, the list will have the following elements: 
-\code{id} (video id that was passed), \code{publishedAt, channelId, title, description, thumbnails, 
-channelTitle, categoryId, liveBroadcastContent, localized, defaultAudioLanguage}
+list. If part is snippet, the list will have the following elements:
+\code{id} (video id that was passed), \code{publishedAt, channelId,
+ title, description, thumbnails,
+channelTitle, categoryId, liveBroadcastContent, localized,
+defaultAudioLanguage}
 }
 \description{
-Get details such as when the video was published, the title, description, thumbnails, category etc.
+Get details such as when the video was published, the title, description,
+thumbnails, category etc.
 }
 \examples{
 \dontrun{

@@ -35,53 +35,75 @@ for videos matching either "boating" or "sailing", set the q parameter value to 
 Similarly, to search for videos matching either "boating" or "sailing" but not "fishing",
 set the q parameter value to boating|sailing -fishing"}
 
-\item{max_results}{Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.
-Search results are constrained to a maximum of 500 videos if type is video and we have a value of \code{channel_id}.}
+\item{max_results}{Maximum number of items that should be returned.
+Integer. Optional. Can be between 0 and 50. Default is 50.
+Search results are constrained to a maximum of 500 videos if type is
+video and we have a value of \code{channel_id}.}
 
 \item{channel_id}{Character. Only return search results from this channel; Optional.}
 
-\item{channel_type}{Character. Optional. Takes one of two values: \code{'any', 'show'}. Default is \code{'any'}}
+\item{channel_type}{Character. Optional. Takes one of two values:
+\code{'any', 'show'}. Default is \code{'any'}}
 
-\item{type}{Character. Optional. Takes one of three values: \code{'video', 'channel', 'playlist'}. Default is \code{'video'}.}
+\item{type}{Character. Optional. Takes one of three values:
+\code{'video', 'channel', 'playlist'}. Default is \code{'video'}.}
 
-\item{event_type}{Character. Optional. Takes one of three values: \code{'completed', 'live', 'upcoming'}}
+\item{event_type}{Character. Optional. Takes one of three values:
+\code{'completed', 'live', 'upcoming'}}
 
-\item{location}{Character.  Optional. Latitude and Longitude within parentheses, e.g. "(37.42307,-122.08427)"}
+\item{location}{Character.  Optional. Latitude and Longitude within
+parentheses, e.g. "(37.42307,-122.08427)"}
 
-\item{location_radius}{Character.  Optional. e.g. "1500m", "5km", "10000ft", "0.75mi"}
+\item{location_radius}{Character.  Optional. e.g. "1500m", "5km",
+"10000ft", "0.75mi"}
 
-\item{published_after}{Character. Optional. RFC 339 Format. For instance, "1970-01-01T00:00:00Z"}
+\item{published_after}{Character. Optional. RFC 339 Format.
+For instance, "1970-01-01T00:00:00Z"}
 
-\item{published_before}{Character. Optional. RFC 339 Format. For instance, "1970-01-01T00:00:00Z"}
+\item{published_before}{Character. Optional. RFC 339 Format.
+For instance, "1970-01-01T00:00:00Z"}
 
 \item{video_definition}{Character. Optional.
-Takes one of three values: \code{'any'} (return all videos; Default), \code{'high', 'standard'}}
+Takes one of three values: \code{'any'} (return all videos; Default),
+\code{'high', 'standard'}}
 
-\item{video_caption}{Character. Optional. Takes one of three values: \code{'any'} (return all videos; Default), \code{'closedCaption', 'none'}. Type must be set to video.}
+\item{video_caption}{Character. Optional. Takes one of three values:
+\code{'any'} (return all videos; Default), \code{'closedCaption', 'none'}.
+Type must be set to video.}
 
 \item{video_license}{Character. Optional.
-Takes one of three values: \code{'any'} (return all videos; Default), \code{'creativeCommon'} (return videos with Creative Commons
+Takes one of three values: \code{'any'} (return all videos; Default),
+\code{'creativeCommon'} (return videos with Creative Commons
 license), \code{'youtube'} (return videos with standard YouTube license).}
 
 \item{video_syndicated}{Character. Optional. Takes one of two values:
-\code{'any'} (return all videos; Default), \code{'true'} (return only syndicated videos)}
+\code{'any'} (return all videos; Default), \code{'true'}
+(return only syndicated videos)}
 
-\item{video_type}{Character. Optional. Takes one of three values: \code{'any'} (return all videos; Default), \code{'episode'} (return episode of shows), 'movie' (return movies)}
+\item{video_type}{Character. Optional. Takes one of three values:
+\code{'any'} (return all videos; Default), \code{'episode'}
+(return episode of shows), 'movie' (return movies)}
 
-\item{simplify}{Boolean. Return a data.frame if \code{TRUE}. Default is \code{TRUE}.
+\item{simplify}{Boolean. Return a data.frame if \code{TRUE}.
+Default is \code{TRUE}.
 If \code{TRUE}, it returns a list that carries additional information.}
 
-\item{get_all}{get all results, iterating through all the results pages. Default is \code{TRUE}.
+\item{get_all}{get all results, iterating through all the results
+pages. Default is \code{TRUE}.
 Result is a \code{data.frame}. Optional.}
 
-\item{page_token}{specific page in the result set that should be returned, optional}
+\item{page_token}{specific page in the result set that should be
+returned, optional}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-data.frame with 16 elements: \code{video_id, publishedAt, channelId, title, description,
-thumbnails.default.url, thumbnails.default.width, thumbnails.default.height, thumbnails.medium.url,
-thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url, thumbnails.high.width,
+data.frame with 16 elements: \code{video_id, publishedAt,
+channelId, title, description,
+thumbnails.default.url, thumbnails.default.width, thumbnails.default.height,
+thumbnails.medium.url,
+thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url,
+thumbnails.high.width,
 thumbnails.high.height, channelTitle, liveBroadcastContent}
 }
 \description{

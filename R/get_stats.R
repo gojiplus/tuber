@@ -2,18 +2,19 @@
 #'
 #' @param video_id Character. Id of the video. Required.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
-#' 
-#' @return list with 6 elements: \code{id, viewCount, likeCount, dislikeCount, favoriteCount, commentCount}
+#'
+#' @return list with 6 elements: \code{id, viewCount, likeCount,
+#' dislikeCount, favoriteCount, commentCount}
 #'
 #' @export
-#' 
+#'
 #' @references \url{https://developers.google.com/youtube/v3/docs/videos/list#parameters}
-#' 
+#'
 #' @examples
 #' \dontrun{
-#' 
+#'
 #' # Set API token via yt_oauth() first
-#' 
+#'
 #' get_stats(video_id="N708P-A45D0")
 #' }
 
