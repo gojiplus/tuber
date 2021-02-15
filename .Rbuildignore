@@ -14,7 +14,6 @@
 ^\.httr-oauth$
 ^_pkgdown\.yml$
 ^revdep$
-.lintr
 ^data-raw$
 ^emoji_vignette$
 ^.*\.Rproj$
@@ -23,3 +22,4 @@ _pkgdown.yml
 ^CRAN-RELEASE$
 ^doc$
 ^Meta$
+^\.lintr$
