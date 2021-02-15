@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Returns List of Requested Channel Resources — list_channel_resources • tuber</title>
+<title>Read SBV file — read_sbv • tuber</title>
 
 
 <!-- jquery -->
@@ -45,8 +45,8 @@
 
 
 
-<meta property="og:title" content="Returns List of Requested Channel Resources — list_channel_resources" />
-<meta property="og:description" content="Returns List of Requested Channel Resources" />
+<meta property="og:title" content="Read SBV file — read_sbv" />
+<meta property="og:description" content="Read SBV file" />
 
 
 
@@ -126,86 +126,42 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Returns List of Requested Channel Resources</h1>
-    <small class="dont-index">Source: <a href='http://github.com/soodoku/tuber/blob/master/R/list_channel_resources.R'><code>R/list_channel_resources.R</code></a></small>
-    <div class="hidden name"><code>list_channel_resources.Rd</code></div>
+    <h1>Read SBV file</h1>
+    <small class="dont-index">Source: <a href='http://github.com/soodoku/tuber/blob/master/R/read_sbv.R'><code>R/read_sbv.R</code></a></small>
+    <div class="hidden name"><code>read_sbv.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Returns List of Requested Channel Resources</p>
+    <p>Read SBV file</p>
     </div>
 
-    <pre class="usage"><span class='fu'>list_channel_resources</span><span class='op'>(</span>
-  filter <span class='op'>=</span> <span class='cn'>NULL</span>,
-  part <span class='op'>=</span> <span class='st'>"contentDetails"</span>,
-  max_results <span class='op'>=</span> <span class='fl'>50</span>,
-  page_token <span class='op'>=</span> <span class='cn'>NULL</span>,
-  hl <span class='op'>=</span> <span class='st'>"en-US"</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>read_sbv</span><span class='op'>(</span><span class='va'>file</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>filter</th>
-      <td><p>string; Required.
-named vector of length 1
-potential names of the entry in the vector:
-<code>category_id</code>: YouTube guide category that returns channels associated
-with that category
-<code>username</code>:  YouTube username that returns channel associated with that
- username.
-<code>channel_id</code>: a comma-separated list of the YouTube channel ID(s) for
-the resource(s) that are being retrieved</p></td>
-    </tr>
-    <tr>
-      <th>part</th>
-      <td><p>a comma separated list of channel resource properties that
-response will include string. Required.
-One of the following: <code>auditDetails, brandingSettings, contentDetails,
-contentOwnerDetails, id, invideoPromotion, localizations, snippet,
-statistics, status, topicDetails</code>.
-Default is <code>contentDetails</code>.</p></td>
-    </tr>
-    <tr>
-      <th>max_results</th>
-      <td><p>Maximum number of items that should be returned. Integer.
-Optional. Can be between 0 and 50. Default is 50.</p></td>
-    </tr>
-    <tr>
-      <th>page_token</th>
-      <td><p>specific page in the result set that should be returned,
-optional</p></td>
-    </tr>
-    <tr>
-      <th>hl</th>
-      <td><p>Language used for text values. Optional. Default is <code>en-US</code>.
-For other allowed language codes, see <code><a href='list_langs.html'>list_langs</a></code>.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Additional arguments passed to <code><a href='tuber_GET.html'>tuber_GET</a></code>.</p></td>
+      <th>file</th>
+      <td><p>The file name of the <code>sbv</code> file</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>list</p>
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
-
-    <p><a href='https://developers.google.com/youtube/v3/docs/channels/list'>https://developers.google.com/youtube/v3/docs/channels/list</a></p>
+    <p>A <code>data.frame</code> with start/stop times and the text</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-
-<span class='co'># Set API token via yt_oauth() first</span>
-
-<span class='fu'>list_channel_resources</span><span class='op'>(</span>filter <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>channel_id <span class='op'>=</span> <span class='st'>"UCT5Cx1l4IS3wHkJXNyuj4TA"</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'>list_channel_resources</span><span class='op'>(</span>filter <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>username <span class='op'>=</span> <span class='st'>"latenight"</span><span class='op'>)</span>, part <span class='op'>=</span> <span class='st'>"id, contentDetails"</span><span class='op'>)</span>
-<span class='fu'>list_channel_resources</span><span class='op'>(</span>filter <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>username <span class='op'>=</span> <span class='st'>"latenight"</span><span class='op'>)</span>, part <span class='op'>=</span> <span class='st'>"id, contentDetails"</span>,
-max_results <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='yt_token.html'>yt_authorized</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>{</span>
+<span class='va'>vids</span> <span class='op'>&lt;-</span> <span class='fu'><a href='list_my_videos.html'>list_my_videos</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='list_caption_tracks.html'>list_caption_tracks</a></span><span class='op'>(</span>video_id <span class='op'>=</span> <span class='va'>vids</span><span class='op'>$</span><span class='va'>contentDetails.videoId</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span>
+<span class='va'>cap</span> <span class='op'>&lt;-</span> <span class='fu'><a href='get_captions.html'>get_captions</a></span><span class='op'>(</span>id <span class='op'>=</span> <span class='va'>res</span><span class='op'>$</span><span class='va'>id</span>, as_raw <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='va'>tfile</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span>fileext <span class='op'>=</span> <span class='st'>".sbv"</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/writeLines.html'>writeLines</a></span><span class='op'>(</span><span class='va'>cap</span>, <span class='va'>tfile</span><span class='op'>)</span>
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>read_sbv</span><span class='op'>(</span><span class='va'>tfile</span><span class='op'>)</span>
+<span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span><span class='op'>(</span><span class='st'>"hms"</span>, quietly <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
+  <span class='va'>x</span><span class='op'>$</span><span class='va'>start</span> <span class='op'>&lt;-</span> <span class='fu'>hms</span><span class='fu'>::</span><span class='fu'><a href='https://hms.tidyverse.org/reference/hms.html'>as_hms</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>$</span><span class='va'>start</span><span class='op'>)</span>
+  <span class='va'>x</span><span class='op'>$</span><span class='va'>stop</span> <span class='op'>&lt;-</span> <span class='fu'>hms</span><span class='fu'>::</span><span class='fu'><a href='https://hms.tidyverse.org/reference/hms.html'>as_hms</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>$</span><span class='va'>stop</span><span class='op'>)</span>
+<span class='op'>}</span>
 <span class='op'>}</span>
 </div></pre>
   </div>

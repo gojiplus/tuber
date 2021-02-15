@@ -13,10 +13,10 @@
     <loc>http://soodoku.github.io/tuber//reference/delete_comments.html</loc>
   </url>
   <url>
-    <loc>http://soodoku.github.io/tuber//reference/delete_playlists.html</loc>
+    <loc>http://soodoku.github.io/tuber//reference/delete_playlist_items.html</loc>
   </url>
   <url>
-    <loc>http://soodoku.github.io/tuber//reference/delete_playlist_items.html</loc>
+    <loc>http://soodoku.github.io/tuber//reference/delete_playlists.html</loc>
   </url>
   <url>
     <loc>http://soodoku.github.io/tuber//reference/delete_videos.html</loc>
@@ -34,16 +34,16 @@
     <loc>http://soodoku.github.io/tuber//reference/get_channel_stats.html</loc>
   </url>
   <url>
-    <loc>http://soodoku.github.io/tuber//reference/get_comments.html</loc>
-  </url>
-  <url>
     <loc>http://soodoku.github.io/tuber//reference/get_comment_threads.html</loc>
   </url>
   <url>
-    <loc>http://soodoku.github.io/tuber//reference/get_playlists.html</loc>
+    <loc>http://soodoku.github.io/tuber//reference/get_comments.html</loc>
   </url>
   <url>
     <loc>http://soodoku.github.io/tuber//reference/get_playlist_items.html</loc>
+  </url>
+  <url>
+    <loc>http://soodoku.github.io/tuber//reference/get_playlists.html</loc>
   </url>
   <url>
     <loc>http://soodoku.github.io/tuber//reference/get_related_videos.html</loc>
@@ -61,10 +61,10 @@
     <loc>http://soodoku.github.io/tuber//reference/list_abuse_report_reasons.html</loc>
   </url>
   <url>
-    <loc>http://soodoku.github.io/tuber//reference/list_captions.html</loc>
+    <loc>http://soodoku.github.io/tuber//reference/list_caption_tracks.html</loc>
   </url>
   <url>
-    <loc>http://soodoku.github.io/tuber//reference/list_caption_tracks.html</loc>
+    <loc>http://soodoku.github.io/tuber//reference/list_captions.html</loc>
   </url>
   <url>
     <loc>http://soodoku.github.io/tuber//reference/list_channel_activities.html</loc>
@@ -97,10 +97,10 @@
     <loc>http://soodoku.github.io/tuber//reference/list_videos.html</loc>
   </url>
   <url>
-    <loc>http://soodoku.github.io/tuber//reference/tuber.html</loc>
+    <loc>http://soodoku.github.io/tuber//reference/read_sbv.html</loc>
   </url>
   <url>
-    <loc>http://soodoku.github.io/tuber//reference/tuber_check.html</loc>
+    <loc>http://soodoku.github.io/tuber//reference/tuber.html</loc>
   </url>
   <url>
     <loc>http://soodoku.github.io/tuber//reference/tuber_DELETE.html</loc>
@@ -112,19 +112,22 @@
     <loc>http://soodoku.github.io/tuber//reference/tuber_POST.html</loc>
   </url>
   <url>
+    <loc>http://soodoku.github.io/tuber//reference/tuber_check.html</loc>
+  </url>
+  <url>
     <loc>http://soodoku.github.io/tuber//reference/upload_caption.html</loc>
   </url>
   <url>
     <loc>http://soodoku.github.io/tuber//reference/upload_video.html</loc>
   </url>
   <url>
-    <loc>http://soodoku.github.io/tuber//reference/yt_check_token.html</loc>
-  </url>
-  <url>
     <loc>http://soodoku.github.io/tuber//reference/yt_oauth.html</loc>
   </url>
   <url>
     <loc>http://soodoku.github.io/tuber//reference/yt_search.html</loc>
+  </url>
+  <url>
+    <loc>http://soodoku.github.io/tuber//reference/yt_token.html</loc>
   </url>
   <url>
     <loc>http://soodoku.github.io/tuber//reference/yt_topic_search.html</loc>

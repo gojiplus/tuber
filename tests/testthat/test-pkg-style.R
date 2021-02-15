@@ -1,6 +1,5 @@
 # https://github.com/jimhester/lintr
 if (requireNamespace("lintr", quietly = TRUE)) {
-  testthat::context("lints")
   lint_path <- path.expand(normalizePath(getwd(), winslash = "/"))
 
   find_root <- function(path, pkgname) {
@@ -13,10 +12,9 @@ if (requireNamespace("lintr", quietly = TRUE)) {
       find_root(dirname(path), pkgname)
     }
   }
-
+  lint_path <- find_root(lint_path, "tuber")
+  testthat::context("lints")
   testthat::test_that("Package Style", {
-    lint_path <- find_root(lint_path, "tuber")
-
     lintr::expect_lint_free(path = lint_path, cache = TRUE)
   })
 }
