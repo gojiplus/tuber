@@ -14,16 +14,21 @@ get_related_videos(
 \arguments{
 \item{video_id}{Character. Required. No default.}
 
-\item{max_results}{Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.}
+\item{max_results}{Maximum number of items that should be returned.
+Integer. Optional. Can be between 0 and 50. Default is 50.}
 
-\item{safe_search}{Character. Optional. Takes one of three values: \code{'moderate'}, \code{'none'} (default) or \code{'strict'}}
+\item{safe_search}{Character. Optional. Takes one of three values:
+\code{'moderate'}, \code{'none'} (default) or \code{'strict'}}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-\code{data.frame} with 16 columns: \code{video_id, rel_video_id, publishedAt, channelId, title, description, 
-thumbnails.default.url, thumbnails.default.width, thumbnails.default.height, thumbnails.medium.url, 
-thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url, thumbnails.high.width, 
+\code{data.frame} with 16 columns: \code{video_id, rel_video_id,
+publishedAt, channelId, title, description,
+thumbnails.default.url, thumbnails.default.width, thumbnails.default.height,
+thumbnails.medium.url,
+thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url,
+thumbnails.high.width,
 thumbnails.high.height, channelTitle, liveBroadcastContent}
 }
 \description{

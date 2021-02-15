@@ -3,18 +3,18 @@
 #'
 #' @param topic topic being searched for; required; no default
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
-#' 
+#'
 #' @return a list
 #' @export
 #' @examples
 #'  \dontrun{
-#' 
+#'
 #' # Set API token via yt_oauth() first
-#' 
+#'
 #' yt_topic_search(topic = "Barack Obama")
 #' }
 
-yt_topic_search <- function (topic = NULL, ...) {
+yt_topic_search <- function(topic = NULL, ...) {
 
   .Deprecated("Freebase no longer supported by Google.\n")
 

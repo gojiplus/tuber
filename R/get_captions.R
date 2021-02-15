@@ -24,10 +24,10 @@
 #' get_captions(id = "y3ElXcEME3lSISz6izkWVT5GvxjPu8pA")
 #' }
 
-get_captions <- function (id = NULL, lang = "en",
+get_captions <- function(id = NULL, lang = "en",
                           format = "sbv", as_raw = TRUE, ...) {
 
-  if ( !is.character(id)) {
+  if (!is.character(id)) {
     stop("Must specify a valid id.")
   }
 

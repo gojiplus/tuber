@@ -5,7 +5,9 @@
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'
 #' @return nested named list with top element names:
-#' \code{kind, etag, id, snippet (list of details of the channel including title), statistics (list of 5)}
+#' \code{kind, etag, id,}
+#' \code{snippet (list of details of the channel including title)}
+#' \code{, statistics (list of 5)}
 #'
 #' If the \code{channel_id} is mistyped or there is no information, an empty list is returned
 #'
@@ -44,7 +46,7 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
                             publication_date = NA, description = NA,
                             channel_id = NA, channel_title = NA)
 
-  for (p in 1:length(details)) {
+  for (p in seq_len(details)) {
     id <- details[[p]]$items[[1]]$id
     title <- details[[p]]$items[[1]]$snippet$title
     publication_date <- details[[p]]$items[[1]]$snippet$publishedAt

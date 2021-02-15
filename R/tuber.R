@@ -4,7 +4,8 @@
 #' RESTful calls.
 #'
 #' @name tuber
-#' @importFrom httr GET POST DELETE authenticate config stop_for_status upload_file content oauth_endpoints oauth_app oauth2.0_token
+#' @importFrom httr GET POST DELETE authenticate config stop_for_status
+#' @importFrom httr upload_file content oauth_endpoints oauth_app oauth2.0_token
 #' @importFrom utils read.table
 #' @importFrom plyr ldply
 #' @importFrom dplyr bind_rows
@@ -109,17 +110,17 @@ tuber_DELETE <- function(path, query, ...) {
 tuber_check <- function(req) {
 
   if (req$status_code < 400) return(invisible(NULL))
-  orig_out =  httr::content(req, as = "text")
-  out = try({
+  orig_out <-  httr::content(req, as = "text")
+  out <- try({
     jsonlite::fromJSON(
       orig_out,
       flatten = TRUE)
   }, silent = TRUE)
   if (inherits(out, "try-error")) {
-    msg = orig_out
+    msg <- orig_out
   } else {
-    msg = out$error$message
+    msg <- out$error$message
   }
-  msg = paste0(msg, "\n")
+  msg <- paste0(msg, "\n")
   stop("HTTP failure: ", req$status_code, "\n", msg, call. = FALSE)
 }

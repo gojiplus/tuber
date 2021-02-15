@@ -6,12 +6,17 @@
 #' \code{item_id}: comma-separated list of one or more unique playlist item IDs.
 #' \code{playlist_id}: YouTube playlist ID.
 #'
-#' @param part Required. Comma separated string including one or more of the following: \code{contentDetails, id, snippet, status}. Default: \code{contentDetails}.
-#' @param max_results Maximum number of items that should be returned. Integer. Optional. Default is 50.
+#' @param part Required. Comma separated string including one or more of the
+#' following: \code{contentDetails, id, snippet, status}. Default:
+#' \code{contentDetails}.
+#' @param max_results Maximum number of items that should be returned.
+#' Integer. Optional. Default is 50.
 #' If over 50, all the results are returned.
 #' @param simplify returns a data.frame rather than a list.
-#' @param page_token specific page in the result set that should be returned, optional
-#' @param video_id  Optional. request should return only the playlist items that contain the specified video.
+#' @param page_token specific page in the result set that should be
+#' returned, optional
+#' @param video_id  Optional. request should return only the playlist
+#' items that contain the specified video.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'
 #' @return playlist items
@@ -30,7 +35,7 @@
 #'                        max_results = 51)
 #' }
 
-get_playlist_items <- function (filter = NULL, part = "contentDetails",
+get_playlist_items <- function(filter = NULL, part = "contentDetails",
                                 max_results = 50, video_id = NULL,
                                 page_token = NULL, simplify = TRUE, ...) {
 
@@ -89,7 +94,7 @@ get_playlist_items <- function (filter = NULL, part = "contentDetails",
     # Unpublished videos do not have a publication date. To take this into account
     # we must use rbind.fill that can accomodate missing data
     res <- do.call(plyr::rbind.fill,
-                   lapply(allResultsList, function(x){
+                   lapply(allResultsList, function(x) {
                      as.data.frame(t(x), stringsAsFactor = FALSE)
                    }))
 

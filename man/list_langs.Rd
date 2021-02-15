@@ -7,12 +7,14 @@
 list_langs(hl = NULL, ...)
 }
 \arguments{
-\item{hl}{Language used for text values. Optional. Default is \code{en-US}. For other allowed language codes, see \code{\link{list_langs}}.}
+\item{hl}{Language used for text values. Optional. Default is \code{en-US}.
+For other allowed language codes, see \code{\link{list_langs}}.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-data.frame with 3 columns: \code{hl} (two letter abbreviation), \code{name} (of the language), \code{etag}
+data.frame with 3 columns: \code{hl} (two letter abbreviation),
+\code{name} (of the language), \code{etag}
 }
 \description{
 List Languages That YouTube Currently Supports

@@ -7,12 +7,13 @@
 list_regions(hl = NULL, ...)
 }
 \arguments{
-\item{hl}{Language used for text values. Optional. Default is \code{en-US}. For other allowed language codes, see \code{\link{list_langs}}.}
+\item{hl}{Language used for text values. Optional. Default is \code{en-US}.
+For other allowed language codes, see \code{\link{list_langs}}.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-data.frame with 3 columns: 
+data.frame with 3 columns:
 \code{gl} (two letter abbreviation), \code{name} (of the region), \code{etag}
 }
 \description{

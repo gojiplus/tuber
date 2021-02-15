@@ -2,26 +2,28 @@
 #'
 #' @param video_id string; Required.
 #' \code{video_id}: video ID.
-#'  
+#'
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
-#'  
-#' @return  
+#'
+#' @return
 #' a \code{data.frame} with the following columns:
-#' \code{authorDisplayName, authorProfileImageUrl, authorChannelUrl, authorChannelId.value, videoId, textDisplay,          
-#' canRate, viewerRating, likeCount, publishedAt, updatedAt, id, moderationStatus, parentId}
-#' 
+#' \code{authorDisplayName, authorProfileImageUrl, authorChannelUrl,}
+#' \code{ authorChannelId.value, videoId, textDisplay,
+#' canRate, viewerRating, likeCount, publishedAt, updatedAt,
+#' id, moderationStatus, parentId}
+#'
 #' @export
 #' @references \url{https://developers.google.com/youtube/v3/docs/commentThreads/list}
-#' 
+#'
 #' @examples
 #' \dontrun{
-#' 
+#'
 #' # Set API token via yt_oauth() first
-#' 
+#'
 #' get_all_comments(video_id = "a-UQz7fqR3w")
 #' }
 
-get_all_comments <- function (video_id = NULL, ...) {
+get_all_comments <- function(video_id = NULL, ...) {
 
   querylist <- list(videoId = video_id, part = "id,replies,snippet", maxResults = 100)
 
@@ -31,7 +33,7 @@ get_all_comments <- function (video_id = NULL, ...) {
 
   page_token  <- res$nextPageToken
 
-  while ( is.character(page_token)) {
+  while (is.character(page_token)) {
 
     querylist$pageToken <- page_token
     a_res <- tuber_GET("commentThreads", querylist, ...)
@@ -56,7 +58,7 @@ process_page <- function(res = NULL) {
 
   agg_res$parentId <- NA
 
-  if ( !("moderationStatus" %in% names(agg_res))) {
+  if (!("moderationStatus" %in% names(agg_res))) {
     agg_res$moderationStatus <- NA
   }
 
@@ -65,7 +67,7 @@ process_page <- function(res = NULL) {
                                      }
                                      )
 
-  for (i in 1:length(n_replies)) {
+  for (i in seq_len(n_replies)) {
 
     if (n_replies[i] == 1) {
 
