@@ -43,8 +43,9 @@ The function launches a browser to allow you to authorize the application
 }
 \examples{
  \dontrun{
-   yt_oauth("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.com",
-            "MbOSt6cQhhFkwETXKur-L9rN")
+yt_oauth(paste0("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn",
+                ".apps.googleusercontent.com"),
+         "MbOSt6cQhhFkwETXKur-L9rN")
 }
 }
 \references{

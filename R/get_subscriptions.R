@@ -45,7 +45,7 @@ get_subscriptions <- function(filter = NULL, part = "contentDetails",
     stop("filter can only take one of values: channel_id, subscription_id.")
   }
 
-  if ( length(filter) != 1) stop("filter must be a vector of length 1.")
+  if (length(filter) != 1) stop("filter must be a vector of length 1.")
 
   translate_filter   <- c(channel_id = "channelId", subscription_id = "id")
   yt_filter_name     <- as.vector(translate_filter[match(names(filter),

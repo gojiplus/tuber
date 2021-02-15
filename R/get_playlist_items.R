@@ -94,7 +94,7 @@ get_playlist_items <- function(filter = NULL, part = "contentDetails",
     # Unpublished videos do not have a publication date. To take this into account
     # we must use rbind.fill that can accomodate missing data
     res <- do.call(plyr::rbind.fill,
-                   lapply(allResultsList, function(x){
+                   lapply(allResultsList, function(x) {
                      as.data.frame(t(x), stringsAsFactor = FALSE)
                    }))
 

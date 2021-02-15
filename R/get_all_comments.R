@@ -33,7 +33,7 @@ get_all_comments <- function(video_id = NULL, ...) {
 
   page_token  <- res$nextPageToken
 
-  while ( is.character(page_token)) {
+  while (is.character(page_token)) {
 
     querylist$pageToken <- page_token
     a_res <- tuber_GET("commentThreads", querylist, ...)
@@ -58,7 +58,7 @@ process_page <- function(res = NULL) {
 
   agg_res$parentId <- NA
 
-  if ( !("moderationStatus" %in% names(agg_res))) {
+  if (!("moderationStatus" %in% names(agg_res))) {
     agg_res$moderationStatus <- NA
   }
 

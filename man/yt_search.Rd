@@ -28,11 +28,16 @@ yt_search(
 }
 \arguments{
 \item{term}{Character. Search term; required; no default
-For using Boolean operators, see the API documentation. Here's some of the relevant information:
-"Your request can also use the Boolean NOT (-) and OR (|) operators to exclude videos or to
-find videos that are associated with one of several search terms. For example, to search
-for videos matching either "boating" or "sailing", set the q parameter value to boating|sailing.
-Similarly, to search for videos matching either "boating" or "sailing" but not "fishing",
+For using Boolean operators, see the API documentation.
+Here's some of the relevant information:
+"Your request can also use the Boolean NOT (-) and OR (|) operators to
+exclude videos or to
+find videos that are associated with one of several search terms. For
+example, to search
+for videos matching either "boating" or "sailing", set the q parameter
+value to boating|sailing.
+Similarly, to search for videos matching either "boating" or "sailing"
+but not "fishing",
 set the q parameter value to boating|sailing -fishing"}
 
 \item{max_results}{Maximum number of items that should be returned.
@@ -40,7 +45,8 @@ Integer. Optional. Can be between 0 and 50. Default is 50.
 Search results are constrained to a maximum of 500 videos if type is
 video and we have a value of \code{channel_id}.}
 
-\item{channel_id}{Character. Only return search results from this channel; Optional.}
+\item{channel_id}{Character. Only return search results from this
+channel; Optional.}
 
 \item{channel_type}{Character. Optional. Takes one of two values:
 \code{'any', 'show'}. Default is \code{'any'}}
@@ -107,7 +113,8 @@ thumbnails.high.width,
 thumbnails.high.height, channelTitle, liveBroadcastContent}
 }
 \description{
-Search for videos, channels and playlists. (By default, the function searches for videos.)
+Search for videos, channels and playlists. (By default, the function
+searches for videos.)
 }
 \examples{
 

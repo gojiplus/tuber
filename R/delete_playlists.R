@@ -18,7 +18,7 @@
 
 delete_playlists <- function(id = NULL, ...) {
 
-  if ( !is.character(id)) {
+  if (!is.character(id)) {
     stop("Must specify a valid id.")
   }
 

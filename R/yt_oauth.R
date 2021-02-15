@@ -30,8 +30,9 @@
 #'
 #' @examples
 #'  \dontrun{
-#'    yt_oauth("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.com",
-#'             "MbOSt6cQhhFkwETXKur-L9rN")
+#' yt_oauth(paste0("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn",
+#'                 ".apps.googleusercontent.com"),
+#'          "MbOSt6cQhhFkwETXKur-L9rN")
 #' }
 
 yt_oauth <- function(app_id = NULL, app_secret = NULL, scope = "ssl",
@@ -41,7 +42,7 @@ yt_oauth <- function(app_id = NULL, app_secret = NULL, scope = "ssl",
 
     google_token <- try(suppressWarnings(readRDS(token)), silent = TRUE)
 
-    if ( inherits(google_token, "try-error")) {
+    if (inherits(google_token, "try-error")) {
           stop(sprintf("Unable to read token from:%s", token))
       }
 
