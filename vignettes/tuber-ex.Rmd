@@ -220,7 +220,6 @@ head(res)
 ### Get statistics of all the videos in a channel
 
 ```{r, eval=FALSE, get_channel_vids_stats}
-
 a <- list_channel_resources(filter = c(channel_id = "UCT5Cx1l4IS3wHkJXNyuj4TA"), part="contentDetails")
 
 # Uploaded playlists:
