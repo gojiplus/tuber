@@ -1,13 +1,13 @@
 #' Search YouTube
-#' 
+#'
 #' Search for videos, channels and playlists. (By default, the function searches for videos.)
-#' 
+#'
 #' @param term Character. Search term; required; no default
 #' For using Boolean operators, see the API documentation. Here's some of the relevant information:
-#' "Your request can also use the Boolean NOT (-) and OR (|) operators to exclude videos or to 
-#' find videos that are associated with one of several search terms. For example, to search 
-#' for videos matching either "boating" or "sailing", set the q parameter value to boating|sailing. 
-#' Similarly, to search for videos matching either "boating" or "sailing" but not "fishing", 
+#' "Your request can also use the Boolean NOT (-) and OR (|) operators to exclude videos or to
+#' find videos that are associated with one of several search terms. For example, to search
+#' for videos matching either "boating" or "sailing", set the q parameter value to boating|sailing.
+#' Similarly, to search for videos matching either "boating" or "sailing" but not "fishing",
 #' set the q parameter value to boating|sailing -fishing"
 #' @param max_results Maximum number of items that should be returned. Integer. Optional. Can be between 0 and 50. Default is 50.
 #' Search results are constrained to a maximum of 500 videos if type is video and we have a value of \code{channel_id}.
@@ -21,41 +21,41 @@
 #' @param type Character. Optional. Takes one of three values: \code{'video', 'channel', 'playlist'}. Default is \code{'video'}.
 #' @param video_caption Character. Optional. Takes one of three values: \code{'any'} (return all videos; Default), \code{'closedCaption', 'none'}. Type must be set to video.
 #' @param video_type Character. Optional. Takes one of three values: \code{'any'} (return all videos; Default), \code{'episode'} (return episode of shows), 'movie' (return movies)
-#' @param video_syndicated Character. Optional. Takes one of two values: 
+#' @param video_syndicated Character. Optional. Takes one of two values:
 #' \code{'any'} (return all videos; Default), \code{'true'} (return only syndicated videos)
-#' @param video_definition Character. Optional. 
+#' @param video_definition Character. Optional.
 #' Takes one of three values: \code{'any'} (return all videos; Default), \code{'high', 'standard'}
-#' @param video_license Character. Optional. 
-#' Takes one of three values: \code{'any'} (return all videos; Default), \code{'creativeCommon'} (return videos with Creative Commons 
+#' @param video_license Character. Optional.
+#' Takes one of three values: \code{'any'} (return all videos; Default), \code{'creativeCommon'} (return videos with Creative Commons
 #' license), \code{'youtube'} (return videos with standard YouTube license).
-#' @param simplify Boolean. Return a data.frame if \code{TRUE}. Default is \code{TRUE}. 
-#' If \code{TRUE}, it returns a list that carries additional information. 
+#' @param simplify Boolean. Return a data.frame if \code{TRUE}. Default is \code{TRUE}.
+#' If \code{TRUE}, it returns a list that carries additional information.
 #' @param page_token specific page in the result set that should be returned, optional
-#' @param get_all get all results, iterating through all the results pages. Default is \code{TRUE}. 
+#' @param get_all get all results, iterating through all the results pages. Default is \code{TRUE}.
 #' Result is a \code{data.frame}. Optional.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
-#' 
-#' @return data.frame with 16 elements: \code{video_id, publishedAt, channelId, title, description, 
-#' thumbnails.default.url, thumbnails.default.width, thumbnails.default.height, thumbnails.medium.url, 
-#' thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url, thumbnails.high.width, 
-#' thumbnails.high.height, channelTitle, liveBroadcastContent} 
-#' 
+#'
+#' @return data.frame with 16 elements: \code{video_id, publishedAt, channelId, title, description,
+#' thumbnails.default.url, thumbnails.default.width, thumbnails.default.height, thumbnails.medium.url,
+#' thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url, thumbnails.high.width,
+#' thumbnails.high.height, channelTitle, liveBroadcastContent}
+#'
 #' @export
-#' 
+#'
 #' @references \url{https://developers.google.com/youtube/v3/docs/search/list}
-#' 
+#'
 #' @examples
-#' 
+#'
 #' \dontrun{
-#' 
+#'
 #' # Set API token via yt_oauth() first
-#' 
+#'
 #' yt_search(term = "Barack Obama")
 #' yt_search(term = "Barack Obama", published_after = "2016-10-01T00:00:00Z")
 #' yt_search(term = "Barack Obama", published_before = "2016-09-01T00:00:00Z")
-#' yt_search(term = "Barack Obama", published_before = "2016-03-01T00:00:00Z", 
+#' yt_search(term = "Barack Obama", published_before = "2016-03-01T00:00:00Z",
 #'                                published_after = "2016-02-01T00:00:00Z")
-#' yt_search(term = "Barack Obama", published_before = "2016-02-10T00:00:00Z", 
+#' yt_search(term = "Barack Obama", published_before = "2016-02-10T00:00:00Z",
 #'                                published_after = "2016-01-01T00:00:00Z")
 #' }
 
@@ -102,7 +102,10 @@ yt_search <- function (term = NULL, max_results = 50, channel_id = NULL,
     video_caption <- video_license <- video_definition <-
     video_type <- video_syndicated <- NULL
   }
-  
+  if (!is.null(location) && is.null(location_radius)) {
+    stop("Location radius must be specified with location")
+  }
+
   querylist <- list(part = "snippet", q = term, maxResults = max_results,
                     channelId = channel_id, type = type,
                     channelType = channel_type, eventType = event_type,
@@ -141,8 +144,11 @@ yt_search <- function (term = NULL, max_results = 50, channel_id = NULL,
 
       a_res <- yt_search(part = "snippet", term = term,
                          max_results = max_results, channel_id = channel_id,
-                         type = type, channel_type = channel_type,
-                         event_type = event_type, location = location,
+                         type = type,
+                         channel_type = channel_type,
+                         event_type = event_type,
+                         location = location,
+                         location_radius = location_radius,
                          published_after  = published_after,
                          published_before  = published_before,
                          video_definition = video_definition,

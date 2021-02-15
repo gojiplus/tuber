@@ -36,7 +36,7 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
 
   vid_ids <- as.vector(vids$contentDetails.videoId)
 
-  res <- lapply(vid_ids, function(x) get_stats(x))
+  res <- lapply(vid_ids, get_stats)
   details <- lapply(vid_ids, get_video_details)
   res_df <- do.call(what = bind_rows, lapply(res, data.frame))
 
