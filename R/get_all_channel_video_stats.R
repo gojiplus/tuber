@@ -46,7 +46,7 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
                             publication_date = NA, description = NA,
                             channel_id = NA, channel_title = NA)
 
-  for (p in seq_len(details)) {
+  for (p in seq_along(details)) {
     id <- details[[p]]$items[[1]]$id
     title <- details[[p]]$items[[1]]$snippet$title
     publication_date <- details[[p]]$items[[1]]$snippet$publishedAt
