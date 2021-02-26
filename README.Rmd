@@ -36,7 +36,7 @@ To get a quick overview of some important functions in tuber, check out [this ar
 
 ### Using tuber
 
-To get going, get the application id and password from Google Developer Console (see [https://developers.google.com/youtube/v3/getting-started](https://developers.google.com/youtube/v3/getting-started)). Enable all the YouTube APIs. Also enable Freebase API. Then set the application id and password via the `yt_oauth` function. For more information about YouTube OAuth, see [YouTube OAuth Guide](https://developers.google.com/youtube/v3/guides/authentication).
+To get going, get the application id and password from the Google Developer Console (see [https://developers.google.com/youtube/v3/getting-started](https://developers.google.com/youtube/v3/getting-started)). Enable all the YouTube APIs. Then set the application id and password via the `yt_oauth` function. For more information about YouTube OAuth, see [YouTube OAuth Guide](https://developers.google.com/youtube/v3/guides/authentication).
 
 ```{r, eval = FALSE}
 yt_oauth("app_id", "app_password")
@@ -65,6 +65,8 @@ get_video_details(video_id = "N708P-A45D0")
 ```{r, eval = FALSE}
 get_captions(video_id = "yJXTXN4xrI8")
 ```
+
+**Note**: It was previously possible to get captions for all videos that had "Community contributions" enabled. However, since [*YouTube* removed that option in September 2020](https://support.google.com/youtube/answer/6052538?hl=en), the `get_captions` function now only works for videos created with the same account as the API credentials you use. An alternative for collecting *YouTube* video captions is the [*youtubecaption* package](https://github.com/jooyoungseo/youtubecaption).
 
 **Search Videos**
 ```{r, eval = FALSE}
