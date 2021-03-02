@@ -36,57 +36,47 @@
 #' }
 
 yt_oauth <- function(app_id = NULL, app_secret = NULL, scope = "ssl",
-                      token = ".httr-oauth", ...) {
+                     token = ".httr-oauth", ...) {
 
   if (file.exists(token)) {
 
     google_token <- try(suppressWarnings(readRDS(token)), silent = TRUE)
 
     if (inherits(google_token, "try-error")) {
-          stop(sprintf("Unable to read token from:%s", token))
-      }
+      warning(sprintf("Unable to read token from:%s", token))
+    } else {
+      google_token <- google_token[[1]]
+    }
+  }
 
-    google_token <- google_token[[1]]
+  if (!file.exists(token) ||
+      (file.exists(token) &&
+       inherits(google_token, "try-error"))
+  ) {
+    stopifnot(!is.null(app_id),
+              !is.null(app_secret))
 
-  } else if (is.null(app_id) | is.null(app_secret)) {
-
-    stop("Please provide values for app_id and app_secret")
-
-  } else {
 
     myapp <- oauth_app("google", key = app_id, secret = app_secret)
 
-    if (scope == "ssl") {
+    scope = match.arg(
+      scope,
+      c("ssl", "basic", "own_account_readonly",
+        "upload_and_manage_own_videos",
+        "partner_audit",
+        "partner"))
 
-      google_token <- oauth2.0_token(oauth_endpoints("google"), myapp,
-               scope = "https://www.googleapis.com/auth/youtube.force-ssl", ...)
-
-    } else if (scope == "basic") {
-
-      google_token <- oauth2.0_token(oauth_endpoints("google"), myapp,
-                         scope = "https://www.googleapis.com/auth/youtube", ...)
-
-    } else if (scope == "own_account_readonly") {
-
-      google_token <- oauth2.0_token(oauth_endpoints("google"), myapp,
-                scope = "https://www.googleapis.com/auth/youtube.readonly", ...)
-
-    } else if (scope == "upload_and_manage_own_videos") {
-
-      google_token <- oauth2.0_token(oauth_endpoints("google"), myapp,
-                  scope = "https://www.googleapis.com/auth/youtube.upload", ...)
-
-    } else if (scope == "partner_audit") {
-
-      google_token <- oauth2.0_token(oauth_endpoints("google"), myapp,
-        scope = "https://www.googleapis.com/auth/youtubepartner-channel-audit",
-        ...)
-    } else if (scope == "partner") {
-
-       google_token <- oauth2.0_token(oauth_endpoints("google"), myapp,
-        scope = "https://www.googleapis.com/auth/youtubepartner",
-        ...)
-    }
+    scope_url = switch(
+      scope,
+      ssl = "https://www.googleapis.com/auth/youtube.force-ssl",
+      basic = "https://www.googleapis.com/auth/youtube",
+      own_account_readonly = "https://www.googleapis.com/auth/youtube.readonly",
+      upload_and_manage_own_videos ="https://www.googleapis.com/auth/youtube.upload",
+      partner_audit = "https://www.googleapis.com/auth/youtubepartner-channel-audit",
+      partner =  "https://www.googleapis.com/auth/youtubepartner"
+    )
+    google_token <- oauth2.0_token(oauth_endpoints("google"), myapp,
+                                   scope = scope_url, ...)
   }
   options(google_token = google_token)
 }
