@@ -10,7 +10,7 @@ get_video_details(video_id = NULL, part = "snippet", ...)
 \item{video_id}{Comma separated list of IDs of the videos for which
 details are requested. Required.}
 
-\item{part}{Comma-separated list of video resource properties requested.
+\item{part}{Comma-separated vector of video resource properties requested.
 Options include:
 \code{contentDetails, fileDetails, id, liveStreamingDetails,
 localizations, player, processingDetails,
@@ -36,7 +36,12 @@ thumbnails, category etc.
 
 get_video_details(video_id = "yJXTXN4xrI8")
 get_video_details(video_id = "yJXTXN4xrI8", part = "contentDetails")
+# retrieve multiple parameters
+get_video_details(video_id = "yJXTXN4xrI8", part = c("contentDetails", "status"))
+
 }
+
+
 }
 \references{
 \url{https://developers.google.com/youtube/v3/docs/videos/list}
