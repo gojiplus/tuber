@@ -84,19 +84,30 @@ json_to_df <- function(res) {
 #' get_video_details(video_id = "yJXTXN4xrI8", part = "contentDetails")
 #' # retrieve multiple parameters
 #' get_video_details(video_id = "yJXTXN4xrI8", part = c("contentDetails", "status"))
-#'
+#' # get details for multiple videos as data frame
+#' get_video_details(video_id = c("LDZX4ooRsWs", "LDZX4ooRsWs"), as.data.frame = TRUE)
 #' }
 #'
-#'
-
-get_video_details <- function(video_id = NULL, part = "snippet", ...) {
-
+get_video_details <- function(video_id = NULL, part = "snippet", as.data.frame = FALSE, ...) {
   if (!is.character(video_id)) stop("Must specify a video ID.")
 
   if (!is.character(part)) stop("Parameter part must be a character vector")
 
   if (length(part) > 1) {
-    part <- paste(part, collapse = ",")
+    part <- paste0(part, collapse = ",")
+  }
+
+  if (length(video_id) > 1) {
+    video_id <- paste0(video_id, collapse = ",")
+  }
+
+  parts_only_for_video_owners <- c("fileDetails", "suggestions", "processingDetails")
+
+  if (as.data.frame & part %in% parts_only_for_video_owners) {
+    stop(
+      paste("If as.data.frame = TRUE, then `part` may not include any of the following parts: "),
+      paste(parts_only_for_video_owners, collapse = " ,")
+    )
   }
 
   querylist <- list(part = part, id = video_id)
@@ -107,6 +118,10 @@ get_video_details <- function(video_id = NULL, part = "snippet", ...) {
     warning("No details for this video are available. Likely cause:
               Incorrect ID. \n")
     return(list())
+  }
+
+  if (as.data.frame) {
+    raw_res <- json_to_df(raw_res)
   }
 
   raw_res
