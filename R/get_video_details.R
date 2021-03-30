@@ -64,6 +64,9 @@ json_to_df <- function(res) {
 #' localizations, player, processingDetails,
 #' recordingDetails, snippet, statistics, status, suggestions, topicDetails}
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
+#' @param as.data.frame Logical, returns the requested information as data.frame.
+#' Does not work for:
+#' \code{fileDetails, suggestions, processingDetails}
 #'
 #' @return list. If part is snippet, the list will have the following elements:
 #' \code{id} (video id that was passed), \code{publishedAt, channelId,
