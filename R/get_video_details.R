@@ -1,4 +1,4 @@
-# helpers for `get_video_details()`
+# helpers for data frame conversion in `get_video_details()`
 conditional_unnest_wider <- function(data_input, var) {
   if (var %in% names(data_input)) {
     tidyr::unnest_wider(data_input, var, names_sep = "_")
