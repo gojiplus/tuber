@@ -8,7 +8,6 @@
 * allows for caption uploading
 * list_my_videos
 * list_captions
-*
 
 # version 0.9.6
 
