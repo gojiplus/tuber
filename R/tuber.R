@@ -8,8 +8,11 @@
 #' @importFrom httr upload_file content oauth_endpoints oauth_app oauth2.0_token
 #' @importFrom utils read.table
 #' @importFrom plyr ldply
-#' @importFrom dplyr bind_rows
-#' @importFrom purrr map_df
+#' @importFrom dplyr bind_rows select pull filter mutate
+#' @importFrom tibble enframe
+#' @importFrom tidyselect everything all_of
+#' @importFrom tidyr pivot_wider unnest unnest_longer
+#' @importFrom purrr map_df map_dbl
 #' @docType package
 NULL
 

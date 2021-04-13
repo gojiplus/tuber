@@ -22,7 +22,11 @@ Imports:
     purrr,
     jsonlite,
     utils,
-    httpuv
+    httpuv,
+    magrittr,
+    tidyr,
+    tidyselect,
+    tibble
 VignetteBuilder: knitr
 Suggests:
     knitr (>= 1.11),

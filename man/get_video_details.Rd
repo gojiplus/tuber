@@ -4,7 +4,12 @@
 \alias{get_video_details}
 \title{Get Details of a Video or Videos}
 \usage{
-get_video_details(video_id = NULL, part = "snippet", ...)
+get_video_details(
+  video_id = NULL,
+  part = "snippet",
+  as.data.frame = FALSE,
+  ...
+)
 }
 \arguments{
 \item{video_id}{Comma separated list of IDs of the videos for which
@@ -15,6 +20,10 @@ Options include:
 \code{contentDetails, fileDetails, id, liveStreamingDetails,
 localizations, player, processingDetails,
 recordingDetails, snippet, statistics, status, suggestions, topicDetails}}
+
+\item{as.data.frame}{Logical, returns the requested information as data.frame.
+Does not work for:
+\code{fileDetails, suggestions, processingDetails}}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
@@ -38,9 +47,9 @@ get_video_details(video_id = "yJXTXN4xrI8")
 get_video_details(video_id = "yJXTXN4xrI8", part = "contentDetails")
 # retrieve multiple parameters
 get_video_details(video_id = "yJXTXN4xrI8", part = c("contentDetails", "status"))
-
+# get details for multiple videos as data frame
+get_video_details(video_id = c("LDZX4ooRsWs", "yJXTXN4xrI8"), as.data.frame = TRUE)
 }
-
 
 }
 \references{
