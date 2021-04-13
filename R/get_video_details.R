@@ -88,7 +88,7 @@ json_to_df <- function(res) {
 #' # retrieve multiple parameters
 #' get_video_details(video_id = "yJXTXN4xrI8", part = c("contentDetails", "status"))
 #' # get details for multiple videos as data frame
-#' get_video_details(video_id = c("LDZX4ooRsWs", "LDZX4ooRsWs"), as.data.frame = TRUE)
+#' get_video_details(video_id = c("LDZX4ooRsWs", "yJXTXN4xrI8"), as.data.frame = TRUE)
 #' }
 #'
 get_video_details <- function(video_id = NULL, part = "snippet", as.data.frame = FALSE, ...) {
