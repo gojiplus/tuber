@@ -103,15 +103,15 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
     stop("max_results only takes a value between 0 and 50.")
   }
 
-  if (!(video_license %in% c("any", "creativeCommon", "youtube"))) {
+  if (type == "video" && !(video_license %in% c("any", "creativeCommon", "youtube"))) {
     stop("video_license can only take values: any, creativeCommon, or youtube.")
   }
 
-  if (!(video_syndicated %in% c("any", "true"))) {
+  if (type == "video" && !(video_syndicated %in% c("any", "true"))) {
     stop("video_syndicated can only take values: any or true.")
   }
 
-  if (!(video_type %in% c("any", "episode", "movie"))) {
+  if (type == "video" && !(video_type %in% c("any", "episode", "movie"))) {
     stop("video_type can only take values: any, episode, or movie.")
   }
 
