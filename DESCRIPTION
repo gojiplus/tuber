@@ -9,8 +9,8 @@ Description: Get comments posted on YouTube videos, information on how many
     times a video has been liked, search for videos with particular content, and
     much more. You can also scrape captions from a few videos. To learn more about
     the YouTube API, see <https://developers.google.com/youtube/v3/>.
-URL: http://github.com/soodoku/tuber
-BugReports: http://github.com/soodoku/tuber/issues
+URL: https://github.com/soodoku/tuber
+BugReports: https://github.com/soodoku/tuber/issues
 Depends:
     R (>= 3.4.0)
 License: MIT + file LICENSE
