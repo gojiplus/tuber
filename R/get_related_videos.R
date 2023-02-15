@@ -51,7 +51,7 @@ get_related_videos <- function(video_id = NULL, max_results = 50,
                              "thumbnails.high.width", "thumbnails.high.height",
                              "channelTitle", "liveBroadcastContent"))
 
-  if (res$pageInfo$totalResults != 0) {
+  if (length(res$items) != 0) {
 
     rel_video_id <- sapply(res$items, function(x) unlist(x$id$videoId))
     simple_res   <- lapply(res$items, function(x) unlist(x$snippet))
@@ -65,7 +65,7 @@ get_related_videos <- function(video_id = NULL, max_results = 50,
   }
 
   # Cat total results
-  cat("Total Results", res$pageInfo$totalResults, "\n")
+  cat("Total Results", length(res$items), "\n")
 
   resdf
 }
