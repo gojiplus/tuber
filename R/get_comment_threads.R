@@ -54,78 +54,66 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
                                 max_results = 100, page_token = NULL, ...) {
 
   if (max_results < 20) {
-    stop("max_results only takes a value over 20.
-          Above 100, it outputs all the results.")
+    stop("max_results must be a value over 20. For values above 100, it outputs all the results.")
   }
 
-  if (text_format != "html" & text_format != "plainText") {
-    stop("Provide a legitimate value of textFormat.")
+  valid_formats <- c("html", "plainText")
+  if (!text_format %in% valid_formats) {
+    stop("Provide a valid value for textFormat.")
   }
 
-  if (!(names(filter) %in%
-    c("video_id", "channel_id", "thread_id", "threads_related_to_channel"))) {
-    stop("filter can only take one of values: channel_id, video_id, parent_id,
-      threads_related_to_channel.")
+  valid_filters <- c("video_id", "channel_id", "thread_id", "threads_related_to_channel")
+  if (!(names(filter) %in% valid_filters)) {
+    stop("filter can only take one of the following values: channel_id, video_id, thread_id, threads_related_to_channel.")
   }
 
-  if ( length(filter) != 1) stop("filter must be a vector of length 1.")
+  if (length(filter) != 1) {
+    stop("filter must be a vector of length 1.")
+  }
 
   orig_filter <- filter
   translate_filter <- c(video_id = "videoId", thread_id = "id",
-                    threads_related_to_channel = "allThreadsRelatedToChannelId",
-                    channel_id = "channelId", page_token = "pageToken")
+                        threads_related_to_channel = "allThreadsRelatedToChannelId",
+                        channel_id = "channelId", page_token = "pageToken")
 
-  yt_filter_name     <- as.vector(translate_filter[match(names(filter),
-                                                      names(translate_filter))])
-  names(filter)      <- yt_filter_name
+  names(filter) <- translate_filter[names(filter)]
 
-  querylist <- list(part = part, maxResults =
-                                 ifelse(max_results > 100, 100, max_results),
-                                 textFormat = text_format,
-                                 pageToken = page_token)
+  querylist <- list(part = part, maxResults = ifelse(max_results > 100, 100, max_results),
+                    textFormat = text_format, pageToken = page_token)
   querylist <- c(querylist, filter)
 
   res <- tuber_GET("commentThreads", querylist, ...)
 
-  if (simplify == TRUE & part == "snippet" & max_results < 101) {
-    simple_res  <- lapply(res$items, function(x) {
-                                     unlist(x$snippet$topLevelComment$snippet)
-                                     }
-                                     )
-    simpler_res <- ldply(simple_res, rbind)
+  if (simplify && part == "snippet" && max_results < 101) {
+    simple_res <- lapply(res$items, function(x) unlist(x$snippet$topLevelComment$snippet))
+    simpler_res <- do.call(rbind, simple_res)
 
     return(simpler_res)
 
-  } else if (simplify == TRUE & part == "snippet" & max_results > 100) {
-
-    simple_res  <- lapply(res$items, function(x) {
-                                     unlist(x$snippet$topLevelComment$snippet)
-                                     }
-                                     )
-    simpler_res <- ldply(simple_res, rbind)
+  } else if (simplify && part == "snippet" && max_results > 100) {
+    simple_res <- lapply(res$items, function(x) unlist(x$snippet$topLevelComment$snippet))
+    simpler_res <- do.call(rbind, simple_res)
 
     agg_res <- simpler_res
-    page_token  <- res$nextPageToken
+    page_token <- res$nextPageToken
 
-    while ( is.character(page_token)) {
-
+    while (is.character(page_token)) {
       a_res <- get_comment_threads(orig_filter,
-                                 part = part,
-                                 text_format = text_format,
-                                 simplify = FALSE,
-                                 max_results = 100,
-                                 page_token = page_token
-                                )
-      simple_res  <- lapply(res$items, function(x) {
-                                     unlist(x$snippet$topLevelComment$snippet)
-                                     }
-                                     )
-      simpler_res <- ldply(simple_res, rbind)
+                                   part = part,
+                                   text_format = text_format,
+                                   simplify = FALSE,
+                                   max_results = 100,
+                                   page_token = page_token,
+                                   ...)
+      simple_res <- lapply(a_res$items, function(x) unlist(x$snippet$topLevelComment$snippet))
+      simpler_res <- do.call(rbind, simple_res)
 
       agg_res <- rbind(simpler_res, agg_res)
-      page_token  <- a_res$nextPageToken
+      page_token <- a_res$nextPageToken
     }
     return(agg_res)
   }
+
   res
 }
+
