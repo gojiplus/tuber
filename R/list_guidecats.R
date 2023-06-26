@@ -29,40 +29,40 @@
 
 list_guidecats <- function(filter = NULL, hl = NULL, ...) {
 
-  if (!is.character(filter)) {
+  if (!is.character(filter) || length(filter) != 1) {
     stop("filter must be a character vector of length 1.")
   }
 
-  translate_filter   <- c(category_id = "id", region_code = "regionCode")
-  yt_filter_name     <- as.vector(translate_filter[match(names(filter),
-                                                      names(translate_filter))])
-  names(filter)      <- yt_filter_name
+  translate_filter <- c(category_id = "id", region_code = "regionCode")
+  yt_filter_name <- translate_filter[names(filter)]
+  names(filter) <- yt_filter_name
 
-  if (sum(is.na(names(filter)) > 0)) {
+  if (sum(is.na(names(filter))) > 0) {
     stop("Filter can only have region_code or category_id.")
   }
 
-  querylist <- c(list(part = "snippet", hl = hl), filter)
+  querylist <- list(part = "snippet", hl = hl, filter)
 
   res <- tuber_GET("guideCategories", querylist, ...)
 
-  resdf <- read.table(text = "",
-               col.names = c("region_code", "channelId", "title", "etag", "id"))
+  resdf <- data.frame(region_code = character(),
+                      channelId = character(),
+                      title = character(),
+                      etag = character(),
+                      id = character(),
+                      stringsAsFactors = FALSE)
 
   # Cat total results
   cat("Total Number of Categories:", length(res$items), "\n")
 
   if (length(res$items) > 0) {
-
-    simple_res  <- lapply(res$items, function(x) c(unlist(x$snippet),
-                                                      etag = x$etag, id = x$id))
-
-    resdf       <- as.data.frame(cbind(region_code = filter["regionCode"],
-                                                    do.call(rbind, simple_res)))
+    simple_res <- lapply(res$items, function(x) c(unlist(x$snippet), etag = x$etag, id = x$id))
+    resdf <- do.call(rbind, simple_res)
+    resdf$region_code <- filter["regionCode"]
   } else {
-
-    resdf[1, "region_code"] <- filter["regionCode"]
+    resdf$region_code <- filter["regionCode"]
   }
 
   resdf
 }
+
