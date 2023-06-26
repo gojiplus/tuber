@@ -24,60 +24,58 @@
 #' }
 
 get_channel_stats <- function(channel_id = NULL, mine = NULL, ...) {
-
-  if (identical(tolower(mine),  "false")) {
-      mine <- NULL
+  
+  if (identical(tolower(mine), "false")) {
+    mine <- NULL
   }
-
-  if (!is.character(channel_id) & !identical(tolower(mine),  "true")) {
-          stop("Must specify a channel ID or specify mine = 'true'.")
+  
+  if (!is.character(channel_id) && !identical(tolower(mine), "true")) {
+    stop("Must specify a channel ID or set mine = 'true'.")
   }
-
+  
   querylist <- list(part = "statistics,snippet", id = channel_id, mine = mine)
-
-  raw_res  <- tuber_GET("channels", querylist, ...)
-
+  
+  raw_res <- tuber_GET("channels", querylist, ...)
+  
   if (length(raw_res$items) == 0) {
     warning("No channel stats available. Likely cause: Incorrect channel_id.\n")
     return(list())
   }
-
-  res  <- raw_res$items[[1]]
-  res1 <- res$statistics
-  res2 <- res$snippet
-
-  cat("Channel Title:", res2$title, "\n")
-  cat("No. of Views:", res1$viewCount, "\n")
-  cat("No. of Subscribers:", res1$subscriberCount, "\n")
-  cat("No. of Videos:", res1$videoCount, "\n")
-
+  
+  res <- raw_res$items[[1]]
+  res_stats <- res$statistics
+  res_snippet <- res$snippet
+  
+  cat("Channel Title:", res_snippet$title, "\n")
+  cat("No. of Views:", res_stats$viewCount, "\n")
+  cat("No. of Subscribers:", res_stats$subscriberCount, "\n")
+  cat("No. of Videos:", res_stats$videoCount, "\n")
+  
   res
 }
-
 
 #' @rdname get_channel_stats
 #' @export
 list_my_channel <- function(...) {
-
-
-  querylist <- list(part = "snippet,contentDetails,statistics",
-                    mine = "true")
-
-  raw_res  <- tuber_GET("channels", querylist, ...)
-
+  
+  querylist <- list(part = "snippet,contentDetails,statistics", mine = "true")
+  
+  raw_res <- tuber_GET("channels", querylist, ...)
+  
   if (length(raw_res$items) == 0) {
     warning("No channel stats available. Likely cause: No videos.\n")
     return(list())
   }
-
-  res  <- raw_res$items[[1]]
-  res1 <- res$statistics
-  res2 <- res$snippet
-
-  cat("Channel Title:", res2$title, "\n")
-  cat("No. of Views:", res1$viewCount, "\n")
-  cat("No. of Subscribers:", res1$subscriberCount, "\n")
-  cat("No. of Videos:", res1$videoCount, "\n")
-
+  
+  res <- raw_res$items[[1]]
+  res_stats <- res$statistics
+  res_snippet <- res$snippet
+  
+  cat("Channel Title:", res_snippet$title, "\n")
+  cat("No. of Views:", res_stats$viewCount, "\n")
+  cat("No. of Subscribers:", res_stats$subscriberCount, "\n")
+  cat("No. of Videos:", res_stats$videoCount, "\n")
+  
   res
 }
+
