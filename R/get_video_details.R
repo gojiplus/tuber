@@ -118,14 +118,14 @@ get_video_details <- function(video_id = NULL, part = "snippet", as.data.frame =
   raw_res <- tuber_GET("videos", querylist, ...)
 
   if (length(raw_res$items) == 0) {
-    warning("No details for this video are available. Likely cause:
-              Incorrect ID. \n")
+    warning("No details for this video are available. Likely cause: Incorrect ID. \n")
     return(list())
   }
 
   if (as.data.frame) {
-    raw_res <- json_to_df(raw_res)
+    raw_res <- purrr::map_df(raw_res$items, ~ flatten(.x))
   }
 
   raw_res
 }
+
