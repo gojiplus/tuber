@@ -33,10 +33,10 @@
 #' }
 
 list_videos <- function(part = "contentDetails", max_results = 50,
-                         page_token = NULL, hl = NULL, region_code = NULL,
-                         video_category_id = NULL, ...) {
+                        page_token = NULL, hl = NULL, region_code = NULL,
+                        video_category_id = NULL, ...) {
 
-  if (is.numeric(max) & max_results < 0 | max_results > 50) {
+  if (is.numeric(max_results) && (max_results < 0 || max_results > 50)) {
     stop("max_results only takes a value between 0 and 50.")
   }
 
