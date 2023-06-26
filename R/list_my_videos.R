@@ -11,7 +11,7 @@
 #' }
 #'
 list_my_videos <- function(...) {
-  x <- get_channel_stats(mine = TRUE)
-  res <- list_channel_videos(channel_id = x$id, ...)
+  channel_stats <- get_channel_stats(mine = TRUE, ...)
+  res <- list_channel_videos(channel_id = channel_stats$id, ...)
   return(res)
 }
