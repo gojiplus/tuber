@@ -35,48 +35,34 @@
 #'          "MbOSt6cQhhFkwETXKur-L9rN")
 #' }
 
-yt_oauth <- function(app_id = NULL, app_secret = NULL, scope = "ssl",
-                     token = ".httr-oauth", ...) {
-
+<- function(app_id = NULL, app_secret = NULL, scope = "ssl", token = ".httr-oauth", ...) {
   if (file.exists(token)) {
-
-    google_token <- try(suppressWarnings(readRDS(token)), silent = TRUE)
-
-    if (inherits(google_token, "try-error")) {
-      warning(sprintf("Unable to read token from:%s", token))
-    } else {
-      google_token <- google_token[[1]]
-    }
+    google_token <- tryCatch(
+      suppressWarnings(readRDS(token)),
+      error = function(e) {
+        warning(sprintf("Unable to read token from: %s", token))
+        NULL
+      }
+    )
   }
-
-  if (!file.exists(token) ||
-      (file.exists(token) &&
-       inherits(google_token, "try-error"))
-  ) {
-    stopifnot(!is.null(app_id),
-              !is.null(app_secret))
-
-
+  
+  if (!file.exists(token) || (file.exists(token) && is.null(google_token))) {
+    stopifnot(!is.null(app_id), !is.null(app_secret))
     myapp <- oauth_app("google", key = app_id, secret = app_secret)
-
-    scope = match.arg(
-      scope,
-      c("ssl", "basic", "own_account_readonly",
-        "upload_and_manage_own_videos",
-        "partner_audit",
-        "partner"))
-
-    scope_url = switch(
-      scope,
+    scope <- match.arg(scope, c(
+      "ssl", "basic", "own_account_readonly", 
+      "upload_and_manage_own_videos", "partner_audit", "partner"
+    ))
+    scope_url <- switch(scope,
       ssl = "https://www.googleapis.com/auth/youtube.force-ssl",
       basic = "https://www.googleapis.com/auth/youtube",
       own_account_readonly = "https://www.googleapis.com/auth/youtube.readonly",
-      upload_and_manage_own_videos ="https://www.googleapis.com/auth/youtube.upload",
+      upload_and_manage_own_videos = "https://www.googleapis.com/auth/youtube.upload",
       partner_audit = "https://www.googleapis.com/auth/youtubepartner-channel-audit",
-      partner =  "https://www.googleapis.com/auth/youtubepartner"
+      partner = "https://www.googleapis.com/auth/youtubepartner"
     )
-    google_token <- oauth2.0_token(oauth_endpoints("google"), myapp,
-                                   scope = scope_url, ...)
+    google_token <- oauth2.0_token(oauth_endpoints("google"), myapp, scope = scope_url, ...)
   }
+  
   options(google_token = google_token)
 }
