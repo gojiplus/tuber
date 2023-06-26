@@ -60,11 +60,35 @@ list_channel_resources <- function(filter = NULL, part = "contentDetails",
                                                       names(translate_filter))])
   names(filter)      <- yt_filter_name
 
-    querylist <- list(part = part, maxResults = max_results,
-                     pageToken = page_token, hl =  hl)
-    querylist <- c(querylist, filter)
-
-    res <- tuber_GET("channels", querylist, ...)
-
-    res
+  if (is.character(filter$username)) {
+    usernames <- filter$username
+    num_usernames <- length(usernames)
+    channel_ids <- vector("list", length = num_usernames)
+    
+    for (i in seq_along(usernames)) {
+      querylist <- list(part = part, maxResults = max_results,
+                        pageToken = page_token, hl =  hl, forUsername = usernames[i])
+      
+      res <- tuber_GET("channels", querylist, ...)
+      
+      if (length(res$items) == 0) {
+        warning("No details available for username: ", usernames[i])
+      } else {
+        channel_ids[[i]] <- res$items[[1]]$id
+      }
+      
+      print(i)
+    }
+    
+    return(channel_ids)
+  }
+  
+  querylist <- list(part = part, maxResults = max_results,
+                    pageToken = page_token, hl = hl)
+  querylist <- c(querylist, filter)
+  
+  res <- tuber_GET("channels", querylist, ...)
+  
+  res
 }
+
