@@ -1,7 +1,6 @@
 cache_directory: ".lintr_cache"
-linters: with_defaults(
-  camel_case_linter = NULL,
+linters: modify_defaults(
+  object_name_linter(sytles = c("snake_case", "camelCase", "symbols")),
   commented_code_linter = NULL,
-  line_length_linter = line_length_linter(100),
-  default = NULL
+  line_length_linter = line_length_linter(100)
   )
