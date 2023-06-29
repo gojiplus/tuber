@@ -54,7 +54,7 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
                                 max_results = 100, page_token = NULL, ...) {
 
   if (max_results < 20) {
-    stop("max_results must be a value over 20. For values above 100, it outputs all the results.")
+    stop("max_results must be a value greater than or equal to 20. For values above 100, it outputs all the results.")
   }
 
   valid_formats <- c("html", "plainText")
@@ -85,18 +85,15 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
   res <- tuber_GET("commentThreads", querylist, ...)
 
   if (simplify && part == "snippet" && max_results < 101) {
-    simple_res <- lapply(res$items, function(x) unlist(x$snippet$topLevelComment$snippet))
-    simpler_res <- do.call(rbind, simple_res)
+    simpler_res <- lapply(res$items, function(x) unlist(x$snippet$topLevelComment$snippet))
+    simpler_res <- do.call(rbind, simpler_res)
 
     return(simpler_res)
 
   } else if (simplify && part == "snippet" && max_results > 100) {
-    simple_res <- lapply(res$items, function(x) unlist(x$snippet$topLevelComment$snippet))
-    simpler_res <- do.call(rbind, simple_res)
+    agg_res <- lapply(res$items, function(x) unlist(x$snippet$topLevelComment$snippet))
 
-    agg_res <- simpler_res
     page_token <- res$nextPageToken
-
     while (is.character(page_token)) {
       a_res <- get_comment_threads(orig_filter,
                                    part = part,
@@ -105,15 +102,13 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
                                    max_results = 100,
                                    page_token = page_token,
                                    ...)
-      simple_res <- lapply(a_res$items, function(x) unlist(x$snippet$topLevelComment$snippet))
-      simpler_res <- do.call(rbind, simple_res)
-
-      agg_res <- rbind(simpler_res, agg_res)
+      agg_res <- rbind(lapply(a_res$items, function(x) unlist(x$snippet$topLevelComment$snippet)), agg_res)
       page_token <- a_res$nextPageToken
     }
-    return(agg_res)
+    return(do.call(rbind, agg_res))
   }
 
   res
 }
+
 
