@@ -10,3 +10,6 @@ doc
 Meta
 .lintr_cache
 .DS_Store
+tuber.Rcheck/
+tuber*.tar.gz
+tuber*.tgz
