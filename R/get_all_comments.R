@@ -45,45 +45,44 @@ get_all_comments <- function(video_id = NULL, ...) {
 
 
 process_page <- function(res = NULL) {
-  simple_res <- lapply(res$items, function(x) {
-    comment_snippet <- x$snippet$topLevelComment$snippet
-    comment_id <- x$id
+  num_comments <- length(res$items)
+  comment_list <- vector("list", length = num_comments)
+  
+  for (i in seq_len(num_comments)) {
+    comment <- res$items[[i]]
+    
+    comment_snippet <- comment$snippet$topLevelComment$snippet
+    comment_id <- comment$id
     comment_parent_id <- NA
-    comment_moderation_status <- if ("moderationStatus" %in% names(comment_snippet)) {
-      comment_snippet$moderationStatus
-    } else {
-      NA
-    }
+    comment_moderation_status <- ifelse("moderationStatus" %in% names(comment_snippet),
+                                        comment_snippet$moderationStatus, NA)
     
-    comment_data <- c(comment_snippet, id = comment_id, parentId = comment_parent_id, moderationStatus = comment_moderation_status)
+    comment_data <- c(comment_snippet, id = comment_id, parentId = comment_parent_id,
+                      moderationStatus = comment_moderation_status)
     
-    replies <- x$replies
-    if (!is.null(replies) && "comments" %in% names(replies)) {
-      reply_items <- replies$comments
+    if (!is.null(comment$replies) && "comments" %in% names(comment$replies)) {
+      reply_items <- comment$replies$comments
       
       if (!is.null(reply_items) && length(reply_items) > 0) {
         reply_data <- lapply(reply_items, function(reply) {
           reply_snippet <- reply$snippet
           reply_id <- reply$id
           reply_parent_id <- comment_id
-          reply_moderation_status <- if ("moderationStatus" %in% names(reply_snippet)) {
-            reply_snippet$moderationStatus
-          } else {
-            NA
-          }
+          reply_moderation_status <- ifelse("moderationStatus" %in% names(reply_snippet),
+                                            reply_snippet$moderationStatus, NA)
           
-          c(reply_snippet, id = reply_id, parentId = reply_parent_id, moderationStatus = reply_moderation_status)
+          c(reply_snippet, id = reply_id, parentId = reply_parent_id,
+            moderationStatus = reply_moderation_status)
         })
         
-        reply_data <- do.call(rbind, reply_data)
-        comment_data <- rbind(comment_data, reply_data)
+        comment_data <- rbind(comment_data, do.call(rbind, reply_data))
       }
     }
     
-    comment_data
-  })
+    comment_list[[i]] <- comment_data
+  }
   
-  agg_res <- do.call(rbind, simple_res)
+  agg_res <- do.call(rbind, comment_list)
   agg_res
 }
 
