@@ -24,20 +24,25 @@
 #' }
 
 get_all_comments <- function(video_id = NULL, ...) {
-  querylist <- list(videoId = video_id, part = "id,replies,snippet", maxResults = 100)
+  querylist <- list(videoId = video_id, part = "id,replies,snippet")
   res <- tuber_GET("commentThreads", query = querylist, ...)
   agg_res <- process_page(res)
   page_token <- res$nextPageToken
+
+  comment_list <- list(agg_res)  # Preallocate a list and store the initial result
   
   while (!is.null(page_token)) {
     querylist$pageToken <- page_token
     a_res <- tuber_GET("commentThreads", query = querylist, ...)
-    agg_res <- rbind(agg_res, process_page(a_res), stringsAsFactors = FALSE)
+    new_comments <- process_page(a_res)
+    comment_list <- c(comment_list, new_comments)  # Append new comments to the list
     page_token <- a_res$nextPageToken
   }
   
+  agg_res <- do.call(rbind, comment_list)  # Combine all comments into a single data frame
   agg_res
 }
+
 
 process_page <- function(res = NULL) {
   simple_res <- lapply(res$items, function(x) {
