@@ -18,8 +18,8 @@
 
 delete_channel_sections <- function(id = NULL, ...) {
 
-  if ( !is.character(id)) {
-    stop("Must specify a valid id.")
+  if (missing(id) || !is.character(id) || !nzchar(id)) {
+    stop("Must specify a valid ID.")
   }
 
   querylist <- list(id = id)
