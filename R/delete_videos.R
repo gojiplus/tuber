@@ -17,8 +17,8 @@
 
 delete_videos <- function(id = NULL, ...) {
 
-  if (!is.character(id)) {
-    stop("Must specify a valid id.")
+  if (!is.character(id) || length(id) != 1 || nchar(id) == 0) {
+    stop("Must specify a valid ID.")
   }
 
   querylist <- list(id = id)
