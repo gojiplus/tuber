@@ -26,23 +26,23 @@
 
 get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
   if (!is.character(channel_id) && !identical(tolower(mine), "true")) {
-    stop("Must specify a channel ID or specify mine = 'true'.")
+    stop("Must specify a valid channel ID or set mine = 'true'.")
   }
 
-  channel_resources <- list_channel_resources(filter = c(channel_id = channel_id), part = "contentDetails")
+  channel_resources <- list_channel_resources(filter = list(channel_id = channel_id), part = "contentDetails")
   playlist_id <- channel_resources$items$contentDetails$relatedPlaylists$uploads
 
-  playlist_items <- get_playlist_items(filter = c(playlist_id = playlist_id), max_results = 100)
-  vid_ids <- playlist_items$contentDetails.videoId
+  playlist_items <- get_playlist_items(filter = list(playlist_id = playlist_id), max_results = 100)
+  vid_ids <- playlist_items$contentDetails$videoId
 
   res <- lapply(vid_ids, get_stats)
   details <- lapply(vid_ids, get_video_details)
 
-  res_df <- data.frame(id = unlist(lapply(res, function(x) x$id)),
-                       view_count = unlist(lapply(res, function(x) x$statistics$viewCount)),
-                       like_count = unlist(lapply(res, function(x) x$statistics$likeCount)),
-                       dislike_count = unlist(lapply(res, function(x) x$statistics$dislikeCount)),
-                       comment_count = unlist(lapply(res, function(x) x$statistics$commentCount)),
+  res_df <- data.frame(id = unlist(lapply(res, `[[`, "id")),
+                       view_count = unlist(lapply(res, `[[`, "statistics$viewCount")),
+                       like_count = unlist(lapply(res, `[[`, "statistics$likeCount")),
+                       dislike_count = unlist(lapply(res, `[[`, "statistics$dislikeCount")),
+                       comment_count = unlist(lapply(res, `[[`, "statistics$commentCount")),
                        stringsAsFactors = FALSE)
 
   details_df <- data.frame(id = character(),
@@ -53,14 +53,15 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
                            channel_title = character(),
                            stringsAsFactors = FALSE)
 
-  for (detail in details) {
+  for (i in seq_along(details)) {
+    detail <- details[[i]]
     if (length(detail$items) == 0) {
       next
     }
     item <- detail$items[[1]]$snippet
     detail_df <- data.frame(id = item$id,
                             title = item$title,
-                            publication_date = ifelse("videoPublishedAt" %in% names(item), item$videoPublishedAt, NA),
+                            publication_date = if ("videoPublishedAt" %in% names(item)) item$videoPublishedAt else NA,
                             description = item$description,
                             channel_id = item$channelId,
                             channel_title = item$channelTitle,
@@ -73,3 +74,4 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
   merged_df <- merge(details_df, res_df, by = "id")
   return(merged_df)
 }
+
