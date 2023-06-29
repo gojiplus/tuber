@@ -14,7 +14,7 @@ yt_set_key(key, type)
 
 \item{key}{A character vector specifying a YouTube API key.}
 
-\item{type}{A character vector specifying the type of API key to set. One of 'api' (the default, stored in `YOUTUBE_KEY`) or 'package'. Package keys are stored in `TUBER_KEY` and are used to decrypt API keys, for use in testing and continuous integration platforms.}
+\item{type}{A character vector specifying the type of API key to set. One of 'api' (the default, stored in `YOUTUBE_KEY`) or 'package'. Package keys are stored in `TUBER_KEY` and are used to decrypt API keys, for use in continuous integration and testing.}
 }
 \value{
 `yt_get_key()` returns a character vector with the YouTube API key stored in `.Renviron`. If this value is not stored in `.Renviron`, the functions return `NULL`.
@@ -23,4 +23,30 @@ When the `type` argument is set to 'api', `yt_set_key()` assigns a YouTube API k
 }
 \description{
 These functions manage your YouTube API key and package key in \code{.Renviron}.
+}
+\examples{
+\dontrun{
+## for interactive use
+yt_get_key()
+
+list_channel_videos(
+  channel_id = "UCDgj5-mFohWZ5irWSFMFcng",
+  max_results = 3,
+  part = "snippet",
+  auth = "key"
+)
+
+## for continuous integration and testing
+yt_set_key(httr2::secret_make_key(), type = "package")
+x <- httr2::secret_encrypt("YOUR_YOUTUBE_API_KEY", "TUBER_KEY")
+yt_set_key(x, type = "api")
+yt_get_key(decrypt = TRUE)
+
+list_channel_videos(
+  channel_id = "UCDgj5-mFohWZ5irWSFMFcng",
+  max_results = 3,
+  part = "snippet",
+  auth = "key"
+)
+}
 }
