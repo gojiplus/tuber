@@ -25,13 +25,13 @@
 
 get_all_comments <- function(video_id = NULL, ...) {
   querylist <- list(videoId = video_id, part = "id,replies,snippet", maxResults = 100)
-  res <- tuber_GET("commentThreads", querylist, ...)
+  res <- tuber_GET("commentThreads", query = querylist, ...)
   agg_res <- process_page(res)
   page_token <- res$nextPageToken
   
-  while (is.character(page_token)) {
+  while (!is.null(page_token)) {
     querylist$pageToken <- page_token
-    a_res <- tuber_GET("commentThreads", querylist, ...)
+    a_res <- tuber_GET("commentThreads", query = querylist, ...)
     agg_res <- rbind(agg_res, process_page(a_res), stringsAsFactors = FALSE)
     page_token <- a_res$nextPageToken
   }
@@ -41,7 +41,7 @@ get_all_comments <- function(video_id = NULL, ...) {
 
 process_page <- function(res = NULL) {
   simple_res <- lapply(res$items, function(x) {
-    comment_snippet <- unlist(x$snippet$topLevelComment$snippet)
+    comment_snippet <- x$snippet$topLevelComment$snippet
     comment_id <- x$id
     comment_parent_id <- NA
     comment_moderation_status <- if ("moderationStatus" %in% names(comment_snippet)) {
@@ -58,7 +58,7 @@ process_page <- function(res = NULL) {
       
       if (!is.null(reply_items) && length(reply_items) > 0) {
         reply_data <- lapply(reply_items, function(reply) {
-          reply_snippet <- unlist(reply$snippet)
+          reply_snippet <- reply$snippet
           reply_id <- reply$id
           reply_parent_id <- comment_id
           reply_moderation_status <- if ("moderationStatus" %in% names(reply_snippet)) {
@@ -81,3 +81,4 @@ process_page <- function(res = NULL) {
   agg_res <- do.call(rbind, simple_res)
   agg_res
 }
+
