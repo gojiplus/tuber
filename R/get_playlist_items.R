@@ -36,68 +36,55 @@
 #' }
 
 get_playlist_items <- function(filter = NULL, part = "contentDetails",
-                                max_results = 50, video_id = NULL,
-                                page_token = NULL, simplify = TRUE, ...) {
+                              max_results = 50, video_id = NULL,
+                              page_token = NULL, simplify = TRUE, ...) {
 
-  if (max_results < 0) {
-    stop("max_results only takes a value between 0 and 50.")
+  if (max_results < 0 || max_results > 50) {
+    stop("max_results must be a value between 0 and 50.")
   }
 
-  if (!(names(filter) %in% c("item_id", "playlist_id"))) {
-    stop("filter can only take one of values: item_id, playlist_id.")
+  valid_filters <- c("item_id", "playlist_id")
+  if (!(names(filter) %in% valid_filters)) {
+    stop("filter can only take one of the following values: item_id, playlist_id.")
   }
 
-  if ( length(filter) != 1) stop("filter must be a vector of length 1.")
+  if (length(filter) != 1) {
+    stop("filter must be a vector of length 1.")
+  }
 
-  translate_filter   <- c(item_id = "id", playlist_id = "playlistId")
-  yt_filter_name     <- as.vector(translate_filter[match(names(filter),
-                                                      names(translate_filter))])
-  names(filter)      <- yt_filter_name
+  translate_filter <- c(item_id = "id", playlist_id = "playlistId")
+  filter_name <- translate_filter[names(filter)]
+  names(filter) <- filter_name
 
   querylist <- list(part = part,
-                    maxResults = ifelse(max_results > 50, 50, max_results),
+                    maxResults = max(min(max_results, 50), 1),
                     pageToken = page_token, videoId = video_id)
   querylist <- c(querylist, filter)
 
   res <- tuber_GET("playlistItems", querylist, ...)
 
   if (max_results > 50) {
-
-    page_token  <- res$nextPageToken
-
-    while ( is.character(page_token)) {
-
-    a_res <- tuber_GET("playlistItems", list(
-                                      part = part,
-                                      playlistId = unname(filter["playlistId"]),
-                                      maxResults = 50,
-                                      pageToken = page_token
-                                      )
-                       )
-
-    res <- c(res, a_res)
-    page_token    <- a_res$nextPageToken
+    page_token <- res$nextPageToken
+    while (is.character(page_token)) {
+      a_res <- tuber_GET("playlistItems", list(
+        part = part,
+        playlistId = unname(filter["playlistId"]),
+        maxResults = 50,
+        pageToken = page_token
+      ))
+      res <- c(res, a_res)
+      page_token <- a_res$nextPageToken
     }
   }
 
-  if (simplify == TRUE) {
-
-    # Merge the separate results lists as one large list
-
-    allResultsList <- unlist(
-      res[which(names(res) == "items")],
-      recursive = FALSE)
-
-    # The lists are hierachical. Flatten them as vectors
-    allResultsList <- lapply(allResultsList, unlist)
-
-    # Unpublished videos do not have a publication date. To take this into account
-    # we must use rbind.fill that can accomodate missing data
-    res <- do.call(plyr::rbind.fill,
-                   lapply(allResultsList, function(x) {
-                     as.data.frame(t(x), stringsAsFactor = FALSE)
-                   }))
-
+  if (simplify) {
+    allResultsList <- res$items
+    if (length(res) > 1) {
+      allResultsList <- c(allResultsList, res[-1])
+    }
+    res <- do.call(rbind.fill, lapply(allResultsList, function(x) as.data.frame(t(unlist(x)), stringsAsFactors = FALSE)))
   }
+
   res
 }
+
