@@ -78,11 +78,16 @@ get_playlist_items <- function(filter = NULL, part = "contentDetails",
   }
 
   if (simplify) {
-    allResultsList <- res$items
-    if (length(res) > 1) {
-      allResultsList <- c(allResultsList, res[-1])
-    }
-    res <- do.call(rbind.fill, lapply(allResultsList, function(x) as.data.frame(t(unlist(x)), stringsAsFactors = FALSE)))
+    allResultsList <- unlist(res[which(names(res) == "items")], recursive = FALSE)
+    allResultsList <- lapply(allResultsList, unlist)
+    res <-
+      do.call(
+        rbind.fill,
+        lapply(
+          allResultsList,
+          function(x) as.data.frame(t(x), stringsAsFactors = FALSE)
+        )
+      )
   }
 
   res
