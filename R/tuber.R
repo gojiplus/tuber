@@ -18,6 +18,8 @@
 #' @importFrom tidyr pivot_wider unnest unnest_longer
 #' @importFrom purrr map_df map_dbl
 #' @docType package
+#' @aliases tuber-package
+
 NULL
 
 #' Check if authentication token is in options
