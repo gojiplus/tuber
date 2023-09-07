@@ -94,6 +94,7 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
                       published_after = NULL, published_before = NULL,
                       video_definition = "any", video_caption = "any",
                       video_license = "any", video_syndicated = "any",
+                      region_code = NULL, relevance_language = "en",
                       video_type = "any", simplify = TRUE, get_all = TRUE,
                       page_token = NULL, ...) {
 
@@ -135,17 +136,25 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
     stop("Location radius must be specified with location")
   }
 
-  querylist <- list(part = "snippet", q = term, maxResults = max_results,
-                    channelId = channel_id, type = type,
-                    channelType = channel_type, eventType = event_type,
+  querylist <- list(part = "snippet", 
+                    q = term, 
+                    maxResults = max_results,
+                    channelId = channel_id, 
+                    type = type,
+                    channelType = channel_type, 
+                    eventType = event_type,
                     location = location,
                     locationRadius = location_radius,
                     publishedAfter = published_after,
                     publishedBefore = published_before,
                     videoDefinition = video_definition,
                     videoCaption = video_caption,
-                    videoType = video_type, videoSyndicated = video_syndicated,
-                    videoLicense = video_license, pageToken = page_token)
+                    videoType = video_type, 
+                    videoSyndicated = video_syndicated,
+                    videoLicense = video_license, 
+                    regionCode = region_code,
+                    relevanceLanguage	= relevance_language,
+                    pageToken = page_token)
 
   # Sending NULLs to Google seems to short its wiring
   querylist <- querylist[names(querylist)[sapply(querylist, function(x) !is.null(x))]]
@@ -171,9 +180,13 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
 
     while (is.character(page_token)) {
 
-      a_res <- yt_search(part = "snippet", term = term,
-                         max_results = max_results, channel_id = channel_id,
+      a_res <- yt_search(part = "snippet", 
+                         term = term,
+                         max_results = max_results, 
+                         channel_id = channel_id,
                          type = type,
+                         relevance_language = relevance_language,
+                         region_code = region_code,
                          channel_type = channel_type,
                          event_type = event_type,
                          location = location,
