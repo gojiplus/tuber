@@ -1,0 +1,38 @@
+#' Add Video to Playlist
+#'
+#' @param playlist_id string; Required. The ID of the playlist.
+#' @param video_id string; Required. The ID of the video to add.
+#' @param ... Additional arguments passed to \code{\link{tuber_POST_json}}.
+#'
+#' @return Details of the added video in the playlist.
+#'
+#' @export
+#' @references \url{https://developers.google.com/youtube/v3/docs/playlistItems/insert}
+#'
+#' @examples
+#' \dontrun{
+#'
+#' # Set API token via yt_oauth() first
+#'
+#' add_video_to_playlist(playlist_id = "YourPlaylistID", video_id = "2_gLD1jarfU")
+#' }
+
+add_video_to_playlist <- function(playlist_id, video_id, ...) {
+
+  # Prepare the request body
+  body <- list(
+    snippet = list(
+      playlistId = playlist_id,
+      resourceId = list(
+        kind = "youtube#video",
+        videoId = video_id
+      )
+    )
+  )
+
+  # Make the POST request using tuber_POST_json
+  raw_res <- tuber_POST_json(path = "playlistItems", query = list(part = "snippet"), body = body, ...)
+
+  # Return the response
+  return(raw_res)
+}
