@@ -7,6 +7,8 @@ conditional_unnest_wider <- function(data_input, var) {
   }
 }
 
+# Added to squash notes on devtools check.
+utils::globalVariables(c("kind", "etag", "items", "snippet"))
 
 json_to_df <- function(res) {
   intermediate <- res %>%

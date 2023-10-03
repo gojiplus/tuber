@@ -19,6 +19,8 @@ yt_search(
   video_caption = "any",
   video_license = "any",
   video_syndicated = "any",
+  region_code = NULL,
+  relevance_language = "en",
   video_type = "any",
   simplify = TRUE,
   get_all = TRUE,
@@ -85,6 +87,17 @@ license), \code{'youtube'} (return videos with standard YouTube license).}
 \item{video_syndicated}{Character. Optional. Takes one of two values:
 \code{'any'} (return all videos; Default), \code{'true'}
 (return only syndicated videos)}
+
+\item{region_code}{Character. Required. Has to be a ISO 3166-1 alpha-2 code
+(see \url{https://www.iso.org/obp/ui/#search}).}
+
+\item{relevance_language}{Character. Optional. The relevance_language
+argument instructs the API to return search results that are most relevant to
+the specified language. The parameter value is typically an ISO 639-1
+two-letter language code. However, you should use the values zh-Hans for
+simplified Chinese and zh-Hant for traditional Chinese. Please note that
+results in other languages will still be returned if they are highly relevant
+to the search query term.}
 
 \item{video_type}{Character. Optional. Takes one of three values:
 \code{'any'} (return all videos; Default), \code{'episode'}
