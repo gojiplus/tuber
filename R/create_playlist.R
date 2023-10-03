@@ -17,11 +17,10 @@
 #'
 #' create_playlist(title = "My New Playlist", description = "This is a test playlist.")
 #' }
-
-create_playlist <- function(title, status, ...) {
+create_playlist <- function(title, description, status, ...) {
   # Prepare the request body
   body <- list(
-    snippet = list(title = title),
+    snippet = list(title = title, description = description),
     status = list(privacyStatus = status)
   )
 

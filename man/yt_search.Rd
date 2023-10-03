@@ -88,9 +88,17 @@ license), \code{'youtube'} (return videos with standard YouTube license).}
 \code{'any'} (return all videos; Default), \code{'true'}
 (return only syndicated videos)}
 
-\item{region_code}{Character. i18nRegion. Default is NULL.}
+\item{region_code}{Character. Required. Has to be a ISO 3166-1 alpha-2 code
+(see \url{https://www.iso.org/obp/ui/#search}).}
 
-\item{relevance_language}{Character. Default is "en".}
+\item{relevance_language}{Character. Optional. The relevance_language
+argument instructs the API to return search results that are most relevant to
+the specified language. The parameter value is typically an ISO 639-1
+two-letter language code. However, you should use the values zh-Hans for
+simplified Chinese and zh-Hant for traditional Chinese. Please note that
+results in other languages will still be returned if they are highly relevant
+to the search query term.}
+>>>>>>> 07e7e3f (squashed some warnings and notes from devtools::check())
 
 \item{video_type}{Character. Optional. Takes one of three values:
 \code{'any'} (return all videos; Default), \code{'episode'}

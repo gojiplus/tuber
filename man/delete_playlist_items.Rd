@@ -19,7 +19,7 @@ Delete a Playlist Item
 
 # Set API token via yt_oauth() first
 
-delete_playlist_items(id = "y3ElXcEME3lSISz6izkWVT5GvxjPu8pA")
+delete_playlist_items(id = "YourPlaylistItemID")
 }
 }
 \references{

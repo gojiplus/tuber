@@ -103,7 +103,7 @@ upload_video <- function(
   resumable_upload_url <- "https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=parts"
   resumable_upload_req <- httr::POST(resumable_upload_url,
                                      config(token = getOption("google_token")),
-                                     add_headers(headers),
+                                     httr::add_headers(headers),
                                      ...
   )
 
