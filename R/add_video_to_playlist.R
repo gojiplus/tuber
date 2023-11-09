@@ -17,12 +17,13 @@
 #' add_video_to_playlist(playlist_id = "YourPlaylistID", video_id = "2_gLD1jarfU")
 #' }
 
-add_video_to_playlist <- function(playlist_id, video_id, ...) {
+add_video_to_playlist <- function(playlist_id, video_id, position, ...) {
 
   # Prepare the request body
   body <- list(
     snippet = list(
       playlistId = playlist_id,
+      position = position,
       resourceId = list(
         kind = "youtube#video",
         videoId = video_id
