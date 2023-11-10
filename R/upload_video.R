@@ -1,6 +1,6 @@
 #' Upload Video to Youtube
 #'
-#' @param file_path Filename of the video locally
+#' @param file Filename of the video locally
 #' @param snippet Additional fields for the video, including `description`
 #' and `title`.  See
 #' \url{https://developers.google.com/youtube/v3/docs/videos#resource} for
@@ -38,7 +38,7 @@
 #' status = list(privacyStatus = "private")
 
 upload_video <- function(
-  file_path,
+  file,
   snippet = NULL,
   status = list(privacyStatus = "public"),
   query = NULL,
@@ -87,17 +87,17 @@ upload_video <- function(
 
   body <- list(
     metadata = httr::upload_file(metadata, type = "application/json; charset=UTF-8"),
-    y = httr::upload_file(file_path)
+    y = httr::upload_file(file)
   )
 
   yt_check_token()
 
   headers <- c(
     "Authorization" = paste("Bearer", getOption("google_token")$credentials$access_token),
-    "Content-Length" = file.size(file_path),
+    "Content-Length" = file.size(file),
     "Content-Type" = "application/json; charset=utf-8",
-    "X-Upload-Content-Length" = file.size(file_path),
-    "X-Upload-Content-Type" = mime::guess_type(file_path)
+    "X-Upload-Content-Length" = file.size(file),
+    "X-Upload-Content-Type" = mime::guess_type(file)
   )
 
   resumable_upload_url <- "https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=parts"
@@ -114,7 +114,7 @@ upload_video <- function(
   upload_url <- httr::headers(resumable_upload_req)$`x-guploader-uploadid`
 
   upload_req <- httr::PUT(upload_url,
-                          body = httr::upload_file(file_path),
+                          body = httr::upload_file(file),
                           config(token = getOption("google_token")),
                           ...
   )
