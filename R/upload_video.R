@@ -93,7 +93,7 @@ upload_video <- function(
   yt_check_token()
 
   headers <- c(
-    "Authorization" = paste("Bearer", getOption("google_token")$credentials$access_token),
+    "Authorization" = paste("Bearer", getOption("google_token")), #$credentials$access_token),
     "Content-Length" = file.size(file),
     "Content-Type" = "application/json; charset=utf-8",
     "X-Upload-Content-Length" = file.size(file),

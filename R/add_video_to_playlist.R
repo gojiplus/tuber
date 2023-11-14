@@ -17,19 +17,31 @@
 #' add_video_to_playlist(playlist_id = "YourPlaylistID", video_id = "2_gLD1jarfU")
 #' }
 
-add_video_to_playlist <- function(playlist_id, video_id, position, ...) {
+add_video_to_playlist <- function(playlist_id, video_id, position = NULL, ...) {
 
   # Prepare the request body
-  body <- list(
-    snippet = list(
-      playlistId = playlist_id,
-      position = position,
-      resourceId = list(
-        kind = "youtube#video",
-        videoId = video_id
+  if(is.null(position)){
+    body <- list(
+      snippet = list(
+        playlistId = playlist_id,
+        resourceId = list(
+          kind = "youtube#video",
+          videoId = video_id
+        )
       )
     )
-  )
+  } else {
+    body <- list(
+      snippet = list(
+        playlistId = playlist_id,
+        position = position,
+        resourceId = list(
+          kind = "youtube#video",
+          videoId = video_id
+        )
+      )
+    )
+  }
 
   # Make the POST request using tuber_POST_json
   raw_res <- tuber_POST_json(path = "playlistItems", query = list(part = "snippet"), body = body, ...)
