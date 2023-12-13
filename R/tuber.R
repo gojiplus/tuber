@@ -233,7 +233,7 @@ tuber_POST_json <- function(path, query, body = "", ...) {
                     config(token = getOption("google_token")),
                     encode = "json", ...)
 
-  tuber::tuber_check(req)
+  tuber_check(req)
   res <- content(req)
 
   res
