@@ -250,7 +250,7 @@ res = list_channel_resources(filter = c(username = "GoogleDevelopers"), part="id
 
 # Parse out channel_id
 if(!is.null(res$items[[1]]$id)){
-  channel_id = res$items[[1]]$id
+  channel_id <- res$items[[1]]$id
 } else {
   stop("User not found") 
 }
