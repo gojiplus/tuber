@@ -9,3 +9,21 @@
 \pkg{tuber} provides access to the YouTube API V3 via
 RESTful calls.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/soodoku/tuber}
+  \item Report bugs at \url{https://github.com/soodoku/tuber/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Gaurav Sood \email{gsood07@gmail.com}
+
+Other contributors:
+\itemize{
+  \item Kate Lyons \email{k.lyons7@gmail.com} [contributor]
+  \item John Muschelli \email{muschellij2@gmail.com} [contributor]
+}
+
+}
