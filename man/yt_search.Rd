@@ -19,6 +19,8 @@ yt_search(
   video_caption = "any",
   video_license = "any",
   video_syndicated = "any",
+  region_code = NULL,
+  relevance_language = "en",
   video_type = "any",
   simplify = TRUE,
   get_all = TRUE,
@@ -85,6 +87,10 @@ license), \code{'youtube'} (return videos with standard YouTube license).}
 \item{video_syndicated}{Character. Optional. Takes one of two values:
 \code{'any'} (return all videos; Default), \code{'true'}
 (return only syndicated videos)}
+
+\item{region_code}{Character. i18nRegion. Default is NULL.}
+
+\item{relevance_language}{Character. Default is "en".}
 
 \item{video_type}{Character. Optional. Takes one of three values:
 \code{'any'} (return all videos; Default), \code{'episode'}

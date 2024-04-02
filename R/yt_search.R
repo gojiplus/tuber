@@ -51,6 +51,8 @@
 #' Takes one of three values: \code{'any'} (return all videos; Default),
 #' \code{'creativeCommon'} (return videos with Creative Commons
 #' license), \code{'youtube'} (return videos with standard YouTube license).
+#' @param region_code Character. i18nRegion. Default is NULL.
+#' @param relevance_language Character. Default is "en".
 #' @param simplify Boolean. Return a data.frame if \code{TRUE}.
 #' Default is \code{TRUE}.
 #' If \code{TRUE}, it returns a list that carries additional information.
@@ -136,12 +138,12 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
     stop("Location radius must be specified with location")
   }
 
-  querylist <- list(part = "snippet", 
-                    q = term, 
+  querylist <- list(part = "snippet",
+                    q = term,
                     maxResults = max_results,
-                    channelId = channel_id, 
+                    channelId = channel_id,
                     type = type,
-                    channelType = channel_type, 
+                    channelType = channel_type,
                     eventType = event_type,
                     location = location,
                     locationRadius = location_radius,
@@ -149,9 +151,9 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
                     publishedBefore = published_before,
                     videoDefinition = video_definition,
                     videoCaption = video_caption,
-                    videoType = video_type, 
+                    videoType = video_type,
                     videoSyndicated = video_syndicated,
-                    videoLicense = video_license, 
+                    videoLicense = video_license,
                     regionCode = region_code,
                     relevanceLanguage	= relevance_language,
                     pageToken = page_token)
@@ -180,9 +182,9 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
 
     while (is.character(page_token)) {
 
-      a_res <- yt_search(part = "snippet", 
+      a_res <- yt_search(part = "snippet",
                          term = term,
-                         max_results = max_results, 
+                         max_results = max_results,
                          channel_id = channel_id,
                          type = type,
                          relevance_language = relevance_language,

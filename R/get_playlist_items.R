@@ -39,9 +39,9 @@ get_playlist_items <- function(filter = NULL, part = "contentDetails",
                               max_results = 50, video_id = NULL,
                               page_token = NULL, simplify = TRUE, ...) {
 
-  if (max_results < 0 || max_results > 50) {
-    stop("max_results must be a value between 0 and 50.")
-  }
+  # if (max_results < 0 || max_results > 50) {
+  #   stop("max_results must be a value between 0 and 50.")
+  # }
 
   valid_filters <- c("item_id", "playlist_id")
   if (!(names(filter) %in% valid_filters)) {
