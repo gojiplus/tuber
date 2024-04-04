@@ -13,3 +13,4 @@ Meta
 tuber.Rcheck/
 tuber*.tar.gz
 tuber*.tgz
+.Rapp.history
