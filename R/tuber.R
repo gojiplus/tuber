@@ -215,6 +215,31 @@ tuber_POST <- function(path, query, body = "", ...) {
 }
 
 #'
+#' POST encoded in json
+#'
+#' @param path path to specific API request URL
+#' @param query query list
+#' @param body passing image through body
+#' @param \dots Additional arguments passed to \code{\link[httr]{GET}}.
+#'
+#' @return list
+
+tuber_POST_json <- function(path, query, body = "", ...) {
+
+  yt_check_token()
+
+  req <- httr::POST("https://www.googleapis.com", path = paste0("youtube/v3/", path),
+                    body = body, query = query,
+                    config(token = getOption("google_token")),
+                    encode = "json", ...)
+
+  tuber_check(req)
+  res <- content(req)
+
+  res
+}
+
+#'
 #' DELETE
 #'
 #' @param path path to specific API request URL

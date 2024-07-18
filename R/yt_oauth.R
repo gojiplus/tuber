@@ -36,21 +36,21 @@
 #' }
 
 yt_oauth <- function(app_id = NULL, app_secret = NULL, scope = "ssl", token = ".httr-oauth", ...) {
-  if (file.exists(token)) {
-    google_token <- tryCatch(
-      suppressWarnings(readRDS(token)),
-      error = function(e) {
-        warning(sprintf("Unable to read token from: %s", token))
-        NULL
-      }
-    )
-  }
-  
-  if (!file.exists(token) || (file.exists(token) && is.null(google_token))) {
-    stopifnot(!is.null(app_id), !is.null(app_secret))
+  # if (file.exists(token)) {
+  #   google_token <- tryCatch(
+  #     suppressWarnings(readRDS(token)),
+  #     error = function(e) {
+  #       warning(sprintf("Unable to read token from: %s", token))
+  #       NULL
+  #     }
+  #   )
+  # }
+
+  # if (!file.exists(token) || (file.exists(token) && is.null(google_token))) {
+  #   stopifnot(!is.null(app_id), !is.null(app_secret))
     myapp <- oauth_app("google", key = app_id, secret = app_secret)
     scope <- match.arg(scope, c(
-      "ssl", "basic", "own_account_readonly", 
+      "ssl", "basic", "own_account_readonly",
       "upload_and_manage_own_videos", "partner_audit", "partner"
     ))
     scope_url <- switch(scope,
@@ -62,7 +62,7 @@ yt_oauth <- function(app_id = NULL, app_secret = NULL, scope = "ssl", token = ".
       partner = "https://www.googleapis.com/auth/youtubepartner"
     )
     google_token <- oauth2.0_token(oauth_endpoints("google"), myapp, scope = scope_url, ...)
-  }
-  
+  # }
+
   options(google_token = google_token)
 }

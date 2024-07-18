@@ -86,14 +86,14 @@ upload_video <- function(
   writeLines(body, metadata)
 
   body <- list(
-    metadata = upload_file(metadata, type = "application/json; charset=UTF-8"),
+    metadata = httr::upload_file(metadata, type = "application/json; charset=UTF-8"),
     y = httr::upload_file(file)
   )
 
   yt_check_token()
 
   headers <- c(
-    "Authorization" = paste("Bearer", getOption("google_token")),
+    "Authorization" = paste("Bearer", getOption("google_token")), #$credentials$access_token),
     "Content-Length" = file.size(file),
     "Content-Type" = "application/json; charset=utf-8",
     "X-Upload-Content-Length" = file.size(file),
@@ -103,7 +103,7 @@ upload_video <- function(
   resumable_upload_url <- "https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=parts"
   resumable_upload_req <- httr::POST(resumable_upload_url,
                                      config(token = getOption("google_token")),
-                                     add_headers(headers),
+                                     httr::add_headers(headers),
                                      ...
   )
 

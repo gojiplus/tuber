@@ -32,7 +32,7 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
   channel_resources <- list_channel_resources(filter = list(channel_id = channel_id), part = "contentDetails")
   playlist_id <- channel_resources$items$contentDetails$relatedPlaylists$uploads
 
-  playlist_items <- get_playlist_items(filter = list(playlist_id = playlist_id), max_results = 100)
+  playlist_items <- get_playlist_items(filter = list(playlist_id = playlist_id), max_results = 50)
   vid_ids <- playlist_items$contentDetails$videoId
 
   res <- lapply(vid_ids, get_stats)
