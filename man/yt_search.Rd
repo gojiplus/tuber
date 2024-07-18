@@ -98,7 +98,6 @@ two-letter language code. However, you should use the values zh-Hans for
 simplified Chinese and zh-Hant for traditional Chinese. Please note that
 results in other languages will still be returned if they are highly relevant
 to the search query term.}
->>>>>>> 07e7e3f (squashed some warnings and notes from devtools::check())
 
 \item{video_type}{Character. Optional. Takes one of three values:
 \code{'any'} (return all videos; Default), \code{'episode'}
