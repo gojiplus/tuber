@@ -5,22 +5,18 @@
 #
 # See https://github.com/r-lib/actions/tree/master/examples#readme for
 # additional example workflows available for the R community.
-
 name: R
-
 on:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-
 jobs:
   build:
     runs-on: macos-latest
     strategy:
       matrix:
         r-version: ['4.2']
-
     steps:
       - uses: actions/checkout@v2
       - name: Set up R ${{ matrix.r-version }}
@@ -29,7 +25,7 @@ jobs:
           r-version: ${{ matrix.r-version }}
       - name: Install dependencies
         run: |
-          install.packages(c("remotes", "rcmdcheck"))
+          install.packages(c("remotes", "rcmdcheck", "httr2"))
           remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
       - name: Check
