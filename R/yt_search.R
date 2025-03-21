@@ -1,103 +1,3 @@
-#' Search YouTube
-#'
-#' Search for videos, channels and playlists. (By default, the function
-#' searches for videos.)
-#'
-#' @param term Character. Search term; required; no default
-#' For using Boolean operators, see the API documentation.
-#' Here's some of the relevant information:
-#' "Your request can also use the Boolean NOT (-) and OR (|) operators to
-#' exclude videos or to
-#' find videos that are associated with one of several search terms. For
-#' example, to search
-#' for videos matching either "boating" or "sailing", set the q parameter
-#' value to boating|sailing.
-#' Similarly, to search for videos matching either "boating" or "sailing"
-#' but not "fishing",
-#' set the q parameter value to boating|sailing -fishing"
-#' @param max_results Maximum number of items that should be returned.
-#' Integer. Optional. Can be between 0 and 50. Default is 50.
-#' Search results are constrained to a maximum of 500 videos if type is
-#' video and we have a value of \code{channel_id}.
-#' @param channel_id Character. Only return search results from this
-#' channel; Optional.
-#' @param channel_type Character. Optional. Takes one of two values:
-#' \code{'any', 'show'}. Default is \code{'any'}
-#' @param event_type Character. Optional. Takes one of three values:
-#' \code{'completed', 'live', 'upcoming'}
-#' @param location  Character.  Optional. Latitude and Longitude within
-#' parentheses, e.g. "(37.42307,-122.08427)"
-#' @param location_radius Character.  Optional. e.g. "1500m", "5km",
-#' "10000ft", "0.75mi"
-#' @param published_after Character. Optional. RFC 339 Format.
-#' For instance, "1970-01-01T00:00:00Z"
-#' @param published_before Character. Optional. RFC 339 Format.
-#' For instance, "1970-01-01T00:00:00Z"
-#' @param relevance_language Character. Optional. The relevance_language
-#' argument instructs the API to return search results that are most relevant to
-#' the specified language. The parameter value is typically an ISO 639-1
-#' two-letter language code. However, you should use the values zh-Hans for
-#' simplified Chinese and zh-Hant for traditional Chinese. Please note that
-#' results in other languages will still be returned if they are highly relevant
-#' to the search query term.
-#' @param type Character. Optional. Takes one of three values:
-#' \code{'video', 'channel', 'playlist'}. Default is \code{'video'}.
-#' @param video_caption Character. Optional. Takes one of three values:
-#' \code{'any'} (return all videos; Default), \code{'closedCaption', 'none'}.
-#' Type must be set to video.
-#' @param video_type Character. Optional. Takes one of three values:
-#' \code{'any'} (return all videos; Default), \code{'episode'}
-#' (return episode of shows), 'movie' (return movies)
-#' @param video_syndicated Character. Optional. Takes one of two values:
-#' \code{'any'} (return all videos; Default), \code{'true'}
-#' (return only syndicated videos)
-#' @param region_code Character. Required. Has to be a ISO 3166-1 alpha-2 code
-#'  (see \url{https://www.iso.org/obp/ui/#search}).
-#' @param video_definition Character. Optional.
-#' Takes one of three values: \code{'any'} (return all videos; Default),
-#' \code{'high', 'standard'}
-#' @param video_license Character. Optional.
-#' Takes one of three values: \code{'any'} (return all videos; Default),
-#' \code{'creativeCommon'} (return videos with Creative Commons
-#' license), \code{'youtube'} (return videos with standard YouTube license).
-#' @param relevance_language Character. Default is "en".
-#' @param simplify Boolean. Return a data.frame if \code{TRUE}.
-#' Default is \code{TRUE}.
-#' If \code{TRUE}, it returns a list that carries additional information.
-#' @param page_token specific page in the result set that should be
-#' returned, optional
-#' @param get_all get all results, iterating through all the results
-#' pages. Default is \code{TRUE}.
-#' Result is a \code{data.frame}. Optional.
-#' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
-#'
-#' @return data.frame with 16 elements: \code{video_id, publishedAt,
-#' channelId, title, description,
-#' thumbnails.default.url, thumbnails.default.width, thumbnails.default.height,
-#' thumbnails.medium.url,
-#' thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url,
-#' thumbnails.high.width,
-#' thumbnails.high.height, channelTitle, liveBroadcastContent}
-#'
-#' @export
-#'
-#' @references \url{https://developers.google.com/youtube/v3/docs/search/list}
-#'
-#' @examples
-#'
-#' \dontrun{
-#'
-#' # Set API token via yt_oauth() first
-#'
-#' yt_search(term = "Barack Obama")
-#' yt_search(term = "Barack Obama", published_after = "2016-10-01T00:00:00Z")
-#' yt_search(term = "Barack Obama", published_before = "2016-09-01T00:00:00Z")
-#' yt_search(term = "Barack Obama", published_before = "2016-03-01T00:00:00Z",
-#'                                published_after = "2016-02-01T00:00:00Z")
-#' yt_search(term = "Barack Obama", published_before = "2016-02-10T00:00:00Z",
-#'                                published_after = "2016-01-01T00:00:00Z")
-#' }
-
 yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
                       channel_type = NULL, type = "video", event_type = NULL,
                       location = NULL, location_radius = NULL,
@@ -108,147 +8,139 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
                       video_type = "any", simplify = TRUE, get_all = TRUE,
                       page_token = NULL, ...) {
 
-  if (!is.character(term)) stop("Must specify a search term.\n")
+  # Input validation
+  if (!is.character(term) || is.null(term)) stop("Must specify a search term.\n")
 
-  if (max_results < 0 | max_results > 50) {
+  if (max_results < 0 || max_results > 50) {
     stop("max_results only takes a value between 0 and 50.")
   }
 
-  if (type == "video" && !(video_license %in% c("any", "creativeCommon", "youtube"))) {
-    stop("video_license can only take values: any, creativeCommon, or youtube.")
+  # Validate video-specific parameters only when type is "video"
+  if (type == "video") {
+    if (!(video_license %in% c("any", "creativeCommon", "youtube"))) {
+      stop("video_license can only take values: any, creativeCommon, or youtube.")
+    }
+    
+    if (!(video_syndicated %in% c("any", "true"))) {
+      stop("video_syndicated can only take values: any or true.")
+    }
+    
+    if (!(video_type %in% c("any", "episode", "movie"))) {
+      stop("video_type can only take values: any, episode, or movie.")
+    }
+    
+    if (!(video_definition %in% c("any", "high", "standard"))) {
+      stop("video_definition can only take values: any, high, or standard.")
+    }
+    
+    if (!(video_caption %in% c("any", "closedCaption", "none"))) {
+      stop("video_caption can only take values: any, closedCaption, or none.")
+    }
+  } else {
+    # Set these to NULL if type is not "video" to avoid sending them in the API call
+    video_caption <- video_license <- video_definition <- 
+      video_type <- video_syndicated <- NULL
   }
 
-  if (type == "video" && !(video_syndicated %in% c("any", "true"))) {
-    stop("video_syndicated can only take values: any or true.")
-  }
-
-  if (type == "video" && !(video_type %in% c("any", "episode", "movie"))) {
-    stop("video_type can only take values: any, episode, or movie.")
-  }
-
-  if (is.character(published_after)) {
-    if (is.na(as.POSIXct(published_after,  format = "%Y-%m-%dT%H:%M:%SZ"))) {
-      stop("The date is not properly formatted in RFC 339 Format.")
+  # Validate date formats
+  validate_rfc339_date <- function(date_str) {
+    if (is.character(date_str) && 
+        is.na(as.POSIXct(date_str, format = "%Y-%m-%dT%H:%M:%SZ"))) {
+      stop("The date is not properly formatted in RFC 339 Format (YYYY-MM-DDTHH:MM:SSZ).")
     }
   }
+  
+  validate_rfc339_date(published_after)
+  validate_rfc339_date(published_before)
 
-  if (is.character(published_before)) {
-    if (is.na(as.POSIXct(published_before, format = "%Y-%m-%dT%H:%M:%SZ"))) {
-      stop("The date is not properly formatted in RFC 339 Format.")
-    }
-  }
-
-  if (type != "video") {
-    video_caption <- video_license <- video_definition <-
-    video_type <- video_syndicated <- NULL
-  }
+  # Validate location and location_radius together
   if (!is.null(location) && is.null(location_radius)) {
     stop("Location radius must be specified with location")
   }
 
-  querylist <- list(part = "snippet",
-                    q = term,
-                    maxResults = max_results,
-                    channelId = channel_id,
-                    type = type,
-                    channelType = channel_type,
-                    eventType = event_type,
-                    location = location,
-                    locationRadius = location_radius,
-                    publishedAfter = published_after,
-                    publishedBefore = published_before,
-                    videoDefinition = video_definition,
-                    videoCaption = video_caption,
-                    videoType = video_type,
-                    videoSyndicated = video_syndicated,
-                    videoLicense = video_license,
-                    regionCode = region_code,
-                    relevanceLanguage	= relevance_language,
-                    pageToken = page_token)
+  # Build the query list
+  querylist <- list(
+    part = "snippet",
+    q = term,
+    maxResults = max_results,
+    channelId = channel_id,
+    type = type,
+    channelType = channel_type,
+    eventType = event_type,
+    location = location,
+    locationRadius = location_radius,
+    publishedAfter = published_after,
+    publishedBefore = published_before,
+    videoDefinition = video_definition,
+    videoCaption = video_caption,
+    videoType = video_type,
+    videoSyndicated = video_syndicated,
+    videoLicense = video_license,
+    regionCode = region_code,
+    relevanceLanguage = relevance_language,
+    pageToken = page_token
+  )
 
-  # Sending NULLs to Google seems to short its wiring
-  querylist <- querylist[names(querylist)[sapply(querylist, function(x) !is.null(x))]]
+  # Remove NULL values
+  querylist <- querylist[!sapply(querylist, is.null)]
 
-  res <- tuber_GET("search", querylist, ...)
-
-  if (identical(get_all, TRUE)) {
-
-    if (type == "video") {
-
-      simple_res  <- lapply(res$items,
-                                   function(x) {
-                                   c(video_id = x$id$videoId, unlist(x$snippet))
-                              })
-      } else {
-
-       simple_res  <- lapply(res$items, function(x) unlist(x$snippet))
-      }
-
-    fin_res     <- ldply(simple_res, rbind)
-
-    page_token  <- res$nextPageToken
-
-    while (is.character(page_token)) {
-
-      a_res <- yt_search(part = "snippet",
-                         term = term,
-                         max_results = max_results,
-                         channel_id = channel_id,
-                         type = type,
-                         relevance_language = relevance_language,
-                         region_code = region_code,
-                         channel_type = channel_type,
-                         event_type = event_type,
-                         location = location,
-                         location_radius = location_radius,
-                         published_after  = published_after,
-                         published_before  = published_before,
-                         video_definition = video_definition,
-                         video_caption = video_caption,
-                         video_type = video_type,
-                         video_syndicated = video_syndicated,
-                         video_license = video_license,
-                         simplify = FALSE, get_all = FALSE,
-                         page_token = page_token)
-
-      if (type == "video") {
-
-        a_simple_res  <- lapply(a_res$items,
-                                function(x) {
-                                c(video_id = x$id$videoId, unlist(x$snippet))
-                                })
-      } else {
-
-        a_simple_res  <- lapply(a_res$items, function(x)  unlist(x$snippet))
-      }
-
-      a_resdf       <- ldply(a_simple_res, rbind)
-
-      fin_res       <- rbind(fin_res, a_resdf)
-
-      page_token    <- a_res$nextPageToken
-    }
-    return(fin_res)
-  }
-
-  if (identical(simplify, TRUE)) {
-
-    if (res$pageInfo$totalResults != 0) {
-      if (type == "video") {
-
-      simple_res  <- lapply(res$items,
-                                   function(x) {
-                                   c(video_id = x$id$videoId, unlist(x$snippet))
-                              })
-      } else {
-
-       simple_res  <- lapply(res$items, function(x) unlist(x$snippet))
-      }
-      resdf       <- ldply(simple_res, rbind)
-      return(resdf)
-    } else {
+  # Helper function to process search results
+  process_results <- function(res_items, item_type) {
+    if (length(res_items) == 0) {
       return(data.frame())
     }
+    
+    if (item_type == "video") {
+      simple_res <- lapply(res_items, function(x) {
+        if (is.null(x$id$videoId)) {
+          return(NULL)  # Skip items without videoId
+        }
+        c(video_id = x$id$videoId, unlist(x$snippet))
+      })
+    } else {
+      simple_res <- lapply(res_items, function(x) unlist(x$snippet))
+    }
+    
+    # Remove NULL entries and convert to data frame
+    simple_res <- simple_res[!sapply(simple_res, is.null)]
+    if (length(simple_res) == 0) {
+      return(data.frame())
+    }
+    
+    return(ldply(simple_res, rbind))
   }
-  return(res)
+
+  # Make initial API call
+  res <- tuber_GET("search", querylist, ...)
+  
+  # If get_all is FALSE or there are no results, process and return
+  if (!identical(get_all, TRUE) || res$pageInfo$totalResults == 0) {
+    if (!identical(simplify, TRUE)) {
+      return(res)
+    }
+    return(process_results(res$items, type))
+  }
+  
+  # Process all pages for get_all=TRUE
+  all_results <- process_results(res$items, type)
+  page_token <- res$nextPageToken
+  
+  # Function to get next page of results
+  get_next_page <- function(token) {
+    querylist$pageToken <- token
+    a_res <- tuber_GET("search", querylist, ...)
+    return(list(
+      results = process_results(a_res$items, type),
+      next_token = a_res$nextPageToken
+    ))
+  }
+  
+  # Get all pages
+  while (!is.null(page_token)) {
+    next_page <- get_next_page(page_token)
+    all_results <- rbind(all_results, next_page$results)
+    page_token <- next_page$next_token
+  }
+  
+  return(all_results)
 }
