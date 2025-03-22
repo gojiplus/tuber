@@ -1,11 +1,16 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+#
+# See https://github.com/r-lib/actions/tree/master/examples#readme for
+# additional example workflows available for the R community.
 name: R
-
 on:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-
 jobs:
   build:
     runs-on: macos-latest
@@ -14,34 +19,41 @@ jobs:
         r-version: ['4.2']
     steps:
       - uses: actions/checkout@v2
-
       - name: Set up R ${{ matrix.r-version }}
         uses: r-lib/actions/setup-r@f57f1301a053485946083d7a45022b278929a78a
         with:
           r-version: ${{ matrix.r-version }}
-
-      # Install TinyTeX to compile PDF manuals
-      - name: Install TinyTeX
-        uses: r-lib/actions/setup-tinytex@v2
-
-      - name: Install additional LaTeX packages
+      
+      # Install tinytex package first
+      - name: Install tinytex package
+        run: |
+          install.packages("tinytex")
+        shell: Rscript {0}
+        
+      # Then install TinyTeX distribution  
+      - name: Install TinyTeX distribution
+        run: |
+          tinytex::install_tinytex()
+        shell: Rscript {0}
+        
+      # Then install LaTeX packages
+      - name: Install LaTeX packages
         run: |
           tinytex::tlmgr_install(c("pdfcrop", "inconsolata", "texinfo", "framed"))
         shell: Rscript {0}
-
-      # Install httr2 explicitly from CRAN
-      - name: Install httr2
+        
+      # Install httr2 explicitly
+      - name: Install httr2 explicitly
         run: |
           install.packages("httr2", repos = "https://cloud.r-project.org")
         shell: Rscript {0}
-
+        
       - name: Install dependencies
         run: |
           install.packages(c("remotes", "rcmdcheck"))
           remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
-
-      - name: Check package
+        
+      - name: Check
         run: rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "error")
         shell: Rscript {0}
-
