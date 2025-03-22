@@ -23,11 +23,23 @@ jobs:
         uses: r-lib/actions/setup-r@f57f1301a053485946083d7a45022b278929a78a
         with:
           r-version: ${{ matrix.r-version }}
+      # Install LaTeX if you want PDF manuals
+      - name: Install TinyTeX
+        uses: r-lib/actions/setup-tinytex@v2
+      - name: Install additional LaTeX packages
+        run: |
+          tinytex::tlmgr_install(c("pdfcrop", "inconsolata", "texinfo", "framed"))
+        shell: Rscript {0}
+      # Install httr2 explicitly
+      - name: Install httr2 explicitly
+        run: |
+          install.packages("httr2", repos = "https://cloud.r-project.org")
+        shell: Rscript {0}
       - name: Install dependencies
         run: |
-          install.packages(c("remotes", "rcmdcheck", "httr2"))
+          install.packages(c("remotes", "rcmdcheck"))
           remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
       - name: Check
-        run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
+        run: rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "error")
         shell: Rscript {0}
