@@ -17,7 +17,8 @@
 #'
 #' @export
 #'
-#' @references \url{https://developers.google.com/youtube/v3/docs/guideCategories/list}
+#' @references
+#' \url{https://developers.google.com/youtube/v3/docs/guideCategories/list}
 #'
 #' @examples
 #' \dontrun{
@@ -56,7 +57,8 @@ list_guidecats <- function(filter = NULL, hl = NULL, ...) {
   cat("Total Number of Categories:", length(res$items), "\n")
 
   if (length(res$items) > 0) {
-    simple_res <- lapply(res$items, function(x) c(unlist(x$snippet), etag = x$etag, id = x$id))
+    simple_res <- lapply(res$items, function(x)
+      c(unlist(x$snippet), etag = x$etag, id = x$id))
     resdf <- do.call(rbind, simple_res)
     resdf$region_code <- filter["regionCode"]
   } else {

@@ -26,3 +26,4 @@ _pkgdown.yml
 ^tuber\.Rcheck$
 ^tuber.*\.tar\.gz$
 ^tuber.*\.tgz$
+^.ipynb_checkpoints$

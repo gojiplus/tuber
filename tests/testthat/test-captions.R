@@ -4,7 +4,7 @@ test_that("list_captions runs successfully", {
 
   skip_on_cran()
 
-  google_token <- readRDS("token_file.rds")$google_token
+  google_token <- readRDS("token_file.rds.enc")$google_token
   options(google_token = google_token)
 
   video_id <- "M7FIvfx5J10"

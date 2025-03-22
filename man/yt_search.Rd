@@ -25,6 +25,7 @@ yt_search(
   simplify = TRUE,
   get_all = TRUE,
   page_token = NULL,
+  max_pages = 10,
   ...
 )
 }
@@ -91,13 +92,7 @@ license), \code{'youtube'} (return videos with standard YouTube license).}
 \item{region_code}{Character. Required. Has to be a ISO 3166-1 alpha-2 code
 (see \url{https://www.iso.org/obp/ui/#search}).}
 
-\item{relevance_language}{Character. Optional. The relevance_language
-argument instructs the API to return search results that are most relevant to
-the specified language. The parameter value is typically an ISO 639-1
-two-letter language code. However, you should use the values zh-Hans for
-simplified Chinese and zh-Hant for traditional Chinese. Please note that
-results in other languages will still be returned if they are highly relevant
-to the search query term.}
+\item{relevance_language}{Character. Default is "en".}
 
 \item{video_type}{Character. Optional. Takes one of three values:
 \code{'any'} (return all videos; Default), \code{'episode'}
@@ -114,6 +109,9 @@ Result is a \code{data.frame}. Optional.}
 \item{page_token}{specific page in the result set that should be
 returned, optional}
 
+\item{max_pages}{Maximum number of pages to retrieve when get_all is TRUE.
+Default is 10. Set higher for more results, but be aware of API quota limits.}
+
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
@@ -124,6 +122,10 @@ thumbnails.medium.url,
 thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url,
 thumbnails.high.width,
 thumbnails.high.height, channelTitle, liveBroadcastContent}
+The returned data.frame also has the following attributes:
+\code{total_results}: The total number of results reported by the API
+\code{actual_results}: The actual number of rows returned
+\code{api_limit_reached}: Whether the YouTube API result limit was reached
 }
 \description{
 Search for videos, channels and playlists. (By default, the function
@@ -142,6 +144,12 @@ yt_search(term = "Barack Obama", published_before = "2016-03-01T00:00:00Z",
                                published_after = "2016-02-01T00:00:00Z")
 yt_search(term = "Barack Obama", published_before = "2016-02-10T00:00:00Z",
                                published_after = "2016-01-01T00:00:00Z")
+
+# To check how many results were found vs. how many were returned:
+results <- yt_search(term = "drone videos")
+attr(results, "total_results")  # Total number reported by YouTube
+attr(results, "actual_results") # Number actually returned
+attr(results, "api_limit_reached") # Whether API limit was reached
 }
 }
 \references{

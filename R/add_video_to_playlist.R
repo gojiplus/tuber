@@ -2,6 +2,8 @@
 #'
 #' @param playlist_id string; Required. The ID of the playlist.
 #' @param video_id string; Required. The ID of the video to add.
+#' @param position numeric; Optional. The position of the video in the playlist.
+#'   If not provided, the video will be added to the end of the playlist.
 #' @param ... Additional arguments passed to \code{\link{tuber_POST_json}}.
 #'
 #' @return Details of the added video in the playlist.

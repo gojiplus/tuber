@@ -17,10 +17,10 @@
 #' @importFrom tidyselect everything all_of
 #' @importFrom tidyr pivot_wider unnest unnest_longer
 #' @importFrom purrr map_df map_dbl
-#' @docType package
-#' @aliases tuber-package
-
 NULL
+#' @keywords internal
+"_PACKAGE"
+
 
 #' Check if authentication token is in options
 #' @return A Token2.0 class

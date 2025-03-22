@@ -11,6 +11,9 @@ add_video_to_playlist(playlist_id, video_id, position = NULL, ...)
 
 \item{video_id}{string; Required. The ID of the video to add.}
 
+\item{position}{numeric; Optional. The position of the video in the playlist.
+If not provided, the video will be added to the end of the playlist.}
+
 \item{...}{Additional arguments passed to \code{\link{tuber_POST_json}}.}
 }
 \value{
