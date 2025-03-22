@@ -10,8 +10,8 @@ Get comments posted on YouTube videos, information on how many times a video has
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/soodoku/tuber}
-  \item Report bugs at \url{https://github.com/soodoku/tuber/issues}
+  \item \url{https://github.com/gojiplus/tuber}
+  \item Report bugs at \url{https://github.com/gojiplus/tuber/issues}
 }
 
 }
