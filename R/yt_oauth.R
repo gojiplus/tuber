@@ -17,7 +17,7 @@
 #' the function will first try to read from it.
 #' Default is \code{.httr-oauth} in the local directory.
 #' So if there is such a file, the function will first try to read from it.
-#' @param \dots Additional arguments passed to \code{\link{oauth2.0_token}}
+#' @param \dots Additional arguments passed to \code{\link[httr]{oauth2.0_token}}
 #'
 #' @return sets the google_token option and also saves \code{.httr_oauth}
 #' in the working directory (find out the working directory via \code{getwd()})

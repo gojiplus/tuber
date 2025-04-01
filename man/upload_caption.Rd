@@ -31,10 +31,10 @@ See \url{http://www.rfc-editor.org/rfc/bcp/bcp47.txt} for language specification
 
 \item{open_url}{Should the video be opened using \code{\link{browseURL}}}
 
-\item{...}{Additional arguments to send to \code{\link{POST}}}
+\item{...}{Additional arguments to send to \code{\link[httr]{POST}}}
 }
 \value{
-A list of the response object from the \code{POST}, content,
+A list of the response object from the \code{\link[httr]{POST}}, content,
 and the URL of the video
 }
 \description{

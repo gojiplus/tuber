@@ -3,7 +3,7 @@
 #' @param video_id ID of the YouTube video
 #' @param query Fields for `query` in `GET`
 #' @param ... Additional arguments to send to \code{\link{tuber_GET}} and
-#' therefore \code{\link{GET}}
+#' therefore \code{\link[httr]{GET}}
 #' @return A list of the response object from the \code{GET} and content
 #' about captions
 #'

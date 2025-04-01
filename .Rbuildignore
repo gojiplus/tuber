@@ -27,3 +27,4 @@ _pkgdown.yml
 ^tuber.*\.tar\.gz$
 ^tuber.*\.tgz$
 ^.ipynb_checkpoints$
+^CRAN-SUBMISSION$

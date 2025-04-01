@@ -11,7 +11,7 @@
 #' `publishAt`.
 #' @param query Fields for `query` in `POST`
 #' @param ... Additional arguments to send to \code{\link{tuber_POST}} and
-#' therefore \code{\link{POST}}
+#' therefore \code{\link[httr]{POST}}
 #' @param open_url Should the video be opened using \code{\link{browseURL}}
 #'
 #' @note The information for `status` and `snippet` are at
@@ -22,7 +22,7 @@
 #' It identifies the properties that the write operation will set, this will be
 #' automatically detected by the names of `body`.
 #' See \url{https://developers.google.com/youtube/v3/docs/videos/insert#usage}
-#' @return A list of the response object from the \code{POST}, content,
+#' @return A list of the response object from the \code{\link[httr]{POST}}, content,
 #' and the URL of the uploaded
 #' @export
 #'

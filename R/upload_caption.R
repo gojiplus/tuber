@@ -5,7 +5,7 @@
 #' @param caption_name character vector of the name for the caption.
 #' @param is_draft logical indicating whether the caption track is a draft.
 #' @param query Fields for `query` in `POST`
-#' @param ... Additional arguments to send to \code{\link{POST}}
+#' @param ... Additional arguments to send to \code{\link[httr]{POST}}
 #' @param open_url Should the video be opened using \code{\link{browseURL}}
 #' @param language character string of `BCP47` language type.
 #' See \url{http://www.rfc-editor.org/rfc/bcp/bcp47.txt} for language specification
@@ -13,7 +13,7 @@
 #' @note See
 #' \url{https://developers.google.com/youtube/v3/docs/captions#resource} for
 #' full specification
-#' @return A list of the response object from the \code{POST}, content,
+#' @return A list of the response object from the \code{\link[httr]{POST}}, content,
 #' and the URL of the video
 #' @export
 #'

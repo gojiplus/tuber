@@ -28,7 +28,7 @@ the function will first try to read from it.
 Default is \code{.httr-oauth} in the local directory.
 So if there is such a file, the function will first try to read from it.}
 
-\item{\dots}{Additional arguments passed to \code{\link{oauth2.0_token}}}
+\item{\dots}{Additional arguments passed to \code{\link[httr]{oauth2.0_token}}}
 }
 \value{
 sets the google_token option and also saves \code{.httr_oauth}

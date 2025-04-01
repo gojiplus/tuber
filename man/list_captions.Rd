@@ -12,7 +12,7 @@ list_captions(video_id, query = NULL, ...)
 \item{query}{Fields for `query` in `GET`}
 
 \item{...}{Additional arguments to send to \code{\link{tuber_GET}} and
-therefore \code{\link{GET}}}
+therefore \code{\link[httr]{GET}}}
 }
 \value{
 A list of the response object from the \code{GET} and content

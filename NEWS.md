@@ -1,3 +1,7 @@
+# version 1.0.1
+
+* Fixed the cross-ref checks
+
 # version 0.9.9.9000 (development version)
 
 * Added support for API key authentication with two new exported functions, `yt_get_key()` and `yt_set_key()`, and a new `auth` argument to the internal function `tuber_GET()`. Users can now pass `auth = "key"` to any function that uses `tuber_GET()` to enable API key authentication. The behavior of `tuber_GET()` remains unchanged when using the new default, `auth = "token"`, which avoids breaking changes to previously written code (@gvelasq, #117).
