@@ -1,6 +1,6 @@
 Package: tuber
 Title: Client for the YouTube API
-Version: 0.9.99
+Version: 0.9.9
 Authors@R: c(
     person("Gaurav", "Sood", , "gsood07@gmail.com", role = c("aut", "cre")),
     person("Kate", "Lyons", , "k.lyons7@gmail.com", role = "ctb"),
@@ -13,7 +13,7 @@ Description: Get comments posted on YouTube videos, information on how
     videos. To learn more about the YouTube API, see
     <https://developers.google.com/youtube/v3/>.
 License: MIT + file LICENSE
-URL: https://github.com/gojiplus/tuber
+URL: https://gojiplus.github.io/tuber/, https://github.com/gojiplus/tuber
 BugReports: https://github.com/gojiplus/tuber/issues
 Depends:
     R (>= 4.1.0)

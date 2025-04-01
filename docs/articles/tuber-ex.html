@@ -4,352 +4,315 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Using tuber • tuber</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
-<script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><!-- docsearch --><script src="../docsearch.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous">
-<link href="../docsearch.css" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script><meta property="og:title" content="Using tuber">
-<meta property="og:description" content="tuber">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Using tuber">
 </head>
-<body data-spy="scroll" data-target="#toc">
-    <div class="container template-article">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">tuber</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.9</span>
-      </span>
-    </div>
+<body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
+
+    <a class="navbar-brand me-2" href="../index.html">tuber</a>
+
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.9</small>
+
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-3">
+      <ul class="navbar-nav me-auto">
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="active nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/tuber-ex.html">Using tuber</a></li>
+  </ul>
 </li>
-<li>
-  <a href="../reference/index.html">Reference</a>
-</li>
-<li>
-  <a href="../articles/index.html">Articles</a>
-</li>
-<li>
-  <a href="../news/index.html">Changelog</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="http://github.com/soodoku/tuber/">
-    <span class="fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/gojiplus/tuber/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
-<form class="navbar-form navbar-right hidden-xs hidden-sm" role="search">
-        <div class="form-group">
-          <input type="search" class="form-control" name="search-input" id="search-input" placeholder="Search..." aria-label="Search for..." autocomplete="off">
 </div>
-      </form>
-      
-    </div>
-<!--/.nav-collapse -->
+
+
   </div>
-<!--/.container -->
-</div>
-<!--/.navbar -->
+</nav><div class="container template-article">
 
-      
 
-      </header><script src="tuber-ex_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
-  <div class="col-md-9 contents">
-    <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Using tuber</h1>
-                        <h4 class="author">Gaurav Sood</h4>
+
+
+<div class="row">
+  <main id="main" class="col-md-9"><div class="page-header">
+
+      <h1>Using tuber</h1>
+                        <h4 data-toc-skip class="author">Gaurav
+Sood</h4>
             
-            <h4 class="date">2021-02-15</h4>
+            <h4 data-toc-skip class="date">2025-04-01</h4>
       
-      <small class="dont-index">Source: <a href="http://github.com/soodoku/tuber/blob/master/vignettes/tuber-ex.Rmd"><code>vignettes/tuber-ex.Rmd</code></a></small>
-      <div class="hidden name"><code>tuber-ex.Rmd</code></div>
-
+      <small class="dont-index">Source: <a href="https://github.com/gojiplus/tuber/blob/HEAD/vignettes/tuber-ex.Rmd" class="external-link"><code>vignettes/tuber-ex.Rmd</code></a></small>
+      <div class="d-none name"><code>tuber-ex.Rmd</code></div>
     </div>
 
     
     
-<div id="tuber-access-youtube-from-r" class="section level2">
-<h2 class="hasAnchor">
-<a href="#tuber-access-youtube-from-r" class="anchor"></a>tuber: Access YouTube from R</h2>
-<div id="install-load-the-package" class="section level3">
-<h3 class="hasAnchor">
-<a href="#install-load-the-package" class="anchor"></a>Install, Load the package</h3>
+<div class="section level2">
+<h2 id="tuber-access-youtube-from-r">tuber: Access YouTube from R<a class="anchor" aria-label="anchor" href="#tuber-access-youtube-from-r"></a>
+</h2>
+<div class="section level3">
+<h3 id="install-load-the-package">Install, Load the package<a class="anchor" aria-label="anchor" href="#install-load-the-package"></a>
+</h3>
 <p>To install the latest version from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"tuber"</span><span class="op">)</span></code></pre></div>
-<p>The latest development version of the package will always be on GitHub. Instructions for installing the package from Github are provided below.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"tuber"</span><span class="op">)</span></span></code></pre></div>
+<p>The latest development version of the package will always be on
+GitHub. Instructions for installing the package from Github are provided
+below.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># install.packages('devtools')</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"soodoku/tuber"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"gojiplus/tuber"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Next, load the package:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://github.com/soodoku/tuber">tuber</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://gojiplus.github.io/tuber/" class="external-link">tuber</a></span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="using-the-package" class="section level3">
-<h3 class="hasAnchor">
-<a href="#using-the-package" class="anchor"></a>Using the package</h3>
-<p>To get going, get the application id and password from Google Developer Console (see <a href="https://developers.google.com/youtube/v3/getting-started">https://developers.google.com/youtube/v3/getting-started</a>). Enable YouTube APIs. Create OAuth credentials, being sure to select ‘Other’ as your Application Type. Then set the application id and password via the <code>yt_oauth</code> function. For more information about YouTube OAuth, see <a href="https://developers.google.com/youtube/v3/guides/authentication">YouTube OAuth Guide</a>.</p>
+<div class="section level3">
+<h3 id="using-the-package">Using the package<a class="anchor" aria-label="anchor" href="#using-the-package"></a>
+</h3>
+<p>To get going, get the application id and password from Google
+Developer Console (see <a href="https://developers.google.com/youtube/v3/getting-started" class="external-link">https://developers.google.com/youtube/v3/getting-started</a>).
+Enable YouTube APIs. Create OAuth credentials, being sure to select
+‘Other’ as your Application Type. Then set the application id and
+password via the <code>yt_oauth</code> function. For more information
+about YouTube OAuth, see <a href="https://developers.google.com/youtube/v3/guides/authentication" class="external-link">YouTube
+OAuth Guide</a>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/yt_oauth.html">yt_oauth</a></span><span class="op">(</span><span class="st">"998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.com"</span>, <span class="st">"MbOSt6cQhhFkwETXKur-L9rN"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/yt_oauth.html">yt_oauth</a></span><span class="op">(</span><span class="st">"998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.com"</span>, <span class="st">"MbOSt6cQhhFkwETXKur-L9rN"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## Waiting for authentication in browser...</span>
-<span class="co">## Press Esc/Ctrl + C to abort</span>
-<span class="co">## Authentication complete.</span></code></pre></div>
-<div id="get-statistics-of-a-video" class="section level4">
-<h4 class="hasAnchor">
-<a href="#get-statistics-of-a-video" class="anchor"></a>Get Statistics of a Video</h4>
+<code class="sourceCode R"><span><span class="co">## Waiting for authentication in browser...</span></span>
+<span><span class="co">## Press Esc/Ctrl + C to abort</span></span>
+<span><span class="co">## Authentication complete.</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="get-statistics-of-a-video">Get Statistics of a Video<a class="anchor" aria-label="anchor" href="#get-statistics-of-a-video"></a>
+</h4>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/get_stats.html">get_stats</a></span><span class="op">(</span>video_id<span class="op">=</span><span class="st">"N708P-A45D0"</span><span class="op">)</span></code></pre></div>
-<pre><code>## No. of Views 525112 
-## No. of Likes 5576 
-## No. of Dislikes 3564 
-## No. of Favorites 0 
-## No. of Comments 5329</code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/get_stats.html">get_stats</a></span><span class="op">(</span>video_id<span class="op">=</span><span class="st">"N708P-A45D0"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## No. of Views 525112 </span></span>
+<span><span class="co">## No. of Likes 5576 </span></span>
+<span><span class="co">## No. of Dislikes 3564 </span></span>
+<span><span class="co">## No. of Favorites 0 </span></span>
+<span><span class="co">## No. of Comments 5329</span></span></code></pre>
 </div>
-<div id="get-information-about-a-video" class="section level4">
-<h4 class="hasAnchor">
-<a href="#get-information-about-a-video" class="anchor"></a>Get Information About a Video</h4>
+<div class="section level4">
+<h4 id="get-information-about-a-video">Get Information About a Video<a class="anchor" aria-label="anchor" href="#get-information-about-a-video"></a>
+</h4>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/get_video_details.html">get_video_details</a></span><span class="op">(</span>video_id<span class="op">=</span><span class="st">"N708P-A45D0"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/get_video_details.html">get_video_details</a></span><span class="op">(</span>video_id<span class="op">=</span><span class="st">"N708P-A45D0"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="get-caption-of-a-video" class="section level4">
-<h4 class="hasAnchor">
-<a href="#get-caption-of-a-video" class="anchor"></a>Get Caption of a Video</h4>
+<div class="section level4">
+<h4 id="get-caption-of-a-video">Get Caption of a Video<a class="anchor" aria-label="anchor" href="#get-caption-of-a-video"></a>
+</h4>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/get_captions.html">get_captions</a></span><span class="op">(</span>video_id<span class="op">=</span><span class="st">"yJXTXN4xrI8"</span><span class="op">)</span></code></pre></div>
-<pre><code>## &lt;?xml version="1.0" encoding="utf-8"?&gt;
-## &lt;transcript&gt;
-##   &lt;text start="6.614" dur="1.549"&gt;Every four seconds,&lt;/text&gt;
-##   &lt;text start="8.163" dur="1.534"&gt;someone is diagnosed with&lt;/text&gt;
-##   &lt;text start="9.697" dur="1.885"&gt;Alzheimer&amp;amp;#39;s disease.&lt;/text&gt;
-##   &lt;text start="11.582" dur="2.172"&gt;It&amp;amp;#39;s the most common cause of dementia,&lt;/text&gt;
-##   &lt;text start="13.754" dur="2.859"&gt;affecting over 40 million people worldwide,&lt;/text&gt;
-##   &lt;text start="16.613" dur="2.52"&gt;and yet finding a cure is something that still&lt;/text&gt;
-##   &lt;text start="19.133" dur="2.482"&gt;eludes researchers today.&lt;/text&gt;
-##   &lt;text start="21.615" dur="3.273"&gt;Dr. Alois Alzheimer, a German psychiatrist,&lt;/text&gt;
-##   &lt;text start="24.888" dur="3.047"&gt;first described the symptoms in 1901&lt;/text&gt;
-##   &lt;text start="27.935" dur="2.46"&gt;when he noticed that a particular hospital patient&lt;/text&gt;
-##   &lt;text start="30.395" dur="1.917"&gt;had some peculiar problems,&lt;/text&gt;
-##   &lt;text start="32.312" dur="1.803"&gt;including difficulty sleeping,&lt;/text&gt;
-##   &lt;text start="34.115" dur="3.37"&gt;disturbed memory, drastic mood changes,&lt;/text&gt;
-##   &lt;text start="37.485" dur="2.166"&gt;and increasing confusion.&lt;/text&gt;
-##   &lt;text start="39.651" dur="1.877"&gt;When the patient passed away,&lt;/text&gt;
-##   &lt;text start="41.528" dur="2.211"&gt;Alzheimer was able to do an autopsy&lt;/text&gt;
-##   &lt;text start="43.739" dur="2.04"&gt;and test his idea that perhaps&lt;/text&gt;
-##   &lt;text start="45.779" dur="2.421"&gt;her symptoms were caused by irregularities&lt;/text&gt;
-##   &lt;text start="48.2" dur="1.963"&gt;in the brain&amp;amp;#39;s structure.&lt;/text&gt;
-##   &lt;text start="50.163" dur="1.951"&gt;What he found beneath the microscope&lt;/text&gt;
-##   &lt;text start="52.114" dur="2.473"&gt;were visible differences in brain tissue&lt;/text&gt;
-##   &lt;text start="54.587" dur="2.194"&gt;in the form of misfolded proteins&lt;/text&gt;
-##   &lt;text start="56.781" dur="1.334"&gt;called plaques,&lt;/text&gt;
-##   &lt;text start="58.115" dur="2.433"&gt;and neurofibrillary tangles.&lt;/text&gt;
-##   &lt;text start="60.548" dur="2.378"&gt;Those plaques and tangles work together&lt;/text&gt;
-##   &lt;text start="62.926" dur="2.419"&gt;to break down the brain&amp;amp;#39;s structure.&lt;/text&gt;
-##   &lt;text start="65.345" dur="1.792"&gt;Plaques arise when another protein&lt;/text&gt;
-##   &lt;text start="67.137" dur="2.643"&gt;in the fatty membrane surrounding nerve cells&lt;/text&gt;
-##   &lt;text start="69.78" dur="2.697"&gt;gets sliced up by a particular enzyme,&lt;/text&gt;
-##   &lt;text start="72.477" dur="2.585"&gt;resulting in beta-amyloid proteins,&lt;/text&gt;
-##   &lt;text start="75.062" dur="1.799"&gt;which are sticky and have a tendency&lt;/text&gt;
-##   &lt;text start="76.861" dur="1.587"&gt;to clump together.&lt;/text&gt;
-##   &lt;text start="78.448" dur="1.952"&gt;That clumping is what forms the things&lt;/text&gt;
-##   &lt;text start="80.4" dur="2.131"&gt;we know as plaques.&lt;/text&gt;
-##   &lt;text start="82.531" dur="1.793"&gt;These clumps block signaling&lt;/text&gt;
-##   &lt;text start="84.324" dur="1.502"&gt;and, therefore, communication&lt;/text&gt;
-##   &lt;text start="85.826" dur="2.336"&gt;between cells, and also seem to trigger&lt;/text&gt;
-##   &lt;text start="88.162" dur="2.536"&gt;immune reactions that cause the destruction&lt;/text&gt;
-##   &lt;text start="90.698" dur="2.134"&gt;of disabled nerve cells.&lt;/text&gt;
-##   &lt;text start="92.832" dur="2.782"&gt;In Alzheimer&amp;amp;#39;s disease, neurofibrillary tangles&lt;/text&gt;
-##   &lt;text start="95.614" dur="3.085"&gt;are built from a protein known as tau.&lt;/text&gt;
-##   &lt;text start="98.699" dur="2.89"&gt;The brain&amp;amp;#39;s nerve cells contain a network of tubes&lt;/text&gt;
-##   &lt;text start="101.589" dur="2.024"&gt;that act like a highway for food molecules&lt;/text&gt;
-##   &lt;text start="103.613" dur="1.563"&gt;among other things.&lt;/text&gt;
-##   &lt;text start="105.176" dur="2.543"&gt;Usually, the tau protein ensures that these tubes&lt;/text&gt;
-##   &lt;text start="107.719" dur="2.256"&gt;are straight, allowing molecules&lt;/text&gt;
-##   &lt;text start="109.975" dur="1.917"&gt;to pass through freely.&lt;/text&gt;
-##   &lt;text start="111.892" dur="1.709"&gt;But in Alzheimer&amp;amp;#39;s disease,&lt;/text&gt;
-##   &lt;text start="113.601" dur="3.463"&gt;the protein collapses into twisted strands or tangles,&lt;/text&gt;
-##   &lt;text start="117.064" dur="1.832"&gt;making the tubes disintegrate,&lt;/text&gt;
-##   &lt;text start="118.896" dur="2.505"&gt;obstructing nutrients from reaching the nerve cell&lt;/text&gt;
-##   &lt;text start="121.401" dur="2.628"&gt;and leading to cell death.&lt;/text&gt;
-##   &lt;text start="124.029" dur="2.336"&gt;The destructive pairing of plaques and tangles&lt;/text&gt;
-##   &lt;text start="126.365" dur="2.332"&gt;starts in a region called the hippocampus,&lt;/text&gt;
-##   &lt;text start="128.697" dur="2.419"&gt;which is responsible for forming memories.&lt;/text&gt;
-##   &lt;text start="131.116" dur="1.713"&gt;That&amp;amp;#39;s why short-term memory loss&lt;/text&gt;
-##   &lt;text start="132.829" dur="2.702"&gt;is usually the first symptom of Alzheimer&amp;amp;#39;s.&lt;/text&gt;
-##   &lt;text start="135.531" dur="1.884"&gt;The proteins then progressively invade&lt;/text&gt;
-##   &lt;text start="137.415" dur="1.616"&gt;other parts of the brain,&lt;/text&gt;
-##   &lt;text start="139.031" dur="1.834"&gt;creating unique changes that signal&lt;/text&gt;
-##   &lt;text start="140.865" dur="2.416"&gt;various stages of the disease.&lt;/text&gt;
-##   &lt;text start="143.281" dur="1.235"&gt;At the front of the brain,&lt;/text&gt;
-##   &lt;text start="144.516" dur="3.536"&gt;the proteins destroy the ability to process logical thoughts.&lt;/text&gt;
-##   &lt;text start="148.052" dur="3.168"&gt;Next, they shift to the region that controls emotions,&lt;/text&gt;
-##   &lt;text start="151.22" dur="2.337"&gt;resulting in erratic mood changes.&lt;/text&gt;
-##   &lt;text start="153.557" dur="1.224"&gt;At the top of the brain,&lt;/text&gt;
-##   &lt;text start="154.781" dur="2.364"&gt;they cause paranoia and hallucinations,&lt;/text&gt;
-##   &lt;text start="157.145" dur="2.053"&gt;and once they reach the brain&amp;amp;#39;s rear,&lt;/text&gt;
-##   &lt;text start="159.198" dur="1.999"&gt;the plaques and tangles work together&lt;/text&gt;
-##   &lt;text start="161.197" dur="2.418"&gt;to erase the mind&amp;amp;#39;s deepest memories.&lt;/text&gt;
-##   &lt;text start="163.615" dur="1.621"&gt;Eventually the control centers governing&lt;/text&gt;
-##   &lt;text start="165.236" dur="2.794"&gt;heart rate and breathing are overpowered as well&lt;/text&gt;
-##   &lt;text start="168.03" dur="1.796"&gt;resulting in death.&lt;/text&gt;
-##   &lt;text start="169.826" dur="2.039"&gt;The immensely destructive nature of this disease&lt;/text&gt;
-##   &lt;text start="171.865" dur="2.999"&gt;has inspired many researchers to look for a cure&lt;/text&gt;
-##   &lt;text start="174.864" dur="3.752"&gt;but currently they&amp;amp;#39;re focused on slowing its progression.&lt;/text&gt;
-##   &lt;text start="178.616" dur="1.387"&gt;One temporary treatment&lt;/text&gt;
-##   &lt;text start="180.003" dur="2.627"&gt;helps reduce the break down of acetylcholine,&lt;/text&gt;
-##   &lt;text start="182.63" dur="2.653"&gt;an important chemical messenger in the brain&lt;/text&gt;
-##   &lt;text start="185.283" dur="2.519"&gt;which is decreased in Alzheimer&amp;amp;#39;s patients&lt;/text&gt;
-##   &lt;text start="187.802" dur="3.063"&gt;due to the death of the nerve cells that make it.&lt;/text&gt;
-##   &lt;text start="190.865" dur="2.316"&gt;Another possible solution is a vaccine&lt;/text&gt;
-##   &lt;text start="193.181" dur="2.461"&gt;that trains the body&amp;amp;#39;s immune system to attack&lt;/text&gt;
-##   &lt;text start="195.642" dur="3.587"&gt;beta-amyloid plaques before they can form clumps.&lt;/text&gt;
-##   &lt;text start="199.229" dur="2.801"&gt;But we still need to find an actual cure.&lt;/text&gt;
-##   &lt;text start="202.03" dur="1.75"&gt;Alzheimer&amp;amp;#39;s disease was discovered&lt;/text&gt;
-##   &lt;text start="203.78" dur="1.669"&gt;more than a century ago,&lt;/text&gt;
-##   &lt;text start="205.449" dur="2.664"&gt;and yet still it is not well understood.&lt;/text&gt;
-##   &lt;text start="208.113" dur="1.667"&gt;Perhaps one day we&amp;amp;#39;ll grasp&lt;/text&gt;
-##   &lt;text start="209.78" dur="2.916"&gt;the exact mechanisms at work behind this threat&lt;/text&gt;
-##   &lt;text start="212.696" dur="2.214"&gt;and a solution will be unearthed.&lt;/text&gt;
-## &lt;/transcript&gt;
-## </code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/get_captions.html">get_captions</a></span><span class="op">(</span>video_id<span class="op">=</span><span class="st">"yJXTXN4xrI8"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## &lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span>
+<span><span class="co">## &lt;transcript&gt;</span></span>
+<span><span class="co">##   &lt;text start="6.614" dur="1.549"&gt;Every four seconds,&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="8.163" dur="1.534"&gt;someone is diagnosed with&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="9.697" dur="1.885"&gt;Alzheimer&amp;amp;#39;s disease.&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="11.582" dur="2.172"&gt;It&amp;amp;#39;s the most common cause of dementia,&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="13.754" dur="2.859"&gt;affecting over 40 million people worldwide,&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="16.613" dur="2.52"&gt;and yet finding a cure is something that still&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="19.133" dur="2.482"&gt;eludes researchers today.&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="21.615" dur="3.273"&gt;Dr. Alois Alzheimer, a German psychiatrist,&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="24.888" dur="3.047"&gt;first described the symptoms in 1901&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="27.935" dur="2.46"&gt;when he noticed that a particular hospital patient&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="30.395" dur="1.917"&gt;had some peculiar problems,&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="32.312" dur="1.803"&gt;including difficulty sleeping,&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="34.115" dur="3.37"&gt;disturbed memory, drastic mood changes,&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="37.485" dur="2.166"&gt;and increasing confusion.&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="39.651" dur="1.877"&gt;When the patient passed away,&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="41.528" dur="2.211"&gt;Alzheimer was able to do an autopsy&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="43.739" dur="2.04"&gt;and test his idea that perhaps&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="45.779" dur="2.421"&gt;her symptoms were caused by irregularities&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="48.2" dur="1.963"&gt;in the brain&amp;amp;#39;s structure.&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="50.163" dur="1.951"&gt;What he found beneath the microscope&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="52.114" dur="2.473"&gt;were visible differences in brain tissue&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="54.587" dur="2.194"&gt;in the form of misfolded proteins&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="56.781" dur="1.334"&gt;called plaques,&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="58.115" dur="2.433"&gt;and neurofibrillary tangles.&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="60.548" dur="2.378"&gt;Those plaques and tangles work together&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="62.926" dur="2.419"&gt;to break down the brain&amp;amp;#39;s structure.&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="65.345" dur="1.792"&gt;Plaques arise when another protein&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="67.137" dur="2.643"&gt;in the fatty membrane surrounding nerve cells&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="69.78" dur="2.697"&gt;gets sliced up by a particular enzyme,&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="72.477" dur="2.585"&gt;resulting in beta-amyloid proteins,&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="75.062" dur="1.799"&gt;which are sticky and have a tendency&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="76.861" dur="1.587"&gt;to clump together.&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="78.448" dur="1.952"&gt;That clumping is what forms the things&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="80.4" dur="2.131"&gt;we know as plaques.&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="82.531" dur="1.793"&gt;These clumps block signaling&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="84.324" dur="1.502"&gt;and, therefore, communication&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="85.826" dur="2.336"&gt;between cells, and also seem to trigger&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="88.162" dur="2.536"&gt;immune reactions that cause the destruction&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="90.698" dur="2.134"&gt;of disabled nerve cells.&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="92.832" dur="2.782"&gt;In Alzheimer&amp;amp;#39;s disease, neurofibrillary tangles&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="95.614" dur="3.085"&gt;are built from a protein known as tau.&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="98.699" dur="2.89"&gt;The brain&amp;amp;#39;s nerve cells contain a network of tubes&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="101.589" dur="2.024"&gt;that act like a highway for food molecules&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="103.613" dur="1.563"&gt;among other things.&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="105.176" dur="2.543"&gt;Usually, the tau protein ensures that these tubes&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="107.719" dur="2.256"&gt;are straight, allowing molecules&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="109.975" dur="1.917"&gt;to pass through freely.&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="111.892" dur="1.709"&gt;But in Alzheimer&amp;amp;#39;s disease,&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="113.601" dur="3.463"&gt;the protein collapses into twisted strands or tangles,&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="117.064" dur="1.832"&gt;making the tubes disintegrate,&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="118.896" dur="2.505"&gt;obstructing nutrients from reaching the nerve cell&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="121.401" dur="2.628"&gt;and leading to cell death.&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="124.029" dur="2.336"&gt;The destructive pairing of plaques and tangles&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="126.365" dur="2.332"&gt;starts in a region called the hippocampus,&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="128.697" dur="2.419"&gt;which is responsible for forming memories.&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="131.116" dur="1.713"&gt;That&amp;amp;#39;s why short-term memory loss&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="132.829" dur="2.702"&gt;is usually the first symptom of Alzheimer&amp;amp;#39;s.&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="135.531" dur="1.884"&gt;The proteins then progressively invade&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="137.415" dur="1.616"&gt;other parts of the brain,&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="139.031" dur="1.834"&gt;creating unique changes that signal&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="140.865" dur="2.416"&gt;various stages of the disease.&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="143.281" dur="1.235"&gt;At the front of the brain,&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="144.516" dur="3.536"&gt;the proteins destroy the ability to process logical thoughts.&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="148.052" dur="3.168"&gt;Next, they shift to the region that controls emotions,&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="151.22" dur="2.337"&gt;resulting in erratic mood changes.&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="153.557" dur="1.224"&gt;At the top of the brain,&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="154.781" dur="2.364"&gt;they cause paranoia and hallucinations,&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="157.145" dur="2.053"&gt;and once they reach the brain&amp;amp;#39;s rear,&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="159.198" dur="1.999"&gt;the plaques and tangles work together&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="161.197" dur="2.418"&gt;to erase the mind&amp;amp;#39;s deepest memories.&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="163.615" dur="1.621"&gt;Eventually the control centers governing&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="165.236" dur="2.794"&gt;heart rate and breathing are overpowered as well&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="168.03" dur="1.796"&gt;resulting in death.&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="169.826" dur="2.039"&gt;The immensely destructive nature of this disease&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="171.865" dur="2.999"&gt;has inspired many researchers to look for a cure&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="174.864" dur="3.752"&gt;but currently they&amp;amp;#39;re focused on slowing its progression.&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="178.616" dur="1.387"&gt;One temporary treatment&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="180.003" dur="2.627"&gt;helps reduce the break down of acetylcholine,&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="182.63" dur="2.653"&gt;an important chemical messenger in the brain&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="185.283" dur="2.519"&gt;which is decreased in Alzheimer&amp;amp;#39;s patients&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="187.802" dur="3.063"&gt;due to the death of the nerve cells that make it.&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="190.865" dur="2.316"&gt;Another possible solution is a vaccine&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="193.181" dur="2.461"&gt;that trains the body&amp;amp;#39;s immune system to attack&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="195.642" dur="3.587"&gt;beta-amyloid plaques before they can form clumps.&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="199.229" dur="2.801"&gt;But we still need to find an actual cure.&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="202.03" dur="1.75"&gt;Alzheimer&amp;amp;#39;s disease was discovered&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="203.78" dur="1.669"&gt;more than a century ago,&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="205.449" dur="2.664"&gt;and yet still it is not well understood.&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="208.113" dur="1.667"&gt;Perhaps one day we&amp;amp;#39;ll grasp&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="209.78" dur="2.916"&gt;the exact mechanisms at work behind this threat&lt;/text&gt;</span></span>
+<span><span class="co">##   &lt;text start="212.696" dur="2.214"&gt;and a solution will be unearthed.&lt;/text&gt;</span></span>
+<span><span class="co">## &lt;/transcript&gt;</span></span>
+<span><span class="co">## </span></span></code></pre>
 </div>
-<div id="search-videos" class="section level4">
-<h4 class="hasAnchor">
-<a href="#search-videos" class="anchor"></a>Search Videos</h4>
+<div class="section level4">
+<h4 id="search-videos">Search Videos<a class="anchor" aria-label="anchor" href="#search-videos"></a>
+</h4>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/yt_search.html">yt_search</a></span><span class="op">(</span><span class="st">"Barack Obama"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code>##                publishedAt                channelId                                                                           title
-## 1 2016-09-06T11:20:20.000Z UC6CZwQv8cbZco3wOwtp7W2g             See How Obama Ignored Xi Jinping &amp; Welcomed PM Modi At G20 Summit !
-## 2 2016-09-05T06:01:17.000Z UC6RJ7-PaXg6TIH2BzZfTV7w                                   PM Modi Meets Barack Obama at G20 Summit 2016
-## 3 2008-03-24T16:31:53.000Z UC4o-h3-3GhrmHB6ytgO3oIQ                                      Top 20 Obama Pastor Comments You Never Saw
-## 4 2016-09-03T06:43:38.000Z UC5aeU5hk31cLzq_sAExLVWg                                     LIVE: Obama arrives in China for G20 summit
-## 5 2016-09-20T01:30:42.000Z UCmWHDwXFvdKc8OVBbb2dMZg Buy Lot of 20 Obama, 44th U.S. President, 56th Presidential Inauguration coins!
-## 6 2016-09-03T06:57:05.000Z UCgrNz-aDmcr2uuto8_DL2jg                           US President Obama arrives in Hangzhou for G20 Summit</code></pre>
+<code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/yt_search.html">yt_search</a></span><span class="op">(</span><span class="st">"Barack Obama"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##                publishedAt                channelId                                                                           title</span></span>
+<span><span class="co">## 1 2016-09-06T11:20:20.000Z UC6CZwQv8cbZco3wOwtp7W2g             See How Obama Ignored Xi Jinping &amp; Welcomed PM Modi At G20 Summit !</span></span>
+<span><span class="co">## 2 2016-09-05T06:01:17.000Z UC6RJ7-PaXg6TIH2BzZfTV7w                                   PM Modi Meets Barack Obama at G20 Summit 2016</span></span>
+<span><span class="co">## 3 2008-03-24T16:31:53.000Z UC4o-h3-3GhrmHB6ytgO3oIQ                                      Top 20 Obama Pastor Comments You Never Saw</span></span>
+<span><span class="co">## 4 2016-09-03T06:43:38.000Z UC5aeU5hk31cLzq_sAExLVWg                                     LIVE: Obama arrives in China for G20 summit</span></span>
+<span><span class="co">## 5 2016-09-20T01:30:42.000Z UCmWHDwXFvdKc8OVBbb2dMZg Buy Lot of 20 Obama, 44th U.S. President, 56th Presidential Inauguration coins!</span></span>
+<span><span class="co">## 6 2016-09-03T06:57:05.000Z UCgrNz-aDmcr2uuto8_DL2jg                           US President Obama arrives in Hangzhou for G20 Summit</span></span></code></pre>
 </div>
-<div id="get-comments-on-a-video" class="section level4">
-<h4 class="hasAnchor">
-<a href="#get-comments-on-a-video" class="anchor"></a>Get Comments on a video</h4>
+<div class="section level4">
+<h4 id="get-comments-on-a-video">Get Comments on a video<a class="anchor" aria-label="anchor" href="#get-comments-on-a-video"></a>
+</h4>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_comment_threads.html">get_comment_threads</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>video_id<span class="op">=</span><span class="st">"N708P-A45D0"</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></code></pre></div>
-<pre><code>##    authorDisplayName                                                                              authorProfileImageUrl                                        authorChannelUrl
-## 1             Tony Rx https://lh5.googleusercontent.com/-OL_t2gRZ8RI/AAAAAAAAAAI/AAAAAAAAACg/tXnqTDNYXec/photo.jpg?sz=50 http://www.youtube.com/channel/UCqKvEBPMtbmh020d56WrQXQ
-## 2       Kevin Manning https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50 http://www.youtube.com/channel/UCEF-WytcLvgijQIklAbteUw
-## 3       Kevin Manning https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50 http://www.youtube.com/channel/UCEF-WytcLvgijQIklAbteUw
-## 4 TheDrunkenRocketMan https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50 http://www.youtube.com/channel/UCvTypSrsihX3fr2zCZivmwA
-## 5          pangratata https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50 http://www.youtube.com/channel/UCETB8ILZueyFMCFWMF0p3Yg
-## 6          pangratata https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50 http://www.youtube.com/channel/UCETB8ILZueyFMCFWMF0p3Yg</code></pre>
+<code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_comment_threads.html">get_comment_threads</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>video_id<span class="op">=</span><span class="st">"N708P-A45D0"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##    authorDisplayName                                                                              authorProfileImageUrl                                        authorChannelUrl</span></span>
+<span><span class="co">## 1             Tony Rx https://lh5.googleusercontent.com/-OL_t2gRZ8RI/AAAAAAAAAAI/AAAAAAAAACg/tXnqTDNYXec/photo.jpg?sz=50 http://www.youtube.com/channel/UCqKvEBPMtbmh020d56WrQXQ</span></span>
+<span><span class="co">## 2       Kevin Manning https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50 http://www.youtube.com/channel/UCEF-WytcLvgijQIklAbteUw</span></span>
+<span><span class="co">## 3       Kevin Manning https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50 http://www.youtube.com/channel/UCEF-WytcLvgijQIklAbteUw</span></span>
+<span><span class="co">## 4 TheDrunkenRocketMan https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50 http://www.youtube.com/channel/UCvTypSrsihX3fr2zCZivmwA</span></span>
+<span><span class="co">## 5          pangratata https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50 http://www.youtube.com/channel/UCETB8ILZueyFMCFWMF0p3Yg</span></span>
+<span><span class="co">## 6          pangratata https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50 http://www.youtube.com/channel/UCETB8ILZueyFMCFWMF0p3Yg</span></span></code></pre>
 </div>
 </div>
-<div id="get-statistics-of-all-the-videos-in-a-channel" class="section level3">
-<h3 class="hasAnchor">
-<a href="#get-statistics-of-all-the-videos-in-a-channel" class="anchor"></a>Get statistics of all the videos in a channel</h3>
+<div class="section level3">
+<h3 id="get-statistics-of-all-the-videos-in-a-channel">Get statistics of all the videos in a channel<a class="anchor" aria-label="anchor" href="#get-statistics-of-all-the-videos-in-a-channel"></a>
+</h3>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/list_channel_resources.html">list_channel_resources</a></span><span class="op">(</span>filter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>channel_id <span class="op">=</span> <span class="st">"UCT5Cx1l4IS3wHkJXNyuj4TA"</span><span class="op">)</span>, part<span class="op">=</span><span class="st">"contentDetails"</span><span class="op">)</span>
-
-<span class="co"># Uploaded playlists:</span>
-<span class="va">playlist_id</span> <span class="op">&lt;-</span> <span class="va">a</span><span class="op">$</span><span class="va">items</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">contentDetails</span><span class="op">$</span><span class="va">relatedPlaylists</span><span class="op">$</span><span class="va">uploads</span>
-
-<span class="co"># Get videos on the playlist</span>
-<span class="va">vids</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_playlist_items.html">get_playlist_items</a></span><span class="op">(</span>filter<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>playlist_id<span class="op">=</span><span class="va">playlist_id</span><span class="op">)</span><span class="op">)</span> 
-
-<span class="co"># Video ids</span>
-<span class="va">vid_ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span><span class="op">(</span><span class="va">vids</span><span class="op">$</span><span class="va">contentDetails.videoId</span><span class="op">)</span>
-
-<span class="co"># Function to scrape stats for all vids</span>
-<span class="va">get_all_stats</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op">{</span>
-  <span class="fu"><a href="../reference/get_stats.html">get_stats</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span>
-<span class="op">}</span> 
-
-<span class="co"># Get stats and convert results to data frame </span>
-<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">vid_ids</span>, <span class="va">get_all_stats</span><span class="op">)</span>
-<span class="va">res_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">res</span>, <span class="va">data.frame</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">res_df</span><span class="op">)</span></code></pre></div>
-<p>If you need to find a channel ID from a <code>username</code>, the <code>list_channel_resources</code> function can help. You can use it like:</p>
+<code class="sourceCode R"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/list_channel_resources.html">list_channel_resources</a></span><span class="op">(</span>filter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>channel_id <span class="op">=</span> <span class="st">"UCT5Cx1l4IS3wHkJXNyuj4TA"</span><span class="op">)</span>, part<span class="op">=</span><span class="st">"contentDetails"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Uploaded playlists:</span></span>
+<span><span class="va">playlist_id</span> <span class="op">&lt;-</span> <span class="va">a</span><span class="op">$</span><span class="va">items</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">contentDetails</span><span class="op">$</span><span class="va">relatedPlaylists</span><span class="op">$</span><span class="va">uploads</span></span>
+<span></span>
+<span><span class="co"># Get videos on the playlist</span></span>
+<span><span class="va">vids</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_playlist_items.html">get_playlist_items</a></span><span class="op">(</span>filter<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>playlist_id<span class="op">=</span><span class="va">playlist_id</span><span class="op">)</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="co"># Video ids</span></span>
+<span><span class="va">vid_ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">vids</span><span class="op">$</span><span class="va">contentDetails.videoId</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Function to scrape stats for all vids</span></span>
+<span><span class="va">get_all_stats</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="../reference/get_stats.html">get_stats</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span></span>
+<span><span class="op">}</span> </span>
+<span></span>
+<span><span class="co"># Get stats and convert results to data frame </span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">vid_ids</span>, <span class="va">get_all_stats</span><span class="op">)</span></span>
+<span><span class="va">res_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">res</span>, <span class="va">data.frame</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res_df</span><span class="op">)</span></span></code></pre></div>
+<p>If you need to find a channel ID from a <code>username</code>, the
+<code>list_channel_resources</code> function can help. You can use it
+like:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="../reference/list_channel_resources.html">list_channel_resources</a></span><span class="op">(</span>filter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>username <span class="op">=</span> <span class="st">"GoogleDevelopers"</span><span class="op">)</span>, part<span class="op">=</span><span class="st">"id"</span><span class="op">)</span>
-
-<span class="co"># Parse out channel_id</span>
-<span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">items</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">id</span><span class="op">)</span><span class="op">)</span><span class="op">{</span>
-  <span class="va">channel_id</span> <span class="op">=</span> <span class="va">res</span><span class="op">$</span><span class="va">items</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">id</span>
-<span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
-  <span class="kw"><a href="https://rdrr.io/r/base/stop.html">stop</a></span><span class="op">(</span><span class="st">"User not found"</span><span class="op">)</span> 
-<span class="op">}</span>
-<span class="co"># channel_id should be UC_x5XG1OV2P6uZZ5FSM9Ttw</span></code></pre></div>
-<pre><code>##            id viewCount likeCount dislikeCount favoriteCount commentCount
-## 1 91gZ4taDiDE       906         4            1             0            0 
-## 2 bHPCvSqTxn4       706         0            0             0            0 
-## 3 h2UPH87kjhc       458         1            0             0            0
-## 4 E2VtxjljZCE       391         0            0             0            0 
-## 5 5Ajfk620fA0    175000         5            0             0            0 
-## 6 PdI3HjulcA4       575         3            2             0            3</code></pre>
+<code class="sourceCode R"><span><span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="../reference/list_channel_resources.html">list_channel_resources</a></span><span class="op">(</span>filter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>username <span class="op">=</span> <span class="st">"GoogleDevelopers"</span><span class="op">)</span>, part<span class="op">=</span><span class="st">"id"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Parse out channel_id</span></span>
+<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">items</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">id</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="va">channel_id</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">$</span><span class="va">items</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">id</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"User not found"</span><span class="op">)</span> </span>
+<span><span class="op">}</span></span>
+<span><span class="co"># channel_id should be UC_x5XG1OV2P6uZZ5FSM9Ttw</span></span></code></pre></div>
+<pre><code><span><span class="co">##            id viewCount likeCount dislikeCount favoriteCount commentCount</span></span>
+<span><span class="co">## 1 91gZ4taDiDE       906         4            1             0            0 </span></span>
+<span><span class="co">## 2 bHPCvSqTxn4       706         0            0             0            0 </span></span>
+<span><span class="co">## 3 h2UPH87kjhc       458         1            0             0            0</span></span>
+<span><span class="co">## 4 E2VtxjljZCE       391         0            0             0            0 </span></span>
+<span><span class="co">## 5 5Ajfk620fA0    175000         5            0             0            0 </span></span>
+<span><span class="co">## 6 PdI3HjulcA4       575         3            2             0            3</span></span></code></pre>
 </div>
 </div>
-  </div>
-
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
-
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 
 
-      <footer><div class="copyright">
+    <footer><div class="pkgdown-footer-left">
   <p>Developed by Gaurav Sood.</p>
 </div>
 
-<div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+<div class="pkgdown-footer-right">
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
-      </footer>
+    </footer>
 </div>
 
-  
-<script src="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.js" integrity="sha256-GKvGqXDznoRYHCwKXGnuchvKSwmx9SRMrZOTh2g4Sb0=" crossorigin="anonymous"></script><script>
-  docsearch({
-    
-    
-    apiKey: '538a7a5e70bcc75e8a2e8e817c03bd0f',
-    indexName: 'tuber',
-    inputSelector: 'input#search-input.form-control',
-    transformData: function(hits) {
-      return hits.map(function (hit) {
-        hit.url = updateHitURL(hit);
-        return hit;
-      });
-    }
-  });
-</script>
-</body>
+
+
+
+
+  </body>
 </html>

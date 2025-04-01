@@ -1,138 +1,66 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>http://soodoku.github.io/tuber//index.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/delete_captions.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/delete_channel_sections.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/delete_comments.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/delete_playlist_items.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/delete_playlists.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/delete_videos.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/get_all_channel_video_stats.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/get_all_comments.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/get_captions.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/get_channel_stats.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/get_comment_threads.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/get_comments.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/get_playlist_items.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/get_playlists.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/get_related_videos.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/get_stats.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/get_subscriptions.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/get_video_details.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/list_abuse_report_reasons.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/list_caption_tracks.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/list_captions.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/list_channel_activities.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/list_channel_resources.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/list_channel_sections.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/list_channel_videos.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/list_guidecats.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/list_langs.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/list_my_videos.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/list_regions.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/list_videocats.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/list_videos.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/read_sbv.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/tuber.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/tuber_DELETE.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/tuber_GET.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/tuber_POST.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/tuber_check.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/upload_caption.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/upload_video.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/yt_oauth.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/yt_search.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/yt_token.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//reference/yt_topic_search.html</loc>
-  </url>
-  <url>
-    <loc>http://soodoku.github.io/tuber//articles/tuber-ex.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://soodoku.github.io/tuber/404.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/ISSUE_TEMPLATE.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/LICENSE-text.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/articles/index.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/articles/tuber-ex.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/authors.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/feature_request.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/index.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/news/index.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/add_video_to_playlist.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/change_playlist_title.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/create_playlist.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/delete_captions.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/delete_channel_sections.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/delete_comments.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/delete_playlist_items.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/delete_playlists.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/delete_videos.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/get_all_channel_video_stats.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/get_all_comments.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/get_captions.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/get_channel_stats.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/get_comment_threads.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/get_comments.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/get_playlist_item_ids.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/get_playlist_item_videoids.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/get_playlist_items.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/get_playlists.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/get_related_videos.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/get_stats.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/get_subscriptions.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/get_video_details.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/index.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/list_abuse_report_reasons.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/list_caption_tracks.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/list_captions.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/list_channel_activities.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/list_channel_resources.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/list_channel_sections.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/list_channel_videos.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/list_guidecats.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/list_langs.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/list_my_videos.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/list_regions.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/list_videocats.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/list_videos.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/pipe.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/read_sbv.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/tuber-package.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/tuber.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/tuber_DELETE.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/tuber_GET.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/tuber_POST.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/tuber_POST_json.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/tuber_check.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/update_video_metadata.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/upload_caption.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/upload_video.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/yt_key.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/yt_oauth.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/yt_search.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/yt_token.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/yt_topic_search.html</loc></url>
 </urlset>
+

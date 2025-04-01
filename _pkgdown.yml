@@ -1,91 +1,106 @@
-url: http://soodoku.github.io/tuber/
+
+url: https://soodoku.github.io/tuber/
 
 template:
-  params:
-    bootswatch: cosmo
-    docsearch:
-      api_key: 538a7a5e70bcc75e8a2e8e817c03bd0f
-      index_name: tuber
+  bootstrap: 5
+  bootswatch: flatly
 
 navbar:
-    menu:
-    - text: Using tuber
-      href: articles/tuber-ex.html
-
-articles:
-  - title: "Articles"
-    contents:
-    - tuber-ex
+  structure:
+    left:  [intro, reference, articles, tutorials, news]
+    right: [github]
 
 reference:
-  - title: "Authorization"
-    desc: >
-      Get permissions to access the API. Set up the right scope.
-    contents:
-      - yt_oauth
-      - yt_check_token
-  - title: "Captions"
-    desc: >
-      Closed Captions of Videos
-    contents:
-      - delete_captions
-      - get_captions
-      - list_caption_tracks
-  - title: "Comments"
-    desc: >
-      Work with YouTube Comments
-    contents:
-      - get_comment_threads
-      - get_comments
-      - get_all_comments
-      - delete_comments
-  - title: "Playlists"
-    desc: >
-      Working with Playlists
-    contents:
-      - get_playlists
-      - get_playlist_items
-      - delete_playlists
-      - delete_playlist_items
-  - title: "Channels"
-    desc: >
-      Working with Channels
-    contents:
-      - list_channel_videos
-      - list_channel_sections
-      - list_channel_resources
-      - list_channel_activities
-      - get_channel_stats
-      - get_subscriptions
-      - delete_channel_sections
-  - title: "Videos"
-    desc: >
-      Working with Videos
-    contents:
-      - get_video_details
-      - delete_videos
-  - title: "Search"
-    desc: >
-      Search for Videos etc.
-    contents:
-      - get_related_videos
-      - yt_search
-      - yt_topic_search
-  - title: "Misc. Utility Functions"
-    desc: >
-      Find out more about the YouTube Data API
-    contents:
-      - list_langs
-      - list_guidecats
-      - list_regions
-      - list_videocats
-      - list_abuse_report_reasons
-  - title: "Programming using the YouTube Data API"
-    desc: >
-      Low-level functions used internally
-    contents:
-      - tuber_GET
-      - tuber_DELETE
-      - tuber_POST
-      - tuber_check
-      - yt_check_token
+- title: "Package Documentation"
+  desc: "Overall package documentation"
+  contents:
+    - tuber
+- title: "Authentication"
+  desc: "Functions for authentication with the YouTube API"
+  contents:
+    - yt_oauth
+    - yt_token
+    - yt_authorized
+    - yt_check_token
+    - yt_get_key
+    - yt_set_key
+    - tuber_check
+
+- title: "Channel Functions"
+  desc: "Functions for working with YouTube channels"
+  contents:
+    - get_channel_stats
+    - get_subscriptions
+    - list_channel_resources
+    - list_channel_sections
+    - delete_channel_sections
+    - list_channel_activities
+    - list_channel_videos
+    - list_my_channel
+    - get_all_channel_video_stats
+
+- title: "Video Functions"
+  desc: "Functions for working with YouTube videos"
+  contents:
+    - get_stats
+    - get_video_details
+    - get_related_videos
+    - list_videos
+    - list_my_videos
+    - upload_video
+    - update_video_metadata
+    - delete_videos
+
+- title: "Playlist Functions"
+  desc: "Functions for working with playlists"
+  contents:
+    - get_playlists
+    - get_playlist_items
+    - get_playlist_item_ids
+    - get_playlist_item_videoids
+    - create_playlist
+    - add_video_to_playlist
+    - change_playlist_title
+    - delete_playlist_items
+    - delete_playlists
+
+- title: "Caption Functions"
+  desc: "Functions for working with captions"
+  contents:
+    - get_captions
+    - list_captions
+    - list_caption_tracks
+    - upload_caption
+    - delete_captions
+    - read_sbv
+
+- title: "Comment Functions"
+  desc: "Functions for working with comments"
+  contents:
+    - get_comment_threads
+    - get_comments
+    - get_all_comments
+    - delete_comments
+
+- title: "Search Functions"
+  desc: "Functions for searching YouTube"
+  contents:
+    - yt_search
+    - yt_topic_search
+
+- title: "Additional Resources"
+  desc: "Functions for getting YouTube metadata"
+  contents:
+    - list_guidecats
+    - list_langs
+    - list_regions
+    - list_videocats
+    - list_abuse_report_reasons
+
+- title: "Helper Functions"
+  desc: "Internal helper functions"
+  contents:
+    - tuber_DELETE
+    - tuber_GET
+    - tuber_POST
+    - tuber_POST_json
