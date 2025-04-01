@@ -3,13 +3,8 @@
 
 ## :sweet\_potato: tuber: Access YouTube API via R
 
-[![Build
-status](https://ci.appveyor.com/api/projects/status/pgr0wih12gtwvvvx?svg=true)](https://ci.appveyor.com/project/soodoku/tuber)
-[![Build
-Status](https://travis-ci.org/soodoku/tuber.svg?branch=master)](https://travis-ci.org/soodoku/tuber)
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/tuber)](https://cran.r-project.org/package=tuber)
 ![](http://cranlogs.r-pkg.org/badges/grand-total/tuber)
-[![codecov](https://codecov.io/gh/soodoku/tuber/branch/master/graph/badge.svg)](https://codecov.io/gh/soodoku/tuber)
 
 Access YouTube API via R. Get comments posted on YouTube videos, get
 information on how many times a video has been liked, search for videos
@@ -27,9 +22,9 @@ devtools::install_github("soodoku/tuber", build_vignettes = TRUE)
 ```
 
 To get a quick overview of some important functions in tuber, check out
-[this article](http://soodoku.github.io/tuber/articles/tuber-ex.html).
+[this article](https://soodoku.github.io/tuber/articles/tuber-ex.html).
 For a fun vignette about how to analyze emojis in YouTube comments, see
-[here](http://soodoku.github.io/tuber/articles/emoji_vignette.html).
+[here](https://soodoku.github.io/tuber/articles/emoji_vignette.html).
 
 ### Using tuber
 
@@ -71,7 +66,7 @@ get_captions(video_id = "yJXTXN4xrI8")
 **Note**: It was previously possible to get captions for all videos that
 had “Community contributions” enabled. However, since [*YouTube* removed
 that option in September
-2020](https://support.google.com/youtube/answer/6052538?hl=en), the
+2020](https://support.google.com/youtube/answer/2734796?hl=en&visit_id=638791335311528098-9183701&rd=1), the
 `get_captions` function now only works for videos created with the same
 account as the API credentials you use. An alternative for collecting
 *YouTube* video captions is the [*youtubecaption*
@@ -92,7 +87,7 @@ get_all_comments(video_id = "a-UQz7fqR3w")
 ### License
 
 Scripts are released under the [MIT
-License](http://opensource.org/licenses/MIT).
+License](https://opensource.org/licenses/MIT).
 
 ### Contributor Code of Conduct
 
@@ -100,4 +95,4 @@ The project welcomes contributions from everyone! In fact, it depends on
 it. To maintain this welcoming atmosphere, and to collaborate in a fun
 and productive way, we expect contributors to the project to abide by
 the [Contributor Code of
-Conduct](http://contributor-covenant.org/version/1/0/0/).
+Conduct](https://www.contributor-covenant.org/version/1/0/0/).

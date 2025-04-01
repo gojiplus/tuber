@@ -2,9 +2,9 @@ This is a resubmission
 ---------------------------------
 
 ## Test environments
-* ubuntu 12.04 (on travis-ci), R 3.6.0
-* local Windows 10 install, R 4.0.0
+* Mac OS, R 4.3.0
 * checked on r-hub
+* checked on windows
 
 ## R CMD check results
 There were no ERRORs or WARNINGs.

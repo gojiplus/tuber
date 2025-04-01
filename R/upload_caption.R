@@ -8,7 +8,7 @@
 #' @param ... Additional arguments to send to \code{\link[httr]{POST}}
 #' @param open_url Should the video be opened using \code{\link{browseURL}}
 #' @param language character string of `BCP47` language type.
-#' See \url{http://www.rfc-editor.org/rfc/bcp/bcp47.txt} for language specification
+#' See \url{https://www.rfc-editor.org/rfc/bcp/bcp47.txt} for language specification
 #'
 #' @note See
 #' \url{https://developers.google.com/youtube/v3/docs/captions#resource} for

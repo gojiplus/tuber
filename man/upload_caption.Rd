@@ -21,7 +21,7 @@ upload_caption(
 \item{video_id}{YouTube Video ID.  Try \code{\link{list_my_videos}} for examples.}
 
 \item{language}{character string of `BCP47` language type.
-See \url{http://www.rfc-editor.org/rfc/bcp/bcp47.txt} for language specification}
+See \url{https://www.rfc-editor.org/rfc/bcp/bcp47.txt} for language specification}
 
 \item{caption_name}{character vector of the name for the caption.}
 
