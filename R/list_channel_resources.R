@@ -5,21 +5,21 @@
 #' potential names of the entry in the vector:
 #' \code{category_id}: YouTube guide category that returns channels associated
 #' with that category
-#' \code{username}:  YouTube username that returns channel associated with that
+#' \code{username}:  YouTube username that returns the channel associated with that
 #'  username.
 #' \code{channel_id}: a comma-separated list of the YouTube channel ID(s) for
 #' the resource(s) that are being retrieved
 #'
-#' @param part a comma separated list of channel resource properties that
-#' response will include string. Required.
+#' @param part a comma-separated list of channel resource properties that
+#' response will include a string. Required.
 #' One of the following: \code{auditDetails, brandingSettings, contentDetails,
 #' contentOwnerDetails, id, invideoPromotion, localizations, snippet,
 #' statistics, status, topicDetails}.
 #' Default is \code{contentDetails}.
-#' @param hl  Language used for text values. Optional. Default is \code{en-US}.
+#' @param hl  Language used for text values. Optional. The default is \code{en-US}.
 #' For other allowed language codes, see \code{\link{list_langs}}.
 #' @param max_results Maximum number of items that should be returned. Integer.
-#'  Optional. Can be between 0 and 50. Default is 50.
+#'  Optional. Can be between 0 and 50. The default is 50.
 #' @param page_token specific page in the result set that should be returned,
 #' optional
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
@@ -42,32 +42,24 @@
 
 list_channel_resources <- function(filter = NULL, part = "contentDetails",
                          max_results = 50, page_token = NULL, hl = "en-US", ...) {
-
   if (max_results < 0 | max_results > 50) {
     stop("max_results only takes a value between 0 and 50.")
   }
-
   if (!(names(filter) %in% c("category_id", "username", "channel_id"))) {
     stop("filter can only take one of three values: category_id,
       username or channel_id.")
   }
-
   if (length(filter) != 1) stop("filter must be a vector of length 1.")
-
-  translate_filter   <- c(channel_id = "id", category_id = "categoryId",
-                          username = "forUsername")
-  yt_filter_name     <- as.vector(translate_filter[match(names(filter),
-                                                      names(translate_filter))])
-  names(filter)      <- yt_filter_name
-
-  if (is.character(filter$username)) {
-    usernames <- filter$username
+  
+  # Check for username BEFORE translation
+  if ("username" %in% names(filter)) {
+    usernames <- filter[names(filter) == "username"]  # Use bracket indexing
     num_usernames <- length(usernames)
     channel_ids <- vector("list", length = num_usernames)
     
     for (i in seq_along(usernames)) {
       querylist <- list(part = part, maxResults = max_results,
-                        pageToken = page_token, hl =  hl, forUsername = usernames[i])
+                        pageToken = page_token, hl = hl, forUsername = usernames[i])
       
       res <- tuber_GET("channels", querylist, ...)
       
@@ -82,6 +74,13 @@ list_channel_resources <- function(filter = NULL, part = "contentDetails",
     
     return(channel_ids)
   }
+  
+  # Translate filter names for non-username cases
+  translate_filter   <- c(channel_id = "id", category_id = "categoryId",
+                          username = "forUsername")
+  yt_filter_name     <- as.vector(translate_filter[match(names(filter),
+                                                      names(translate_filter))])
+  names(filter)      <- yt_filter_name
   
   querylist <- list(part = part, maxResults = max_results,
                     pageToken = page_token, hl = hl)
