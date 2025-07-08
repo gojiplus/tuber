@@ -60,7 +60,6 @@
 #' Takes one of three values: \code{'any'} (return all videos; Default),
 #' \code{'creativeCommon'} (return videos with Creative Commons
 #' license), \code{'youtube'} (return videos with standard YouTube license).
-#' @param relevance_language Character. Default is "en".
 #' @param simplify Boolean. Return a data.frame if \code{TRUE}.
 #' Default is \code{TRUE}.
 #' If \code{TRUE}, it returns a list that carries additional information.
@@ -132,28 +131,28 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
     if (!(video_license %in% c("any", "creativeCommon", "youtube"))) {
       stop("video_license can only take values: any, creativeCommon, or youtube.")
     }
-    
+
     if (!(video_syndicated %in% c("any", "true"))) {
       stop("video_syndicated can only take values: any or true.")
     }
-    
+
     if (!(video_type %in% c("any", "episode", "movie"))) {
       stop("video_type can only take values: any, episode, or movie.")
     }
   } else {
     # Set these to NULL if type is not "video" to avoid sending them in the API call
-    video_caption <- video_license <- video_definition <- 
+    video_caption <- video_license <- video_definition <-
       video_type <- video_syndicated <- NULL
   }
 
   # Validate date formats
   validate_rfc339_date <- function(date_str) {
-    if (is.character(date_str) && 
+    if (is.character(date_str) &&
         is.na(as.POSIXct(date_str, format = "%Y-%m-%dT%H:%M:%SZ"))) {
       stop("The date is not properly formatted in RFC 339 Format (YYYY-MM-DDTHH:MM:SSZ).")
     }
   }
-  
+
   validate_rfc339_date(published_after)
   validate_rfc339_date(published_before)
 
@@ -193,7 +192,7 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
     if (length(res_items) == 0) {
       return(data.frame())
     }
-    
+
     if (item_type == "video") {
       simple_res <- lapply(res_items, function(x) {
         if (is.null(x$id$videoId)) {
@@ -204,19 +203,19 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
     } else {
       simple_res <- lapply(res_items, function(x) unlist(x$snippet))
     }
-    
+
     # Remove NULL entries and convert to data frame
     simple_res <- simple_res[!sapply(simple_res, is.null)]
     if (length(simple_res) == 0) {
       return(data.frame())
     }
-    
+
     return(ldply(simple_res, rbind))
   }
 
   # Make initial API call
   res <- tuber_GET("search", querylist, ...)
-  
+
   # If get_all is FALSE or there are no results, process and return
   if (!identical(get_all, TRUE) || res$pageInfo$totalResults == 0) {
     if (!identical(simplify, TRUE)) {
@@ -224,38 +223,38 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
     }
     return(process_results(res$items, type))
   }
-  
+
   # Process all pages for get_all=TRUE
   all_results <- process_results(res$items, type)
   page_token <- res$nextPageToken
   page_count <- 1
-  
+
   # Get all pages up to max_pages limit
   while (!is.null(page_token) && page_count < max_pages) {
     querylist$pageToken <- page_token
     a_res <- tuber_GET("search", querylist, ...)
-    
+
     next_results <- process_results(a_res$items, type)
     all_results <- rbind(all_results, next_results)
     page_token <- a_res$nextPageToken
     page_count <- page_count + 1
-    
+
     # Check if we've reached YouTube's limit (around 500-600 items)
     if (nrow(all_results) >= 500 && is.null(page_token)) {
       warning("Reached YouTube API search result limit (approximately 500 items)")
       break
     }
   }
-  
+
   # Add warning if we hit the max_pages limit but there are still more results
   if (!is.null(page_token) && page_count >= max_pages) {
     warning(sprintf("Only retrieved %d pages of results. Set max_pages higher to get more results.", max_pages))
   }
-  
+
   # Add additional information as attributes
   attr(all_results, "total_results") <- res$pageInfo$totalResults
   attr(all_results, "actual_results") <- nrow(all_results)
   attr(all_results, "api_limit_reached") <- nrow(all_results) >= 500
-  
+
   return(all_results)
 }

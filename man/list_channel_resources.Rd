@@ -19,25 +19,25 @@ named vector of length 1
 potential names of the entry in the vector:
 \code{category_id}: YouTube guide category that returns channels associated
 with that category
-\code{username}:  YouTube username that returns channel associated with that
+\code{username}:  YouTube username that returns the channel associated with that
  username.
 \code{channel_id}: a comma-separated list of the YouTube channel ID(s) for
 the resource(s) that are being retrieved}
 
-\item{part}{a comma separated list of channel resource properties that
-response will include string. Required.
+\item{part}{a comma-separated list of channel resource properties that
+response will include a string. Required.
 One of the following: \code{auditDetails, brandingSettings, contentDetails,
 contentOwnerDetails, id, invideoPromotion, localizations, snippet,
 statistics, status, topicDetails}.
 Default is \code{contentDetails}.}
 
 \item{max_results}{Maximum number of items that should be returned. Integer.
-Optional. Can be between 0 and 50. Default is 50.}
+Optional. Can be between 0 and 50. The default is 50.}
 
 \item{page_token}{specific page in the result set that should be returned,
 optional}
 
-\item{hl}{Language used for text values. Optional. Default is \code{en-US}.
+\item{hl}{Language used for text values. Optional. The default is \code{en-US}.
 For other allowed language codes, see \code{\link{list_langs}}.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
