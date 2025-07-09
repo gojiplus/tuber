@@ -94,7 +94,7 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
     agg_res <- lapply(res$items, function(x) unlist(x$snippet$topLevelComment$snippet))
 
     page_token <- res$nextPageToken
-    while (is.character(page_token)) {
+    while (!is.null(page_token)) {
       a_res <- get_comment_threads(orig_filter,
                                    part = part,
                                    text_format = text_format,

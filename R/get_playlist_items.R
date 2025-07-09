@@ -67,7 +67,7 @@ get_playlist_items <- function(filter = NULL, part = "contentDetails",
 
   if (max_results > 50) {
     page_token <- res$nextPageToken
-    while (is.character(page_token)) {
+    while (!is.null(page_token)) {
       a_res <- tuber_GET(path = "playlistItems",
                          query = list(
                            part = part,

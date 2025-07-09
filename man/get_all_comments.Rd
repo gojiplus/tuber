@@ -18,6 +18,8 @@ a \code{data.frame} with the following columns:
 \code{ authorChannelId.value, videoId, textDisplay,
 canRate, viewerRating, likeCount, publishedAt, updatedAt,
 id, moderationStatus, parentId}
+The returned data frame has an attribute \code{total_results} with the
+number of comment threads reported by the API.
 }
 \description{
 Get all the comments for a video including replies

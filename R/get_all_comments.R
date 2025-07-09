@@ -11,6 +11,8 @@
 #' \code{ authorChannelId.value, videoId, textDisplay,
 #' canRate, viewerRating, likeCount, publishedAt, updatedAt,
 #' id, moderationStatus, parentId}
+#' The data frame has an attribute \code{total_results} containing the
+#' number of comment threads reported by the API.
 #'
 #' @export
 #' @references \url{https://developers.google.com/youtube/v3/docs/commentThreads/list}
@@ -26,6 +28,7 @@
 get_all_comments <- function(video_id = NULL, ...) {
   querylist <- list(videoId = video_id, part = "id,replies,snippet")
   res <- tuber_GET("commentThreads", query = querylist, ...)
+  total_results <- res$pageInfo$totalResults
   agg_res <- process_page(res)
   page_token <- res$nextPageToken
 
@@ -40,6 +43,7 @@ get_all_comments <- function(video_id = NULL, ...) {
   }
   
   agg_res <- do.call(rbind, comment_list)  # Combine all comments into a single data frame
+  attr(agg_res, "total_results") <- total_results
   agg_res
 }
 
@@ -57,8 +61,11 @@ process_page <- function(res = NULL) {
     comment_moderation_status <- ifelse("moderationStatus" %in% names(comment_snippet),
                                         comment_snippet$moderationStatus, NA)
     
-    comment_data <- c(comment_snippet, id = comment_id, parentId = comment_parent_id,
-                      moderationStatus = comment_moderation_status)
+    comment_data <- as.data.frame(t(c(comment_snippet,
+                                      id = comment_id,
+                                      parentId = comment_parent_id,
+                                      moderationStatus = comment_moderation_status)),
+                                  stringsAsFactors = FALSE)
     
     if (!is.null(comment$replies) && "comments" %in% names(comment$replies)) {
       reply_items <- comment$replies$comments
@@ -70,12 +77,16 @@ process_page <- function(res = NULL) {
           reply_parent_id <- comment_id
           reply_moderation_status <- ifelse("moderationStatus" %in% names(reply_snippet),
                                             reply_snippet$moderationStatus, NA)
-          
-          c(reply_snippet, id = reply_id, parentId = reply_parent_id,
-            moderationStatus = reply_moderation_status)
+
+          as.data.frame(t(c(reply_snippet,
+                             id = reply_id,
+                             parentId = reply_parent_id,
+                             moderationStatus = reply_moderation_status)),
+                        stringsAsFactors = FALSE)
         })
-        
-        comment_data <- rbind(comment_data, do.call(rbind, reply_data))
+
+        reply_data <- do.call(rbind, reply_data)
+        comment_data <- rbind(comment_data, reply_data)
       }
     }
     
