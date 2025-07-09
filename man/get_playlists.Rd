@@ -38,7 +38,8 @@ optional}
 the function returns a \code{data.frame}. Else a list with all the
 information returned.}
 
-\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
+\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.
+Can be used to pass extra search parameters such as \code{q}.}
 }
 \value{
 playlists
@@ -56,6 +57,7 @@ Get Playlists
 
 get_playlists(filter=c(channel_id="UCMtFAi84ehTSYSE9XoHefig"))
 get_playlists(filter=c(channel_id="UCMtFAi84ehTSYSE9X")) # incorrect Channel ID
+get_playlists(filter=c(channel_id="UCMtFAi84ehTSYSE9XoHefig"), q = "keyword")
 }
 }
 \references{

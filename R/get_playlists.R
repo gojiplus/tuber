@@ -19,6 +19,7 @@
 #' the function returns a \code{data.frame}. Else a list with all the
 #' information returned.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
+#'   Can be used to pass extra search parameters such as \code{q}.
 #'
 #' @return playlists
 #' When \code{simplify} is \code{TRUE}, a \code{data.frame} with 4
@@ -35,6 +36,7 @@
 #'
 #' get_playlists(filter=c(channel_id="UCMtFAi84ehTSYSE9XoHefig"))
 #' get_playlists(filter=c(channel_id="UCMtFAi84ehTSYSE9X")) # incorrect Channel ID
+#' get_playlists(filter=c(channel_id="UCMtFAi84ehTSYSE9XoHefig"), q = "keyword")
 #' }
 
 get_playlists <- function(filter = NULL,
@@ -61,7 +63,7 @@ get_playlists <- function(filter = NULL,
 
   querylist <- list(part = part, maxResults = max_results,
                     pageToken = page_token, hl = hl)
-  querylist <- c(querylist, filter)
+  querylist <- c(querylist, filter, ...)
 
   raw_res <- tuber_GET("playlists", querylist, ...)
 
