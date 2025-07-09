@@ -232,19 +232,25 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
   page_token <- res$nextPageToken
   page_count <- 1
   total_returned <- nrow(all_results)
+  items_returned <- total_returned
 
   # Get all pages up to max_pages limit and requested max_results
   while (!is.null(page_token) && page_count < max_pages &&
-         total_returned < max_results) {
+         items_returned < max_results) {
     querylist$pageToken <- page_token
     querylist$maxResults <- min(max_results - total_returned, 50)
     a_res <- tuber_GET("search", querylist, ...)
 
     next_results <- process_results(a_res$items, type)
     all_results <- rbind(all_results, next_results)
+    items_returned <- items_returned + nrow(next_results)
     total_returned <- nrow(all_results)
     page_token <- a_res$nextPageToken
     page_count <- page_count + 1
+
+    if (items_returned >= max_results) {
+      break
+    }
 
     # Check if we've reached YouTube's limit (around 500-600 items)
     if (nrow(all_results) >= 500 && is.null(page_token)) {
