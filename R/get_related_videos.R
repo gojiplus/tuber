@@ -4,7 +4,8 @@
 #'
 #' @param video_id Character. Required. No default.
 #' @param max_results Maximum number of items that should be returned.
-#' Integer. Optional. Can be between 0 and 50. Default is 50.
+#' Integer. Optional. Default is 50. Values over 50 trigger multiple requests and
+#' may increase API quota usage.
 #' @param safe_search Character. Optional. Takes one of three values:
 #' \code{'moderate'}, \code{'none'} (default) or \code{'strict'}
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
@@ -31,14 +32,26 @@ get_related_videos <- function(video_id = NULL, max_results = 50,
                                 safe_search = "none", ...) {
 
   if (!is.character(video_id)) stop("Must specify a video ID.")
-  if (max_results < 0 | max_results > 50) {
-    stop("max_results only takes a value between 0 and 50.")
+  if (max_results <= 0) {
+    stop("max_results must be a positive integer.")
   }
 
   querylist <- list(part = "snippet", relatedToVideoId = video_id,
-             type = "video", maxResults = max_results, safeSearch = safe_search)
+             type = "video", maxResults = min(max_results, 50), safeSearch = safe_search)
 
   res <- tuber_GET("search", querylist, ...)
+  items <- res$items
+  next_token <- res$nextPageToken
+
+  while (length(items) < max_results && !is.null(next_token)) {
+    querylist$pageToken <- next_token
+    querylist$maxResults <- min(50, max_results - length(items))
+    a_res <- tuber_GET("search", querylist, ...)
+    items <- c(items, a_res$items)
+    next_token <- a_res$nextPageToken
+  }
+
+  res$items <- items
 
   resdf <- read.table(text = "",
                col.names = c("video_id", "rel_video_id", "publishedAt",

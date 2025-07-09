@@ -19,7 +19,8 @@
 #' @param hl  Language used for text values. Optional. The default is \code{en-US}.
 #' For other allowed language codes, see \code{\link{list_langs}}.
 #' @param max_results Maximum number of items that should be returned. Integer.
-#'  Optional. Can be between 0 and 50. The default is 50.
+#'  Optional. Default is 50. Values over 50 will trigger additional requests and
+#'  may increase API quota usage.
 #' @param page_token specific page in the result set that should be returned,
 #' optional
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
@@ -43,8 +44,8 @@
 
 list_channel_resources <- function(filter = NULL, part = "contentDetails",
                          max_results = 50, page_token = NULL, hl = "en-US", ...) {
-  if (max_results < 0 | max_results > 50) {
-    stop("max_results only takes a value between 0 and 50.")
+  if (max_results <= 0) {
+    stop("max_results must be a positive integer.")
   }
   if (!all(names(filter) == names(filter)[1])) {
     stop("filter must have a single valid name")
@@ -89,12 +90,23 @@ list_channel_resources <- function(filter = NULL, part = "contentDetails",
                                                       names(translate_filter))])
   names(filter)      <- yt_filter_name
   
-  querylist <- list(part = part, maxResults = max_results,
+  querylist <- list(part = part, maxResults = min(max_results, 50),
                     pageToken = page_token, hl = hl)
   querylist <- c(querylist, filter)
-  
+
   res <- tuber_GET("channels", querylist, ...)
-  
+  items <- res$items
+  next_token <- res$nextPageToken
+
+  while (length(items) < max_results && !is.null(next_token)) {
+    querylist$pageToken <- next_token
+    querylist$maxResults <- min(50, max_results - length(items))
+    a_res <- tuber_GET("channels", querylist, ...)
+    items <- c(items, a_res$items)
+    next_token <- a_res$nextPageToken
+  }
+
+  res$items <- items
   res
 }
 

@@ -18,7 +18,8 @@
 #' @param max_results Maximum number of items that should be returned in total.
 #' Integer. Optional. Can be between 1 and 500. Default is 50. If
 #' \code{get_all = TRUE}, multiple API calls are made until this many
-#' results are collected (subject to YouTube limits). Search results are
+#' results are collected (subject to YouTube limits). Requesting a large number
+#' of results will consume more API quota. Search results are
 #' constrained to a maximum of 500 videos if type is video and we have a
 #' value of \code{channel_id}.
 #' @param channel_id Character. Only return search results from this
@@ -71,7 +72,8 @@
 #' pages. Default is \code{TRUE}.
 #' Result is a \code{data.frame}. Optional.
 #' @param max_pages Maximum number of pages to retrieve when get_all is TRUE.
-#' Default is 10. Set higher for more results, but be aware of API quota limits.
+#' Default is Inf (no page limit). Setting a lower value can reduce API quota
+#' usage.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'
 #' @return data.frame with 16 elements: \code{video_id, publishedAt,
@@ -119,7 +121,7 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
                       video_license = "any", video_syndicated = "any",
                       region_code = NULL, relevance_language = "en",
                       video_type = "any", simplify = TRUE, get_all = TRUE,
-                      page_token = NULL, max_pages = 10, ...) {
+                      page_token = NULL, max_pages = Inf, ...) {
 
   # Input validation
   if (!is.character(term) || is.null(term)) stop("Must specify a search term.\n")
