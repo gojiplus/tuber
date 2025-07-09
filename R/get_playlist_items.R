@@ -65,20 +65,19 @@ get_playlist_items <- function(filter = NULL, part = "contentDetails",
   res <- tuber_GET(path = "playlistItems",
                    query = querylist,
                    ...)
-  items <- res$items
   next_token <- res$nextPageToken
 
-  while (length(items) < max_results && is.character(next_token)) {
+  while (length(res$items) < max_results && is.character(next_token)) {
     querylist$pageToken <- next_token
-    querylist$maxResults <- min(50, max_results - length(items))
+    querylist$maxResults <- min(50, max_results - length(res$items))
     a_res <- tuber_GET(path = "playlistItems",
                        query = querylist,
                        ...)
-    items <- c(items, a_res$items)
+    res$items <- c(res$items, a_res$items)
     next_token <- a_res$nextPageToken
   }
 
-  res$items <- items
+  res$nextPageToken <- next_token
 
   if (simplify) {
     allResultsList <- unlist(res[which(names(res) == "items")], recursive = FALSE)
