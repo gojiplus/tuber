@@ -26,6 +26,10 @@
 get_all_comments <- function(video_id = NULL, ...) {
   querylist <- list(videoId = video_id, part = "id,replies,snippet")
   res <- tuber_GET("commentThreads", query = querylist, ...)
+  if (length(res$items) == 0) {
+    message("No comments found for this video.")
+    return(data.frame())
+  }
   agg_res <- process_page(res)
   page_token <- res$nextPageToken
 
