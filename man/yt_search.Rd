@@ -43,10 +43,11 @@ Similarly, to search for videos matching either "boating" or "sailing"
 but not "fishing",
 set the q parameter value to boating|sailing -fishing"}
 
-\item{max_results}{Maximum number of items that should be returned.
-Integer. Optional. Can be between 0 and 50. Default is 50.
-Search results are constrained to a maximum of 500 videos if type is
-video and we have a value of \code{channel_id}.}
+\item{max_results}{Maximum number of items that should be returned in total.
+Integer. Optional. Can be between 1 and 500. Default is 50. If
+\code{get_all = TRUE}, multiple API calls are made until this many results
+are collected. Search results are constrained to a maximum of 500 videos if
+type is video and we have a value of \code{channel_id}.}
 
 \item{channel_id}{Character. Only return search results from this
 channel; Optional.}

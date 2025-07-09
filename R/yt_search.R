@@ -15,10 +15,12 @@
 #' Similarly, to search for videos matching either "boating" or "sailing"
 #' but not "fishing",
 #' set the q parameter value to boating|sailing -fishing"
-#' @param max_results Maximum number of items that should be returned.
-#' Integer. Optional. Can be between 0 and 50. Default is 50.
-#' Search results are constrained to a maximum of 500 videos if type is
-#' video and we have a value of \code{channel_id}.
+#' @param max_results Maximum number of items that should be returned in total.
+#' Integer. Optional. Can be between 1 and 500. Default is 50. If
+#' \code{get_all = TRUE}, multiple API calls are made until this many
+#' results are collected (subject to YouTube limits). Search results are
+#' constrained to a maximum of 500 videos if type is video and we have a
+#' value of \code{channel_id}.
 #' @param channel_id Character. Only return search results from this
 #' channel; Optional.
 #' @param channel_type Character. Optional. Takes one of two values:
@@ -122,8 +124,8 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
   # Input validation
   if (!is.character(term) || is.null(term)) stop("Must specify a search term.\n")
 
-  if (max_results < 0 || max_results > 50) {
-    stop("max_results only takes a value between 0 and 50.")
+  if (max_results <= 0 || max_results > 500) {
+    stop("max_results must be between 1 and 500.")
   }
 
   # Validate video-specific parameters only when type is "video"
@@ -162,10 +164,11 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
   }
 
   # Build the query list
+  results_per_page <- min(max_results, 50)
   querylist <- list(
     part = "snippet",
     q = term,
-    maxResults = max_results,
+    maxResults = results_per_page,
     channelId = channel_id,
     type = type,
     channelType = channel_type,
@@ -228,14 +231,18 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
   all_results <- process_results(res$items, type)
   page_token <- res$nextPageToken
   page_count <- 1
+  total_returned <- nrow(all_results)
 
-  # Get all pages up to max_pages limit
-  while (!is.null(page_token) && page_count < max_pages) {
+  # Get all pages up to max_pages limit and requested max_results
+  while (!is.null(page_token) && page_count < max_pages &&
+         total_returned < max_results) {
     querylist$pageToken <- page_token
+    querylist$maxResults <- min(max_results - total_returned, 50)
     a_res <- tuber_GET("search", querylist, ...)
 
     next_results <- process_results(a_res$items, type)
     all_results <- rbind(all_results, next_results)
+    total_returned <- nrow(all_results)
     page_token <- a_res$nextPageToken
     page_count <- page_count + 1
 
@@ -247,8 +254,12 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
   }
 
   # Add warning if we hit the max_pages limit but there are still more results
-  if (!is.null(page_token) && page_count >= max_pages) {
+  if (!is.null(page_token) && page_count >= max_pages && total_returned < max_results) {
     warning(sprintf("Only retrieved %d pages of results. Set max_pages higher to get more results.", max_pages))
+  }
+
+  if (nrow(all_results) > max_results) {
+    all_results <- all_results[seq_len(max_results), , drop = FALSE]
   }
 
   # Add additional information as attributes
