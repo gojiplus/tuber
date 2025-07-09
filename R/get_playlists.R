@@ -9,7 +9,8 @@
 #' @param part Required. One of the following: \code{contentDetails, id,
 #' localizations, player, snippet, status}. Default: \code{contentDetails}.
 #' @param max_results Maximum number of items that should be returned.
-#' Integer. Optional. Can be between 0 and 50. Default is 50.
+#' Integer. Optional. Default is 50. Values over 50 trigger additional
+#' requests and may increase API quota usage.
 #' @param page_token specific page in the result set that should be returned,
 #' optional
 #' @param hl  Language used for text values. Optional. Default is \code{en-US}.
@@ -42,8 +43,8 @@ get_playlists <- function(filter = NULL,
                           max_results = 50, hl = NULL,
                           page_token = NULL, simplify = TRUE, ...) {
 
-  if (max_results < 0 | max_results > 50) {
-    stop("max_results only takes a value between 0 and 50.")
+  if (max_results <= 0) {
+    stop("max_results must be a positive integer.")
   }
 
   valid_filters <- c("channel_id", "playlist_id")
@@ -59,11 +60,23 @@ get_playlists <- function(filter = NULL,
   yt_filter_name <- translate_filter[names(filter)]
   names(filter) <- yt_filter_name
 
-  querylist <- list(part = part, maxResults = max_results,
+  querylist <- list(part = part, maxResults = min(max_results, 50),
                     pageToken = page_token, hl = hl)
   querylist <- c(querylist, filter)
 
   raw_res <- tuber_GET("playlists", querylist, ...)
+  items <- raw_res$items
+  next_token <- raw_res$nextPageToken
+
+  while (length(items) < max_results && !is.null(next_token)) {
+    querylist$pageToken <- next_token
+    querylist$maxResults <- min(50, max_results - length(items))
+    a_res <- tuber_GET("playlists", querylist, ...)
+    items <- c(items, a_res$items)
+    next_token <- a_res$nextPageToken
+  }
+
+  raw_res$items <- items
 
   if (length(raw_res$items) == 0) {
     cat("No playlists available.\n")

@@ -10,8 +10,8 @@
 #' following: \code{contentDetails, id, snippet, status}. Default:
 #' \code{contentDetails}.
 #' @param max_results Maximum number of items that should be returned.
-#' Integer. Optional. Default is 50.
-#' If over 50, all the results are returned.
+#' Integer. Optional. Default is 50. Values over 50 will trigger multiple
+#' requests and may increase API quota usage.
 #' @param simplify returns a data.frame rather than a list.
 #' @param page_token specific page in the result set that should be
 #' returned, optional
@@ -39,8 +39,8 @@ get_playlist_item_ids <- function(filter = NULL, part = "contentDetails",
                                   max_results = 50, video_id = NULL,
                                   page_token = NULL, simplify = TRUE, ...) {
 
-  if (max_results < 0 || max_results > 50) {
-    stop("max_results must be a value between 0 and 50.")
+  if (max_results <= 0) {
+    stop("max_results must be a positive integer.")
   }
 
   valid_filters <- c("item_id", "playlist_id")
@@ -57,17 +57,23 @@ get_playlist_item_ids <- function(filter = NULL, part = "contentDetails",
   names(filter) <- filter_name
 
   querylist <- list(part = part,
-                    maxResults = max(min(max_results, 50), 1),
+                    maxResults = min(max_results, 50),
                     pageToken = page_token, videoId = video_id)
   querylist <- c(querylist, filter)
 
   res <- tuber_GET("playlistItems", querylist, ...)
-  res_items <- res$items
+  items <- res$items
+  next_token <- res$nextPageToken
 
-  item_ids <- rep("", length(res_items))
-  for(i in 1:length(res_items)){
-    item_ids[i] <- res_items[[i]]$id
+  while (length(items) < max_results && !is.null(next_token)) {
+    querylist$pageToken <- next_token
+    querylist$maxResults <- min(50, max_results - length(items))
+    a_res <- tuber_GET("playlistItems", querylist, ...)
+    items <- c(items, a_res$items)
+    next_token <- a_res$nextPageToken
   }
+
+  item_ids <- sapply(items, function(x) x$id)
   return(item_ids)
 }
 

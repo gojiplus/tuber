@@ -11,7 +11,8 @@
 #' \code{contentDetails, id, snippet, subscriberSnippet}. e.g. "id, snippet",
 #'  "id", etc. Default: \code{contentDetails}.
 #' @param max_results Maximum number of items that should be returned.
-#' Integer. Optional. Can be between 0 and 50. Default is 50.
+#' Integer. Optional. Default is 50. Values over 50 will trigger additional
+#' requests and may increase API quota usage.
 #' @param page_token  Specific page in the result set that should be
 #' returned. Optional. String.
 #' @param for_channel_id  Optional. String. A comma-separated list of
@@ -37,8 +38,8 @@ get_subscriptions <- function(filter = NULL, part = "contentDetails",
                                max_results = 50, for_channel_id = NULL,
                                order = NULL, page_token = NULL, ...) {
 
-  if (max_results < 0 | max_results > 50) {
-    stop("max_results only takes a value between 0 and 50.")
+  if (max_results <= 0) {
+    stop("max_results must be a positive integer.")
   }
 
   if (!(names(filter) %in% c("channel_id", "subscription_id"))) {
@@ -52,12 +53,23 @@ get_subscriptions <- function(filter = NULL, part = "contentDetails",
                                                       names(translate_filter))])
   names(filter)      <- yt_filter_name
 
-  querylist <- list(part = part, maxResults = max_results,
+  querylist <- list(part = part, maxResults = min(max_results, 50),
                    pageToken = page_token, order = order,
                    forChannelId = for_channel_id)
   querylist <- c(querylist, filter)
 
   res <- tuber_GET("subscriptions", querylist, ...)
+  items <- res$items
+  next_token <- res$nextPageToken
 
+  while (length(items) < max_results && !is.null(next_token)) {
+    querylist$pageToken <- next_token
+    querylist$maxResults <- min(50, max_results - length(items))
+    a_res <- tuber_GET("subscriptions", querylist, ...)
+    items <- c(items, a_res$items)
+    next_token <- a_res$nextPageToken
+  }
+
+  res$items <- items
   res
 }

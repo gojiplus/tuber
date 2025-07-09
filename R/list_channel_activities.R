@@ -10,7 +10,8 @@
 #' @param part specify which part do you want. It can only be one of the three:
 #'  \code{contentDetails, id, snippet}. Default is \code{snippet}.
 #' @param max_results Maximum number of items that should be returned. Integer.
-#'  Optional. Can be between 0 and 50. Default is 50.
+#'  Optional. Default is 50. Values over 50 will trigger additional requests and
+#'  may increase API quota usage.
 #' @param page_token specific page in the result set that should be returned,
 #' optional
 #' @param published_after Character. Optional. RFC 339 Format. For instance,
@@ -55,8 +56,8 @@ list_channel_activities <- function(filter = NULL, part = "snippet",
                                     published_before = NULL, region_code = NULL,
                                     simplify = TRUE, ...) {
 
-  if (max_results < 0 | max_results > 50) {
-    stop("max_results only takes a value between 0 and 50.")
+  if (max_results <= 0) {
+    stop("max_results must be a positive integer.")
   }
 
   if (!(names(filter) %in% c("channel_id"))) {
@@ -82,13 +83,25 @@ list_channel_activities <- function(filter = NULL, part = "snippet",
                                                       names(translate_filter))])
   names(filter)      <- yt_filter_name
 
-  querylist <- list(part = part, maxResults = max_results,
+  querylist <- list(part = part, maxResults = min(max_results, 50),
                     pageToken = page_token, publishedAfter = published_after,
                     publishedBefore = published_before,
                     regionCode = region_code)
   querylist <- c(querylist, filter)
 
   raw_res <- tuber_GET("activities", querylist, ...)
+  items <- raw_res$items
+  next_token <- raw_res$nextPageToken
+
+  while (length(items) < max_results && !is.null(next_token)) {
+    querylist$pageToken <- next_token
+    querylist$maxResults <- min(50, max_results - length(items))
+    a_res <- tuber_GET("activities", querylist, ...)
+    items <- c(items, a_res$items)
+    next_token <- a_res$nextPageToken
+  }
+
+  raw_res$items <- items
 
    if (length(raw_res$items) == 0) {
       warning("No comment information available. Likely cause: Incorrect ID.\n")

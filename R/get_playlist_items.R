@@ -10,8 +10,9 @@
 #' following: \code{contentDetails, id, snippet, status}. Default:
 #' \code{contentDetails}.
 #' @param max_results Maximum number of items that should be returned.
-#' Integer. Optional. Default is 50.
-#' If over 50, all the results are returned.
+#' Integer. Optional. Default is 50. If over 50, additional requests are made
+#' until the requested amount is retrieved. Larger values may increase API quota
+#' usage.
 #' @param simplify returns a data.frame rather than a list.
 #' @param page_token specific page in the result set that should be
 #' returned, optional
@@ -57,29 +58,27 @@ get_playlist_items <- function(filter = NULL, part = "contentDetails",
   names(filter) <- filter_name
 
   querylist <- list(part = part,
-                    maxResults = max(min(max_results, 50), 1),
+                    maxResults = min(max_results, 50),
                     pageToken = page_token, videoId = video_id)
   querylist <- c(querylist, filter)
 
   res <- tuber_GET(path = "playlistItems",
                    query = querylist,
                    ...)
+  items <- res$items
+  next_token <- res$nextPageToken
 
-  if (max_results > 50) {
-    page_token <- res$nextPageToken
-    while (is.character(page_token)) {
-      a_res <- tuber_GET(path = "playlistItems",
-                         query = list(
-                           part = part,
-                           playlistId = unname(filter[["playlistId"]]), ## <--- double brackets
-                           maxResults = 50,
-                           pageToken = page_token
-                         ),
-                         ...) ## <--- pass arguments to tuber_GET
-      res <- c(res, a_res)
-      page_token <- a_res$nextPageToken
-    }
+  while (length(items) < max_results && is.character(next_token)) {
+    querylist$pageToken <- next_token
+    querylist$maxResults <- min(50, max_results - length(items))
+    a_res <- tuber_GET(path = "playlistItems",
+                       query = querylist,
+                       ...)
+    items <- c(items, a_res$items)
+    next_token <- a_res$nextPageToken
   }
+
+  res$items <- items
 
   if (simplify) {
     allResultsList <- unlist(res[which(names(res) == "items")], recursive = FALSE)
