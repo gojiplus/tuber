@@ -98,21 +98,23 @@ get_video_details <- function(video_id = NULL, part = "snippet", as.data.frame =
 
   if (!is.character(part)) stop("Parameter part must be a character vector")
 
+  parts_only_for_video_owners <- c("fileDetails", "suggestions", "processingDetails")
+
+  if (as.data.frame && any(part %in% parts_only_for_video_owners)) {
+    stop(
+      paste(
+        "If as.data.frame = TRUE, then `part` may not include any of the following parts:",
+        paste(parts_only_for_video_owners, collapse = " ,")
+      )
+    )
+  }
+
   if (length(part) > 1) {
     part <- paste0(part, collapse = ",")
   }
 
   if (length(video_id) > 1) {
     video_id <- paste0(video_id, collapse = ",")
-  }
-
-  parts_only_for_video_owners <- c("fileDetails", "suggestions", "processingDetails")
-
-  if (as.data.frame & part %in% parts_only_for_video_owners) {
-    stop(
-      paste("If as.data.frame = TRUE, then `part` may not include any of the following parts: "),
-      paste(parts_only_for_video_owners, collapse = " ,")
-    )
   }
 
   querylist <- list(part = part, id = video_id)
