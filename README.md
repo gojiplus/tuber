@@ -40,6 +40,13 @@ Guide](https://developers.google.com/youtube/v3/guides/authentication).
 yt_oauth("app_id", "app_password")
 ```
 
+If your session cannot open a browser window for authentication, pass
+`use_oob = TRUE` to `yt_oauth()` so that authentication can be completed
+via an out-of-band code.
+
+To force re-authentication at any time, delete the `.httr-oauth` file in
+your working directory.
+
 **Note:** If you are on ubuntu, you may have to run the following before
 doing anything:
 

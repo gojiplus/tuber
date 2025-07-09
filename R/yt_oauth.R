@@ -6,6 +6,11 @@
 #' to TRUE. By default, it is set to FALSE.
 #' The function launches a browser to allow you to authorize the application
 #'
+#' If a browser cannot be opened, pass \code{use_oob = TRUE} to
+#' \code{yt_oauth()} so authentication can be completed using an
+#' out-of-band code.
+#' Delete the \code{.httr-oauth} file in the working directory to force
+#' re-authentication.
 #' @param app_id client id; required; no default
 #' @param app_secret client secret; required; no default
 #' @param scope Character. \code{ssl}, \code{basic},
