@@ -62,8 +62,9 @@ process_page <- function(res = NULL) {
     
     if (!is.null(comment$replies) && "comments" %in% names(comment$replies)) {
       reply_items <- comment$replies$comments
-      
-      if (!is.null(reply_items) && length(reply_items) > 0) {
+      n_replies <- if (is.null(reply_items)) 0 else length(reply_items)
+
+      if (n_replies > 0) {
         reply_data <- lapply(reply_items, function(reply) {
           reply_snippet <- reply$snippet
           reply_id <- reply$id
