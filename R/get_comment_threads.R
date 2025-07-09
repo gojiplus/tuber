@@ -91,21 +91,32 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
     return(simpler_res)
 
   } else if (simplify && part == "snippet" && max_results > 100) {
-    agg_res <- lapply(res$items, function(x) unlist(x$snippet$topLevelComment$snippet))
+    agg_res <- lapply(res$items, function(x) {
+      snippet <- unlist(x$snippet$topLevelComment$snippet)
+      id <- x$snippet$topLevelComment$id
+      c(snippet, id = id)
+    })
 
     page_token <- res$nextPageToken
+    querylist$pageToken <- page_token
+    querylist$maxResults <- 100
+
     while (is.character(page_token)) {
-      a_res <- get_comment_threads(orig_filter,
-                                   part = part,
-                                   text_format = text_format,
-                                   simplify = FALSE,
-                                   max_results = 100,
-                                   page_token = page_token,
-                                   ...)
-      agg_res <- rbind(lapply(a_res$items, function(x) unlist(x$snippet$topLevelComment$snippet)), agg_res)
+      a_res <- tuber_GET("commentThreads", querylist, ...)
+      new_res <- lapply(a_res$items, function(x) {
+        snippet <- unlist(x$snippet$topLevelComment$snippet)
+        id <- x$snippet$topLevelComment$id
+        c(snippet, id = id)
+      })
+      agg_res <- c(agg_res, new_res)
       page_token <- a_res$nextPageToken
+      querylist$pageToken <- page_token
     }
-    return(do.call(rbind, agg_res))
+
+    agg_res_df <- do.call(rbind, agg_res)
+    agg_res_df <- agg_res_df[!duplicated(agg_res_df$id), , drop = FALSE]
+    agg_res_df$id <- NULL
+    return(agg_res_df)
   }
 
   res
