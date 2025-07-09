@@ -1,13 +1,15 @@
 #' Get statistics on all the videos in a Channel
 #'
+#' Iterates through the channel's uploads playlist, collecting video IDs from
+#' each page until no further pages are available. Statistics and details are
+#' then fetched for every video.
+#'
 #' @param channel_id Character. Id of the channel
 #' @param mine Boolean. TRUE if you want to fetch stats of your own channel. Default is FALSE.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'
-#' @return nested named list with top element names:
-#' \code{kind, etag, id,}
-#' \code{snippet (list of details of the channel including title)}
-#' \code{, statistics (list of 5)}
+#' @return A \code{data.frame} containing video metadata along with view, like,
+#'   dislike and comment counts.
 #'
 #' If the \code{channel_id} is mistyped or there is no information, an empty list is returned
 #'
@@ -32,8 +34,29 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
   channel_resources <- list_channel_resources(filter = list(channel_id = channel_id), part = "contentDetails")
   playlist_id <- channel_resources$items$contentDetails$relatedPlaylists$uploads
 
-  playlist_items <- get_playlist_items(filter = list(playlist_id = playlist_id), max_results = 50)
-  vid_ids <- playlist_items$contentDetails$videoId
+  vid_ids <- character()
+  page_token <- NULL
+  repeat {
+    playlist_items <- get_playlist_items(
+      filter = list(playlist_id = playlist_id),
+      max_results = 50,
+      page_token = page_token,
+      simplify = FALSE,
+      ...
+    )
+    vid_ids <- c(
+      vid_ids,
+      vapply(
+        playlist_items$items,
+        function(x) x$contentDetails$videoId,
+        character(1)
+      )
+    )
+    page_token <- playlist_items$nextPageToken
+    if (is.null(page_token)) {
+      break
+    }
+  }
 
   res <- lapply(vid_ids, get_stats)
   details <- lapply(vid_ids, get_video_details)
