@@ -1,12 +1,12 @@
 #' Returns List of Requested Channel Resources
 #'
 #' @param filter string; Required.
-#' named vector of length 1
+#' named vector with a single valid name
 #' potential names of the entry in the vector:
 #' \code{category_id}: YouTube guide category that returns channels associated
 #' with that category
 #' \code{username}:  YouTube username that returns the channel associated with that
-#'  username.
+#'  username. Multiple usernames can be provided.
 #' \code{channel_id}: a comma-separated list of the YouTube channel ID(s) for
 #' the resource(s) that are being retrieved
 #'
@@ -24,7 +24,8 @@
 #' optional
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'
-#' @return list
+#' @return list. If \code{username} is used in \code{filter},
+#'   a data frame with columns \code{username} and \code{channel_id} is returned.
 #' @export
 #' @references \url{https://developers.google.com/youtube/v3/docs/channels/list}
 #'
@@ -35,9 +36,9 @@
 #' # Set API token via yt_oauth() first
 #'
 #' list_channel_resources(filter = c(channel_id = "UCT5Cx1l4IS3wHkJXNyuj4TA"))
-#' list_channel_resources(filter = c(username = "latenight"), part = "id, contentDetails")
-#' list_channel_resources(filter = c(username = "latenight"), part = "id, contentDetails",
-#' max_results = 10)
+#' list_channel_resources(filter = c(username = "latenight"), part = "id")
+#' list_channel_resources(filter = c(username = c("latenight", "PBS")),
+#'                        part = "id")
 #' }
 
 list_channel_resources <- function(filter = NULL, part = "contentDetails",
@@ -45,34 +46,40 @@ list_channel_resources <- function(filter = NULL, part = "contentDetails",
   if (max_results < 0 | max_results > 50) {
     stop("max_results only takes a value between 0 and 50.")
   }
-  if (!(names(filter) %in% c("category_id", "username", "channel_id"))) {
-    stop("filter can only take one of three values: category_id,
-      username or channel_id.")
+  if (!all(names(filter) == names(filter)[1])) {
+    stop("filter must have a single valid name")
   }
-  if (length(filter) != 1) stop("filter must be a vector of length 1.")
+  if (!(names(filter)[1] %in% c("category_id", "username", "channel_id"))) {
+    stop("filter can only take one of three values: category_id, username or channel_id.")
+  }
+  if (names(filter)[1] != "username" && length(filter) != 1) {
+    stop("filter must be a vector of length 1 for channel_id or category_id.")
+  }
   
   # Check for username BEFORE translation
-  if ("username" %in% names(filter)) {
-    usernames <- filter[names(filter) == "username"]  # Use bracket indexing
+  if (names(filter)[1] == "username") {
+    usernames <- unname(filter)
     num_usernames <- length(usernames)
-    channel_ids <- vector("list", length = num_usernames)
-    
+    res_df <- data.frame(username = usernames,
+                         channel_id = rep(NA_character_, num_usernames),
+                         stringsAsFactors = FALSE)
+
     for (i in seq_along(usernames)) {
       querylist <- list(part = part, maxResults = max_results,
                         pageToken = page_token, hl = hl, forUsername = usernames[i])
-      
+
       res <- tuber_GET("channels", querylist, ...)
-      
+
       if (length(res$items) == 0) {
         warning("No details available for username: ", usernames[i])
       } else {
-        channel_ids[[i]] <- res$items[[1]]$id
+        res_df$channel_id[i] <- res$items[[1]]$id
       }
-      
-      print(i)
+
+      print(paste0(i, "/", num_usernames))
     }
-    
-    return(channel_ids)
+
+    return(res_df)
   }
   
   # Translate filter names for non-username cases

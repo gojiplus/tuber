@@ -15,12 +15,12 @@ list_channel_resources(
 }
 \arguments{
 \item{filter}{string; Required.
-named vector of length 1
+named vector with a single valid name
 potential names of the entry in the vector:
 \code{category_id}: YouTube guide category that returns channels associated
 with that category
 \code{username}:  YouTube username that returns the channel associated with that
- username.
+ username. Multiple usernames can be provided.
 \code{channel_id}: a comma-separated list of the YouTube channel ID(s) for
 the resource(s) that are being retrieved}
 
@@ -43,7 +43,8 @@ For other allowed language codes, see \code{\link{list_langs}}.}
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-list
+list. If \code{username} is used in \code{filter}, a data frame with columns
+\code{username} and \code{channel_id} is returned
 }
 \description{
 Returns List of Requested Channel Resources
@@ -55,9 +56,8 @@ Returns List of Requested Channel Resources
 # Set API token via yt_oauth() first
 
 list_channel_resources(filter = c(channel_id = "UCT5Cx1l4IS3wHkJXNyuj4TA"))
-list_channel_resources(filter = c(username = "latenight"), part = "id, contentDetails")
-list_channel_resources(filter = c(username = "latenight"), part = "id, contentDetails",
-max_results = 10)
+list_channel_resources(filter = c(username = "latenight"), part = "id")
+list_channel_resources(filter = c(username = c("latenight", "PBS")), part = "id")
 }
 }
 \references{
