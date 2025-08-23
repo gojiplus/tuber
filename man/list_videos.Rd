@@ -23,7 +23,8 @@ snippet, statistics, status, suggestions, topicDetails}. Default:
 \code{contentDetails}.}
 
 \item{max_results}{Maximum number of items that should be returned. Integer.
-Optional. Can be between 0 and 50. Default is 50.}
+Optional. Default is 50. Values over 50 will trigger multiple requests and
+may use additional API quota.}
 
 \item{page_token}{specific page in the result set that should be returned,
 optional}

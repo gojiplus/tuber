@@ -31,8 +31,27 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
     stop("Must specify a valid channel ID or set mine = 'true'.")
   }
 
-  channel_resources <- list_channel_resources(filter = list(channel_id = channel_id), part = "contentDetails")
-  playlist_id <- channel_resources$items$contentDetails$relatedPlaylists$uploads
+  # Get channel resources with proper error handling
+  channel_resources <- tryCatch({
+    list_channel_resources(filter = list(channel_id = channel_id), part = "contentDetails", ...)
+  }, error = function(e) {
+    stop("Failed to get channel information for: ", channel_id, ". Error: ", e$message)
+  })
+  
+  # Safely extract playlist ID
+  if (is.null(channel_resources$items) || length(channel_resources$items) == 0) {
+    stop("No channel data found for: ", channel_id, ". Channel may not exist or may be private.")
+  }
+  
+  content_details <- channel_resources$items[[1]]$contentDetails
+  if (is.null(content_details) || is.null(content_details$relatedPlaylists)) {
+    stop("No content details available for channel: ", channel_id, ". Channel may not have uploaded videos.")
+  }
+  
+  playlist_id <- content_details$relatedPlaylists$uploads
+  if (is.null(playlist_id)) {
+    stop("No uploads playlist found for channel: ", channel_id, ". Channel may not have any videos.")
+  }
 
   vid_ids <- character()
   page_token <- NULL
@@ -58,15 +77,97 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
     }
   }
 
-  res <- lapply(vid_ids, get_stats)
-  details <- lapply(vid_ids, get_video_details)
+  # Batch API calls to avoid quota exhaustion
+  # YouTube API allows up to 50 video IDs per request
+  batch_size <- 50
+  res <- list()
+  details <- list()
+  
+  # Process videos in batches
+  for (i in seq(1, length(vid_ids), by = batch_size)) {
+    end_idx <- min(i + batch_size - 1, length(vid_ids))
+    batch_ids <- vid_ids[i:end_idx]
+    
+    # Batch get statistics
+    tryCatch({
+      batch_stats <- tuber_GET("videos", 
+                               list(part = "statistics", id = paste(batch_ids, collapse = ",")),
+                               ...)
+      
+      # Process batch results
+      for (item in batch_stats$items) {
+        res[[length(res) + 1]] <- list(
+          id = item$id,
+          statistics = item$statistics
+        )
+      }
+    }, error = function(e) {
+      warning("Failed to get statistics for batch starting at position ", i, ": ", e$message)
+      # Fall back to individual calls for this batch
+      for (vid_id in batch_ids) {
+        tryCatch({
+          res[[length(res) + 1]] <- get_stats(vid_id, ...)
+        }, error = function(e2) {
+          warning("Failed to get statistics for video ", vid_id, ": ", e2$message)
+        })
+      }
+    })
+    
+    # Batch get video details
+    tryCatch({
+      batch_details <- tuber_GET("videos",
+                                 list(part = "snippet", id = paste(batch_ids, collapse = ",")),
+                                 ...)
+      
+      # Process batch results
+      for (item in batch_details$items) {
+        details[[length(details) + 1]] <- list(
+          items = list(list(
+            id = item$id,
+            snippet = item$snippet
+          ))
+        )
+      }
+    }, error = function(e) {
+      warning("Failed to get details for batch starting at position ", i, ": ", e$message)
+      # Fall back to individual calls for this batch
+      for (vid_id in batch_ids) {
+        tryCatch({
+          details[[length(details) + 1]] <- get_video_details(vid_id, ...)
+        }, error = function(e2) {
+          warning("Failed to get details for video ", vid_id, ": ", e2$message)
+        })
+      }
+    })
+    
+    # Add progress indicator
+    if (interactive() && length(vid_ids) > batch_size) {
+      cat(sprintf("Processed %d/%d videos\n", min(end_idx, length(vid_ids)), length(vid_ids)))
+    }
+  }
 
-  res_df <- data.frame(id = unlist(lapply(res, `[[`, "id")),
-                       view_count = unlist(lapply(res, `[[`, "statistics$viewCount")),
-                       like_count = unlist(lapply(res, `[[`, "statistics$likeCount")),
-                       dislike_count = unlist(lapply(res, `[[`, "statistics$dislikeCount")),
-                       comment_count = unlist(lapply(res, `[[`, "statistics$commentCount")),
-                       stringsAsFactors = FALSE)
+  # Build statistics dataframe with safe extraction
+  res_df <- data.frame(
+    id = character(0),
+    view_count = character(0),
+    like_count = character(0),
+    dislike_count = character(0),
+    comment_count = character(0),
+    stringsAsFactors = FALSE
+  )
+  
+  for (stat in res) {
+    if (!is.null(stat$id) && !is.null(stat$statistics)) {
+      res_df <- rbind(res_df, data.frame(
+        id = stat$id,
+        view_count = stat$statistics$viewCount %||% NA_character_,
+        like_count = stat$statistics$likeCount %||% NA_character_,
+        dislike_count = stat$statistics$dislikeCount %||% NA_character_,
+        comment_count = stat$statistics$commentCount %||% NA_character_,
+        stringsAsFactors = FALSE
+      ))
+    }
+  }
 
   details_df <- data.frame(id = character(),
                            title = character(),

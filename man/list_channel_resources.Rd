@@ -32,7 +32,8 @@ statistics, status, topicDetails}.
 Default is \code{contentDetails}.}
 
 \item{max_results}{Maximum number of items that should be returned. Integer.
-Optional. Can be between 0 and 50. The default is 50.}
+Optional. Default is 50. Values over 50 will trigger additional requests and
+may increase API quota usage.}
 
 \item{page_token}{specific page in the result set that should be returned,
 optional}
@@ -43,8 +44,8 @@ For other allowed language codes, see \code{\link{list_langs}}.}
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-list. If \code{username} is used in \code{filter}, a data frame with columns
-\code{username} and \code{channel_id} is returned
+list. If \code{username} is used in \code{filter},
+  a data frame with columns \code{username} and \code{channel_id} is returned.
 }
 \description{
 Returns List of Requested Channel Resources
@@ -57,7 +58,8 @@ Returns List of Requested Channel Resources
 
 list_channel_resources(filter = c(channel_id = "UCT5Cx1l4IS3wHkJXNyuj4TA"))
 list_channel_resources(filter = c(username = "latenight"), part = "id")
-list_channel_resources(filter = c(username = c("latenight", "PBS")), part = "id")
+list_channel_resources(filter = c(username = c("latenight", "PBS")),
+                       part = "id")
 }
 }
 \references{

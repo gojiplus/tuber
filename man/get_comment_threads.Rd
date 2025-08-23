@@ -58,7 +58,7 @@ authorChannelId.value, videoId, textDisplay,
 canRate, viewerRating, likeCount, publishedAt, updatedAt}
 }
 \description{
-Get Comments Threads. Comment text fields are encoded to UTF-8 before sorting.
+Get Comments Threads
 }
 \examples{
 \dontrun{

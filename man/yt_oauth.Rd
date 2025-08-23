@@ -40,8 +40,13 @@ doesn't find it, it expects an application ID and a secret.
 If you want to remove the existing \code{.httr-oauth}, set remove_old_oauth
 to TRUE. By default, it is set to FALSE.
 The function launches a browser to allow you to authorize the application
-If a browser cannot be opened, pass \code{use_oob = TRUE} to \code{yt_oauth()} so authentication can be completed using an out-of-band code.
-Delete the \code{.httr-oauth} file in the working directory to force re-authentication.
+}
+\details{
+If a browser cannot be opened, pass \code{use_oob = TRUE} to
+\code{yt_oauth()} so authentication can be completed using an
+out-of-band code.
+Delete the \code{.httr-oauth} file in the working directory to force
+re-authentication.
 }
 \examples{
  \dontrun{

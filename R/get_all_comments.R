@@ -24,8 +24,30 @@
 #' }
 
 get_all_comments <- function(video_id = NULL, ...) {
+  if (is.null(video_id) || !is.character(video_id) || length(video_id) != 1) {
+    stop("video_id must be a single character string")
+  }
+  
   querylist <- list(videoId = video_id, part = "id,replies,snippet")
-  res <- tuber_GET("commentThreads", query = querylist, ...)
+  
+  # Handle videos with no comments or comments disabled
+  res <- tryCatch({
+    tuber_GET("commentThreads", query = querylist, ...)
+  }, error = function(e) {
+    if (grepl("disabled", e$message, ignore.case = TRUE)) {
+      warning("Comments appear to be disabled for video: ", video_id)
+      return(data.frame())
+    } else {
+      stop("Error retrieving comments for video ", video_id, ": ", e$message)
+    }
+  })
+  
+  # Handle empty response (no comments)
+  if (is.null(res$items) || length(res$items) == 0) {
+    warning("No comments found for video: ", video_id)
+    return(data.frame())
+  }
+  
   agg_res <- process_page(res)
   page_token <- res$nextPageToken
 
@@ -35,7 +57,9 @@ get_all_comments <- function(video_id = NULL, ...) {
     querylist$pageToken <- page_token
     a_res <- tuber_GET("commentThreads", query = querylist, ...)
     new_comments <- process_page(a_res)
-    comment_list <- c(comment_list, new_comments)  # Append new comments to the list
+    
+    # Efficiently append to list using list indexing instead of c()
+    comment_list[[length(comment_list) + 1]] <- new_comments
     page_token <- a_res$nextPageToken
   }
   
@@ -45,6 +69,11 @@ get_all_comments <- function(video_id = NULL, ...) {
 
 
 process_page <- function(res = NULL) {
+  # Handle empty response
+  if (is.null(res) || is.null(res$items) || length(res$items) == 0) {
+    return(data.frame())
+  }
+  
   num_comments <- length(res$items)
   comment_list <- vector("list", length = num_comments)
   

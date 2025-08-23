@@ -165,6 +165,9 @@ is_testing <- function() {
 #' @return list
 
 tuber_GET <- function(path, query, auth = "token", ...) {
+  # Track quota usage
+  parts <- query$part %||% NULL
+  track_quota_usage(path, parts)
 
   if (auth == "token") {
     yt_check_token()
@@ -183,6 +186,26 @@ tuber_GET <- function(path, query, auth = "token", ...) {
       req_user_agent("tuber (https://github.com/soodoku/tuber)") %>%
       req_perform()
     res <- req %>% resp_body_json()
+  }
+
+  # Check for rate limiting and quota errors
+  if (exists("req") && !is.null(req$status_code)) {
+    if (req$status_code == 403) {
+      # Check if it's a quota error
+      error_content <- tryCatch({
+        if (auth == "token") content(req, as = "text") else httr2::resp_body_string(req)
+      }, error = function(e) "")
+      
+      if (grepl("quotaExceeded|dailyLimitExceeded", error_content)) {
+        quota_status <- yt_get_quota_usage()
+        stop("YouTube API quota exhausted. Used: ", quota_status$quota_used, "/", quota_status$quota_limit, 
+             ". Quota resets at: ", format(quota_status$reset_time, "%Y-%m-%d %H:%M:%S UTC"))
+      }
+    }
+    
+    if (req$status_code == 429) {
+      warning("Rate limited by YouTube API. Consider adding delays between requests.")
+    }
   }
 
   tuber_check(req)

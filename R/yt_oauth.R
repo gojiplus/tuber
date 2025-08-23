@@ -41,18 +41,23 @@
 #' }
 
 yt_oauth <- function(app_id = NULL, app_secret = NULL, scope = "ssl", token = ".httr-oauth", ...) {
-  # if (file.exists(token)) {
-  #   google_token <- tryCatch(
-  #     suppressWarnings(readRDS(token)),
-  #     error = function(e) {
-  #       warning(sprintf("Unable to read token from: %s", token))
-  #       NULL
-  #     }
-  #   )
-  # }
+  # Try to read existing token first
+  google_token <- NULL
+  if (file.exists(token)) {
+    google_token <- tryCatch({
+      suppressWarnings(readRDS(token))
+    }, error = function(e) {
+      warning(sprintf("Unable to read token from: %s. Error: %s", token, e$message))
+      NULL
+    })
+  }
 
-  # if (!file.exists(token) || (file.exists(token) && is.null(google_token))) {
-  #   stopifnot(!is.null(app_id), !is.null(app_secret))
+  # Create new token if none exists or reading failed
+  if (!file.exists(token) || is.null(google_token)) {
+    if (is.null(app_id) || is.null(app_secret)) {
+      stop("app_id and app_secret are required for new authentication")
+    }
+    
     myapp <- oauth_app("google", key = app_id, secret = app_secret)
     scope <- match.arg(scope, c(
       "ssl", "basic", "own_account_readonly",
@@ -66,8 +71,17 @@ yt_oauth <- function(app_id = NULL, app_secret = NULL, scope = "ssl", token = ".
       partner_audit = "https://www.googleapis.com/auth/youtubepartner-channel-audit",
       partner = "https://www.googleapis.com/auth/youtubepartner"
     )
+    
     google_token <- oauth2.0_token(oauth_endpoints("google"), myapp, scope = scope_url, ...)
-  # }
+    
+    # Try to save the token for future use
+    tryCatch({
+      saveRDS(google_token, file = token)
+    }, error = function(e) {
+      warning("Could not save OAuth token to file: ", e$message)
+    })
+  }
 
   options(google_token = google_token)
+  invisible(google_token)
 }

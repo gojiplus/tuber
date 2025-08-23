@@ -26,8 +26,8 @@ following: \code{contentDetails, id, snippet, status}. Default:
 \code{contentDetails}.}
 
 \item{max_results}{Maximum number of items that should be returned.
-Integer. Optional. Default is 50.
-If over 50, all the results are returned.}
+Integer. Optional. Default is 50. Values over 50 will trigger multiple
+requests and may increase API quota usage.}
 
 \item{video_id}{Optional. request should return only the playlist
 items that contain the specified video.}

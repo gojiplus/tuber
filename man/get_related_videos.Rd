@@ -15,7 +15,8 @@ get_related_videos(
 \item{video_id}{Character. Required. No default.}
 
 \item{max_results}{Maximum number of items that should be returned.
-Integer. Optional. Can be between 0 and 50. Default is 50.}
+Integer. Optional. Default is 50. Values over 50 trigger multiple requests and
+may increase API quota usage.}
 
 \item{safe_search}{Character. Optional. Takes one of three values:
 \code{'moderate'}, \code{'none'} (default) or \code{'strict'}}

@@ -26,7 +26,8 @@ potential names of the entry in the vector:
 \code{contentDetails, id, snippet}. Default is \code{snippet}.}
 
 \item{max_results}{Maximum number of items that should be returned. Integer.
-Optional. Can be between 0 and 50. Default is 50.}
+Optional. Default is 50. Values over 50 will trigger additional requests and
+may increase API quota usage.}
 
 \item{page_token}{specific page in the result set that should be returned,
 optional}

@@ -238,18 +238,34 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
   # Get all pages up to max_pages limit and requested max_results
   while (!is.null(page_token) && page_count < max_pages &&
          total_returned < max_results) {
+    
+    # Calculate how many more results we actually need
+    remaining_needed <- max_results - total_returned
+    request_size <- min(remaining_needed, 50)  # Don't request more than we need
+    
     querylist$pageToken <- page_token
-    querylist$maxResults <- min(max_results - total_returned, 50)
+    querylist$maxResults <- request_size
     a_res <- tuber_GET("search", querylist, ...)
 
     next_results <- process_results(a_res$items, type)
+    
+    # Only take what we need if we get more than requested
+    if (nrow(next_results) > remaining_needed) {
+      next_results <- next_results[seq_len(remaining_needed), , drop = FALSE]
+    }
+    
     all_results <- rbind(all_results, next_results)
     total_returned <- nrow(all_results)
     page_token <- a_res$nextPageToken
     page_count <- page_count + 1
 
+    # Stop if we've reached our target
+    if (total_returned >= max_results) {
+      break
+    }
+
     # Check if we've reached YouTube's limit (around 500-600 items)
-    if (nrow(all_results) >= 500 && is.null(page_token)) {
+    if (total_returned >= 500 && is.null(page_token)) {
       warning("Reached YouTube API search result limit (approximately 500 items)")
       break
     }
@@ -257,11 +273,8 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
 
   # Add warning if we hit the max_pages limit but there are still more results
   if (!is.null(page_token) && page_count >= max_pages && total_returned < max_results) {
-    warning(sprintf("Only retrieved %d pages of results. Set max_pages higher to get more results.", max_pages))
-  }
-
-  if (nrow(all_results) > max_results) {
-    all_results <- all_results[seq_len(max_results), , drop = FALSE]
+    warning(sprintf("Only retrieved %d pages of results (got %d/%d items). Set max_pages higher to get more results.", 
+                   max_pages, total_returned, max_results))
   }
 
   # Add additional information as attributes

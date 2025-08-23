@@ -28,3 +28,6 @@ _pkgdown.yml
 ^tuber.*\.tgz$
 ^.ipynb_checkpoints$
 ^CRAN-SUBMISSION$
+^CLAUDE\.md$
+^ISSUE_FIXES\.md$
+^RELEASE_CHECKLIST\.md$

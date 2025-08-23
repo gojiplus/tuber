@@ -27,7 +27,8 @@ A comma separated list of one or more of the following:
  "id", etc. Default: \code{contentDetails}.}
 
 \item{max_results}{Maximum number of items that should be returned.
-Integer. Optional. Can be between 0 and 50. Default is 50.}
+Integer. Optional. Default is 50. Values over 50 will trigger additional
+requests and may increase API quota usage.}
 
 \item{for_channel_id}{Optional. String. A comma-separated list of
 channel IDs. Limits response to subscriptions matching those channels.}

@@ -69,15 +69,45 @@ list_channel_resources <- function(filter = NULL, part = "contentDetails",
       querylist <- list(part = part, maxResults = max_results,
                         pageToken = page_token, hl = hl, forUsername = usernames[i])
 
-      res <- tuber_GET("channels", querylist, ...)
-
-      if (length(res$items) == 0) {
-        warning("No details available for username: ", usernames[i])
-      } else {
-        res_df$channel_id[i] <- res$items[[1]]$id
+      # Add retry logic for intermittent API issues
+      max_retries <- 3
+      retry_count <- 0
+      res <- NULL
+      
+      while (retry_count < max_retries && (is.null(res) || length(res$items) == 0)) {
+        if (retry_count > 0) {
+          Sys.sleep(0.5)  # Brief pause before retry
+        }
+        
+        tryCatch({
+          res <- tuber_GET("channels", querylist, ...)
+        }, error = function(e) {
+          warning("Error fetching username '", usernames[i], "': ", e$message)
+          res <<- NULL
+        })
+        
+        retry_count <- retry_count + 1
       }
 
-      print(paste0(i, "/", num_usernames))
+      # Robust error handling and data extraction
+      if (is.null(res) || length(res$items) == 0) {
+        warning("No channel found for username '", usernames[i], "' after ", max_retries, " attempts. ", 
+                "This may indicate: (1) username doesn't exist, (2) channel was deleted, or (3) username was changed to custom URL.")
+        res_df$channel_id[i] <- NA_character_
+      } else {
+        # Safely extract channel ID with multiple fallbacks
+        item <- res$items[[1]]
+        if (!is.null(item$id)) {
+          res_df$channel_id[i] <- item$id
+        } else {
+          warning("Channel found for username '", usernames[i], "' but no ID returned. API response may be incomplete.")
+          res_df$channel_id[i] <- NA_character_
+        }
+      }
+
+      if (interactive()) {
+        cat(sprintf("Processed %d/%d usernames\n", i, num_usernames))
+      }
     }
 
     return(res_df)

@@ -14,11 +14,15 @@ get_all_channel_video_stats(channel_id = NULL, mine = FALSE, ...)
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-A data.frame containing video metadata and statistics.
+A \code{data.frame} containing video metadata along with view, like,
+  dislike and comment counts.
+
 If the \code{channel_id} is mistyped or there is no information, an empty list is returned
 }
 \description{
-Get statistics on all the videos in a Channel. Iterates through the uploads playlist and collects video IDs from all pages before fetching statistics for each video.
+Iterates through the channel's uploads playlist, collecting video IDs from
+each page until no further pages are available. Statistics and details are
+then fetched for every video.
 }
 \examples{
 \dontrun{

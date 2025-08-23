@@ -25,7 +25,7 @@ yt_search(
   simplify = TRUE,
   get_all = TRUE,
   page_token = NULL,
-  max_pages = 10,
+  max_pages = Inf,
   ...
 )
 }
@@ -45,9 +45,11 @@ set the q parameter value to boating|sailing -fishing"}
 
 \item{max_results}{Maximum number of items that should be returned in total.
 Integer. Optional. Can be between 1 and 500. Default is 50. If
-\code{get_all = TRUE}, multiple API calls are made until this many results
-are collected. Search results are constrained to a maximum of 500 videos if
-type is video and we have a value of \code{channel_id}.}
+\code{get_all = TRUE}, multiple API calls are made until this many
+results are collected (subject to YouTube limits). Requesting a large number
+of results will consume more API quota. Search results are
+constrained to a maximum of 500 videos if type is video and we have a
+value of \code{channel_id}.}
 
 \item{channel_id}{Character. Only return search results from this
 channel; Optional.}
@@ -117,7 +119,8 @@ Result is a \code{data.frame}. Optional.}
 returned, optional}
 
 \item{max_pages}{Maximum number of pages to retrieve when get_all is TRUE.
-Default is 10. Set higher for more results, but be aware of API quota limits.}
+Default is Inf (no page limit). Setting a lower value can reduce API quota
+usage.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }

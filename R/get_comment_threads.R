@@ -87,8 +87,13 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
   if (simplify && part == "snippet" && max_results < 101) {
     simpler_res <- lapply(res$items, function(x) {
       snippet <- unlist(x$snippet$topLevelComment$snippet)
-      if ("textDisplay" %in% names(snippet)) snippet["textDisplay"] <- enc2utf8(snippet["textDisplay"])
-      if ("textOriginal" %in% names(snippet)) snippet["textOriginal"] <- enc2utf8(snippet["textOriginal"])
+      # Apply consistent Unicode handling
+      text_fields <- c("textDisplay", "textOriginal", "authorDisplayName")
+      for (field in text_fields) {
+        if (field %in% names(snippet)) {
+          snippet[field] <- clean_youtube_text(snippet[field])
+        }
+      }
       snippet
     })
     simpler_res <- do.call(rbind, simpler_res)
@@ -100,8 +105,13 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
   } else if (simplify && part == "snippet" && max_results > 100) {
     agg_res <- lapply(res$items, function(x) {
       snippet <- unlist(x$snippet$topLevelComment$snippet)
-      if ("textDisplay" %in% names(snippet)) snippet["textDisplay"] <- enc2utf8(snippet["textDisplay"])
-      if ("textOriginal" %in% names(snippet)) snippet["textOriginal"] <- enc2utf8(snippet["textOriginal"])
+      # Apply consistent Unicode handling
+      text_fields <- c("textDisplay", "textOriginal", "authorDisplayName")
+      for (field in text_fields) {
+        if (field %in% names(snippet)) {
+          snippet[field] <- clean_youtube_text(snippet[field])
+        }
+      }
       id <- x$snippet$topLevelComment$id
       c(snippet, id = id)
     })
@@ -114,8 +124,13 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
       a_res <- tuber_GET("commentThreads", querylist, ...)
       new_res <- lapply(a_res$items, function(x) {
         snippet <- unlist(x$snippet$topLevelComment$snippet)
-        if ("textDisplay" %in% names(snippet)) snippet["textDisplay"] <- enc2utf8(snippet["textDisplay"])
-        if ("textOriginal" %in% names(snippet)) snippet["textOriginal"] <- enc2utf8(snippet["textOriginal"])
+        # Apply consistent Unicode handling
+        text_fields <- c("textDisplay", "textOriginal", "authorDisplayName")
+        for (field in text_fields) {
+          if (field %in% names(snippet)) {
+            snippet[field] <- clean_youtube_text(snippet[field])
+          }
+        }
         id <- x$snippet$topLevelComment$id
         c(snippet, id = id)
       })
@@ -126,8 +141,7 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
 
     agg_res_df <- do.call(rbind, agg_res)
     agg_res_df <- agg_res_df[!duplicated(agg_res_df$id), , drop = FALSE]
-    if ("textDisplay" %in% colnames(agg_res_df)) agg_res_df$textDisplay <- enc2utf8(agg_res_df$textDisplay)
-    if ("textOriginal" %in% colnames(agg_res_df)) agg_res_df$textOriginal <- enc2utf8(agg_res_df$textOriginal)
+    # Unicode handling already applied above, no need to repeat
     if ("publishedAt" %in% colnames(agg_res_df)) {
       agg_res_df <- agg_res_df[order(agg_res_df$publishedAt), , drop = FALSE]
     }
