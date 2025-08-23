@@ -26,7 +26,7 @@ test_that("process_page handles comments with and without replies", {
   expect_true(any(is.na(df$parentId)))    # top level comments
   expect_true(any(!is.na(df$parentId)))   # replies present
   expect_true("c2" %in% df$id)            # second comment present
-  expect_false(any(df$parentId == "c2"))  # no replies for c2
+  expect_false(any(df$parentId == "c2", na.rm = TRUE))  # no replies for c2
 })
 
 test_that("get_all_comments runs successfully with real API", {
@@ -101,9 +101,9 @@ test_that("get_all_comments handles pagination correctly", {
       expect_true(all(c("textDisplay", "authorDisplayName") %in% colnames(result)))
       
       # Check that we got comments from all pages
-      expect_true(any(grepl("page1", result$textDisplay)))
-      expect_true(any(grepl("page2", result$textDisplay)))
-      expect_true(any(grepl("page3", result$textDisplay)))
+      expect_true(any(grepl("page 1", result$textDisplay)))
+      expect_true(any(grepl("page 2", result$textDisplay)))
+      expect_true(any(grepl("page 3", result$textDisplay)))
     }
   )
 })

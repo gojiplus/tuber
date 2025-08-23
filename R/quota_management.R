@@ -147,6 +147,7 @@ track_quota_usage <- function(endpoint, parts = NULL, additional_cost = 0) {
 #' @param max_attempts Integer. Maximum attempts before giving up
 #' @param base_delay Numeric. Base delay in seconds
 #' 
+#' @importFrom stats runif
 #' @keywords internal
 exponential_backoff <- function(attempt_number, max_attempts = 5, base_delay = 1) {
   if (attempt_number > max_attempts) {
