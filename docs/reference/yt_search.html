@@ -9,7 +9,7 @@ searches for videos.)"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">tuber</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,7 +65,7 @@ searches for videos.)</p>
 <span>  simplify <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  get_all <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  page_token <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  max_pages <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  max_pages <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -90,10 +90,13 @@ set the q parameter value to boating|sailing -fishing"</p></dd>
 
 
 <dt id="arg-max-results">max_results<a class="anchor" aria-label="anchor" href="#arg-max-results"></a></dt>
-<dd><p>Maximum number of items that should be returned.
-Integer. Optional. Can be between 0 and 50. Default is 50.
-Search results are constrained to a maximum of 500 videos if type is
-video and we have a value of <code>channel_id</code>.</p></dd>
+<dd><p>Maximum number of items that should be returned in total.
+Integer. Optional. Can be between 1 and 500. Default is 50. If
+<code>get_all = TRUE</code>, multiple API calls are made until this many
+results are collected (subject to YouTube limits). Requesting a large number
+of results will consume more API quota. Search results are
+constrained to a maximum of 500 videos if type is video and we have a
+value of <code>channel_id</code>.</p></dd>
 
 
 <dt id="arg-channel-id">channel_id<a class="anchor" aria-label="anchor" href="#arg-channel-id"></a></dt>
@@ -167,7 +170,13 @@ license), <code>'youtube'</code> (return videos with standard YouTube license).<
 
 
 <dt id="arg-relevance-language">relevance_language<a class="anchor" aria-label="anchor" href="#arg-relevance-language"></a></dt>
-<dd><p>Character. Default is "en".</p></dd>
+<dd><p>Character. Optional. The relevance_language
+argument instructs the API to return search results that are most relevant to
+the specified language. The parameter value is typically an ISO 639-1
+two-letter language code. However, you should use the values zh-Hans for
+simplified Chinese and zh-Hant for traditional Chinese. Please note that
+results in other languages will still be returned if they are highly relevant
+to the search query term.</p></dd>
 
 
 <dt id="arg-video-type">video_type<a class="anchor" aria-label="anchor" href="#arg-video-type"></a></dt>
@@ -195,7 +204,8 @@ returned, optional</p></dd>
 
 <dt id="arg-max-pages">max_pages<a class="anchor" aria-label="anchor" href="#arg-max-pages"></a></dt>
 <dd><p>Maximum number of pages to retrieve when get_all is TRUE.
-Default is 10. Set higher for more results, but be aware of API quota limits.</p></dd>
+Default is Inf (no page limit). Setting a lower value can reduce API quota
+usage.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

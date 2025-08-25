@@ -15,7 +15,7 @@ The function launches a browser to allow you to authorize the application"></hea
 
     <a class="navbar-brand me-2" href="../index.html">tuber</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,13 +90,21 @@ So if there is such a file, the function will first try to read from it.</p></dd
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional arguments passed to <code>oauth2.0_token</code></p></dd>
+<dd><p>Additional arguments passed to <code><a href="https://httr.r-lib.org/reference/oauth2.0_token.html" class="external-link">oauth2.0_token</a></code></p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>sets the google_token option and also saves <code>.httr_oauth</code>
 in the working directory (find out the working directory via <code><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd()</a></code>)</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>If a browser cannot be opened, pass <code>use_oob = TRUE</code> to
+<code>yt_oauth()</code> so authentication can be completed using an
+out-of-band code.
+Delete the <code>.httr-oauth</code> file in the working directory to force
+re-authentication.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

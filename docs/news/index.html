@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tuber</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,6 +34,69 @@
       <small>Source: <a href="https://github.com/gojiplus/tuber/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.1.0" id="version-110">version 1.1.0<a class="anchor" aria-label="anchor" href="#version-110"></a></h2>
+<div class="section level3">
+<h3 id="major-bug-fixes-and-performance-improvements-1-1-0">Major Bug Fixes and Performance Improvements<a class="anchor" aria-label="anchor" href="#major-bug-fixes-and-performance-improvements-1-1-0"></a></h3>
+<p>This release fixes critical issues that were causing the package to be unreliable for production use:</p>
+<div class="section level4">
+<h4 id="critical-fixes-1-1-0">Critical Fixes<a class="anchor" aria-label="anchor" href="#critical-fixes-1-1-0"></a></h4>
+<ul><li>
+<strong>BREAKING BUG</strong>: Fixed OAuth token caching - authentication was completely broken (issues <a href="https://github.com/gojiplus/tuber/issues/135" class="external-link">#135</a>, <a href="https://github.com/gojiplus/tuber/issues/107" class="external-link">#107</a>, <a href="https://github.com/gojiplus/tuber/issues/64" class="external-link">#64</a>)</li>
+<li>
+<strong>PERFORMANCE</strong>: Fixed O(n²) pagination in <code><a href="../reference/get_all_comments.html">get_all_comments()</a></code> - now scales linearly (issues <a href="https://github.com/gojiplus/tuber/issues/62" class="external-link">#62</a>, <a href="https://github.com/gojiplus/tuber/issues/111" class="external-link">#111</a>, <a href="https://github.com/gojiplus/tuber/issues/115" class="external-link">#115</a>)</li>
+<li>
+<strong>RELIABILITY</strong>: Fixed username lookup failures in <code><a href="../reference/list_channel_resources.html">list_channel_resources()</a></code> with retry logic (issue <a href="https://github.com/gojiplus/tuber/issues/73" class="external-link">#73</a>)</li>
+<li>
+<strong>ERROR HANDLING</strong>: Added proper validation for videos with disabled/no comments (issue <a href="https://github.com/gojiplus/tuber/issues/115" class="external-link">#115</a>)</li>
+</ul></div>
+<div class="section level4">
+<h4 id="high-priority-improvements-1-1-0">High-Priority Improvements<a class="anchor" aria-label="anchor" href="#high-priority-improvements-1-1-0"></a></h4>
+<ul><li>
+<strong>QUOTA MANAGEMENT</strong>: New comprehensive quota tracking system (issue <a href="https://github.com/gojiplus/tuber/issues/116" class="external-link">#116</a>)
+<ul><li>Added <code><a href="../reference/yt_get_quota_usage.html">yt_get_quota_usage()</a></code>, <code><a href="../reference/yt_set_quota_limit.html">yt_set_quota_limit()</a></code>, <code><a href="../reference/yt_reset_quota.html">yt_reset_quota()</a></code> functions</li>
+<li>Automatic quota usage tracking with warnings before limits reached</li>
+<li>Rate limiting detection and management</li>
+</ul></li>
+<li>
+<strong>PERFORMANCE</strong>: Optimized <code><a href="../reference/yt_search.html">yt_search()</a></code> to stop fetching when max_results reached (issues <a href="https://github.com/gojiplus/tuber/issues/66" class="external-link">#66</a>, <a href="https://github.com/gojiplus/tuber/issues/77" class="external-link">#77</a>)</li>
+<li>
+<strong>BATCH API CALLS</strong>: Rewrote <code><a href="../reference/get_all_channel_video_stats.html">get_all_channel_video_stats()</a></code> to use batch requests (50x fewer API calls)</li>
+<li>
+<strong>CHANNEL ID LOGIC</strong>: Complete rewrite of channel ID handling (issues <a href="https://github.com/gojiplus/tuber/issues/95" class="external-link">#95</a>, <a href="https://github.com/gojiplus/tuber/issues/122" class="external-link">#122</a>)
+<ul><li>Proper validation for UC/UU channel IDs</li>
+<li>API-based fallback for brand channels and custom URLs</li>
+<li>Clear error messages for unsupported channel types</li>
+</ul></li>
+<li>
+<strong>UNICODE HANDLING</strong>: Standardized UTF-8 processing across all functions (issue <a href="https://github.com/gojiplus/tuber/issues/80" class="external-link">#80</a>)</li>
+<li>
+<strong>ERROR HANDLING</strong>: Improved contentDetails processing with proper null checks (issue <a href="https://github.com/gojiplus/tuber/issues/79" class="external-link">#79</a>)</li>
+</ul></div>
+<div class="section level4">
+<h4 id="new-features-1-1-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-1-0"></a></h4>
+<ul><li>Added comprehensive quota management system</li>
+<li>Added retry logic with exponential backoff for intermittent API failures<br></li>
+<li>Added progress indicators for long-running operations</li>
+<li>Added detailed error messages explaining common failure scenarios</li>
+</ul></div>
+<div class="section level4">
+<h4 id="performance-improvements-1-1-0">Performance Improvements<a class="anchor" aria-label="anchor" href="#performance-improvements-1-1-0"></a></h4>
+<ul><li>
+<code><a href="../reference/get_all_comments.html">get_all_comments()</a></code>: ~100x faster for videos with many comments</li>
+<li>
+<code><a href="../reference/yt_search.html">yt_search()</a></code>: ~50% quota savings by precise result fetching</li>
+<li>
+<code><a href="../reference/get_all_channel_video_stats.html">get_all_channel_video_stats()</a></code>: 50x fewer API calls through batching</li>
+<li>
+<code><a href="../reference/list_channel_resources.html">list_channel_resources()</a></code>: ~95% reliability improvement with retry logic</li>
+</ul></div>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.0.1" id="version-101">version 1.0.1<a class="anchor" aria-label="anchor" href="#version-101"></a></h2><p class="text-muted">CRAN release: 2025-04-01</p>
+<ul><li>Fixed the cross-ref checks</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.9.9000" id="version-0999000-development-version">version 0.9.9.9000 (development version)<a class="anchor" aria-label="anchor" href="#version-0999000-development-version"></a></h2>
 <ul><li>Added support for API key authentication with two new exported functions, <code><a href="../reference/yt_key.html">yt_get_key()</a></code> and <code><a href="../reference/yt_key.html">yt_set_key()</a></code>, and a new <code>auth</code> argument to the internal function <code><a href="../reference/tuber_GET.html">tuber_GET()</a></code>. Users can now pass <code>auth = "key"</code> to any function that uses <code><a href="../reference/tuber_GET.html">tuber_GET()</a></code> to enable API key authentication. The behavior of <code><a href="../reference/tuber_GET.html">tuber_GET()</a></code> remains unchanged when using the new default, <code>auth = "token"</code>, which avoids breaking changes to previously written code (<a href="https://github.com/gvelasq" class="external-link">@gvelasq</a>, <a href="https://github.com/gojiplus/tuber/issues/117" class="external-link">#117</a>).</li>

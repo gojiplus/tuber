@@ -1,7 +1,10 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://soodoku.github.io/tuber/404.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/CLAUDE.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/ISSUE_FIXES.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/ISSUE_TEMPLATE.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/LICENSE-text.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/RELEASE_CHECKLIST.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/articles/index.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/articles/tuber-ex.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/authors.html</loc></url>
@@ -10,6 +13,7 @@
 <url><loc>https://soodoku.github.io/tuber/news/index.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/reference/add_video_to_playlist.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/reference/change_playlist_title.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/clean_youtube_text.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/reference/create_playlist.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/reference/delete_captions.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/reference/delete_channel_sections.html</loc></url>
@@ -17,6 +21,7 @@
 <url><loc>https://soodoku.github.io/tuber/reference/delete_playlist_items.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/reference/delete_playlists.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/reference/delete_videos.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/exponential_backoff.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/reference/get_all_channel_video_stats.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/reference/get_all_comments.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/reference/get_captions.html</loc></url>
@@ -46,7 +51,11 @@
 <url><loc>https://soodoku.github.io/tuber/reference/list_videocats.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/reference/list_videos.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/reference/pipe.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/process_youtube_text.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/quota_management.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/reference/read_sbv.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/safe_utf8.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/track_quota_usage.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/reference/tuber-package.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/reference/tuber.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/reference/tuber_DELETE.html</loc></url>
@@ -54,12 +63,16 @@
 <url><loc>https://soodoku.github.io/tuber/reference/tuber_POST.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/reference/tuber_POST_json.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/reference/tuber_check.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/unicode_utils.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/reference/update_video_metadata.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/reference/upload_caption.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/reference/upload_video.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/yt_get_quota_usage.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/reference/yt_key.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/reference/yt_oauth.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/yt_reset_quota.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/reference/yt_search.html</loc></url>
+<url><loc>https://soodoku.github.io/tuber/reference/yt_set_quota_limit.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/reference/yt_token.html</loc></url>
 <url><loc>https://soodoku.github.io/tuber/reference/yt_topic_search.html</loc></url>
 </urlset>

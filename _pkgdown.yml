@@ -97,10 +97,19 @@ reference:
     - list_videocats
     - list_abuse_report_reasons
 
-- title: "Helper Functions"
+- title: "Quota Management"
+  desc: "Functions for tracking and managing YouTube API quota usage"
+  contents:
+    - quota_management
+    - yt_get_quota_usage
+    - yt_reset_quota
+    - yt_set_quota_limit
+
+- title: "Helper Functions" 
   desc: "Internal helper functions"
   contents:
     - tuber_DELETE
     - tuber_GET
     - tuber_POST
     - tuber_POST_json
+    - unicode_utils

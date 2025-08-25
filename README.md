@@ -22,9 +22,7 @@ devtools::install_github("soodoku/tuber", build_vignettes = TRUE)
 ```
 
 To get a quick overview of some important functions in tuber, check out
-[this article](https://gsood.com/tuber/articles/tuber-ex.html).
-For a fun vignette about how to analyze emojis in YouTube comments, see
-[here](https://gsood.com/tuber/articles/emoji_vignette.html).
+[this article](https://gojiplus.github.io/tuber/articles/tuber-ex.html).
 
 ### Using tuber
 

@@ -1,9 +1,9 @@
-pandoc: '3.2'
+pandoc: 3.6.4
 pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   tuber-ex: tuber-ex.html
-last_built: 2025-04-01T19:30Z
+last_built: 2025-08-25T02:47Z
 urls:
   reference: https://soodoku.github.io/tuber/reference
   article: https://soodoku.github.io/tuber/articles
