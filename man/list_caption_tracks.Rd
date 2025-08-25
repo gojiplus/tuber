@@ -4,26 +4,39 @@
 \alias{list_caption_tracks}
 \title{List Captions of a Video}
 \usage{
-list_caption_tracks(part = "snippet", video_id = NULL, lang = "en",
-  id = NULL, simplify = TRUE, ...)
+list_caption_tracks(
+  part = "snippet",
+  video_id = NULL,
+  lang = "en",
+  id = NULL,
+  simplify = TRUE,
+  ...
+)
 }
 \arguments{
-\item{part}{Caption resource requested. Required. Comma separated list of one or more of the 
-following: \code{id, snippet}. e.g., "id, snippet", "id" Default: \code{snippet}.}
+\item{part}{Caption resource requested. Required. Comma separated
+list of one or more of the
+following: \code{id, snippet}. e.g., "id, snippet", "id" Default:
+\code{snippet}.}
 
-\item{video_id}{ID of the video whose captions are requested. Required. No default.}
+\item{video_id}{ID of the video whose captions are requested. Required.
+No default.}
 
 \item{lang}{Language of the caption; required; default is English ("en")}
 
-\item{id}{comma-separated list of IDs that identify the caption resources that should be retrieved; optional; string}
+\item{id}{comma-separated list of IDs that identify the caption
+resources that should be retrieved; optional; string}
 
-\item{simplify}{Boolean. Default is TRUE. When TRUE, and part is \code{snippet}, a data.frame is returned}
+\item{simplify}{Boolean. Default is TRUE. When TRUE, and part is
+\code{snippet}, a data.frame is returned}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-list of caption tracks. When \code{simplify} is \code{TRUE}, a \code{data.frame} is returned with 
-following columns: \code{videoId, lastUpdated, trackKind, language, name, audioTrackType, isCC,
+list of caption tracks. When \code{simplify} is \code{TRUE}, a
+\code{data.frame} is returned with
+following columns: \code{videoId, lastUpdated, trackKind, language, name,
+audioTrackType, isCC,
 isLarge, isEasyReader, isDraft, isAutoSynced, status, id} (caption id)
 }
 \description{

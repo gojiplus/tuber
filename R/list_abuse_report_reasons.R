@@ -1,24 +1,27 @@
 #' List reasons that can be used to report abusive videos
-#' 
-#' @param part  Caption resource requested. Required. Comma separated list of one or more of the 
-#' following: \code{id, snippet}. e.g., \code{"id, snippet"}, \code{"id"}, etc. Default: \code{snippet}.  
-#' @param hl  Language used for text values. Optional. Default is \code{en-US}. For other allowed language codes, see \code{\link{list_langs}}.
+#'
+#' @param part  Caption resource requested. Required. Comma separated list of
+#' one or more of the
+#' following: \code{id, snippet}. e.g., \code{"id, snippet"}, \code{"id"}, etc.
+#'  Default: \code{snippet}.
+#' @param hl  Language used for text values. Optional. Default is \code{en-US}.
+#'  For other allowed language codes, see \code{\link{list_langs}}.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
-#'  
-#' @return 
-#' 
+#'
+#' @return
+#'
 #' If no results, empty data.frame returned
-#' If part requested = "id, snippet" or "snippet", 
+#' If part requested = "id, snippet" or "snippet",
 #' \code{data.frame} with 4 columns: \code{etag, id, label, secReasons}
 #' If part requested = "id", data.frame with 2 columns: \code{etag, id}
-#' 
+#'
 #' @export
 #' @references \url{https://developers.google.com/youtube/v3/docs/videoAbuseReportReasons/list}
 #' @examples
 #' \dontrun{
-#' 
+#'
 #' # Set API token via yt_oauth() first
-#' 
+#'
 #' list_abuse_report_reasons()
 #' list_abuse_report_reasons(part="id")
 #' list_abuse_report_reasons(part="snippet")

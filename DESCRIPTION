@@ -1,31 +1,44 @@
 Package: tuber
 Title: Client for the YouTube API
-Version: 0.9.7
-Authors@R: c(person("Gaurav", "Sood", email = "gsood07@gmail.com", role = c("aut", "cre")),
-             person("Kate", "Lyons", email = "k.lyons7@gmail.com", role = "ctb"),
-             person("John", "Muschelli", email = "muschellij2@gmail.com", role = "ctb"))
+Version: 1.1.0
+Authors@R: c(
+    person("Gaurav", "Sood", , "gsood07@gmail.com", role = c("aut", "cre")),
+    person("Kate", "Lyons", , "k.lyons7@gmail.com", role = "ctb"),
+    person("John", "Muschelli", , "muschellij2@gmail.com", role = "ctb")
+  )
 Maintainer: Gaurav Sood <gsood07@gmail.com>
-Description: Get comments posted on YouTube videos, information on how many 
-    times a video has been liked, search for videos with particular content, and 
-    much more. You can also scrape captions from a few videos. To learn more about
-    the YouTube API, see <https://developers.google.com/youtube/v3/>.
-URL: http://github.com/soodoku/tuber
-BugReports: http://github.com/soodoku/tuber/issues
-Depends:
-    R (>= 3.4.0)
+Description: Get comments posted on YouTube videos, information on how
+    many times a video has been liked, search for videos with particular
+    content, and much more. You can also scrape captions from a few
+    videos. To learn more about the YouTube API, see
+    <https://developers.google.com/youtube/v3/>.
 License: MIT + file LICENSE
-LazyData: true
+URL: https://gojiplus.github.io/tuber/, https://github.com/gojiplus/tuber
+BugReports: https://github.com/gojiplus/tuber/issues
+Depends:
+    R (>= 4.1.0)
 Imports:
-    httr,
-    plyr,
+    askpass,
     dplyr,
+    httr,
+    httr2,
+    jsonlite,
+    magrittr,
+    mime,
+    plyr,
     purrr,
-    jsonlite
-VignetteBuilder: knitr
+    tibble,
+    tidyr,
+    tidyselect,
+    utils
 Suggests:
+    hms,
     knitr (>= 1.11),
-    testthat,
+    lintr,
     rmarkdown,
-    xml2,
-    lintr
-RoxygenNote: 6.0.1.9000
+    testthat,
+    xml2
+VignetteBuilder: 
+    knitr
+Encoding: UTF-8
+RoxygenNote: 7.3.2

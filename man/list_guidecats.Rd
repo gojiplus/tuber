@@ -9,16 +9,19 @@ list_guidecats(filter = NULL, hl = NULL, ...)
 \arguments{
 \item{filter}{string; Required.
 named vector of length 1
-potential names of the entry in the vector: 
-\code{region_code}: Character. Required. Has to be a ISO 3166-1 alpha-2 code (see \url{https://www.iso.org/obp/ui/#search})
+potential names of the entry in the vector:
+\code{region_code}: Character. Required. Has to be a ISO 3166-1 alpha-2 code
+ (see \url{https://www.iso.org/obp/ui/#search})
 \code{category_id}: YouTube channel category ID}
 
-\item{hl}{Language used for text values. Optional. Default is \code{en-US}. For other allowed language codes, see \code{\link{list_langs}}.}
+\item{hl}{Language used for text values. Optional. Default is \code{en-US}.
+For other allowed language codes, see \code{\link{list_langs}}.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-data.frame with 5 columns: \code{region_code, channelId, title, etag, id}
+data.frame with 5 columns: \code{region_code, channelId, title,
+etag, id}
 }
 \description{
 Get list of categories that can be associated with YouTube channels

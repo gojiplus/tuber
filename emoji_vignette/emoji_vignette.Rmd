@@ -12,15 +12,13 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r Setup 0, echo = FALSE, message = FALSE, warning = FALSE, results = 'hide'}
-library(tuber)
 library(ggplot2)
 library(DataCombine)
 library(tidyverse)
 library(tidytext)
 library(anytime)
-library(devtools)
-install_github("dill/emoGG")
-install_github("hadley/emo")
+devtools::install_github("dill/emoGG")
+devtools::install_github("hadley/emo")
 library(emoGG)
 library(emo)
 ```
@@ -104,10 +102,17 @@ tube_emojis_total <- tube_tidy_emojis %>%
   inner_join(emotidy_tube)
 
 # What is the most frequent emoji?
-tube_freqe <- tube_emojis_total %>% 
-   count(word, sort = TRUE)
+tube_freqe <- tube_emojis_total %>%
+  count(word, sort = TRUE)
 
-tube_freqe[1:10,]
+tube_freqe %>%
+  slice(1:10) %>%
+  ggplot(aes(x = reorder(word, n), y = n)) +
+  geom_col(fill = "steelblue") +
+  coord_flip() +
+  labs(x = "Emoji", y = "Count",
+       title = "Top emojis in comments") +
+  theme_minimal()
 ```
 
 So, our ten most frequent emojis in the comments of the Emoji Movie trailer are `r emo::ji("face_with_tears_of_joy")`, `r emo::ji("boy")`, `r emo::ji("mobile_phone")`, `r emo::ji("kissing_heart")`, `r emo::ji("man")`, `r emo::ji("skull_and_crossbones")`, `r emo::ji("atom_symbol")`, `r emo::ji("dancing_women")`, `r emo::ji("grimacing")` and `r emo::ji("kissing_smiling_eyes")`. Read into that what you will! `r emo::ji("face_with_tears_of_joy")`
@@ -126,8 +131,14 @@ top_ten$created <- anytime(as.factor(top_ten$publishedAt))
 
 Emoji <- top_ten$word
 minutes <- 60
-ggplot(top_ten, aes(created, color = Emoji)) + 
-  geom_freqpoly(binwidth=10080*minutes)
+ggplot(top_ten, aes(created, colour = Emoji)) +
+  geom_freqpoly(binwidth = 10080 * minutes) +
+  labs(
+    title = "Emoji comment frequency over time",
+    x = "Date",
+    y = "Number of comments"
+  ) +
+  theme_minimal()
 ```
 
 We can look at these one by one too and use the emoGG package to use actual emojis to show which ones we are talking about.
@@ -135,21 +146,61 @@ We can look at these one by one too and use the emoGG package to use actual emoj
 ```{r, echo=TRUE, message=FALSE, warning=FALSE, fig.width=7, fig.height=4}
 # The code you use in emoGG is the same as UTF-8 but without "U+" etc, and all letters lowercase
 tearsofjoy <- top_ten[top_ten$word == "FACEWITHTEARSOFJOY",]
-ggplot(tearsofjoy, aes(created)) + 
-  geom_freqpoly(binwidth=10080*minutes) + add_emoji(emoji="1f602")
+ggplot(tearsofjoy, aes(created)) +
+  geom_freqpoly(binwidth = 10080 * minutes) +
+  add_emoji(emoji = "1f602") +
+  labs(title = "Tears of Joy usage over time",
+       x = "Date", y = "Number of comments") +
+  theme_minimal()
 
 boy <- top_ten[top_ten$word == "BOY",]
-ggplot(boy, aes(created)) + 
-  geom_freqpoly(binwidth=10080*minutes) + add_emoji(emoji="1f466")
+ggplot(boy, aes(created)) +
+  geom_freqpoly(binwidth = 10080 * minutes) +
+  add_emoji(emoji = "1f466") +
+  labs(title = "Boy emoji usage over time",
+       x = "Date", y = "Number of comments") +
+  theme_minimal()
 
 # Sometimes emoGG doesn't have your emoji -- here we have to use skull, not skull and crossbones
 skull <- top_ten[top_ten$word == "SKULLANDCROSSBONES",]
-ggplot(skull, aes(created)) + 
-  geom_freqpoly(binwidth=10080*minutes) + add_emoji(emoji="1f480")
+ggplot(skull, aes(created)) +
+  geom_freqpoly(binwidth = 10080 * minutes) +
+  add_emoji(emoji = "1f480") +
+  labs(title = "Skull emoji usage over time",
+       x = "Date", y = "Number of comments") +
+  theme_minimal()
 
 grimace <- top_ten[top_ten$word == "GRIMACINGFACE",]
-ggplot(grimace, aes(created)) + 
-  geom_freqpoly(binwidth=10080*minutes) + add_emoji(emoji="1f62c")
+ggplot(grimace, aes(created)) +
+  geom_freqpoly(binwidth = 10080 * minutes) +
+  add_emoji(emoji = "1f62c") +
+  labs(title = "Grimacing emoji usage over time",
+       x = "Date", y = "Number of comments") +
+  theme_minimal()
 
 # ad infinitum!
 ```
+
+## Positive vs Negative Emoji Sentiment
+
+Using a small set of positive and negative emojis we can gauge the tone of the
+conversation.
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+pos_emojis <- c("FACEWITHTEARSOFJOY", "FACETHROWINGAKISS",
+                "KISSINGFACEWITHSMILINGEYES")
+neg_emojis <- c("SKULLANDCROSSBONES", "GRIMACINGFACE")
+
+sentiment_summary <- tube_emojis_total %>%
+  mutate(sentiment = case_when(
+    word %in% pos_emojis ~ "positive",
+    word %in% neg_emojis ~ "negative",
+    TRUE ~ "neutral"
+  )) %>%
+  count(sentiment)
+
+sentiment_summary
+```
+
+Positive emojis appear more frequently than negative ones, suggesting that most
+commenters express amusement or affection rather than hostility.

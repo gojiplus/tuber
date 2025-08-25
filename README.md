@@ -1,13 +1,16 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-:sweet\_potato: tuber: Access YouTube API via R
------------------------------------------------
 
-[![Build status](https://ci.appveyor.com/api/projects/status/pgr0wih12gtwvvvx?svg=true)](https://ci.appveyor.com/project/soodoku/tuber) 
-[![Build Status](https://travis-ci.org/soodoku/tuber.svg?branch=master)](https://travis-ci.org/soodoku/tuber) 
-[![codecov](https://codecov.io/gh/soodoku/tuber/branch/master/graph/badge.svg)](https://codecov.io/gh/soodoku/tuber)
+## :sweet\_potato: tuber: Access YouTube API via R
 
-Access YouTube API via R. Get comments posted on YouTube videos, get information on how many times a video has been liked, search for videos with particular content, and much more. You can also get closed captions of videos you own. To learn more about the YouTube API, see <https://developers.google.com/youtube/v3/>.
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/tuber)](https://cran.r-project.org/package=tuber)
+![](http://cranlogs.r-pkg.org/badges/grand-total/tuber)
+
+Access YouTube API via R. Get comments posted on YouTube videos, get
+information on how many times a video has been liked, search for videos
+with particular content, and much more. You can also get closed captions
+of videos you own. To learn more about the YouTube API, see
+<https://developers.google.com/youtube/v3/>.
 
 ### Installation
 
@@ -18,19 +21,34 @@ To get the current development version from GitHub:
 devtools::install_github("soodoku/tuber", build_vignettes = TRUE)
 ```
 
-To get a quick overview of some important functions in tuber, check out [this article](http://soodoku.github.io/tuber/articles/tuber-ex.html). For a fun vignette about how to analyze emojis in YouTube comments, see [here](https://github.com/soodoku/tuber/blob/master/emoji_vignette/emoji_vignette.Rmd).
+To get a quick overview of some important functions in tuber, check out
+[this article](https://gojiplus.github.io/tuber/articles/tuber-ex.html).
 
 ### Using tuber
 
-To get going, get the application id and password from Google Developer Console (see <https://developers.google.com/youtube/v3/getting-started>). Enable all the YouTube APIs. Also enable Freebase API. Then set the application id and password via the `yt_oauth` function. For more information about YouTube OAuth, see [YouTube OAuth Guide](https://developers.google.com/youtube/v3/guides/authentication).
+To get going, get the application id and password from the Google
+Developer Console (see
+<https://developers.google.com/youtube/v3/getting-started>). Enable all
+the YouTube APIs. Then set the application id and password via the
+`yt_oauth` function. For more information about YouTube OAuth, see
+[YouTube OAuth
+Guide](https://developers.google.com/youtube/v3/guides/authentication).
 
 ``` r
 yt_oauth("app_id", "app_password")
 ```
 
-**Note:** If you are on ubuntu, you may have to run the following before doing anything:
+If your session cannot open a browser window for authentication, pass
+`use_oob = TRUE` to `yt_oauth()` so that authentication can be completed
+via an out-of-band code.
 
-    httr::set_config( config( ssl_verifypeer = 0L ) )
+To force re-authentication at any time, delete the `.httr-oauth` file in
+your working directory.
+
+**Note:** If you are on ubuntu, you may have to run the following before
+doing anything:
+
+    httr::set_config(httr::config( ssl_verifypeer = 0L ) )
 
 **Get Statistics of a Video**
 
@@ -50,6 +68,15 @@ get_video_details(video_id = "N708P-A45D0")
 get_captions(video_id = "yJXTXN4xrI8")
 ```
 
+**Note**: It was previously possible to get captions for all videos that
+had “Community contributions” enabled. However, since [*YouTube* removed
+that option in September
+2020](https://support.google.com/youtube/answer/2734796?hl=en&visit_id=638791335311528098-9183701&rd=1), the
+`get_captions` function now only works for videos created with the same
+account as the API credentials you use. An alternative for collecting
+*YouTube* video captions is the [*youtubecaption*
+package](https://github.com/jooyoungseo/youtubecaption).
+
 **Search Videos**
 
 ``` r
@@ -64,8 +91,13 @@ get_all_comments(video_id = "a-UQz7fqR3w")
 
 ### License
 
-Scripts are released under the [MIT License](http://opensource.org/licenses/MIT).
+Scripts are released under the [MIT
+License](https://opensource.org/licenses/MIT).
 
 ### Contributor Code of Conduct
 
-The project welcomes contributions from everyone! In fact, it depends on it. To maintain this welcoming atmosphere, and to collaborate in a fun and productive way, we expect contributors to the project to abide by the [Contributor Code of Conduct](http://contributor-covenant.org/version/1/0/0/).
+The project welcomes contributions from everyone! In fact, it depends on
+it. To maintain this welcoming atmosphere, and to collaborate in a fun
+and productive way, we expect contributors to the project to abide by
+the [Contributor Code of
+Conduct](https://www.contributor-covenant.org/version/1/0/0/).

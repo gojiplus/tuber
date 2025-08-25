@@ -4,24 +4,39 @@
 \alias{get_video_details}
 \title{Get Details of a Video or Videos}
 \usage{
-get_video_details(video_id = NULL, part = "snippet", ...)
+get_video_details(
+  video_id = NULL,
+  part = "snippet",
+  as.data.frame = FALSE,
+  ...
+)
 }
 \arguments{
-\item{video_id}{Comma separated list of IDs of the videos for which details are requested. Required.}
+\item{video_id}{Comma separated list of IDs of the videos for which
+details are requested. Required.}
 
-\item{part}{Comma-separated list of video resource properties requested. Options include:
-\code{contentDetails, fileDetails, id, liveStreamingDetails, localizations, player, processingDetails, 
+\item{part}{Comma-separated vector of video resource properties requested.
+Options include:
+\code{contentDetails, fileDetails, id, liveStreamingDetails,
+localizations, player, processingDetails,
 recordingDetails, snippet, statistics, status, suggestions, topicDetails}}
+
+\item{as.data.frame}{Logical, returns the requested information as data.frame.
+Does not work for:
+\code{fileDetails, suggestions, processingDetails}}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-list. If part is snippet, the list will have the following elements: 
-\code{id} (video id that was passed), \code{publishedAt, channelId, title, description, thumbnails, 
-channelTitle, categoryId, liveBroadcastContent, localized, defaultAudioLanguage}
+list. If part is snippet, the list will have the following elements:
+\code{id} (video id that was passed), \code{publishedAt, channelId,
+ title, description, thumbnails,
+channelTitle, categoryId, liveBroadcastContent, localized,
+defaultAudioLanguage}
 }
 \description{
-Get details such as when the video was published, the title, description, thumbnails, category etc.
+Get details such as when the video was published, the title, description,
+thumbnails, category etc.
 }
 \examples{
 \dontrun{
@@ -30,7 +45,12 @@ Get details such as when the video was published, the title, description, thumbn
 
 get_video_details(video_id = "yJXTXN4xrI8")
 get_video_details(video_id = "yJXTXN4xrI8", part = "contentDetails")
+# retrieve multiple parameters
+get_video_details(video_id = "yJXTXN4xrI8", part = c("contentDetails", "status"))
+# get details for multiple videos as data frame
+get_video_details(video_id = c("LDZX4ooRsWs", "yJXTXN4xrI8"), as.data.frame = TRUE)
 }
+
 }
 \references{
 \url{https://developers.google.com/youtube/v3/docs/videos/list}

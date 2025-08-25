@@ -14,8 +14,10 @@ get_all_comments(video_id = NULL, ...)
 }
 \value{
 a \code{data.frame} with the following columns:
-\code{authorDisplayName, authorProfileImageUrl, authorChannelUrl, authorChannelId.value, videoId, textDisplay,          
-canRate, viewerRating, likeCount, publishedAt, updatedAt, id, moderationStatus, parentId}
+\code{authorDisplayName, authorProfileImageUrl, authorChannelUrl,}
+\code{ authorChannelId.value, videoId, textDisplay,
+canRate, viewerRating, likeCount, publishedAt, updatedAt,
+id, moderationStatus, parentId}
 }
 \description{
 Get all the comments for a video including replies

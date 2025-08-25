@@ -9,8 +9,9 @@ list_videocats(filter = NULL, ...)
 \arguments{
 \item{filter}{string; Required.
 named vector of length 1
-potential names of the entry in the vector: 
-\code{region_code}: Character. Required. Has to be a ISO 3166-1 alpha-2 code (see \url{https://www.iso.org/obp/ui/#search})
+potential names of the entry in the vector:
+\code{region_code}: Character. Required. Has to be a ISO 3166-1 alpha-2
+code (see \url{https://www.iso.org/obp/ui/#search})
 \code{category_id}: video category ID}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}

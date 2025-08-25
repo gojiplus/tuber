@@ -4,18 +4,25 @@
 \alias{list_channel_videos}
 \title{Returns List of Requested Channel Videos}
 \usage{
-list_channel_videos(channel_id = NULL, max_results = 50,
-  page_token = NULL, hl = "en-US", ...)
+list_channel_videos(
+  channel_id = NULL,
+  max_results = 50,
+  page_token = NULL,
+  hl = "en-US",
+  ...
+)
 }
 \arguments{
 \item{channel_id}{String. ID of the channel. Required.}
 
-\item{max_results}{Maximum number of videos returned. Integer. Default is 50. 
+\item{max_results}{Maximum number of videos returned. Integer. Default is 50.
 If the number is over 50, all the videos will be returned.}
 
-\item{page_token}{Specific page in the result set that should be returned. Optional.}
+\item{page_token}{Specific page in the result set that should be returned.
+Optional.}
 
-\item{hl}{Language used for text values. Optional. Default is \code{en-US}. For other allowed language codes, see \code{\link{list_langs}}}
+\item{hl}{Language used for text values. Optional. Default is \code{en-US}.
+For other allowed language codes, see \code{\link{list_langs}}}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }

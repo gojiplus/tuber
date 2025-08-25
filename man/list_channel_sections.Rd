@@ -9,13 +9,16 @@ list_channel_sections(filter = NULL, part = "snippet", hl = NULL, ...)
 \arguments{
 \item{filter}{string; Required.
 named vector of length 1
-potential names of the entry in the vector: 
+potential names of the entry in the vector:
 \code{channel_id}: Channel ID
 \code{id}: Section ID}
 
-\item{part}{specify which part do you want. It can only be one of the following: \code{contentDetails, id, localizations, snippet, targeting}. Default is \code{snippet}.}
+\item{part}{specify which part do you want. It can only be one of the
+following: \code{contentDetails, id, localizations, snippet, targeting}.
+Default is \code{snippet}.}
 
-\item{hl}{language that will be used for text values, optional, default is en-US. See also \code{\link{list_langs}}}
+\item{hl}{language that will be used for text values, optional, default
+is en-US. See also \code{\link{list_langs}}}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
