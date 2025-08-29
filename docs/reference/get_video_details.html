@@ -9,7 +9,7 @@ thumbnails, category etc."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">tuber</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -104,6 +104,25 @@ defaultAudioLanguage</code></p>
 <span class="r-in"><span><span class="fu">get_video_details</span><span class="op">(</span>video_id <span class="op">=</span> <span class="st">"yJXTXN4xrI8"</span>, part <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"contentDetails"</span>, <span class="st">"status"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># get details for multiple videos as data frame</span></span></span>
 <span class="r-in"><span><span class="fu">get_video_details</span><span class="op">(</span>video_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LDZX4ooRsWs"</span>, <span class="st">"yJXTXN4xrI8"</span><span class="op">)</span>, as.data.frame <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Extract specific fields (common use case):</span></span></span>
+<span class="r-in"><span><span class="va">details</span> <span class="op">&lt;-</span> <span class="fu">get_video_details</span><span class="op">(</span>video_id <span class="op">=</span> <span class="st">"yJXTXN4xrI8"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Get video title:</span></span></span>
+<span class="r-in"><span><span class="va">video_title</span> <span class="op">&lt;-</span> <span class="va">details</span><span class="op">$</span><span class="va">items</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">snippet</span><span class="op">$</span><span class="va">title</span></span></span>
+<span class="r-in"><span><span class="co"># Get video description:  </span></span></span>
+<span class="r-in"><span><span class="va">video_desc</span> <span class="op">&lt;-</span> <span class="va">details</span><span class="op">$</span><span class="va">items</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">snippet</span><span class="op">$</span><span class="va">description</span></span></span>
+<span class="r-in"><span><span class="co"># Get channel ID:</span></span></span>
+<span class="r-in"><span><span class="va">channel_id</span> <span class="op">&lt;-</span> <span class="va">details</span><span class="op">$</span><span class="va">items</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">snippet</span><span class="op">$</span><span class="va">channelId</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># For Shiny applications - extract title:</span></span></span>
+<span class="r-in"><span><span class="co"># output$videotitle &lt;- renderText({ </span></span></span>
+<span class="r-in"><span><span class="co">#   details &lt;- get_video_details(input$video_id)</span></span></span>
+<span class="r-in"><span><span class="co">#   if (length(details$items) &gt; 0) {</span></span></span>
+<span class="r-in"><span><span class="co">#     details$items[[1]]$snippet$title</span></span></span>
+<span class="r-in"><span><span class="co">#   } else {</span></span></span>
+<span class="r-in"><span><span class="co">#     "Video not found"</span></span></span>
+<span class="r-in"><span><span class="co">#   }</span></span></span>
+<span class="r-in"><span><span class="co"># })</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

@@ -10,12 +10,12 @@
 #'
 #' @param part  Comment resource requested. Required. Comma separated list
 #' of one or more of the
-#' following: \code{id, snippet}. e.g., \code{"id, snippet"},
-#' \code{"id"}, etc. Default: \code{snippet}.
+#' following: \code{id, replies, snippet}. e.g., \code{"id,snippet"},
+#' \code{"replies"}, etc. Default: \code{snippet}.
 #' @param max_results  Maximum number of items that should be returned.
-#'  Integer. Optional. Default is 100.
-#' If the value is greater than 100 then the function fetches all the
-#' results. The outcome is a simplified \code{data.frame}.
+#'  Integer. Optional. Can be 1-2000. Default is 100.
+#' If the value is greater than 100, multiple API calls are made to fetch all
+#' results. Each API call is limited to 100 items per the YouTube API.
 #' @param page_token  Specific page in the result set that should be
 #' returned. Optional.
 #' @param text_format Data Type: Character. Default is \code{"html"}.
@@ -53,8 +53,8 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
                                 text_format = "html", simplify = TRUE,
                                 max_results = 100, page_token = NULL, ...) {
 
-  if (max_results < 20) {
-    stop("max_results must be a value greater than or equal to 20. For values above 100, it outputs all the results.")
+  if (max_results < 1 || max_results > 2000) {
+    stop("max_results must be between 1 and 2000. For values above 100, multiple API calls are made.")
   }
 
   valid_formats <- c("html", "plainText")
@@ -103,26 +103,15 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
     return(simpler_res)
 
   } else if (simplify && part == "snippet" && max_results > 100) {
-    agg_res <- lapply(res$items, function(x) {
-      snippet <- unlist(x$snippet$topLevelComment$snippet)
-      # Apply consistent Unicode handling
-      text_fields <- c("textDisplay", "textOriginal", "authorDisplayName")
-      for (field in text_fields) {
-        if (field %in% names(snippet)) {
-          snippet[field] <- clean_youtube_text(snippet[field])
-        }
-      }
-      id <- x$snippet$topLevelComment$id
-      c(snippet, id = id)
-    })
-
+    # Use standardized pagination pattern from yt_search.R
+    all_items <- list()
     page_token <- res$nextPageToken
-    querylist$pageToken <- page_token
-    querylist$maxResults <- 100
-
-    while (is.character(page_token)) {
-      a_res <- tuber_GET("commentThreads", querylist, ...)
-      new_res <- lapply(a_res$items, function(x) {
+    collected_ids <- character(0)
+    
+    # Process initial results
+    for (x in res$items) {
+      comment_id <- x$snippet$topLevelComment$id
+      if (!comment_id %in% collected_ids) {
         snippet <- unlist(x$snippet$topLevelComment$snippet)
         # Apply consistent Unicode handling
         text_fields <- c("textDisplay", "textOriginal", "authorDisplayName")
@@ -131,16 +120,50 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
             snippet[field] <- clean_youtube_text(snippet[field])
           }
         }
-        id <- x$snippet$topLevelComment$id
-        c(snippet, id = id)
-      })
-      agg_res <- c(agg_res, new_res)
-      page_token <- a_res$nextPageToken
+        all_items[[length(all_items) + 1]] <- c(snippet, id = comment_id)
+        collected_ids <- c(collected_ids, comment_id)
+      }
+    }
+    
+    # Continue pagination while we need more results and have a token
+    while (!is.null(page_token) && is.character(page_token) && 
+           length(all_items) < max_results) {
+      
       querylist$pageToken <- page_token
+      querylist$maxResults <- min(100, max_results - length(all_items))
+      
+      a_res <- tuber_GET("commentThreads", querylist, ...)
+      
+      # Process new results with deduplication
+      for (x in a_res$items) {
+        if (length(all_items) >= max_results) break
+        
+        comment_id <- x$snippet$topLevelComment$id
+        if (!comment_id %in% collected_ids) {
+          snippet <- unlist(x$snippet$topLevelComment$snippet)
+          # Apply consistent Unicode handling
+          text_fields <- c("textDisplay", "textOriginal", "authorDisplayName")
+          for (field in text_fields) {
+            if (field %in% names(snippet)) {
+              snippet[field] <- clean_youtube_text(snippet[field])
+            }
+          }
+          all_items[[length(all_items) + 1]] <- c(snippet, id = comment_id)
+          collected_ids <- c(collected_ids, comment_id)
+        }
+      }
+      
+      page_token <- a_res$nextPageToken
+      
+      # Safety break if we get no new unique items
+      if (length(a_res$items) == 0) break
     }
 
-    agg_res_df <- do.call(rbind, agg_res)
-    agg_res_df <- agg_res_df[!duplicated(agg_res_df$id), , drop = FALSE]
+    if (length(all_items) == 0) {
+      return(data.frame())
+    }
+    
+    agg_res_df <- do.call(rbind, all_items)
     # Unicode handling already applied above, no need to repeat
     if ("publishedAt" %in% colnames(agg_res_df)) {
       agg_res_df <- agg_res_df[order(agg_res_df$publishedAt), , drop = FALSE]

@@ -91,6 +91,25 @@ json_to_df <- function(res) {
 #' get_video_details(video_id = "yJXTXN4xrI8", part = c("contentDetails", "status"))
 #' # get details for multiple videos as data frame
 #' get_video_details(video_id = c("LDZX4ooRsWs", "yJXTXN4xrI8"), as.data.frame = TRUE)
+#' 
+#' # Extract specific fields (common use case):
+#' details <- get_video_details(video_id = "yJXTXN4xrI8")
+#' # Get video title:
+#' video_title <- details$items[[1]]$snippet$title
+#' # Get video description:  
+#' video_desc <- details$items[[1]]$snippet$description
+#' # Get channel ID:
+#' channel_id <- details$items[[1]]$snippet$channelId
+#' 
+#' # For Shiny applications - extract title:
+#' # output$videotitle <- renderText({ 
+#' #   details <- get_video_details(input$video_id)
+#' #   if (length(details$items) > 0) {
+#' #     details$items[[1]]$snippet$title
+#' #   } else {
+#' #     "Video not found"
+#' #   }
+#' # })
 #' }
 #'
 get_video_details <- function(video_id = NULL, part = "snippet", as.data.frame = FALSE, ...) {

@@ -22,7 +22,7 @@
 #'
 #' @return playlist items
 #' @export
-#' @references \url{https://developers.google.com/youtube/v3/docs/playlists/list}
+#' @references \url{https://developers.google.com/youtube/v3/docs/playlistItems/list}
 #'
 #' @examples
 #' \dontrun{
@@ -62,34 +62,71 @@ get_playlist_items <- function(filter = NULL, part = "contentDetails",
                     pageToken = page_token, videoId = video_id)
   querylist <- c(querylist, filter)
 
-  res <- tuber_GET(path = "playlistItems",
-                   query = querylist,
-                   ...)
-  next_token <- res$nextPageToken
-
-  while (length(res$items) < max_results && is.character(next_token)) {
-    querylist$pageToken <- next_token
-    querylist$maxResults <- min(50, max_results - length(res$items))
-    a_res <- tuber_GET(path = "playlistItems",
-                       query = querylist,
-                       ...)
-    res$items <- c(res$items, a_res$items)
-    next_token <- a_res$nextPageToken
+  # Initial API call
+  res <- tuber_GET(path = "playlistItems", query = querylist, ...)
+  
+  # Check if we got any results
+  if (is.null(res$items) || length(res$items) == 0) {
+    if (simplify) {
+      return(data.frame())
+    } else {
+      return(res)
+    }
   }
-
-  res$nextPageToken <- next_token
+  
+  # Use standardized pagination pattern
+  all_items <- res$items
+  page_token <- res$nextPageToken
+  
+  # Continue pagination while we need more results and have a token
+  while (!is.null(page_token) && is.character(page_token) && 
+         length(all_items) < max_results) {
+    
+    querylist$pageToken <- page_token
+    querylist$maxResults <- min(50, max_results - length(all_items))
+    
+    a_res <- tuber_GET(path = "playlistItems", query = querylist, ...)
+    
+    # Add new items if available
+    if (!is.null(a_res$items) && length(a_res$items) > 0) {
+      # Only take what we need
+      needed <- max_results - length(all_items)
+      items_to_add <- if (length(a_res$items) > needed) {
+        a_res$items[seq_len(needed)]
+      } else {
+        a_res$items
+      }
+      all_items <- c(all_items, items_to_add)
+    }
+    
+    page_token <- a_res$nextPageToken
+    
+    # Safety break if no new items
+    if (is.null(a_res$items) || length(a_res$items) == 0) {
+      break
+    }
+  }
+  
+  # Update response with all collected items
+  res$items <- all_items
+  res$nextPageToken <- page_token
 
   if (simplify) {
-    allResultsList <- unlist(res[which(names(res) == "items")], recursive = FALSE)
-    allResultsList <- lapply(allResultsList, unlist)
-    res <-
-      do.call(
-        plyr::rbind.fill,
-        lapply(
-          allResultsList,
-          function(x) as.data.frame(t(x), stringsAsFactors = FALSE)
-        )
-      )
+    # Improved simplification logic 
+    if (length(all_items) == 0) {
+      return(data.frame())
+    }
+    
+    # Process each item and flatten to data.frame
+    simplified_items <- lapply(all_items, function(item) {
+      # Flatten the nested structure
+      flattened <- unlist(item, recursive = TRUE)
+      # Convert to single-row data.frame
+      as.data.frame(t(flattened), stringsAsFactors = FALSE)
+    })
+    
+    # Combine all rows into single data.frame
+    res <- do.call(plyr::rbind.fill, simplified_items)
   }
 
   return(res)

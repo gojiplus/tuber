@@ -16,7 +16,8 @@ list with 6 elements: \code{id, viewCount, likeCount,
 dislikeCount, favoriteCount, commentCount}
 }
 \description{
-Get statistics of a Video
+Gets view count, like count, comment count and other statistics for a YouTube video.
+For unlisted videos, you must use OAuth authentication with the channel owner's credentials.
 }
 \examples{
 \dontrun{
@@ -24,6 +25,10 @@ Get statistics of a Video
 # Set API token via yt_oauth() first
 
 get_stats(video_id="N708P-A45D0")
+
+# For unlisted videos, must authenticate as channel owner:
+# yt_oauth("your_client_id", "your_client_secret")
+# get_stats(video_id="your_unlisted_video_id")
 }
 }
 \references{

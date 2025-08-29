@@ -1,3 +1,26 @@
+# version 1.1.1
+
+## Bug Fixes and Improvements
+
+This patch release addresses several critical bugs and improves documentation:
+
+### Critical Bug Fixes
+* **PAGINATION**: Fixed `get_comment_threads()` pagination bug where comments were duplicated instead of fetching unique results when `max_results > 100` (issue #107)
+* **PLAYLIST ITEMS**: Fixed `get_playlist_items()` returning only metadata instead of actual video items (issue #95)
+* **CHANNEL VIDEOS**: Fixed `list_channel_videos()` returning only pageInfo instead of video details (issue #88)
+* **AUTO-GENERATED CHANNELS**: Improved error handling for YouTube auto-generated channels (music topics, etc.) with helpful guidance to use `yt_search()` instead (issue #118)
+
+### Documentation Improvements
+* **VIDEO DETAILS**: Added comprehensive examples for extracting specific fields from `get_video_details()` including Shiny application usage (issue #87)
+* **UNLISTED VIDEOS**: Documented OAuth authentication requirement for accessing unlisted video statistics (issue #80)
+* **API REFERENCE**: Fixed incorrect API documentation URL in `get_playlist_items()`
+
+### Under the Hood
+* Standardized pagination patterns across all functions following `yt_search.R` approach
+* Improved error handling with better user guidance
+* Enhanced deduplication logic in comment retrieval functions
+* Added safety breaks for API pagination edge cases
+
 # version 1.1.0
 
 ## Major Bug Fixes and Performance Improvements

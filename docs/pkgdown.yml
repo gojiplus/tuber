@@ -3,7 +3,7 @@ pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   tuber-ex: tuber-ex.html
-last_built: 2025-08-25T02:47Z
+last_built: 2025-08-29T09:17Z
 urls:
   reference: https://soodoku.github.io/tuber/reference
   article: https://soodoku.github.io/tuber/articles

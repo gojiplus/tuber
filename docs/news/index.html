@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tuber</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,7 +35,42 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.1.0" id="version-110">version 1.1.0<a class="anchor" aria-label="anchor" href="#version-110"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.1.1" id="version-111">version 1.1.1<a class="anchor" aria-label="anchor" href="#version-111"></a></h2>
+<div class="section level3">
+<h3 id="bug-fixes-and-improvements-1-1-1">Bug Fixes and Improvements<a class="anchor" aria-label="anchor" href="#bug-fixes-and-improvements-1-1-1"></a></h3>
+<p>This patch release addresses several critical bugs and improves documentation:</p>
+<div class="section level4">
+<h4 id="critical-bug-fixes-1-1-1">Critical Bug Fixes<a class="anchor" aria-label="anchor" href="#critical-bug-fixes-1-1-1"></a></h4>
+<ul><li>
+<strong>PAGINATION</strong>: Fixed <code><a href="../reference/get_comment_threads.html">get_comment_threads()</a></code> pagination bug where comments were duplicated instead of fetching unique results when <code>max_results &gt; 100</code> (issue <a href="https://github.com/gojiplus/tuber/issues/107" class="external-link">#107</a>)</li>
+<li>
+<strong>PLAYLIST ITEMS</strong>: Fixed <code><a href="../reference/get_playlist_items.html">get_playlist_items()</a></code> returning only metadata instead of actual video items (issue <a href="https://github.com/gojiplus/tuber/issues/95" class="external-link">#95</a>)</li>
+<li>
+<strong>CHANNEL VIDEOS</strong>: Fixed <code><a href="../reference/list_channel_videos.html">list_channel_videos()</a></code> returning only pageInfo instead of video details (issue <a href="https://github.com/gojiplus/tuber/issues/88" class="external-link">#88</a>)</li>
+<li>
+<strong>AUTO-GENERATED CHANNELS</strong>: Improved error handling for YouTube auto-generated channels (music topics, etc.) with helpful guidance to use <code><a href="../reference/yt_search.html">yt_search()</a></code> instead (issue <a href="https://github.com/gojiplus/tuber/issues/118" class="external-link">#118</a>)</li>
+</ul></div>
+<div class="section level4">
+<h4 id="documentation-improvements-1-1-1">Documentation Improvements<a class="anchor" aria-label="anchor" href="#documentation-improvements-1-1-1"></a></h4>
+<ul><li>
+<strong>VIDEO DETAILS</strong>: Added comprehensive examples for extracting specific fields from <code><a href="../reference/get_video_details.html">get_video_details()</a></code> including Shiny application usage (issue <a href="https://github.com/gojiplus/tuber/issues/87" class="external-link">#87</a>)</li>
+<li>
+<strong>UNLISTED VIDEOS</strong>: Documented OAuth authentication requirement for accessing unlisted video statistics (issue <a href="https://github.com/gojiplus/tuber/issues/80" class="external-link">#80</a>)</li>
+<li>
+<strong>API REFERENCE</strong>: Fixed incorrect API documentation URL in <code><a href="../reference/get_playlist_items.html">get_playlist_items()</a></code>
+</li>
+</ul></div>
+<div class="section level4">
+<h4 id="under-the-hood-1-1-1">Under the Hood<a class="anchor" aria-label="anchor" href="#under-the-hood-1-1-1"></a></h4>
+<ul><li>Standardized pagination patterns across all functions following <code>yt_search.R</code> approach</li>
+<li>Improved error handling with better user guidance</li>
+<li>Enhanced deduplication logic in comment retrieval functions</li>
+<li>Added safety breaks for API pagination edge cases</li>
+</ul></div>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.1.0" id="version-110">version 1.1.0<a class="anchor" aria-label="anchor" href="#version-110"></a></h2><p class="text-muted">CRAN release: 2025-08-25</p>
 <div class="section level3">
 <h3 id="major-bug-fixes-and-performance-improvements-1-1-0">Major Bug Fixes and Performance Improvements<a class="anchor" aria-label="anchor" href="#major-bug-fixes-and-performance-improvements-1-1-0"></a></h3>
 <p>This release fixes critical issues that were causing the package to be unreliable for production use:</p>
