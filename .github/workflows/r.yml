@@ -42,12 +42,6 @@ jobs:
           tinytex::tlmgr_install(c("pdfcrop", "inconsolata", "texinfo", "framed"))
         shell: Rscript {0}
         
-      # Install httr2 explicitly
-      - name: Install httr2 explicitly
-        run: |
-          install.packages("httr2", repos = "https://cloud.r-project.org")
-        shell: Rscript {0}
-        
       - name: Install dependencies
         run: |
           install.packages(c("remotes", "rcmdcheck"))
