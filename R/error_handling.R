@@ -195,7 +195,7 @@ suggest_solution <- function(issue_type, details = "") {
   )
   
   if (issue_type %in% names(suggestions)) {
-    message("💡 Suggestion: ", suggestions[[issue_type]])
+    message("Suggestion: ", suggestions[[issue_type]])
   }
 }
 

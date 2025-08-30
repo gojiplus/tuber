@@ -10,7 +10,8 @@
 #' @importFrom httr2 request req_url_path_append req_url_query req_headers
 #' @importFrom httr2 req_user_agent req_perform resp_body_json req_body_json
 #' @importFrom httr2 req_method resp_body_string req_body_raw secret_encrypt secret_decrypt
-#' @importFrom utils read.table
+#' @importFrom utils read.table modifyList head object.size
+#' @importFrom stats median quantile
 #' @importFrom digest digest
 #' @importFrom plyr ldply rbind.fill
 #' @importFrom dplyr bind_rows select pull filter mutate

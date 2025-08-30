@@ -6,6 +6,10 @@
 #' @name helper-functions
 NULL
 
+# Suppress R CMD check warnings for dplyr variables
+utils::globalVariables(c("search_term", "view_count", "like_count", "total_views", 
+                         "avg_engagement", "trending_score", "comment_count"))
+
 #' Comprehensive channel analysis
 #'
 #' Performs a complete analysis of a YouTube channel including basic info,
@@ -39,10 +43,10 @@ analyze_channel <- function(channel_id,
   validate_channel_id(channel_id)
   validate_numeric(max_videos, "max_videos", min = 1, max = 500, integer_only = TRUE)
   
-  message("🔍 Analyzing channel: ", channel_id)
+  message("Analyzing channel: ", channel_id)
   
   # Get basic channel information
-  message("📊 Fetching channel statistics...")
+  message("Fetching channel statistics...")
   channel_info <- get_channels_batch(
     channel_id, 
     part = "snippet,statistics,brandingSettings,contentDetails",
@@ -63,7 +67,7 @@ analyze_channel <- function(channel_id,
     videos_info <- data.frame()
   } else {
     # Get recent videos
-    message("🎥 Fetching recent videos (", max_videos, ")...")
+    message("Fetching recent videos (", max_videos, ")...")
     playlist_items <- get_playlist_items(
       playlist_id = upload_playlist_id,
       max_results = max_videos,
@@ -75,7 +79,7 @@ analyze_channel <- function(channel_id,
       video_ids <- sapply(playlist_items$items, function(x) x$snippet$resourceId$videoId)
       
       # Get detailed video information
-      message("📈 Fetching video statistics...")
+      message("Fetching video statistics...")
       videos_info <- get_videos_batch(
         video_ids,
         part = "snippet,statistics,contentDetails",
@@ -85,7 +89,7 @@ analyze_channel <- function(channel_id,
       )
       
       if (include_comments && nrow(videos_info) > 0) {
-        message("💬 Fetching comment counts...")
+        message("Fetching comment counts...")
         videos_info$comment_threads <- sapply(video_ids, function(vid) {
           tryCatch({
             comments <- get_comment_threads(
@@ -104,7 +108,7 @@ analyze_channel <- function(channel_id,
   }
   
   # Calculate performance metrics
-  message("⚡ Calculating performance metrics...")
+  message("Calculating performance metrics...")
   performance_metrics <- list()
   
   if (nrow(videos_info) > 0) {
@@ -142,7 +146,7 @@ analyze_channel <- function(channel_id,
   
   class(analysis_result) <- c("tuber_channel_analysis", "list")
   
-  message("✅ Channel analysis complete!")
+  message("Channel analysis complete!")
   return(analysis_result)
 }
 
@@ -181,7 +185,7 @@ compare_channels <- function(channel_ids,
     stop("At least 2 channels required for comparison.", call. = FALSE)
   }
   
-  message("🔍 Comparing ", length(channel_ids), " channels...")
+  message("Comparing ", length(channel_ids), " channels...")
   
   # Get channel information
   channels_info <- get_channels_batch(
@@ -244,7 +248,7 @@ compare_channels <- function(channel_ids,
   
   class(result) <- c("tuber_channel_comparison", "list")
   
-  message("✅ Channel comparison complete!")
+  message("Channel comparison complete!")
   return(result)
 }
 
@@ -288,7 +292,7 @@ analyze_trends <- function(search_terms,
     validate_region_code(region_code)
   }
   
-  message("📈 Analyzing trends for ", length(search_terms), " search term(s)...")
+  message("Analyzing trends for ", length(search_terms), " search term(s)...")
   
   # Calculate date range
   published_after <- NULL
@@ -307,7 +311,7 @@ analyze_trends <- function(search_terms,
   
   for (i in seq_along(search_terms)) {
     term <- search_terms[i]
-    message("🔍 Searching for: '", term, "' (", i, "/", length(search_terms), ")")
+    message("Searching for: '", term, "' (", i, "/", length(search_terms), ")")
     
     # Perform search
     search_results <- yt_search(
@@ -400,7 +404,7 @@ analyze_trends <- function(search_terms,
   
   class(result) <- c("tuber_trend_analysis", "list")
   
-  message("✅ Trend analysis complete!")
+  message("Trend analysis complete!")
   return(result)
 }
 
@@ -434,7 +438,7 @@ bulk_video_analysis <- function(video_ids,
   
   validate_character(video_ids, "video_ids")
   
-  message("📊 Analyzing ", length(video_ids), " videos...")
+  message("Analyzing ", length(video_ids), " videos...")
   
   # Get video details
   videos_data <- get_videos_batch(
@@ -486,56 +490,7 @@ bulk_video_analysis <- function(video_ids,
   
   class(result) <- c("tuber_bulk_analysis", "list")
   
-  message("✅ Bulk video analysis complete!")
+  message("Bulk video analysis complete!")
   return(result)
 }
 
-#' Print methods for analysis objects
-
-#' @export
-print.tuber_channel_analysis <- function(x, ...) {
-  cat("YouTube Channel Analysis\n")
-  cat("========================\n\n")
-  
-  if (nrow(x$channel_info) > 0) {
-    cat("Channel:", x$channel_info$title[1], "\n")
-    cat("Subscribers:", format(as.numeric(x$channel_info$subscriber_count[1]), big.mark = ","), "\n")
-    cat("Total Videos:", format(as.numeric(x$channel_info$video_count[1]), big.mark = ","), "\n")
-    cat("Total Views:", format(as.numeric(x$channel_info$view_count[1]), big.mark = ","), "\n\n")
-  }
-  
-  if (length(x$performance_metrics) > 0 && !is.null(x$performance_metrics$videos_analyzed)) {
-    cat("Recent Performance (", x$performance_metrics$videos_analyzed, " videos):\n")
-    cat("  Average views per video:", format(round(x$performance_metrics$avg_views_per_video), big.mark = ","), "\n")
-    cat("  Engagement rate:", paste0(round(x$performance_metrics$engagement_rate * 100, 2), "%"), "\n\n")
-  }
-  
-  cat("Analysis completed:", format(x$analysis_timestamp), "\n")
-}
-
-#' @export
-print.tuber_channel_comparison <- function(x, ...) {
-  cat("YouTube Channel Comparison\n")
-  cat("=========================\n\n")
-  
-  if ("comparison" %in% names(x)) {
-    print(x$comparison)
-  } else if ("detailed_data" %in% names(x)) {
-    print(head(x$detailed_data))
-  }
-  
-  cat("\nComparison Date:", format(x$summary$comparison_date), "\n")
-}
-
-#' @export
-print.tuber_trend_analysis <- function(x, ...) {
-  cat("YouTube Trend Analysis\n")
-  cat("=====================\n\n")
-  
-  if (nrow(x$trend_summary) > 0) {
-    cat("Top trending terms:\n")
-    print(head(x$trend_summary[, c("search_term", "total_videos", "trending_score")]))
-  }
-  
-  cat("\nAnalysis Date:", format(x$parameters$analysis_date), "\n")
-}
