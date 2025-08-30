@@ -57,6 +57,9 @@ Get Playlists
 
 get_playlists(filter=c(channel_id="UCMtFAi84ehTSYSE9XoHefig"))
 get_playlists(filter=c(channel_id="UCMtFAi84ehTSYSE9X")) # incorrect Channel ID
+
+# For searching playlists by keyword, use yt_search() instead:
+# yt_search(term="tutorial", channel_id="UCMtFAi84ehTSYSE9XoHefig", type="playlist")
 }
 }
 \references{

@@ -24,11 +24,14 @@ String.
 \description{
 For getting captions from the v3 API, you must specify the id resource.
 Check \code{\link{list_caption_tracks}} for more information.
+IMPORTANT: This function requires OAuth authentication and you must own the video
+or have appropriate permissions to access its captions.
 }
 \examples{
 \dontrun{
 
 # Set API token via yt_oauth() first
+# You must own the video to download captions
 
 get_captions(id = "y3ElXcEME3lSISz6izkWVT5GvxjPu8pA")
 }

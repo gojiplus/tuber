@@ -450,6 +450,25 @@ tuber_check <- function(req) {
   } else {
     msg <- out$error$message
   }
+  
+  # Enhanced error handling for common 403 issues
+  if (req$status_code == 403) {
+    if (grepl("accessNotConfigured|has not been used|is disabled", msg, ignore.case = TRUE)) {
+      enhanced_msg <- paste0(
+        "YouTube Data API is not enabled for your project.\n\n",
+        "SOLUTION:\n",
+        "1. Go to Google Cloud Console: https://console.cloud.google.com/\n",
+        "2. Select your project (or create a new one)\n",
+        "3. Enable the YouTube Data API v3:\n",
+        "   https://console.cloud.google.com/marketplace/product/google/youtube.googleapis.com\n",
+        "4. Wait 2-5 minutes for the API to be fully activated\n",
+        "5. Try your request again\n\n",
+        "Original error: ", msg, "\n"
+      )
+      stop("HTTP failure: ", req$status_code, "\n", enhanced_msg, call. = FALSE)
+    }
+  }
+  
   msg <- paste0(msg, "\n")
   stop("HTTP failure: ", req$status_code, "\n", msg, call. = FALSE)
 }

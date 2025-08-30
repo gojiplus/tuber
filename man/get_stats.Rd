@@ -4,16 +4,19 @@
 \alias{get_stats}
 \title{Get statistics of a Video}
 \usage{
-get_stats(video_id = NULL, ...)
+get_stats(video_id = NULL, include_content_details = FALSE, ...)
 }
 \arguments{
 \item{video_id}{Character. Id of the video. Required.}
+
+\item{include_content_details}{Boolean. Include contentDetails (duration, definition, etc.) in response. Default: FALSE.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
 list with 6 elements: \code{id, viewCount, likeCount,
-dislikeCount, favoriteCount, commentCount}
+dislikeCount, favoriteCount, commentCount}. When \code{include_content_details = TRUE}, 
+also includes \code{duration, definition, dimension, licensedContent, projection}.
 }
 \description{
 Gets view count, like count, comment count and other statistics for a YouTube video.
@@ -25,6 +28,9 @@ For unlisted videos, you must use OAuth authentication with the channel owner's 
 # Set API token via yt_oauth() first
 
 get_stats(video_id="N708P-A45D0")
+
+# Include video duration and other content details:
+get_stats(video_id="N708P-A45D0", include_content_details = TRUE)
 
 # For unlisted videos, must authenticate as channel owner:
 # yt_oauth("your_client_id", "your_client_secret")

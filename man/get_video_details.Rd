@@ -56,6 +56,16 @@ details <- get_video_details(video_id = "yJXTXN4xrI8")
 video_title <- details$items[[1]]$snippet$title
 # Get video description:  
 video_desc <- details$items[[1]]$snippet$description
+
+# Shiny usage - extract video title safely:
+# output$videotitle <- renderText({
+#   details <- get_video_details(input$commentkey)
+#   if (length(details$items) > 0) {
+#     details$items[[1]]$snippet$title
+#   } else {
+#     "Video not found"
+#   }
+# })
 # Get channel ID:
 channel_id <- details$items[[1]]$snippet$channelId
 
