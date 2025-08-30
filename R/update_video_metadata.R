@@ -8,6 +8,7 @@
 #' @param description A character string specifying the new description for the video.
 #' @param privacy_status A character string specifying the new privacy status for the video ('public', 'private', or 'unlisted').
 #' @param made_for_kids A boolean specifying whether the video is self-declared as made for kids.
+#' @param auth Authentication method: "token" (OAuth2) or "key" (API key)
 #'
 #' @return A list containing the server response after the update attempt.
 #' @export
@@ -22,10 +23,7 @@
 #'                       made_for_kids = FALSE)
 #' }
 
-update_video_metadata <- function(video_id, title, category_id, description, privacy_status, made_for_kids) {
-  # Check for a valid token
-  yt_check_token()
-
+update_video_metadata <- function(video_id, title, category_id, description, privacy_status, made_for_kids, auth = "token") {
   # Define the body for the PUT request
   body <- list(
     id = video_id,
@@ -40,25 +38,12 @@ update_video_metadata <- function(video_id, title, category_id, description, pri
     )
   )
 
-  body_json <- jsonlite::toJSON(body, auto_unbox = TRUE)
+  query <- list(part = "snippet,status")
 
-  # Use the existing tuber infrastructure to send the PUT request
-  req <- httr::PUT(
-    url = "https://www.googleapis.com/youtube/v3/videos",
-    query = list(key = getOption("google_key"), part = "snippet,status"),
-    config = httr::config(token = getOption("google_token")),
-    body = body_json,
-    httr::add_headers(
-      `Accept` = "application/json",
-      `Content-Type` = "application/json"
-    )
-  )
+  # Use the centralized tuber_PUT function
+  res <- tuber_PUT("videos", query = query, body = body, auth = auth)
 
-  # Check for errors
-  tuber_check(req)
-
-  # Extract and return the content
-  return(httr::content(req))
+  return(res)
 }
 
 # Example usage:

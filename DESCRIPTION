@@ -19,6 +19,7 @@ Depends:
     R (>= 4.1.0)
 Imports:
     askpass,
+    digest,
     dplyr,
     httr,
     httr2,

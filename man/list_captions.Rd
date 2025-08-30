@@ -2,24 +2,24 @@
 % Please edit documentation in R/list_captions.R
 \name{list_captions}
 \alias{list_captions}
-\title{Upload Video to Youtube}
+\title{List Captions for YouTube Video}
 \usage{
-list_captions(video_id, query = NULL, ...)
+list_captions(video_id, query = NULL, auth = "token", ...)
 }
 \arguments{
 \item{video_id}{ID of the YouTube video}
 
 \item{query}{Fields for `query` in `GET`}
 
-\item{...}{Additional arguments to send to \code{\link{tuber_GET}} and
-therefore \code{\link[httr]{GET}}}
+\item{auth}{Authentication method: "token" (OAuth2) or "key" (API key)}
+
+\item{...}{Additional arguments to send to \code{\link{tuber_GET}}}
 }
 \value{
-A list of the response object from the \code{GET} and content
-about captions
+A list containing caption information
 }
 \description{
-Upload Video to Youtube
+List Captions for YouTube Video
 }
 \examples{
 \dontrun{

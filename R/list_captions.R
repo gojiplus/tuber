@@ -1,11 +1,10 @@
-#' Upload Video to Youtube
+#' List Captions for YouTube Video
 #'
 #' @param video_id ID of the YouTube video
 #' @param query Fields for `query` in `GET`
-#' @param ... Additional arguments to send to \code{\link{tuber_GET}} and
-#' therefore \code{\link[httr]{GET}}
-#' @return A list of the response object from the \code{GET} and content
-#' about captions
+#' @param auth Authentication method: "token" (OAuth2) or "key" (API key)
+#' @param ... Additional arguments to send to \code{\link{tuber_GET}}
+#' @return A list containing caption information
 #'
 #' @examples \dontrun{
 #' video_id <- "M7FIvfx5J10"
@@ -14,6 +13,7 @@
 list_captions <- function(
   video_id,
   query = NULL,
+  auth = "token",
   ...
 ) {
 
@@ -23,19 +23,8 @@ list_captions <- function(
   query$part <- part
   query$videoId <- video_id
 
-  yt_check_token()
-  # need diff from regular tuber_POST because of upload/
-  req <- httr::GET("https://www.googleapis.com/youtube/v3/captions",
-                    query = query,
-                    config(token = getOption("google_token")),
-                    ...)
-  if (httr::status_code(req) > 300)  {
-    print(query)
-    print(httr::content(req)$error)
-    stop("Request was bad")
-  }
-  tuber_check(req)
-  res <- content(req)
+  # Use centralized tuber_GET instead of direct httr::GET
+  res <- tuber_GET("captions", query = query, auth = auth, ...)
 
-  list(request = req, content = res)
+  res
 }

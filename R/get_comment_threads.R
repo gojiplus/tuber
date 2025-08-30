@@ -53,22 +53,14 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
                                 text_format = "html", simplify = TRUE,
                                 max_results = 100, page_token = NULL, ...) {
 
-  if (max_results < 1 || max_results > 2000) {
-    stop("max_results must be between 1 and 2000. For values above 100, multiple API calls are made.")
-  }
-
-  valid_formats <- c("html", "plainText")
-  if (!text_format %in% valid_formats) {
-    stop("Provide a valid value for textFormat.")
-  }
-
+  # Validate parameters using standardized functions
+  validate_numeric(max_results, "max_results", min = 1, max = 2000, integer_only = TRUE)
+  validate_choice(text_format, "text_format", c("html", "plainText"))
+  
   valid_filters <- c("video_id", "channel_id", "thread_id", "threads_related_to_channel")
-  if (!(names(filter) %in% valid_filters)) {
-    stop("filter can only take one of the following values: channel_id, video_id, thread_id, threads_related_to_channel.")
-  }
-
-  if (length(filter) != 1) {
-    stop("filter must be a vector of length 1.")
+  if (length(filter) != 1 || !names(filter) %in% valid_filters) {
+    stop("Parameter 'filter' must be a named vector of length 1 with one of these names: ",
+         paste(valid_filters, collapse = ", "), ".", call. = FALSE)
   }
 
   orig_filter <- filter

@@ -113,19 +113,16 @@ json_to_df <- function(res) {
 #' }
 #'
 get_video_details <- function(video_id = NULL, part = "snippet", as.data.frame = FALSE, ...) {
-  if (!is.character(video_id)) stop("Must specify a video ID.")
-
-  if (!is.character(part)) stop("Parameter part must be a character vector")
-
+  # Validate inputs using standardized functions
+  validate_character(video_id, "video_id")
+  validate_character(part, "part")
+  
   parts_only_for_video_owners <- c("fileDetails", "suggestions", "processingDetails")
 
   if (as.data.frame && any(part %in% parts_only_for_video_owners)) {
-    stop(
-      paste(
-        "If as.data.frame = TRUE, then `part` may not include any of the following parts:",
-        paste(parts_only_for_video_owners, collapse = " ,")
-      )
-    )
+    stop("When as.data.frame = TRUE, 'part' cannot include owner-only parts: ",
+         paste(parts_only_for_video_owners, collapse = ", "), ".", 
+         call. = FALSE)
   }
 
   if (length(part) > 1) {
@@ -138,10 +135,16 @@ get_video_details <- function(video_id = NULL, part = "snippet", as.data.frame =
 
   querylist <- list(part = part, id = video_id)
 
-  raw_res <- tuber_GET("videos", querylist, ...)
+  # Handle API call with error handling
+  raw_res <- tryCatch({
+    tuber_GET("videos", querylist, ...)
+  }, error = function(e) {
+    handle_network_error(e, "Failed to retrieve video details")
+  })
 
   if (length(raw_res$items) == 0) {
-    warning("No details for this video are available. Likely cause: Incorrect ID. \n")
+    suggest_solution("empty_results", "- Check if the video ID is correct\n- Video may be private or deleted")
+    warning("No video details found for ID: ", video_id, call. = FALSE)
     return(list())
   }
 
