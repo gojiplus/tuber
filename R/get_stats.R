@@ -32,18 +32,25 @@
 
 get_stats <- function(video_id = NULL, include_content_details = FALSE, ...) {
 
-  if (!is.character(video_id)) stop("Must specify a video ID.")
+  validate_character(video_id, "video_id")
 
   # Include contentDetails if requested for duration, definition, etc.
   part <- if (include_content_details) "statistics,contentDetails" else "statistics"
   querylist <- list(part = part, id = video_id)
 
-  raw_res <- tuber_GET("videos", querylist, ...)
+  raw_res <- call_api_with_retry(tuber_GET, path = "videos", query = querylist, ...)
 
   if (length(raw_res$items) == 0) {
     warning("No statistics for this video are available.
              Likely cause: Incorrect ID. \n")
-    return(list())
+    empty_result <- list()
+    return(add_tuber_attributes(
+      empty_result,
+      api_calls_made = 1,
+      function_name = "get_stats",
+      parameters = list(video_id = video_id, include_content_details = include_content_details),
+      results_found = 0
+    ))
   }
 
   res      <- raw_res$items[[1]]
@@ -52,8 +59,20 @@ get_stats <- function(video_id = NULL, include_content_details = FALSE, ...) {
   # Include contentDetails if requested
   if (include_content_details && !is.null(res$contentDetails)) {
     content_res <- res$contentDetails
-    return(c(id = res$id, stat_res, content_res))
+    result <- c(id = res$id, stat_res, content_res)
+  } else {
+    result <- c(id = res$id, stat_res)
   }
-
-  c(id = res$id, stat_res)
+  
+  # Add standardized attributes
+  result <- add_tuber_attributes(
+    result,
+    api_calls_made = 1,
+    function_name = "get_stats",
+    parameters = list(video_id = video_id, include_content_details = include_content_details),
+    results_found = 1,
+    content_details_included = include_content_details
+  )
+  
+  result
 }

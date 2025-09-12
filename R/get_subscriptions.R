@@ -38,15 +38,13 @@ get_subscriptions <- function(filter = NULL, part = "contentDetails",
                                max_results = 50, for_channel_id = NULL,
                                order = NULL, page_token = NULL, ...) {
 
-  if (max_results <= 0) {
-    stop("max_results must be a positive integer.")
+  validate_numeric(max_results, "max_results", min = 1, integer_only = TRUE)
+  
+  valid_filters <- c("channel_id", "subscription_id")
+  if (length(filter) != 1 || !(names(filter) %in% valid_filters)) {
+    stop("Parameter 'filter' must be a named vector of length 1 with one of these names: ", 
+         paste(valid_filters, collapse = ", "), ".", call. = FALSE)
   }
-
-  if (!(names(filter) %in% c("channel_id", "subscription_id"))) {
-    stop("filter can only take one of values: channel_id, subscription_id.")
-  }
-
-  if (length(filter) != 1) stop("filter must be a vector of length 1.")
 
   translate_filter   <- c(channel_id = "channelId", subscription_id = "id")
   yt_filter_name     <- as.vector(translate_filter[match(names(filter),

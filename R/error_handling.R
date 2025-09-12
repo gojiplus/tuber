@@ -439,7 +439,7 @@ validate_part_parameter <- function(part, endpoint, name = "part") {
   # Define valid parts for each endpoint
   valid_parts <- list(
     videos = c("contentDetails", "fileDetails", "id", "liveStreamingDetails", 
-               "localizations", "player", "processingDetails", "recordingDetails",
+               "localizations", "paidProductPlacementDetails", "player", "processingDetails", "recordingDetails",
                "snippet", "statistics", "status", "suggestions", "topicDetails"),
     channels = c("auditDetails", "brandingSettings", "contentDetails", "contentOwnerDetails",
                  "id", "localizations", "snippet", "statistics", "status", "topicDetails"),

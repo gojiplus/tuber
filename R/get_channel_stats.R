@@ -29,13 +29,13 @@ get_channel_stats <- function(channel_id = NULL, mine = NULL, ...) {
     mine <- NULL
   }
   
-  if (!is.character(channel_id) && !identical(tolower(mine), "true")) {
-    stop("Must specify a channel ID or set mine = 'true'.")
+  if (!identical(tolower(mine), "true")) {
+    validate_character(channel_id, "channel_id")
   }
   
   querylist <- list(part = "statistics,snippet", id = channel_id, mine = mine)
   
-  raw_res <- tuber_GET("channels", querylist, ...)
+  raw_res <- call_api_with_retry(tuber_GET, path = "channels", query = querylist, ...)
   
   if (length(raw_res$items) == 0) {
     warning("No channel stats available. Likely cause: Incorrect channel_id.\n")
@@ -60,7 +60,7 @@ list_my_channel <- function(...) {
   
   querylist <- list(part = "snippet,contentDetails,statistics", mine = "true")
   
-  raw_res <- tuber_GET("channels", querylist, ...)
+  raw_res <- call_api_with_retry(tuber_GET, path = "channels", query = querylist, ...)
   
   if (length(raw_res$items) == 0) {
     warning("No channel stats available. Likely cause: No videos.\n")

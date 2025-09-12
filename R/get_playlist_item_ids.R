@@ -39,17 +39,12 @@ get_playlist_item_ids <- function(filter = NULL, part = "contentDetails",
                                   max_results = 50, video_id = NULL,
                                   page_token = NULL, simplify = TRUE, ...) {
 
-  if (max_results <= 0) {
-    stop("max_results must be a positive integer.")
-  }
-
+  validate_numeric(max_results, "max_results", min = 1, integer_only = TRUE)
+  
   valid_filters <- c("item_id", "playlist_id")
-  if (!(names(filter) %in% valid_filters)) {
-    stop("filter can only take one of the following values: item_id, playlist_id.")
-  }
-
-  if (length(filter) != 1) {
-    stop("filter must be a vector of length 1.")
+  if (length(filter) != 1 || !(names(filter) %in% valid_filters)) {
+    stop("Parameter 'filter' must be a named vector of length 1 with one of these names: ", 
+         paste(valid_filters, collapse = ", "), ".", call. = FALSE)
   }
 
   translate_filter <- c(item_id = "id", playlist_id = "playlistId")

@@ -45,6 +45,12 @@ upload_video <- function(
   open_url = FALSE,
   ...
 ) {
+  # Validate file input
+  validate_character(file, "file")
+  
+  if (!file.exists(file)) {
+    stop("File '", file, "' does not exist.", call. = FALSE)
+  }
   if ("privacyStatus" %in% names(status)) {
     p <- status$privacyStatus
     p <- match.arg(p, choices = c("private", "public", "unlisted"))

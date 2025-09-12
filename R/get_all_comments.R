@@ -45,26 +45,60 @@ get_all_comments <- function(video_id = NULL, ...) {
   # Handle empty response (no comments)
   if (is.null(res$items) || length(res$items) == 0) {
     warning("No comments found for video: ", video_id)
-    return(data.frame())
+    empty_df <- data.frame()
+    return(add_tuber_attributes(
+      empty_df,
+      api_calls_made = 1,
+      function_name = "get_all_comments",
+      parameters = list(video_id = video_id),
+      results_found = 0,
+      response_format = "data.frame"
+    ))
   }
   
+  # Process first page
   agg_res <- process_page(res)
   page_token <- res$nextPageToken
 
-  comment_list <- list(agg_res)  # Preallocate a list and store the initial result
+  # Preallocate list with estimated size to avoid repeated reallocations
+  estimated_pages <- 10  # Conservative estimate
+  comment_list <- vector("list", estimated_pages)
+  comment_list[[1]] <- agg_res
+  page_count <- 1
   
   while (!is.null(page_token)) {
     querylist$pageToken <- page_token
-    a_res <- tuber_GET("commentThreads", query = querylist, ...)
+    a_res <- call_api_with_retry(tuber_GET, path = "commentThreads", query = querylist, ...)
     new_comments <- process_page(a_res)
     
-    # Efficiently append to list using list indexing instead of c()
-    comment_list[[length(comment_list) + 1]] <- new_comments
+    page_count <- page_count + 1
+    
+    # Expand list if needed
+    if (page_count > length(comment_list)) {
+      length(comment_list) <- length(comment_list) * 2
+    }
+    
+    comment_list[[page_count]] <- new_comments
     page_token <- a_res$nextPageToken
   }
   
-  agg_res <- do.call(rbind, comment_list)  # Combine all comments into a single data frame
-  agg_res
+  # Remove unused slots and combine
+  comment_list <- comment_list[seq_len(page_count)]
+  agg_res <- dplyr::bind_rows(comment_list)  # More efficient than do.call(rbind, ...)
+  
+  # Add standardized attributes
+  result <- add_tuber_attributes(
+    agg_res,
+    api_calls_made = page_count,
+    function_name = "get_all_comments",
+    parameters = list(video_id = video_id),
+    results_found = nrow(agg_res),
+    pages_retrieved = page_count,
+    includes_replies = TRUE,
+    response_format = "data.frame"
+  )
+  
+  result
 }
 
 

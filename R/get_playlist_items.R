@@ -62,8 +62,8 @@ get_playlist_items <- function(filter = NULL, part = "contentDetails",
                     pageToken = page_token, videoId = video_id)
   querylist <- c(querylist, filter)
 
-  # Initial API call
-  res <- tuber_GET(path = "playlistItems", query = querylist, ...)
+  # Initial API call with retry logic
+  res <- call_api_with_retry(tuber_GET, path = "playlistItems", query = querylist, ...)
   
   # Check if we got any results
   if (is.null(res$items) || length(res$items) == 0) {
@@ -77,6 +77,7 @@ get_playlist_items <- function(filter = NULL, part = "contentDetails",
   # Use standardized pagination pattern
   all_items <- res$items
   page_token <- res$nextPageToken
+  api_calls_made <- 1  # Track API calls for attributes
   
   # Continue pagination while we need more results and have a token
   while (!is.null(page_token) && is.character(page_token) && 
@@ -85,7 +86,8 @@ get_playlist_items <- function(filter = NULL, part = "contentDetails",
     querylist$pageToken <- page_token
     querylist$maxResults <- min(50, max_results - length(all_items))
     
-    a_res <- tuber_GET(path = "playlistItems", query = querylist, ...)
+    a_res <- call_api_with_retry(tuber_GET, path = "playlistItems", query = querylist, ...)
+    api_calls_made <- api_calls_made + 1
     
     # Add new items if available
     if (!is.null(a_res$items) && length(a_res$items) > 0) {
@@ -114,7 +116,15 @@ get_playlist_items <- function(filter = NULL, part = "contentDetails",
   if (simplify) {
     # Improved simplification logic 
     if (length(all_items) == 0) {
-      return(data.frame())
+      empty_df <- data.frame()
+      return(add_tuber_attributes(
+        empty_df,
+        api_calls_made = api_calls_made,
+        function_name = "get_playlist_items",
+        parameters = list(filter = filter, part = part, max_results = max_results),
+        results_found = 0,
+        response_format = "data.frame"
+      ))
     }
     
     # Process each item and flatten to data.frame
@@ -127,6 +137,28 @@ get_playlist_items <- function(filter = NULL, part = "contentDetails",
     
     # Combine all rows into single data.frame
     res <- do.call(plyr::rbind.fill, simplified_items)
+    
+    # Add attributes to simplified result
+    res <- add_tuber_attributes(
+      res,
+      api_calls_made = api_calls_made,
+      function_name = "get_playlist_items",
+      parameters = list(filter = filter, part = part, max_results = max_results),
+      results_found = nrow(res),
+      response_format = "data.frame",
+      pagination_used = api_calls_made > 1
+    )
+  } else {
+    # Add attributes to list result 
+    res <- add_tuber_attributes(
+      res,
+      api_calls_made = api_calls_made,
+      function_name = "get_playlist_items",
+      parameters = list(filter = filter, part = part, max_results = max_results),
+      results_found = length(all_items),
+      response_format = "list",
+      pagination_used = api_calls_made > 1
+    )
   }
 
   return(res)

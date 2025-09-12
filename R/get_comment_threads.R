@@ -95,15 +95,27 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
     return(simpler_res)
 
   } else if (simplify && part == "snippet" && max_results > 100) {
-    # Use standardized pagination pattern from yt_search.R
-    all_items <- list()
+    # Use optimized pagination with preallocated memory
+    estimated_items <- min(max_results, 500)  # Reasonable upper bound
+    all_items <- vector("list", estimated_items)
+    item_count <- 0
     page_token <- res$nextPageToken
-    collected_ids <- character(0)
+    collected_ids <- character(estimated_items)  # Preallocate ID tracking
+    id_count <- 0
     
     # Process initial results
     for (x in res$items) {
       comment_id <- x$snippet$topLevelComment$id
-      if (!comment_id %in% collected_ids) {
+      if (!comment_id %in% collected_ids[seq_len(id_count)]) {
+        item_count <- item_count + 1
+        id_count <- id_count + 1
+        
+        # Expand vectors if needed
+        if (item_count > length(all_items)) {
+          length(all_items) <- length(all_items) * 2
+          length(collected_ids) <- length(collected_ids) * 2
+        }
+        
         snippet <- unlist(x$snippet$topLevelComment$snippet)
         # Apply consistent Unicode handling
         text_fields <- c("textDisplay", "textOriginal", "authorDisplayName")
@@ -112,8 +124,8 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
             snippet[field] <- clean_youtube_text(snippet[field])
           }
         }
-        all_items[[length(all_items) + 1]] <- c(snippet, id = comment_id)
-        collected_ids <- c(collected_ids, comment_id)
+        all_items[[item_count]] <- c(snippet, id = comment_id)
+        collected_ids[id_count] <- comment_id
       }
     }
     
@@ -124,14 +136,23 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
       querylist$pageToken <- page_token
       querylist$maxResults <- min(100, max_results - length(all_items))
       
-      a_res <- tuber_GET("commentThreads", querylist, ...)
+      a_res <- call_api_with_retry(tuber_GET, path = "commentThreads", query = querylist, ...)
       
-      # Process new results with deduplication
+      # Process new results with efficient deduplication
       for (x in a_res$items) {
-        if (length(all_items) >= max_results) break
+        if (item_count >= max_results) break
         
         comment_id <- x$snippet$topLevelComment$id
-        if (!comment_id %in% collected_ids) {
+        if (!comment_id %in% collected_ids[seq_len(id_count)]) {
+          item_count <- item_count + 1
+          id_count <- id_count + 1
+          
+          # Expand vectors if needed
+          if (item_count > length(all_items)) {
+            length(all_items) <- length(all_items) * 2
+            length(collected_ids) <- length(collected_ids) * 2
+          }
+          
           snippet <- unlist(x$snippet$topLevelComment$snippet)
           # Apply consistent Unicode handling
           text_fields <- c("textDisplay", "textOriginal", "authorDisplayName")
@@ -140,8 +161,8 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
               snippet[field] <- clean_youtube_text(snippet[field])
             }
           }
-          all_items[[length(all_items) + 1]] <- c(snippet, id = comment_id)
-          collected_ids <- c(collected_ids, comment_id)
+          all_items[[item_count]] <- c(snippet, id = comment_id)
+          collected_ids[id_count] <- comment_id
         }
       }
       
@@ -151,11 +172,13 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
       if (length(a_res$items) == 0) break
     }
 
-    if (length(all_items) == 0) {
+    if (item_count == 0) {
       return(data.frame())
     }
     
-    agg_res_df <- do.call(rbind, all_items)
+    # Trim to actual size and combine efficiently
+    all_items <- all_items[seq_len(item_count)]
+    agg_res_df <- dplyr::bind_rows(lapply(all_items, as.data.frame, stringsAsFactors = FALSE))
     # Unicode handling already applied above, no need to repeat
     if ("publishedAt" %in% colnames(agg_res_df)) {
       agg_res_df <- agg_res_df[order(agg_res_df$publishedAt), , drop = FALSE]

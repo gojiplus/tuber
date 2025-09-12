@@ -30,9 +30,7 @@
 get_captions <- function(id = NULL, lang = "en",
                           format = "sbv", as_raw = TRUE, ...) {
 
-  if (!is.character(id)) {
-    stop("Must specify a valid id.")
-  }
+  validate_character(id, "id")
 
   # Check authentication - captions require OAuth token and video ownership
   yt_check_token()

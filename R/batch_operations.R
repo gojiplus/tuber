@@ -6,10 +6,6 @@
 #' @name batch-operations
 NULL
 
-# Null coalescing operator for safe default values
-`%||%` <- function(x, y) {
-  if (is.null(x) || length(x) == 0) y else x
-}
 
 #' Get details for multiple videos in batches
 #'
@@ -94,7 +90,15 @@ get_videos_batch <- function(video_ids,
   if (length(all_items) == 0) {
     suggest_solution("empty_results", "- Check if video IDs are correct\n- Videos may be private or deleted")
     warning("No video details found for any of the provided IDs.", call. = FALSE)
-    return(if (simplify) data.frame() else list())
+    empty_result <- if (simplify) data.frame() else list()
+    return(add_tuber_attributes(
+      empty_result,
+      api_calls_made = total_batches,
+      function_name = "get_videos_batch",
+      parameters = list(video_ids = video_ids, part = part, batch_size = batch_size),
+      results_found = 0,
+      response_format = if (simplify) "data.frame" else "list"
+    ))
   }
   
   # Combine results
@@ -109,6 +113,18 @@ get_videos_batch <- function(video_ids,
       result
     })
   }
+  
+  # Add standardized attributes
+  result <- add_tuber_attributes(
+    result,
+    api_calls_made = total_batches,
+    function_name = "get_videos_batch",
+    parameters = list(video_ids = video_ids, part = part, batch_size = batch_size),
+    results_found = length(all_items),
+    videos_requested = length(video_ids),
+    batches_processed = total_batches,
+    response_format = if (simplify) "data.frame" else "list"
+  )
   
   return(result)
 }
@@ -195,7 +211,15 @@ get_channels_batch <- function(channel_ids,
   if (length(all_items) == 0) {
     suggest_solution("empty_results", "- Check if channel IDs are correct\n- Channels may be private or deleted")
     warning("No channel details found for any of the provided IDs.", call. = FALSE)
-    return(if (simplify) data.frame() else list())
+    empty_result <- if (simplify) data.frame() else list()
+    return(add_tuber_attributes(
+      empty_result,
+      api_calls_made = total_batches,
+      function_name = "get_channels_batch",
+      parameters = list(channel_ids = channel_ids, part = part, batch_size = batch_size),
+      results_found = 0,
+      response_format = if (simplify) "data.frame" else "list"
+    ))
   }
   
   # Combine results
@@ -243,6 +267,18 @@ get_channels_batch <- function(channel_ids,
       result
     })
   }
+  
+  # Add standardized attributes
+  result <- add_tuber_attributes(
+    result,
+    api_calls_made = total_batches,
+    function_name = "get_channels_batch",
+    parameters = list(channel_ids = channel_ids, part = part, batch_size = batch_size),
+    results_found = length(all_items),
+    channels_requested = length(channel_ids),
+    batches_processed = total_batches,
+    response_format = if (simplify) "data.frame" else "list"
+  )
   
   return(result)
 }

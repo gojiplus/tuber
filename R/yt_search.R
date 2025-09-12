@@ -277,10 +277,30 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
                    max_pages, total_returned, max_results))
   }
 
-  # Add additional information as attributes
-  attr(all_results, "total_results") <- res$pageInfo$totalResults
-  attr(all_results, "actual_results") <- nrow(all_results)
-  attr(all_results, "api_limit_reached") <- nrow(all_results) >= 500
+  # Calculate actual API calls made
+  api_calls_made <- page_count
+  
+  # Add standardized attributes (preserving existing ones)
+  result <- add_tuber_attributes(
+    all_results,
+    api_calls_made = api_calls_made,
+    function_name = "yt_search",
+    parameters = list(
+      term = term, 
+      max_results = max_results, 
+      type = type,
+      get_all = get_all,
+      max_pages = max_pages
+    ),
+    results_found = nrow(all_results),
+    pages_retrieved = page_count,
+    search_exhausted = is.null(page_token) || page_count >= max_pages
+  )
+  
+  # Preserve existing attributes
+  attr(result, "total_results") <- res$pageInfo$totalResults
+  attr(result, "actual_results") <- nrow(all_results) 
+  attr(result, "api_limit_reached") <- nrow(all_results) >= 500
 
-  return(all_results)
+  return(result)
 }

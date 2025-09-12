@@ -145,23 +145,43 @@ get_video_details <- function(video_id = NULL, part = "snippet", as.data.frame =
 
   querylist <- list(part = part, id = video_id)
 
-  # Handle API call with error handling
-  raw_res <- tryCatch({
-    tuber_GET("videos", querylist, ...)
-  }, error = function(e) {
-    handle_network_error(e, "Failed to retrieve video details")
-  })
+  # Handle API call with retry logic
+  raw_res <- call_api_with_retry(
+    tuber_GET, 
+    path = "videos", 
+    query = querylist,
+    ...
+  )
 
   if (length(raw_res$items) == 0) {
     suggest_solution("empty_results", "- Check if the video ID is correct\n- Video may be private or deleted")
     warning("No video details found for ID: ", video_id, call. = FALSE)
-    return(list())
+    
+    # Add attributes even to empty results for consistency
+    empty_result <- list()
+    return(add_tuber_attributes(
+      empty_result,
+      api_calls_made = 1,
+      function_name = "get_video_details",
+      parameters = list(video_id = video_id, part = part, as.data.frame = as.data.frame),
+      results_found = 0
+    ))
   }
 
   if (as.data.frame) {
     raw_res <- purrr::map_df(raw_res$items, ~ flatten(.x))
   }
 
-  raw_res
+  # Add standardized attributes
+  result <- add_tuber_attributes(
+    raw_res,
+    api_calls_made = 1,
+    function_name = "get_video_details", 
+    parameters = list(video_id = video_id, part = part, as.data.frame = as.data.frame),
+    results_found = length(raw_res$items %||% nrow(raw_res)),
+    response_format = if (as.data.frame) "data.frame" else "list"
+  )
+  
+  result
 }
 
