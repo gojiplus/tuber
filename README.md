@@ -5,6 +5,9 @@
 
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/tuber)](https://cran.r-project.org/package=tuber)
 ![](http://cranlogs.r-pkg.org/badges/grand-total/tuber)
+[![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg)](https://gojiplus.github.io/tuber/)
+[![License](https://img.shields.io/github/license/gojiplus/tuber)](https://github.com/finite-sample/tuber/blob/main/LICENSE)
+
 
 Access YouTube API via R. Get comments posted on YouTube videos, get
 information on how many times a video has been liked, search for videos
