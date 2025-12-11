@@ -1,6 +1,6 @@
-# Generate cache key for API call
+# Generate cache key for API request
 
-Generate cache key for API call
+Generate cache key for API request
 
 ## Usage
 

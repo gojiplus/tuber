@@ -135,7 +135,7 @@ Functions for working with YouTube channels
 
 - [`get_channel_stats()`](https://gojiplus.github.io/tuber/reference/get_channel_stats.md)
   [`list_my_channel()`](https://gojiplus.github.io/tuber/reference/get_channel_stats.md)
-  : Get statistics of a Channel
+  : Get Channel Statistics
 - [`get_subscriptions()`](https://gojiplus.github.io/tuber/reference/get_subscriptions.md)
   : Get Subscriptions
 - [`list_channel_resources()`](https://gojiplus.github.io/tuber/reference/list_channel_resources.md)
@@ -158,7 +158,7 @@ Functions for working with YouTube videos
 - [`get_stats()`](https://gojiplus.github.io/tuber/reference/get_stats.md)
   : Get statistics of a Video or Videos
 - [`get_video_details()`](https://gojiplus.github.io/tuber/reference/get_video_details.md)
-  : Get Details of a Video or Videos
+  : Get Video Details
 - [`get_related_videos()`](https://gojiplus.github.io/tuber/reference/get_related_videos.md)
   : Get Related Videos
 - [`list_videos()`](https://gojiplus.github.io/tuber/reference/list_videos.md)
@@ -262,16 +262,10 @@ Functions for tracking and managing YouTube API quota usage
 - [`yt_set_quota_limit()`](https://gojiplus.github.io/tuber/reference/yt_set_quota_limit.md)
   : Set Quota Limit
 
-## Batch Operations
+## Bulk Analysis
 
 Functions for processing multiple items efficiently
 
-- [`get_channels_batch()`](https://gojiplus.github.io/tuber/reference/get_channels_batch.md)
-  : Get statistics for multiple channels in batches
-- [`get_playlists_batch()`](https://gojiplus.github.io/tuber/reference/get_playlists_batch.md)
-  : Get playlist information for multiple playlists in batches
-- [`get_videos_batch()`](https://gojiplus.github.io/tuber/reference/get_videos_batch.md)
-  : Get details for multiple videos in batches
 - [`bulk_video_analysis()`](https://gojiplus.github.io/tuber/reference/bulk_video_analysis.md)
   : Bulk video performance analysis
 
@@ -371,7 +365,7 @@ Advanced functions and low-level utilities
 - [`validate_youtube_params()`](https://gojiplus.github.io/tuber/reference/validate_youtube_params.md)
   : Comprehensive parameter validation for YouTube API functions
 - [`generate_cache_key()`](https://gojiplus.github.io/tuber/reference/generate_cache_key.md)
-  : Generate cache key for API call
+  : Generate cache key for API request
 - [`get_cached_response()`](https://gojiplus.github.io/tuber/reference/get_cached_response.md)
   : Get cached response if available and valid
 - [`store_cached_response()`](https://gojiplus.github.io/tuber/reference/store_cached_response.md)
@@ -389,8 +383,6 @@ Package documentation and function groups
   : Extended YouTube API Endpoints
 - [`helper-functions`](https://gojiplus.github.io/tuber/reference/helper-functions.md)
   : Helper Functions for Common YouTube Analysis Tasks
-- [`batch-operations`](https://gojiplus.github.io/tuber/reference/batch-operations.md)
-  : Batch Operations for YouTube API
 - [`caching`](https://gojiplus.github.io/tuber/reference/caching.md) :
   Response Caching for YouTube API
 - [`error-handling`](https://gojiplus.github.io/tuber/reference/error-handling.md)

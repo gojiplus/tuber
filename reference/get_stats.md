@@ -9,7 +9,7 @@ processing when multiple video IDs are provided for efficiency.
 
 ``` r
 get_stats(
-  video_id = NULL,
+  video_ids = NULL,
   include_content_details = FALSE,
   batch_size = 50,
   simplify = TRUE,
@@ -19,7 +19,7 @@ get_stats(
 
 ## Arguments
 
-- video_id:
+- video_ids:
 
   Character vector. One or more video IDs. Required.
 
@@ -64,17 +64,17 @@ if (FALSE) { # \dontrun{
 # Set API token via yt_oauth() first
 
 # Single video
-get_stats(video_id="N708P-A45D0")
+get_stats(video_ids="N708P-A45D0")
 
 # Multiple videos (automatic batching)
 video_ids <- c("N708P-A45D0", "M7FIvfx5J10", "kJQP7kiw5Fk")
 stats_df <- get_stats(video_ids)
 
 # Include video duration and other content details:
-get_stats(video_id="N708P-A45D0", include_content_details = TRUE)
+get_stats(video_ids="N708P-A45D0", include_content_details = TRUE)
 
 # For unlisted videos, must authenticate as channel owner:
 # yt_oauth("your_client_id", "your_client_secret")
-# get_stats(video_id="your_unlisted_video_id")
+# get_stats(video_ids="your_unlisted_video_id")
 } # }
 ```

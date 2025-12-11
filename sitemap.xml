@@ -15,7 +15,6 @@
 <url><loc>https://gojiplus.github.io/tuber/reference/add_video_to_playlist.html</loc></url>
 <url><loc>https://gojiplus.github.io/tuber/reference/analyze_channel.html</loc></url>
 <url><loc>https://gojiplus.github.io/tuber/reference/analyze_trends.html</loc></url>
-<url><loc>https://gojiplus.github.io/tuber/reference/batch-operations.html</loc></url>
 <url><loc>https://gojiplus.github.io/tuber/reference/bulk_video_analysis.html</loc></url>
 <url><loc>https://gojiplus.github.io/tuber/reference/caching.html</loc></url>
 <url><loc>https://gojiplus.github.io/tuber/reference/call_api_with_retry.html</loc></url>
@@ -40,7 +39,6 @@
 <url><loc>https://gojiplus.github.io/tuber/reference/get_channel_info_cached.html</loc></url>
 <url><loc>https://gojiplus.github.io/tuber/reference/get_channel_sections.html</loc></url>
 <url><loc>https://gojiplus.github.io/tuber/reference/get_channel_stats.html</loc></url>
-<url><loc>https://gojiplus.github.io/tuber/reference/get_channels_batch.html</loc></url>
 <url><loc>https://gojiplus.github.io/tuber/reference/get_comment_threads.html</loc></url>
 <url><loc>https://gojiplus.github.io/tuber/reference/get_comments.html</loc></url>
 <url><loc>https://gojiplus.github.io/tuber/reference/get_live_streams.html</loc></url>
@@ -48,14 +46,12 @@
 <url><loc>https://gojiplus.github.io/tuber/reference/get_playlist_item_videoids.html</loc></url>
 <url><loc>https://gojiplus.github.io/tuber/reference/get_playlist_items.html</loc></url>
 <url><loc>https://gojiplus.github.io/tuber/reference/get_playlists.html</loc></url>
-<url><loc>https://gojiplus.github.io/tuber/reference/get_playlists_batch.html</loc></url>
 <url><loc>https://gojiplus.github.io/tuber/reference/get_premiere_info.html</loc></url>
 <url><loc>https://gojiplus.github.io/tuber/reference/get_related_videos.html</loc></url>
 <url><loc>https://gojiplus.github.io/tuber/reference/get_stats.html</loc></url>
 <url><loc>https://gojiplus.github.io/tuber/reference/get_subscriptions.html</loc></url>
 <url><loc>https://gojiplus.github.io/tuber/reference/get_video_details.html</loc></url>
 <url><loc>https://gojiplus.github.io/tuber/reference/get_video_thumbnails.html</loc></url>
-<url><loc>https://gojiplus.github.io/tuber/reference/get_videos_batch.html</loc></url>
 <url><loc>https://gojiplus.github.io/tuber/reference/handle_api_error.html</loc></url>
 <url><loc>https://gojiplus.github.io/tuber/reference/handle_network_error.html</loc></url>
 <url><loc>https://gojiplus.github.io/tuber/reference/helper-functions.html</loc></url>

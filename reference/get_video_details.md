@@ -1,50 +1,50 @@
-# Get Details of a Video or Videos
+# Get Video Details
 
-Get details such as when the video was published, the title,
-description, thumbnails, category etc.
+Get details for one or more YouTube videos efficiently using batch
+processing.
 
 ## Usage
 
 ``` r
 get_video_details(
-  video_id = NULL,
+  video_ids,
   part = "snippet",
-  as.data.frame = FALSE,
+  simplify = FALSE,
   batch_size = 50,
-  use_etag = TRUE,
+  show_progress = NULL,
+  auth = "token",
   ...
 )
 ```
 
 ## Arguments
 
-- video_id:
+- video_ids:
 
-  Comma separated list of IDs of the videos for which details are
-  requested. Required.
+  Character vector of video IDs to retrieve
 
 - part:
 
-  Comma-separated vector of video resource properties requested. Options
-  include:
-  `contentDetails, fileDetails, id, liveStreamingDetails, localizations, player, processingDetails, recordingDetails, snippet, statistics, status, suggestions, topicDetails`.
-  Note: As of October 30, 2024, the `status` part includes
-  `containsSyntheticMedia` property for identifying AI-generated
-  content.
+  Character vector of parts to retrieve. See `Details` for options.
 
-- as.data.frame:
+- simplify:
 
-  Logical, returns the requested information as data.frame. Does not
-  work for: `fileDetails, suggestions, processingDetails`
+  Logical. If TRUE, returns a data frame. If FALSE, returns raw list.
+  Default: FALSE.
 
 - batch_size:
 
-  Integer. When multiple video IDs are provided, controls batch size for
-  efficient processing. Default is 50.
+  Number of videos per API call (max 50). Default: 50.
 
-- use_etag:
+- show_progress:
 
-  Logical. Whether to use ETag for caching. Default is TRUE.
+  Whether to show progress for large batches. Default: TRUE for \>10
+  videos.
+
+- auth:
+
+  Authentication method: "token" (OAuth2) or "key" (API key). Default:
+  "token".
 
 - ...:
 
@@ -53,9 +53,26 @@ get_video_details(
 
 ## Value
 
-list. If part is snippet, the list will have the following elements:
-`id` (video id that was passed),
-`publishedAt, channelId, title, description, thumbnails, channelTitle, categoryId, liveBroadcastContent, localized, defaultAudioLanguage`
+When `simplify = FALSE` (default): List with items containing video
+details. When `simplify = TRUE`: Data frame with video details (not
+available for owner-only parts).
+
+The result includes metadata as attributes: - `api_calls_made`: Number
+of API calls made - `quota_used`: Estimated quota units consumed -
+`videos_requested`: Number of videos requested - `results_found`: Number
+of videos found
+
+## Details
+
+Valid values for `part`:
+`contentDetails, fileDetails, id, liveStreamingDetails, localizations, paidProductPlacementDetails, player, processingDetails, recordingDetails, snippet, statistics, status, suggestions, topicDetails`.
+
+Certain parts like `fileDetails, suggestions, processingDetails` are
+only available to video owners and require OAuth authentication.
+
+The function automatically batches requests to minimize API quota
+usage: - 1 video = 1 API call - 100 videos = 2 API calls (batched in
+groups of 50)
 
 ## References
 
@@ -65,47 +82,22 @@ list. If part is snippet, the list will have the following elements:
 
 ``` r
 if (FALSE) { # \dontrun{
+# Single video
+details <- get_video_details("yJXTXN4xrI8")
 
-# Set API token via yt_oauth() first
+# Multiple videos - automatically batched
+video_ids <- c("yJXTXN4xrI8", "LDZX4ooRsWs", "kJQP7kiw5Fk")
+details <- get_video_details(video_ids)
 
-get_video_details(video_id = "yJXTXN4xrI8")
-get_video_details(video_id = "yJXTXN4xrI8", part = "contentDetails")
-# retrieve multiple parameters
-get_video_details(video_id = "yJXTXN4xrI8", part = c("contentDetails", "status"))
-# get details for multiple videos as data frame
-get_video_details(video_id = c("LDZX4ooRsWs", "yJXTXN4xrI8"), as.data.frame = TRUE)
+# Get as data frame
+df <- get_video_details(video_ids, simplify = TRUE)
 
-# Extract specific fields (common use case):
-details <- get_video_details(video_id = "yJXTXN4xrI8")
-# Get video title:
-video_title <- details$items[[1]]$snippet$title
-# Get video description:
-video_desc <- details$items[[1]]$snippet$description
+# Get specific parts
+stats <- get_video_details(video_ids, part = c("statistics", "contentDetails"))
 
-# Shiny usage - extract video title safely:
-# output$videotitle <- renderText({
-#   details <- get_video_details(input$commentkey)
-#   if (length(details$items) > 0) {
-#     details$items[[1]]$snippet$title
-#   } else {
-#     "Video not found"
-#   }
-# })
-# Get channel ID:
-channel_id <- details$items[[1]]$snippet$channelId
-
-# For Shiny applications - extract title:
-# output$videotitle <- renderText({
-#   details <- get_video_details(input$video_id)
-#   if (length(details$items) > 0) {
-#     details$items[[1]]$snippet$title
-#   } else {
-#     "Video not found"
-#   }
-# })
-
-# Check for AI-generated content (requires status part):
-# status_details <- get_video_details(video_id = "yJXTXN4xrI8", part = "status")
-# is_synthetic <- status_details$items[[1]]$status$containsSyntheticMedia
+# Extract specific fields:
+details <- get_video_details("yJXTXN4xrI8")
+title <- details$items[[1]]$snippet$title
+view_count <- details$items[[1]]$statistics$viewCount
 } # }
 ```

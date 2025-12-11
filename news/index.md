@@ -94,12 +94,10 @@ optimizations, and reliability enhancements:
 
 - **BATCH OPERATIONS**: New high-performance functions for bulk data
   retrieval:
-  - [`get_videos_batch()`](https://gojiplus.github.io/tuber/reference/get_videos_batch.md):
-    Process up to 50 videos per API call (50x more efficient)
-  - [`get_channels_batch()`](https://gojiplus.github.io/tuber/reference/get_channels_batch.md):
-    Bulk channel statistics retrieval
-  - [`get_playlists_batch()`](https://gojiplus.github.io/tuber/reference/get_playlists_batch.md):
-    Efficient playlist information fetching
+  - `get_videos_batch()`: Process up to 50 videos per API call (50x more
+    efficient)
+  - `get_channels_batch()`: Bulk channel statistics retrieval
+  - `get_playlists_batch()`: Efficient playlist information fetching
 - **RESPONSE CACHING**: Optional caching for static data (video
   categories, regions, languages) reduces quota usage
 - **HELPER FUNCTIONS**: High-level convenience functions for common

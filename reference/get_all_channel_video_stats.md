@@ -1,8 +1,8 @@
 # Get statistics on all the videos in a Channel
 
-Iterates through the channel's uploads playlist, collecting video IDs
-from each page until no further pages are available. Statistics and
-details are then fetched for every video.
+Efficiently collects all video IDs from a channel's uploads playlist,
+then fetches statistics and details using batch processing for optimal
+API quota usage.
 
 ## Usage
 
