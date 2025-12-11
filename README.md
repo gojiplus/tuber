@@ -2,7 +2,7 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ## :sweet\_potato: tuber: Access YouTube API via R
-[![CI](https://github.com/gojiplus/tuber/actions/workflows/r.yml/badge.svg)](https://github.com/gojiplus/tuber/actions/workflows/r.yml)
+[![CI](https://github.com/gojiplus/tuber/actions/workflows/ci.yml/badge.svg)](https://github.com/gojiplus/tuber/actions/workflows/ci.yml)
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/tuber)](https://cran.r-project.org/package=tuber)
 ![](http://cranlogs.r-pkg.org/badges/grand-total/tuber)
 [![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg)](https://gojiplus.github.io/tuber/)
