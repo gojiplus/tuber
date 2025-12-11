@@ -35,7 +35,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::devtools, any::httr, any::jsonlite
+          extra-packages: any::devtools, any::httr, any::jsonlite, any::desc
           needs: check
 
       - name: Verify local check status
@@ -52,12 +52,16 @@ jobs:
           
           Rscript -e "
           library(devtools)
+          library(desc)
           
-          # Extract package info
-          desc <- read.dcf('DESCRIPTION')
-          pkg_name <- desc[1, 'Package']
-          pkg_version <- desc[1, 'Version'] 
-          maintainer_email <- sub('.*<(.+)>.*', '\\\\1', desc[1, 'Maintainer'])
+          # Extract package info using desc package which handles Authors@R
+          desc_obj <- desc::desc()
+          pkg_name <- desc_obj\$get('Package')
+          pkg_version <- desc_obj\$get('Version')
+          
+          # Get maintainer email from Authors@R field
+          maintainer_info <- desc_obj\$get_maintainer()
+          maintainer_email <- sub('.*<(.+)>.*', '\\\\1', maintainer_info)
           
           cat('Package:', pkg_name, '\\n')
           cat('Version:', pkg_version, '\\n') 
@@ -84,11 +88,13 @@ jobs:
           
           Rscript -e "
           library(devtools)
+          library(desc)
           
           # Submit to win-builder release
           tryCatch({
-            desc <- read.dcf('DESCRIPTION')
-            maintainer_email <- sub('.*<(.+)>.*', '\\\\1', desc[1, 'Maintainer'])
+            desc_obj <- desc::desc()
+            maintainer_info <- desc_obj\$get_maintainer()
+            maintainer_email <- sub('.*<(.+)>.*', '\\\\1', maintainer_info)
             result <- devtools::check_win_release(email = maintainer_email, quiet = FALSE)
             cat('✅ Successfully submitted to win-builder (release)\\n')
           }, error = function(e) {
