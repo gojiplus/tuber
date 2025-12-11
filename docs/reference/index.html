@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tuber</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,7 +18,10 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/tuber-ex.html">Using tuber</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/emoji-analysis.html">Emoji Analysis in YouTube Comments</a></li>
+    <li><a class="dropdown-item" href="../articles/emoji-handling.html">Handling Emojis and Unicode in YouTube Data</a></li>
+    <li><a class="dropdown-item" href="../articles/troubleshooting.html">Troubleshooting Common Issues</a></li>
+    <li><a class="dropdown-item" href="../articles/tuber-ex.html">Using tuber</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/gojiplus/tuber/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
@@ -160,7 +163,7 @@
           <code><a href="get_stats.html">get_stats()</a></code>
 
         </dt>
-        <dd>Get statistics of a Video</dd>
+        <dd>Get statistics of a Video or Videos</dd>
       </dl><dl><dt>
 
           <code><a href="get_video_details.html">get_video_details()</a></code>
@@ -290,7 +293,7 @@
           <code><a href="list_captions.html">list_captions()</a></code>
 
         </dt>
-        <dd>Upload Video to Youtube</dd>
+        <dd>List Captions for YouTube Video</dd>
       </dl><dl><dt>
 
           <code><a href="list_caption_tracks.html">list_caption_tracks()</a></code>
@@ -450,6 +453,390 @@
         </dt>
         <dd>Set Quota Limit</dd>
       </dl></div><div class="section level2">
+      <h2 id="batch-operations">Batch Operations<a class="anchor" aria-label="anchor" href="#batch-operations"></a></h2>
+
+      <div class="section-desc"><p>Functions for processing multiple items efficiently</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="get_channels_batch.html">get_channels_batch()</a></code>
+
+        </dt>
+        <dd>Get statistics for multiple channels in batches</dd>
+      </dl><dl><dt>
+
+          <code><a href="get_playlists_batch.html">get_playlists_batch()</a></code>
+
+        </dt>
+        <dd>Get playlist information for multiple playlists in batches</dd>
+      </dl><dl><dt>
+
+          <code><a href="get_videos_batch.html">get_videos_batch()</a></code>
+
+        </dt>
+        <dd>Get details for multiple videos in batches</dd>
+      </dl><dl><dt>
+
+          <code><a href="bulk_video_analysis.html">bulk_video_analysis()</a></code>
+
+        </dt>
+        <dd>Bulk video performance analysis</dd>
+      </dl></div><div class="section level2">
+      <h2 id="extended-features">Extended Features<a class="anchor" aria-label="anchor" href="#extended-features"></a></h2>
+
+      <div class="section-desc"><p>Advanced analysis and specialized functions</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="analyze_channel.html">analyze_channel()</a></code>
+
+        </dt>
+        <dd>Comprehensive channel analysis</dd>
+      </dl><dl><dt>
+
+          <code><a href="analyze_trends.html">analyze_trends()</a></code>
+
+        </dt>
+        <dd>Trending analysis for search terms</dd>
+      </dl><dl><dt>
+
+          <code><a href="compare_channels.html">compare_channels()</a></code>
+
+        </dt>
+        <dd>Compare multiple channels</dd>
+      </dl><dl><dt>
+
+          <code><a href="get_live_streams.html">get_live_streams()</a></code>
+
+        </dt>
+        <dd>Get live stream information</dd>
+      </dl><dl><dt>
+
+          <code><a href="get_premiere_info.html">get_premiere_info()</a></code>
+
+        </dt>
+        <dd>Get video premiere information</dd>
+      </dl><dl><dt>
+
+          <code><a href="search_shorts.html">search_shorts()</a></code>
+
+        </dt>
+        <dd>Search for shorts (YouTube Shorts)</dd>
+      </dl></div><div class="section level2">
+      <h2 id="caching-performance">Caching &amp; Performance<a class="anchor" aria-label="anchor" href="#caching-performance"></a></h2>
+
+      <div class="section-desc"><p>Functions for caching and performance optimization</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="tuber_cache_config.html">tuber_cache_config()</a></code>
+
+        </dt>
+        <dd>Configure caching settings</dd>
+      </dl><dl><dt>
+
+          <code><a href="tuber_cache_clear.html">tuber_cache_clear()</a></code>
+
+        </dt>
+        <dd>Clear cache entries</dd>
+      </dl><dl><dt>
+
+          <code><a href="tuber_cache_info.html">tuber_cache_info()</a></code>
+
+        </dt>
+        <dd>Get current cache configuration</dd>
+      </dl><dl><dt>
+
+          <code><a href="tuber_GET_cached.html">tuber_GET_cached()</a></code>
+
+        </dt>
+        <dd>Cached version of tuber_GET with automatic caching</dd>
+      </dl><dl><dt>
+
+          <code><a href="get_channel_info_cached.html">get_channel_info_cached()</a></code>
+
+        </dt>
+        <dd>Get channel information with caching (for static parts)</dd>
+      </dl><dl><dt>
+
+          <code><a href="list_langs_cached.html">list_langs_cached()</a></code>
+
+        </dt>
+        <dd>List supported languages with caching</dd>
+      </dl><dl><dt>
+
+          <code><a href="list_regions_cached.html">list_regions_cached()</a></code>
+
+        </dt>
+        <dd>List supported regions with caching</dd>
+      </dl><dl><dt>
+
+          <code><a href="list_videocats_cached.html">list_videocats_cached()</a></code>
+
+        </dt>
+        <dd>Enhanced versions of static data functions with caching</dd>
+      </dl><dl><dt>
+
+          <code><a href="get_channel_sections.html">get_channel_sections()</a></code>
+
+        </dt>
+        <dd>Get channel sections</dd>
+      </dl><dl><dt>
+
+          <code><a href="get_video_thumbnails.html">get_video_thumbnails()</a></code>
+
+        </dt>
+        <dd>Get video thumbnails information</dd>
+      </dl><dl><dt>
+
+          <code><a href="with_retry.html">with_retry()</a></code>
+
+        </dt>
+        <dd>Exponential backoff retry logic for API calls</dd>
+      </dl></div><div class="section level2">
+      <h2 id="utility-functions">Utility Functions<a class="anchor" aria-label="anchor" href="#utility-functions"></a></h2>
+
+      <div class="section-desc"><p>Additional utility functions and information</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="tuber_info.html">tuber_info()</a></code>
+
+        </dt>
+        <dd>Display tuber function metadata</dd>
+      </dl><dl><dt>
+
+          <code><a href="list_captions.html">list_captions()</a></code>
+
+        </dt>
+        <dd>List Captions for YouTube Video</dd>
+      </dl></div><div class="section level2">
+      <h2 id="developer-advanced-functions">Developer &amp; Advanced Functions<a class="anchor" aria-label="anchor" href="#developer-advanced-functions"></a></h2>
+
+      <div class="section-desc"><p>Advanced functions and low-level utilities</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="call_api_with_retry.html">call_api_with_retry()</a></code>
+
+        </dt>
+        <dd>Wrapper for tuber API calls with built-in retry logic</dd>
+      </dl><dl><dt>
+
+          <code><a href="handle_api_error.html">handle_api_error()</a></code>
+
+        </dt>
+        <dd>Handle YouTube API errors with context-specific messages</dd>
+      </dl><dl><dt>
+
+          <code><a href="handle_network_error.html">handle_network_error()</a></code>
+
+        </dt>
+        <dd>Handle network/connection errors with retry suggestions</dd>
+      </dl><dl><dt>
+
+          <code><a href="is_transient_error.html">is_transient_error()</a></code>
+
+        </dt>
+        <dd>Check if an error is transient and worth retrying</dd>
+      </dl><dl><dt>
+
+          <code><a href="suggest_solution.html">suggest_solution()</a></code>
+
+        </dt>
+        <dd>Provide helpful suggestions for common user errors</dd>
+      </dl><dl><dt>
+
+          <code><a href="warn_deprecated.html">warn_deprecated()</a></code>
+
+        </dt>
+        <dd>Warn about deprecated functionality with migration guidance</dd>
+      </dl><dl><dt>
+
+          <code><a href="tuber_PUT.html">tuber_PUT()</a></code>
+
+        </dt>
+        <dd>PUT</dd>
+      </dl><dl><dt>
+
+          <code><a href="print.tuber_result.html">print(<i>&lt;tuber_result&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Print method for tuber results</dd>
+      </dl><dl><dt>
+
+          <code><a href="validate_character.html">validate_character()</a></code>
+
+        </dt>
+        <dd>Validate required character parameters</dd>
+      </dl><dl><dt>
+
+          <code><a href="validate_choice.html">validate_choice()</a></code>
+
+        </dt>
+        <dd>Validate that parameter matches allowed values</dd>
+      </dl><dl><dt>
+
+          <code><a href="validate_numeric.html">validate_numeric()</a></code>
+
+        </dt>
+        <dd>Validate numeric parameters with range checking</dd>
+      </dl><dl><dt>
+
+          <code><a href="validate_video_id.html">validate_video_id()</a></code>
+
+        </dt>
+        <dd>Validate YouTube-specific IDs and parameters</dd>
+      </dl><dl><dt>
+
+          <code><a href="validate_channel_id.html">validate_channel_id()</a></code>
+
+        </dt>
+        <dd>Validate YouTube channel ID format</dd>
+      </dl><dl><dt>
+
+          <code><a href="validate_playlist_id.html">validate_playlist_id()</a></code>
+
+        </dt>
+        <dd>Validate YouTube playlist ID format</dd>
+      </dl><dl><dt>
+
+          <code><a href="validate_rfc3339_date.html">validate_rfc3339_date()</a></code>
+
+        </dt>
+        <dd>Validate RFC 3339 date format for YouTube API</dd>
+      </dl><dl><dt>
+
+          <code><a href="validate_part_parameter.html">validate_part_parameter()</a></code>
+
+        </dt>
+        <dd>Validate YouTube API part parameters</dd>
+      </dl><dl><dt>
+
+          <code><a href="validate_region_code.html">validate_region_code()</a></code>
+
+        </dt>
+        <dd>Validate region codes</dd>
+      </dl><dl><dt>
+
+          <code><a href="validate_language_code.html">validate_language_code()</a></code>
+
+        </dt>
+        <dd>Validate language codes</dd>
+      </dl><dl><dt>
+
+          <code><a href="validate_youtube_params.html">validate_youtube_params()</a></code>
+
+        </dt>
+        <dd>Comprehensive parameter validation for YouTube API functions</dd>
+      </dl><dl><dt>
+
+          <code><a href="generate_cache_key.html">generate_cache_key()</a></code>
+
+        </dt>
+        <dd>Generate cache key for API call</dd>
+      </dl><dl><dt>
+
+          <code><a href="get_cached_response.html">get_cached_response()</a></code>
+
+        </dt>
+        <dd>Get cached response if available and valid</dd>
+      </dl><dl><dt>
+
+          <code><a href="store_cached_response.html">store_cached_response()</a></code>
+
+        </dt>
+        <dd>Store response in cache</dd>
+      </dl><dl><dt>
+
+          <code><a href="is_cacheable_endpoint.html">is_cacheable_endpoint()</a></code>
+
+        </dt>
+        <dd>Check if endpoint should be cached</dd>
+      </dl><dl><dt>
+
+          <code><a href="is_static_query.html">is_static_query()</a></code>
+
+        </dt>
+        <dd>Check if query parameters indicate static data</dd>
+      </dl></div><div class="section level2">
+      <h2 id="documentation-topics">Documentation Topics<a class="anchor" aria-label="anchor" href="#documentation-topics"></a></h2>
+
+      <div class="section-desc"><p>Package documentation and function groups</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="extended-endpoints.html">extended-endpoints</a></code>
+
+        </dt>
+        <dd>Extended YouTube API Endpoints</dd>
+      </dl><dl><dt>
+
+          <code><a href="helper-functions.html">helper-functions</a></code>
+
+        </dt>
+        <dd>Helper Functions for Common YouTube Analysis Tasks</dd>
+      </dl><dl><dt>
+
+          <code><a href="batch-operations.html">batch-operations</a></code>
+
+        </dt>
+        <dd>Batch Operations for YouTube API</dd>
+      </dl><dl><dt>
+
+          <code><a href="caching.html">caching</a></code>
+
+        </dt>
+        <dd>Response Caching for YouTube API</dd>
+      </dl><dl><dt>
+
+          <code><a href="error-handling.html">error-handling</a></code>
+
+        </dt>
+        <dd>Tuber Error Handling Utilities</dd>
+      </dl><dl><dt>
+
+          <code><a href="null-coalesce.html">`%||%`</a></code>
+
+        </dt>
+        <dd>Null coalescing operator</dd>
+      </dl></div><div class="section level2">
       <h2 id="helper-functions">Helper Functions<a class="anchor" aria-label="anchor" href="#helper-functions"></a></h2>
 
       <div class="section-desc"><p>Internal helper functions</p></div>
@@ -500,7 +887,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer></div>

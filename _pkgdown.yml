@@ -105,6 +105,83 @@ reference:
     - yt_reset_quota
     - yt_set_quota_limit
 
+- title: "Batch Operations"
+  desc: "Functions for processing multiple items efficiently"
+  contents:
+    - get_channels_batch
+    - get_playlists_batch
+    - get_videos_batch
+    - bulk_video_analysis
+
+- title: "Extended Features"
+  desc: "Advanced analysis and specialized functions"
+  contents:
+    - analyze_channel
+    - analyze_trends
+    - compare_channels
+    - get_live_streams
+    - get_premiere_info
+    - search_shorts
+
+- title: "Caching & Performance"
+  desc: "Functions for caching and performance optimization"
+  contents:
+    - tuber_cache_config
+    - tuber_cache_clear
+    - tuber_cache_info
+    - tuber_GET_cached
+    - get_channel_info_cached
+    - list_langs_cached
+    - list_regions_cached
+    - list_videocats_cached
+    - get_channel_sections
+    - get_video_thumbnails
+    - with_retry
+
+- title: "Utility Functions"
+  desc: "Additional utility functions and information"
+  contents:
+    - tuber_info
+    - list_captions
+
+- title: "Developer & Advanced Functions"
+  desc: "Advanced functions and low-level utilities"
+  contents:
+    - call_api_with_retry
+    - handle_api_error
+    - handle_network_error
+    - is_transient_error
+    - suggest_solution
+    - warn_deprecated
+    - tuber_PUT
+    - print.tuber_result
+    - validate_character
+    - validate_choice
+    - validate_numeric
+    - validate_video_id
+    - validate_channel_id
+    - validate_playlist_id
+    - validate_rfc3339_date
+    - validate_part_parameter
+    - validate_region_code
+    - validate_language_code
+    - validate_youtube_params
+    - generate_cache_key
+    - get_cached_response
+    - store_cached_response
+    - is_cacheable_endpoint
+    - is_static_query
+
+- title: "Documentation Topics"
+  desc: "Package documentation and function groups"  
+  contents:
+    - extended-endpoints
+    - helper-functions
+    - batch-operations
+    - caching
+    - error-handling
+    - null-coalesce
+
 - title: "Helper Functions" 
   desc: "Internal helper functions"
   contents:

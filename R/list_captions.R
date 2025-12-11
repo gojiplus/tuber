@@ -10,6 +10,7 @@
 #' video_id <- "M7FIvfx5J10"
 #' list_captions(video_id)
 #' }
+#' @export
 list_captions <- function(
   video_id,
   query = NULL,

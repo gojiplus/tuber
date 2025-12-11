@@ -17,3 +17,4 @@ Invisible NULL if all valid, stops execution if any invalid
 \description{
 Comprehensive parameter validation for YouTube API functions
 }
+\keyword{internal}

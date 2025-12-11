@@ -1,9 +1,12 @@
 pandoc: 3.6.4
-pkgdown: 2.1.1
+pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
+  emoji-analysis: emoji-analysis.html
+  emoji-handling: emoji-handling.html
+  troubleshooting: troubleshooting.html
   tuber-ex: tuber-ex.html
-last_built: 2025-08-30T10:07Z
+last_built: 2025-12-11T21:58Z
 urls:
-  reference: https://soodoku.github.io/tuber/reference
-  article: https://soodoku.github.io/tuber/articles
+  reference: https://gojiplus.github.io/tuber/reference
+  article: https://gojiplus.github.io/tuber/articles

@@ -5,6 +5,7 @@
 #' languages, and other data that changes infrequently.
 #'
 #' @name caching
+#' @keywords internal
 NULL
 
 # Global environment for cache storage
@@ -105,12 +106,13 @@ tuber_cache_clear <- function(pattern = NULL, older_than = NULL) {
   invisible(cleared_count)
 }
 
-#' Generate cache key for API call
+#' Generate cache key for API request
 #'
 #' @param endpoint API endpoint name
 #' @param query Query parameters
 #' @param auth Authentication method
 #' @return Character cache key
+#' @keywords internal
 generate_cache_key <- function(endpoint, query, auth) {
   # Sort query parameters for consistent keys
   query_sorted <- query[sort(names(query))]

@@ -9,7 +9,7 @@ thumbnails, category etc."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">tuber</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,7 +20,10 @@ thumbnails, category etc."></head><body>
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/tuber-ex.html">Using tuber</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/emoji-analysis.html">Emoji Analysis in YouTube Comments</a></li>
+    <li><a class="dropdown-item" href="../articles/emoji-handling.html">Handling Emojis and Unicode in YouTube Data</a></li>
+    <li><a class="dropdown-item" href="../articles/troubleshooting.html">Troubleshooting Common Issues</a></li>
+    <li><a class="dropdown-item" href="../articles/tuber-ex.html">Using tuber</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/gojiplus/tuber/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
@@ -48,6 +51,8 @@ thumbnails, category etc.</p>
 <span>  video_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  part <span class="op">=</span> <span class="st">"snippet"</span>,</span>
 <span>  as.data.frame <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  batch_size <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>  use_etag <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -66,13 +71,23 @@ details are requested. Required.</p></dd>
 Options include:
 <code>contentDetails, fileDetails, id, liveStreamingDetails,
 localizations, player, processingDetails,
-recordingDetails, snippet, statistics, status, suggestions, topicDetails</code></p></dd>
+recordingDetails, snippet, statistics, status, suggestions, topicDetails</code>.
+Note: As of October 30, 2024, the <code>status</code> part includes
+<code>containsSyntheticMedia</code> property for identifying AI-generated content.</p></dd>
 
 
 <dt id="arg-as-data-frame">as.data.frame<a class="anchor" aria-label="anchor" href="#arg-as-data-frame"></a></dt>
 <dd><p>Logical, returns the requested information as data.frame.
 Does not work for:
 <code>fileDetails, suggestions, processingDetails</code></p></dd>
+
+
+<dt id="arg-batch-size">batch_size<a class="anchor" aria-label="anchor" href="#arg-batch-size"></a></dt>
+<dd><p>Integer. When multiple video IDs are provided, controls batch size for efficient processing. Default is 50.</p></dd>
+
+
+<dt id="arg-use-etag">use_etag<a class="anchor" aria-label="anchor" href="#arg-use-etag"></a></dt>
+<dd><p>Logical. Whether to use ETag for caching. Default is TRUE.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -109,13 +124,23 @@ defaultAudioLanguage</code></p>
 <span class="r-in"><span><span class="va">details</span> <span class="op">&lt;-</span> <span class="fu">get_video_details</span><span class="op">(</span>video_id <span class="op">=</span> <span class="st">"yJXTXN4xrI8"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Get video title:</span></span></span>
 <span class="r-in"><span><span class="va">video_title</span> <span class="op">&lt;-</span> <span class="va">details</span><span class="op">$</span><span class="va">items</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">snippet</span><span class="op">$</span><span class="va">title</span></span></span>
-<span class="r-in"><span><span class="co"># Get video description:  </span></span></span>
+<span class="r-in"><span><span class="co"># Get video description:</span></span></span>
 <span class="r-in"><span><span class="va">video_desc</span> <span class="op">&lt;-</span> <span class="va">details</span><span class="op">$</span><span class="va">items</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">snippet</span><span class="op">$</span><span class="va">description</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Shiny usage - extract video title safely:</span></span></span>
+<span class="r-in"><span><span class="co"># output$videotitle &lt;- renderText({</span></span></span>
+<span class="r-in"><span><span class="co">#   details &lt;- get_video_details(input$commentkey)</span></span></span>
+<span class="r-in"><span><span class="co">#   if (length(details$items) &gt; 0) {</span></span></span>
+<span class="r-in"><span><span class="co">#     details$items[[1]]$snippet$title</span></span></span>
+<span class="r-in"><span><span class="co">#   } else {</span></span></span>
+<span class="r-in"><span><span class="co">#     "Video not found"</span></span></span>
+<span class="r-in"><span><span class="co">#   }</span></span></span>
+<span class="r-in"><span><span class="co"># })</span></span></span>
 <span class="r-in"><span><span class="co"># Get channel ID:</span></span></span>
 <span class="r-in"><span><span class="va">channel_id</span> <span class="op">&lt;-</span> <span class="va">details</span><span class="op">$</span><span class="va">items</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">snippet</span><span class="op">$</span><span class="va">channelId</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># For Shiny applications - extract title:</span></span></span>
-<span class="r-in"><span><span class="co"># output$videotitle &lt;- renderText({ </span></span></span>
+<span class="r-in"><span><span class="co"># output$videotitle &lt;- renderText({</span></span></span>
 <span class="r-in"><span><span class="co">#   details &lt;- get_video_details(input$video_id)</span></span></span>
 <span class="r-in"><span><span class="co">#   if (length(details$items) &gt; 0) {</span></span></span>
 <span class="r-in"><span><span class="co">#     details$items[[1]]$snippet$title</span></span></span>
@@ -123,6 +148,10 @@ defaultAudioLanguage</code></p>
 <span class="r-in"><span><span class="co">#     "Video not found"</span></span></span>
 <span class="r-in"><span><span class="co">#   }</span></span></span>
 <span class="r-in"><span><span class="co"># })</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Check for AI-generated content (requires status part):</span></span></span>
+<span class="r-in"><span><span class="co"># status_details &lt;- get_video_details(video_id = "yJXTXN4xrI8", part = "status")</span></span></span>
+<span class="r-in"><span><span class="co"># is_synthetic &lt;- status_details$items[[1]]$status$containsSyntheticMedia</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
@@ -136,7 +165,7 @@ defaultAudioLanguage</code></p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer></div>

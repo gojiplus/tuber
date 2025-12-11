@@ -21,3 +21,5 @@ tuber*.tgz
 # Generated vignette figures
 vignettes/figure/
 figure/
+/docs/deps
+/docs/deps

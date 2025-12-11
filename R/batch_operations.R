@@ -4,6 +4,7 @@
 #' dramatically reducing quota usage and improving performance.
 #'
 #' @name batch-operations
+#' @keywords internal
 NULL
 
 

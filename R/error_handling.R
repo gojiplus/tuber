@@ -4,6 +4,7 @@
 #' and recovery strategies across the tuber package.
 #'
 #' @name error-handling
+#' @keywords internal
 NULL
 
 #' Validate required character parameters
@@ -303,6 +304,7 @@ with_retry <- function(expr,
 #'
 #' @param error Error object to check
 #' @return Logical indicating if error is transient
+#' @keywords internal
 is_transient_error <- function(error) {
   error_msg <- tolower(error$message)
 
@@ -340,6 +342,7 @@ is_transient_error <- function(error) {
 #' @param ... Arguments to pass to the API function
 #' @param retry_config List of retry configuration options
 #' @return Result of API function call
+#' @keywords internal
 call_api_with_retry <- function(api_function, ..., retry_config = list()) {
 
   # Default retry configuration
@@ -580,6 +583,7 @@ validate_language_code <- function(language_code, name = "language_code") {
 #' @param params List of parameters to validate
 #' @param endpoint API endpoint for context-specific validation
 #' @return Invisible NULL if all valid, stops execution if any invalid
+#' @keywords internal
 validate_youtube_params <- function(params, endpoint = NULL) {
 
   for (param_name in names(params)) {
