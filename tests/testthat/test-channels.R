@@ -74,8 +74,57 @@ test_that("get_all_channel_video_stats handles video details correctly", {
     
     # Mock tuber_GET for video stats and details
     tuber_GET = function(path, query, ...) {
-      if (grepl("statistics", query$part)) {
-        # Return stats for videos (note: dislikeCount is private since Dec 2021)
+      # Handle combined snippet,statistics call (what get_video_details does)
+      if (grepl("statistics", query$part) && grepl("snippet", query$part)) {
+        # Return both stats and snippet for videos
+        list(
+          kind = "youtube#videoListResponse",
+          etag = "test-etag",
+          pageInfo = list(
+            totalResults = 2,
+            resultsPerPage = 2
+          ),
+          items = list(
+            list(
+              kind = "youtube#video",
+              etag = "video1-etag",
+              id = "video1",
+              snippet = list(
+                publishedAt = "2024-01-01T00:00:00Z",
+                channelId = "UCad-_hTvV-yBPcpy9jwQWeA",
+                title = "Test Video 1",
+                description = "Test description 1",
+                channelTitle = "Test Channel"
+              ),
+              statistics = list(
+                viewCount = "1000",
+                likeCount = "100",
+                # dislikeCount removed - private since Dec 2021
+                commentCount = "50"
+              )
+            ),
+            list(
+              kind = "youtube#video",
+              etag = "video2-etag",
+              id = "video2",
+              snippet = list(
+                publishedAt = "2024-01-02T00:00:00Z",
+                channelId = "UCad-_hTvV-yBPcpy9jwQWeA",
+                title = "Test Video 2",
+                description = "Test description 2",
+                channelTitle = "Test Channel"
+              ),
+              statistics = list(
+                viewCount = "2000",
+                likeCount = "200",
+                # dislikeCount removed - private since Dec 2021
+                commentCount = "100"
+              )
+            )
+          )
+        )
+      } else if (grepl("statistics", query$part)) {
+        # Return stats for videos (fallback for individual calls)
         list(
           kind = "youtube#videoListResponse",
           etag = "test-etag",
@@ -109,7 +158,7 @@ test_that("get_all_channel_video_stats handles video details correctly", {
           )
         )
       } else if (grepl("snippet", query$part)) {
-        # Return details for videos
+        # Return details for videos (fallback for individual calls)
         list(
           kind = "youtube#videoListResponse",
           etag = "test-etag",
@@ -234,7 +283,37 @@ test_that("get_all_channel_video_stats handles missing publishedAt field", {
     },
     
     tuber_GET = function(path, query, ...) {
-      if (grepl("statistics", query$part)) {
+      # Handle combined snippet,statistics call (what get_video_details does)
+      if (grepl("statistics", query$part) && grepl("snippet", query$part)) {
+        list(
+          kind = "youtube#videoListResponse",
+          etag = "test-etag",
+          pageInfo = list(
+            totalResults = 1,
+            resultsPerPage = 1
+          ),
+          items = list(
+            list(
+              kind = "youtube#video",
+              etag = "video1-etag",
+              id = "video1",
+              snippet = list(
+                # publishedAt is intentionally missing for this test
+                channelId = "UCtest",
+                title = "Test Video",
+                description = "Test",
+                channelTitle = "Test"
+              ),
+              statistics = list(
+                viewCount = "1000",
+                likeCount = "100",
+                # dislikeCount removed - private since Dec 2021
+                commentCount = "25"
+              )
+            )
+          )
+        )
+      } else if (grepl("statistics", query$part)) {
         list(
           kind = "youtube#videoListResponse",
           etag = "test-etag",
