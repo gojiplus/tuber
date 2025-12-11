@@ -183,9 +183,9 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
       next
     }
     item <- detail$items[[1]]$snippet
-    detail_df <- data.frame(id = item$id,
+    detail_df <- data.frame(id = detail$items[[1]]$id,
                             title = item$title,
-                            publication_date = if ("videoPublishedAt" %in% names(item)) item$videoPublishedAt else NA,
+                            publication_date = if ("publishedAt" %in% names(item)) item$publishedAt else NA,
                             description = item$description,
                             channel_id = item$channelId,
                             channel_title = item$channelTitle,
