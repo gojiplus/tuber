@@ -1,0 +1,305 @@
+name: Submit to CRAN (Stage 3)
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: 'Type CONFIRM to submit to CRAN'
+        required: true
+        type: string
+      skip-remote-check:
+        description: 'Skip remote check validation (not recommended)'
+        required: false
+        type: boolean
+        default: false
+  release:
+    types: [prereleased]
+
+jobs:
+  validate-prerequisites:
+    runs-on: ubuntu-latest
+    name: Validate prerequisites
+    outputs:
+      can-submit: ${{ steps.validate.outputs.can-submit }}
+      validation-message: ${{ steps.validate.outputs.message }}
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Validate submission prerequisites
+        id: validate
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const skipRemoteCheck = '${{ github.event.inputs.skip-remote-check }}' === 'true';
+            const isRelease = context.eventName === 'release';
+            const confirmation = '${{ github.event.inputs.confirmation }}';
+            
+            let canSubmit = true;
+            let messages = [];
+            
+            // Check confirmation for manual triggers
+            if (context.eventName === 'workflow_dispatch') {
+              if (confirmation !== 'CONFIRM') {
+                canSubmit = false;
+                messages.push('❌ Manual submission requires typing "CONFIRM"');
+              }
+            }
+            
+            // Check for recent successful remote checks (unless skipped)
+            if (!skipRemoteCheck) {
+              try {
+                const issues = await github.rest.issues.listForRepo({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  labels: ['cran-remote-check', 'passed'],
+                  state: 'closed',
+                  per_page: 1,
+                  sort: 'updated',
+                  direction: 'desc'
+                });
+                
+                if (issues.data.length === 0) {
+                  canSubmit = false;
+                  messages.push('❌ No successful remote checks found. Run Stage 2 first.');
+                } else {
+                  const lastCheck = new Date(issues.data[0].updated_at);
+                  const daysSince = (Date.now() - lastCheck.getTime()) / (1000 * 60 * 60 * 24);
+                  
+                  if (daysSince > 7) {
+                    messages.push('⚠️ Last successful remote check was ' + Math.round(daysSince) + ' days ago');
+                  } else {
+                    messages.push('✅ Recent successful remote check found');
+                  }
+                }
+              } catch (error) {
+                console.log('Could not check remote check status:', error.message);
+                messages.push('⚠️ Could not verify remote check status');
+              }
+            } else {
+              messages.push('⚠️ Skipping remote check validation (not recommended)');
+            }
+            
+            // Check for recent successful pre-checks
+            try {
+              const issues = await github.rest.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: ['cran-pre-check', 'passed'],
+                state: 'closed',
+                per_page: 1,
+                sort: 'updated',
+                direction: 'desc'
+              });
+              
+              if (issues.data.length > 0) {
+                messages.push('✅ Recent successful pre-check found');
+              } else {
+                messages.push('⚠️ No recent successful pre-checks found');
+              }
+            } catch (error) {
+              console.log('Could not check pre-check status:', error.message);
+            }
+            
+            const message = messages.join('\n');
+            core.setOutput('can-submit', canSubmit.toString());
+            core.setOutput('message', message);
+            
+            console.log('Validation result:', canSubmit ? 'PASSED' : 'FAILED');
+            console.log('Messages:\n' + message);
+
+  submit-to-cran:
+    runs-on: ubuntu-latest
+    name: Submit package to CRAN
+    needs: validate-prerequisites
+    if: needs.validate-prerequisites.outputs.can-submit == 'true'
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: 'release'
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck, any::devtools
+          needs: check
+
+      - name: Final local check
+        run: |
+          echo "🔍 Running final R CMD check before submission..."
+          Rscript -e "
+          result <- rcmdcheck::rcmdcheck(
+            args = c('--no-manual', '--as-cran'),
+            error_on = 'warning',
+            check_dir = 'check'
+          )
+          cat('✅ Final check passed\n')
+          "
+
+      - name: Extract package info
+        id: pkg-info
+        run: |
+          DESC=$(cat DESCRIPTION)
+          PACKAGE=$(echo "$DESC" | grep "^Package:" | cut -d' ' -f2)
+          VERSION=$(echo "$DESC" | grep "^Version:" | cut -d' ' -f2)
+          MAINTAINER=$(echo "$DESC" | grep "^Maintainer:" | cut -d' ' -f2-)
+          
+          echo "package-name=$PACKAGE" >> $GITHUB_OUTPUT
+          echo "package-version=$VERSION" >> $GITHUB_OUTPUT  
+          echo "maintainer=$MAINTAINER" >> $GITHUB_OUTPUT
+
+      - name: Submit to CRAN
+        id: cran-submit
+        run: |
+          echo "🚀 Submitting to CRAN..."
+          
+          Rscript -e "
+          library(devtools)
+          
+          # Read package info
+          desc <- read.dcf('DESCRIPTION')
+          pkg_name <- desc[1, 'Package']
+          pkg_version <- desc[1, 'Version']
+          maintainer <- desc[1, 'Maintainer']
+          
+          cat('📦 Submitting', pkg_name, 'version', pkg_version, 'to CRAN\n')
+          cat('👤 Maintainer:', maintainer, '\n')
+          
+          # Submit using devtools::submit_cran
+          tryCatch({
+            result <- devtools::submit_cran(
+              pkg = '.',
+              args = NULL
+            )
+            cat('✅ CRAN submission successful!\n')
+            cat('Please check your email for confirmation.\n')
+          }, error = function(e) {
+            cat('❌ CRAN submission failed:', e\$message, '\n')
+            quit(status = 1)
+          })
+          "
+          
+          echo "submission-status=success" >> $GITHUB_OUTPUT
+          echo "submission-time=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_OUTPUT
+
+      - name: Create submission issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const packageName = '${{ steps.pkg-info.outputs.package-name }}';
+            const packageVersion = '${{ steps.pkg-info.outputs.package-version }}';
+            const maintainer = '${{ steps.pkg-info.outputs.maintainer }}';
+            const submissionTime = '${{ steps.cran-submit.outputs.submission-time }}';
+            const validationMessage = '${{ needs.validate-prerequisites.outputs.validation-message }}';
+            
+            const title = `🎯 CRAN Submission: ${packageName} v${packageVersion}`;
+            
+            let body = `## ✅ CRAN Submission Successful\n\n`;
+            body += `**Package:** ${packageName}\n`;
+            body += `**Version:** ${packageVersion}\n`;
+            body += `**Maintainer:** ${maintainer}\n`;
+            body += `**Submission Time:** ${submissionTime}\n`;
+            body += `**Trigger:** ${context.eventName === 'release' ? 'Pre-release' : 'Manual'}\n\n`;
+            
+            body += `### 📋 Pre-submission Validation\n\n`;
+            body += `\`\`\`\n${validationMessage}\n\`\`\`\n\n`;
+            
+            body += `### 📧 Next Steps\n\n`;
+            body += `1. **Check your email** (${maintainer}) for CRAN confirmation\n`;
+            body += `2. **Reply to the confirmation email** to complete submission\n`;
+            body += `3. **Monitor CRAN incoming:** https://cran.r-project.org/incoming/\n`;
+            body += `4. **Track status:** https://r-hub.github.io/cransays/articles/dashboard.html\n\n`;
+            
+            body += `### ⏰ Timeline\n\n`;
+            body += `- **Confirmation email:** Usually within 15-30 minutes\n`;
+            body += `- **Initial review:** 1-5 business days\n`;
+            body += `- **Publication:** If accepted, within 24 hours\n\n`;
+            
+            body += `### 🔍 What CRAN Checks\n\n`;
+            body += `- R CMD check results (we already validated this)\n`;
+            body += `- Package size and dependencies\n`;
+            body += `- Documentation completeness\n`;
+            body += `- Code quality and best practices\n`;
+            body += `- License compliance\n\n`;
+            
+            body += `### 📝 If Changes Are Requested\n\n`;
+            body += `- CRAN may request fixes before acceptance\n`;
+            body += `- Make the requested changes\n`;
+            body += `- Re-run the complete workflow (Stages 1-3)\n`;
+            body += `- Resubmit with version bump if required\n\n`;
+            
+            body += `---\n*Automated submission via 3-stage CRAN workflow*`;
+            
+            // Close existing submission issues
+            const existingIssues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ['cran-submission'],
+              state: 'open'
+            });
+            
+            for (const issue of existingIssues.data) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                state: 'closed'
+              });
+            }
+            
+            // Create new submission issue
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['cran-submission', 'stage-3', 'submitted']
+            });
+
+  submission-failed:
+    runs-on: ubuntu-latest
+    needs: validate-prerequisites
+    if: needs.validate-prerequisites.outputs.can-submit == 'false'
+    steps:
+      - name: Create validation failure issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const validationMessage = '${{ needs.validate-prerequisites.outputs.validation-message }}';
+            
+            const title = '❌ CRAN Submission Failed - Prerequisites Not Met';
+            
+            let body = `## ❌ CRAN Submission Blocked\n\n`;
+            body += `The CRAN submission was blocked because prerequisites were not met.\n\n`;
+            
+            body += `### 🔍 Validation Results\n\n`;
+            body += `\`\`\`\n${validationMessage}\n\`\`\`\n\n`;
+            
+            body += `### 🔧 How to Fix\n\n`;
+            body += `1. **If Stage 1 failed:** Run "CRAN Pre-Check" workflow and fix any issues\n`;
+            body += `2. **If Stage 2 failed:** Run "CRAN Remote Check" workflow and address warnings/errors\n`;
+            body += `3. **If manual confirmation missing:** Use "CONFIRM" as the confirmation input\n\n`;
+            
+            body += `### 📋 Complete Workflow\n\n`;
+            body += `Follow the 3-stage process:\n`;
+            body += `1. **Stage 1:** CRAN Pre-Check (local validation)\n`;
+            body += `2. **Stage 2:** CRAN Remote Check (win-builder testing)\n`;
+            body += `3. **Stage 3:** Submit to CRAN (actual submission)\n\n`;
+            
+            body += `Each stage must pass before proceeding to the next.\n`;
+            
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['cran-submission', 'failed', 'prerequisites']
+            });

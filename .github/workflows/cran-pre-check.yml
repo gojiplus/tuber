@@ -1,0 +1,143 @@
+name: CRAN Pre-Check (Stage 1)
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Package version to check'
+        required: true
+        type: string
+  pull_request:
+    paths:
+    - 'DESCRIPTION'
+    - 'R/**'
+    - 'tests/**'
+    - 'man/**'
+
+jobs:
+  pre-check:
+    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.config.os }} (R-${{ matrix.config.r }})
+    strategy:
+      fail-fast: true  # Stop immediately if any platform fails
+      matrix:
+        config:
+          - {os: windows-latest, r: 'devel'}
+          - {os: windows-latest, r: 'release'}
+          - {os: macos-latest,   r: 'release'}
+          - {os: ubuntu-latest,  r: 'devel', http-user-agent: 'release'}
+          - {os: ubuntu-latest,  r: 'release'}
+          - {os: ubuntu-latest,  r: 'oldrel-1'}
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
+      _R_CHECK_CRAN_INCOMING_: true
+      _R_CHECK_FORCE_SUGGESTS_: false
+
+    outputs:
+      all-passed: ${{ steps.summary.outputs.all-passed }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.config.r }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+
+      - name: Run R CMD check
+        id: check
+        uses: r-lib/actions/check-r-package@v2
+        with:
+          args: 'c("--no-manual", "--as-cran")'
+          error-on: '"error"'  # Only fail on errors, not warnings
+          upload-snapshots: true
+
+      - name: Check for warnings
+        id: warnings
+        run: |
+          if [ -f "${{ steps.check.outputs.check-dir }}/00check.log" ]; then
+            WARNINGS=$(grep -c "WARNING" "${{ steps.check.outputs.check-dir }}/00check.log" || echo "0")
+            echo "warning-count=$WARNINGS" >> $GITHUB_OUTPUT
+            if [ "$WARNINGS" -gt 0 ]; then
+              echo "❌ Found $WARNINGS warning(s) on ${{ matrix.config.os }} R-${{ matrix.config.r }}"
+              grep -A 5 -B 5 "WARNING" "${{ steps.check.outputs.check-dir }}/00check.log" || true
+            else
+              echo "✅ No warnings on ${{ matrix.config.os }} R-${{ matrix.config.r }}"
+            fi
+          fi
+
+      - name: Summary
+        id: summary
+        run: |
+          if [ "${{ steps.warnings.outputs.warning-count }}" == "0" ]; then
+            echo "all-passed=true" >> $GITHUB_OUTPUT
+          else
+            echo "all-passed=false" >> $GITHUB_OUTPUT
+          fi
+
+  create-summary:
+    runs-on: ubuntu-latest
+    needs: pre-check
+    if: always()
+    steps:
+      - name: Create pre-check summary issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '🔍 CRAN Pre-Check Results (Stage 1)';
+            const allPassed = '${{ needs.pre-check.outputs.all-passed }}' === 'true';
+            
+            let body = `## CRAN Pre-Check Results\n\n`;
+            body += `**Trigger:** ${context.eventName}\n`;
+            body += `**Date:** ${new Date().toISOString()}\n`;
+            body += `**Status:** ${allPassed ? '✅ PASSED' : '❌ FAILED'}\n\n`;
+            
+            if (allPassed) {
+              body += `### ✅ All Platforms Passed\n\n`;
+              body += `The package passes R CMD check with --as-cran on all platforms:\n`;
+              body += `- Windows (devel + release)\n`;
+              body += `- macOS (release)\n`;
+              body += `- Linux (devel + release + oldrel)\n\n`;
+              body += `**Next Step:** Ready for Stage 2 (Remote Pre-testing)\n`;
+              body += `Run the "CRAN Remote Check" workflow to test on win-builder.\n`;
+            } else {
+              body += `### ❌ Some Platforms Failed\n\n`;
+              body += `Please fix the issues before proceeding to remote pre-testing.\n`;
+              body += `Check the individual job logs for details.\n`;
+            }
+            
+            // Close any existing pre-check issues
+            const existingIssues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ['cran-pre-check'],
+              state: 'open'
+            });
+            
+            for (const issue of existingIssues.data) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                state: 'closed'
+              });
+            }
+            
+            // Create new issue
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['cran-pre-check', allPassed ? 'passed' : 'failed']
+            });

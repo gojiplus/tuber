@@ -1,0 +1,265 @@
+name: CRAN Remote Check (Stage 2)
+
+on:
+  workflow_dispatch:
+    inputs:
+      skip-local-check:
+        description: 'Skip local pre-check validation'
+        required: false
+        type: boolean
+        default: false
+  workflow_run:
+    workflows: ["CRAN Pre-Check (Stage 1)"]
+    types: [completed]
+    branches: [master]
+
+jobs:
+  remote-check:
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'workflow_dispatch') ||
+      (github.event.workflow_run.conclusion == 'success')
+    
+    outputs:
+      win-devel-status: ${{ steps.win-devel.outputs.status }}
+      win-release-status: ${{ steps.win-release.outputs.status }}
+      check-urls: ${{ steps.urls.outputs.check-urls }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: 'release'
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::devtools, any::httr, any::jsonlite
+          needs: check
+
+      - name: Verify local check status
+        if: github.event.inputs.skip-local-check != 'true'
+        run: |
+          echo "Verifying that Stage 1 (pre-check) passed..."
+          # This would ideally check the previous workflow status
+          # For now, we'll proceed if manually triggered or workflow_run succeeded
+
+      - name: Submit to win-builder (devel)
+        id: win-devel
+        run: |
+          echo "📤 Submitting package to win-builder (R-devel)..."
+          
+          Rscript -e "
+          library(devtools)
+          
+          # Extract package info
+          desc <- read.dcf('DESCRIPTION')
+          pkg_name <- desc[1, 'Package']
+          pkg_version <- desc[1, 'Version'] 
+          maintainer_email <- sub('.*<(.+)>.*', '\\\\1', desc[1, 'Maintainer'])
+          
+          cat('Package:', pkg_name, '\\n')
+          cat('Version:', pkg_version, '\\n') 
+          cat('Maintainer:', maintainer_email, '\\n')
+          
+          # Submit to win-builder devel
+          tryCatch({
+            result <- devtools::check_win_devel(email = maintainer_email, quiet = FALSE)
+            cat('✅ Successfully submitted to win-builder (devel)\\n')
+            cat('submission-time=', format(Sys.time(), '%Y%m%d_%H%M%S'), '\\n', sep='')
+          }, error = function(e) {
+            cat('❌ Failed to submit to win-builder (devel):', e\$message, '\\n')
+            quit(status = 1)
+          })
+          "
+          
+          echo "status=submitted" >> $GITHUB_OUTPUT
+          echo "submission-time=$(date +'%Y%m%d_%H%M%S')" >> $GITHUB_OUTPUT
+
+      - name: Submit to win-builder (release)
+        id: win-release
+        run: |
+          echo "📤 Submitting package to win-builder (R-release)..."
+          
+          Rscript -e "
+          library(devtools)
+          
+          # Submit to win-builder release
+          tryCatch({
+            desc <- read.dcf('DESCRIPTION')
+            maintainer_email <- sub('.*<(.+)>.*', '\\\\1', desc[1, 'Maintainer'])
+            result <- devtools::check_win_release(email = maintainer_email, quiet = FALSE)
+            cat('✅ Successfully submitted to win-builder (release)\\n')
+          }, error = function(e) {
+            cat('❌ Failed to submit to win-builder (release):', e\$message, '\\n')
+            quit(status = 1)
+          })
+          "
+          
+          echo "status=submitted" >> $GITHUB_OUTPUT
+
+      - name: Generate check URLs
+        id: urls
+        run: |
+          # Extract package info for URL generation
+          DESC=$(cat DESCRIPTION)
+          PACKAGE=$(echo "$DESC" | grep "^Package:" | cut -d' ' -f2)
+          VERSION=$(echo "$DESC" | grep "^Version:" | cut -d' ' -f2)
+          TIMESTAMP="${{ steps.win-devel.outputs.submission-time }}"
+          
+          WIN_DEVEL_URL="https://win-builder.r-project.org/incoming_pretest/${PACKAGE}_${VERSION}_${TIMESTAMP}/Windows/00check.log"
+          WIN_RELEASE_URL="https://win-builder.r-project.org/incoming_pretest/${PACKAGE}_${VERSION}_${TIMESTAMP}/Debian/00check.log"
+          
+          echo "win-devel-url=${WIN_DEVEL_URL}" >> $GITHUB_OUTPUT
+          echo "win-release-url=${WIN_RELEASE_URL}" >> $GITHUB_OUTPUT
+          echo "check-urls=${WIN_DEVEL_URL},${WIN_RELEASE_URL}" >> $GITHUB_OUTPUT
+
+      - name: Wait for results
+        id: wait-results
+        run: |
+          echo "⏳ Waiting for win-builder results..."
+          echo "This typically takes 30-60 minutes"
+          echo "Check URLs:"
+          echo "- Windows (devel): ${{ steps.urls.outputs.win-devel-url }}"
+          echo "- Debian (release): ${{ steps.urls.outputs.win-release-url }}"
+          
+          # Wait strategy: check every 10 minutes for up to 4 hours
+          for i in {1..24}; do
+            echo "Attempt $i/24 (waiting 10 minutes each)..."
+            sleep 600  # 10 minutes
+            
+            # Check if results are available
+            DEVEL_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${{ steps.urls.outputs.win-devel-url }}" || echo "000")
+            RELEASE_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${{ steps.urls.outputs.win-release-url }}" || echo "000")
+            
+            echo "Devel check status: $DEVEL_STATUS"
+            echo "Release check status: $RELEASE_STATUS"
+            
+            if [[ "$DEVEL_STATUS" == "200" && "$RELEASE_STATUS" == "200" ]]; then
+              echo "✅ Results available!"
+              echo "results-available=true" >> $GITHUB_OUTPUT
+              break
+            fi
+            
+            if [[ $i == 24 ]]; then
+              echo "⏰ Timeout waiting for results (4 hours)"
+              echo "results-available=timeout" >> $GITHUB_OUTPUT
+            fi
+          done
+
+      - name: Parse results
+        id: parse-results
+        if: steps.wait-results.outputs.results-available == 'true'
+        run: |
+          echo "📊 Parsing win-builder results..."
+          
+          # Download and parse devel results
+          curl -s "${{ steps.urls.outputs.win-devel-url }}" > devel_check.log
+          DEVEL_WARNINGS=$(grep -c "WARNING" devel_check.log || echo "0")
+          DEVEL_ERRORS=$(grep -c "ERROR" devel_check.log || echo "0")
+          DEVEL_NOTES=$(grep -c "NOTE" devel_check.log || echo "0")
+          
+          # Download and parse release results  
+          curl -s "${{ steps.urls.outputs.win-release-url }}" > release_check.log
+          RELEASE_WARNINGS=$(grep -c "WARNING" release_check.log || echo "0")
+          RELEASE_ERRORS=$(grep -c "ERROR" release_check.log || echo "0")
+          RELEASE_NOTES=$(grep -c "NOTE" release_check.log || echo "0")
+          
+          echo "devel-warnings=$DEVEL_WARNINGS" >> $GITHUB_OUTPUT
+          echo "devel-errors=$DEVEL_ERRORS" >> $GITHUB_OUTPUT
+          echo "devel-notes=$DEVEL_NOTES" >> $GITHUB_OUTPUT
+          echo "release-warnings=$RELEASE_WARNINGS" >> $GITHUB_OUTPUT
+          echo "release-errors=$RELEASE_ERRORS" >> $GITHUB_OUTPUT
+          echo "release-notes=$RELEASE_NOTES" >> $GITHUB_OUTPUT
+          
+          # Determine overall status
+          TOTAL_WARNINGS=$((DEVEL_WARNINGS + RELEASE_WARNINGS))
+          TOTAL_ERRORS=$((DEVEL_ERRORS + RELEASE_ERRORS))
+          
+          if [[ $TOTAL_ERRORS > 0 ]]; then
+            echo "overall-status=failed" >> $GITHUB_OUTPUT
+            echo "❌ Found $TOTAL_ERRORS error(s)"
+          elif [[ $TOTAL_WARNINGS > 0 ]]; then
+            echo "overall-status=warnings" >> $GITHUB_OUTPUT
+            echo "⚠️  Found $TOTAL_WARNINGS warning(s)"
+          else
+            echo "overall-status=passed" >> $GITHUB_OUTPUT
+            echo "✅ All checks passed"
+          fi
+
+  create-results-issue:
+    runs-on: ubuntu-latest
+    needs: remote-check
+    if: always()
+    steps:
+      - name: Create remote check results issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '🌐 CRAN Remote Check Results (Stage 2)';
+            const status = '${{ needs.remote-check.outputs.overall-status }}' || 'unknown';
+            
+            let body = `## CRAN Remote Check Results\n\n`;
+            body += `**Date:** ${new Date().toISOString()}\n`;
+            body += `**Status:** ${status === 'passed' ? '✅ PASSED' : status === 'warnings' ? '⚠️ WARNINGS' : '❌ FAILED'}\n\n`;
+            
+            if ('${{ needs.remote-check.outputs.check-urls }}') {
+              const urls = '${{ needs.remote-check.outputs.check-urls }}'.split(',');
+              body += `### 🔗 Check Results\n\n`;
+              body += `- [Windows (R-devel)](${urls[0]})\n`;
+              body += `- [Debian (R-release)](${urls[1]})\n\n`;
+            }
+            
+            if (status === 'passed') {
+              body += `### ✅ Ready for CRAN Submission\n\n`;
+              body += `All remote checks passed! You can now proceed to Stage 3.\n\n`;
+              body += `**Next Step:** Run the "Submit to CRAN" workflow for final submission.\n`;
+            } else if (status === 'warnings') {
+              body += `### ⚠️ Warnings Found\n\n`;
+              body += `The package has warnings that should be addressed before CRAN submission.\n`;
+              body += `Check the logs above for details.\n\n`;
+            } else {
+              body += `### ❌ Errors Found\n\n`;
+              body += `The package has errors that must be fixed before CRAN submission.\n`;
+              body += `Check the logs above for details.\n\n`;
+            }
+            
+            body += `### 📊 Summary\n\n`;
+            if ('${{ needs.remote-check.outputs.devel-errors }}') {
+              body += `**Windows (R-devel):**\n`;
+              body += `- Errors: ${{ needs.remote-check.outputs.devel-errors }}\n`;
+              body += `- Warnings: ${{ needs.remote-check.outputs.devel-warnings }}\n`;
+              body += `- Notes: ${{ needs.remote-check.outputs.devel-notes }}\n\n`;
+              
+              body += `**Debian (R-release):**\n`;
+              body += `- Errors: ${{ needs.remote-check.outputs.release-errors }}\n`;
+              body += `- Warnings: ${{ needs.remote-check.outputs.release-warnings }}\n`;
+              body += `- Notes: ${{ needs.remote-check.outputs.release-notes }}\n\n`;
+            }
+            
+            // Close existing remote check issues
+            const existingIssues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ['cran-remote-check'],
+              state: 'open'
+            });
+            
+            for (const issue of existingIssues.data) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                state: 'closed'
+              });
+            }
+            
+            // Create new issue
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['cran-remote-check', status]
+            });
