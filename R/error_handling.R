@@ -8,57 +8,61 @@ NULL
 
 #' Validate required character parameters
 #'
+#' Modern validation using checkmate for better performance and consistency
+#'
 #' @param value The value to validate
 #' @param name The parameter name for error messages
 #' @param allow_empty Whether to allow empty strings
+#' @param any.missing Allow missing/NA values
+#' @param min.chars Minimum number of characters
 #' @return Invisible NULL if valid, stops execution if invalid
-validate_character <- function(value, name, allow_empty = FALSE) {
-  if (missing(value) || is.null(value)) {
-    stop("Parameter '", name, "' is required and cannot be NULL.", call. = FALSE)
-  }
+validate_character <- function(value, name, allow_empty = FALSE, any.missing = FALSE, min.chars = NULL) {
   
-  if (!is.character(value)) {
-    stop("Parameter '", name, "' must be a character vector.", call. = FALSE)
-  }
+  # Use checkmate for modern, fast validation
+  min_chars <- if (allow_empty) 0 else if (!is.null(min.chars)) min.chars else 1
   
-  if (length(value) != 1) {
-    stop("Parameter '", name, "' must be a single character string.", call. = FALSE)
-  }
-  
-  if (!allow_empty && nchar(value) == 0) {
-    stop("Parameter '", name, "' cannot be empty.", call. = FALSE)
-  }
+  assert_character(
+    value, 
+    len = 1,
+    any.missing = any.missing,
+    min.chars = min_chars,
+    .var.name = name
+  )
   
   invisible(NULL)
 }
 
 #' Validate numeric parameters with range checking
 #'
+#' Modern validation using checkmate for better performance and consistency
+#'
 #' @param value The value to validate
 #' @param name The parameter name for error messages
 #' @param min Minimum allowed value
 #' @param max Maximum allowed value
 #' @param integer_only Whether value must be an integer
+#' @param any.missing Allow missing/NA values
 #' @return Invisible NULL if valid, stops execution if invalid
-validate_numeric <- function(value, name, min = -Inf, max = Inf, integer_only = FALSE) {
-  if (missing(value) || is.null(value)) {
-    stop("Parameter '", name, "' is required and cannot be NULL.", call. = FALSE)
-  }
+validate_numeric <- function(value, name, min = -Inf, max = Inf, integer_only = FALSE, any.missing = FALSE) {
   
-  if (!is.numeric(value) || length(value) != 1) {
-    stop("Parameter '", name, "' must be a single numeric value.", call. = FALSE)
-  }
-  
-  if (is.na(value)) {
-    stop("Parameter '", name, "' cannot be NA.", call. = FALSE)
-  }
-  
-  if (integer_only && value != as.integer(value)) {
-    stop("Parameter '", name, "' must be an integer.", call. = FALSE)
-  }
-  
-  if (value < min || value > max) {
-    stop("Parameter '", name, "' must be between ", min, " and ", max, ".", call. = FALSE)
+  if (integer_only) {
+    assert_integerish(
+      value,
+      len = 1,
+      lower = min,
+      upper = max,
+      any.missing = any.missing,
+      .var.name = name
+    )
+  } else {
+    assert_numeric(
+      value,
+      len = 1,
+      lower = min,
+      upper = max,
+      any.missing = any.missing,
+      .var.name = name
+    )
   }
   
   invisible(NULL)
@@ -66,22 +70,20 @@ validate_numeric <- function(value, name, min = -Inf, max = Inf, integer_only = 
 
 #' Validate that parameter matches allowed values
 #'
+#' Modern validation using checkmate for better performance and consistency
+#'
 #' @param value The value to validate
 #' @param name The parameter name for error messages
 #' @param allowed Vector of allowed values
+#' @param any.missing Allow missing/NA values
 #' @return Invisible NULL if valid, stops execution if invalid
-validate_choice <- function(value, name, allowed) {
-  if (missing(value) || is.null(value)) {
-    stop("Parameter '", name, "' is required and cannot be NULL.", call. = FALSE)
-  }
+validate_choice <- function(value, name, allowed, any.missing = FALSE) {
   
-  if (length(value) != 1) {
-    stop("Parameter '", name, "' must be a single value.", call. = FALSE)
-  }
-  
-  if (!value %in% allowed) {
-    stop("Parameter '", name, "' must be one of: ", paste(allowed, collapse = ", "), ".", call. = FALSE)
-  }
+  assert_choice(
+    value,
+    choices = allowed,
+    .var.name = name
+  )
   
   invisible(NULL)
 }
@@ -126,12 +128,19 @@ handle_api_error <- function(error_response, context_msg = "", video_id = NULL, 
     )
     
     context_part <- if (nchar(context_msg) > 0) paste0(context_msg, ": ") else ""
-    stop(context_part, guidance, " (API error ", error_code, ")", call. = FALSE)
+    abort(paste0(context_part, guidance),
+          api_error_code = error_code,
+          error_reason = error_reason,
+          video_id = video_id,
+          channel_id = channel_id,
+          class = c(paste0("tuber_api_", error_reason), "tuber_api_error"))
     
   } else {
     # Fallback for non-standard error responses
     context_part <- if (nchar(context_msg) > 0) paste0(context_msg, ": ") else ""
-    stop(context_part, "Unexpected API response format.", call. = FALSE)
+    abort(paste0(context_part, "Unexpected API response format"),
+          error_response = error_response,
+          class = "tuber_unexpected_response")
   }
 }
 
@@ -141,13 +150,21 @@ handle_api_error <- function(error_response, context_msg = "", video_id = NULL, 
 #' @param context_msg Additional context for the error
 #' @return Stops execution with informative error message
 handle_network_error <- function(error, context_msg = "") {
+  # Modern validation using checkmate
+  assert_character(context_msg, len = 1, .var.name = "context_msg")
+  
   context_part <- if (nchar(context_msg) > 0) paste0(context_msg, ": ") else ""
   
   if (grepl("timeout|connection|network", error$message, ignore.case = TRUE)) {
-    stop(context_part, "Network connection failed. Check your internet connection and try again. ",
-         "For intermittent failures, consider implementing retry logic.", call. = FALSE)
+    abort(paste0(context_part, "Network connection failed"),
+          original_error = error$message,
+          help = c("Check your internet connection and try again",
+                   "For intermittent failures, consider implementing retry logic"),
+          class = "tuber_network_error")
   } else {
-    stop(context_part, error$message, call. = FALSE)
+    abort(paste0(context_part, error$message),
+          original_error = error$message,
+          class = "tuber_general_error")
   }
 }
 
@@ -157,9 +174,19 @@ handle_network_error <- function(error, context_msg = "") {
 #' @param new_function Name of replacement function
 #' @param version Version when deprecation will become an error
 warn_deprecated <- function(old_function, new_function, version = "next major version") {
-  warning("Function '", old_function, "' is deprecated and will be removed in ", version, ". ",
-          "Please use '", new_function, "' instead.", 
-          call. = FALSE, immediate. = TRUE)
+  # Modern validation using checkmate
+  assert_character(old_function, len = 1, .var.name = "old_function")
+  assert_character(new_function, len = 1, .var.name = "new_function")
+  assert_character(version, len = 1, .var.name = "version")
+  
+  warn("Function is deprecated and will be removed",
+       old_function = old_function,
+       new_function = new_function,
+       removal_version = version,
+       help = paste("Please use", new_function, "instead"),
+       class = "tuber_deprecated_function",
+       .frequency = "once",
+       .frequency_id = old_function)
 }
 
 #' Provide helpful suggestions for common user errors
@@ -243,9 +270,13 @@ with_retry <- function(expr,
     if (attempt > max_retries || !retry_on(result)) {
       # Call the original error with context
       if (attempt > 1) {
-        stop("Failed after ", attempt - 1, " retry attempts. Last error: ", result$message, call. = FALSE)
+        abort("Failed after multiple retry attempts",
+              retry_attempts = attempt - 1,
+              last_error = result$message,
+              class = "tuber_max_retries_failed")
       } else {
-        stop(result$message, call. = FALSE)
+        abort(result$message,
+              class = "tuber_api_call_failed")
       }
     }
     
@@ -359,12 +390,21 @@ validate_video_id <- function(video_id, name = "video_id") {
   
   # YouTube video IDs are typically 11 characters long
   if (any(nchar(video_id) != 11)) {
-    stop("Parameter '", name, "' must be valid YouTube video ID(s) (11 characters).", call. = FALSE)
+    abort("Invalid YouTube video ID length",
+          parameter = name,
+          video_id = video_id,
+          expected_length = 11,
+          actual_length = nchar(video_id),
+          class = "tuber_invalid_video_id_length")
   }
   
   # Basic pattern check (alphanumeric, hyphens, underscores)
   if (any(!grepl("^[A-Za-z0-9_-]+$", video_id))) {
-    stop("Parameter '", name, "' contains invalid characters for YouTube video ID.", call. = FALSE)
+    abort("Invalid characters in YouTube video ID",
+          parameter = name,
+          video_id = video_id,
+          help = "Video IDs must contain only alphanumeric characters, hyphens, and underscores",
+          class = "tuber_invalid_video_id_format")
   }
   
   invisible(NULL)
@@ -380,7 +420,11 @@ validate_channel_id <- function(channel_id, name = "channel_id") {
   
   # YouTube channel IDs start with "UC" and are 24 characters total
   if (any(!grepl("^UC[A-Za-z0-9_-]{22}$", channel_id))) {
-    stop("Parameter '", name, "' must be valid YouTube channel ID(s) starting with 'UC'.", call. = FALSE)
+    abort("Invalid YouTube channel ID format",
+          parameter = name,
+          channel_id = channel_id,
+          help = "Channel IDs must start with 'UC' and be 24 characters total",
+          class = "tuber_invalid_channel_id")
   }
   
   invisible(NULL)
@@ -396,7 +440,11 @@ validate_playlist_id <- function(playlist_id, name = "playlist_id") {
   
   # YouTube playlist IDs typically start with "PL" or "UU" and are 34 characters total
   if (any(!grepl("^(PL|UU|FL|LL)[A-Za-z0-9_-]{32}$", playlist_id))) {
-    stop("Parameter '", name, "' must be valid YouTube playlist ID(s).", call. = FALSE)
+    abort("Invalid YouTube playlist ID format",
+          parameter = name,
+          playlist_id = playlist_id,
+          help = "Playlist IDs must start with 'PL', 'UU', 'FL', or 'LL' and be 34 characters total",
+          class = "tuber_invalid_playlist_id")
   }
   
   invisible(NULL)
@@ -414,14 +462,23 @@ validate_rfc3339_date <- function(date_string, name) {
   rfc3339_pattern <- "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(Z|[+-]\\d{2}:\\d{2})$"
   
   if (any(!grepl(rfc3339_pattern, date_string))) {
-    stop("Parameter '", name, "' must be in RFC 3339 format (e.g., '2023-01-01T00:00:00Z').", call. = FALSE)
+    abort("Invalid RFC 3339 date format",
+          parameter = name,
+          date_string = date_string,
+          expected_format = "YYYY-MM-DDTHH:MM:SSZ or YYYY-MM-DDTHH:MM:SS+HH:MM",
+          example = "2023-01-01T00:00:00Z",
+          class = "tuber_invalid_date_format")
   }
   
   # Try to parse the date to ensure it's valid
   tryCatch({
     as.POSIXct(date_string, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC")
   }, error = function(e) {
-    stop("Parameter '", name, "' contains an invalid date: ", date_string, call. = FALSE)
+    abort("Unable to parse date string",
+          parameter = name,
+          date_string = date_string,
+          parse_error = e$message,
+          class = "tuber_date_parse_error")
   })
   
   invisible(NULL)
@@ -464,10 +521,12 @@ validate_part_parameter <- function(part, endpoint, name = "part") {
     invalid_parts <- setdiff(parts, valid_parts[[endpoint]])
     
     if (length(invalid_parts) > 0) {
-      stop("Parameter '", name, "' contains invalid parts for ", endpoint, " endpoint: ", 
-           paste(invalid_parts, collapse = ", "), 
-           ". Valid parts are: ", paste(valid_parts[[endpoint]], collapse = ", "), ".", 
-           call. = FALSE)
+      abort("Invalid API parts for endpoint",
+            parameter = name,
+            endpoint = endpoint,
+            invalid_parts = invalid_parts,
+            valid_parts = valid_parts[[endpoint]],
+            class = "tuber_invalid_api_parts")
     }
   }
   
@@ -484,8 +543,12 @@ validate_region_code <- function(region_code, name = "region_code") {
   
   # ISO 3166-1 alpha-2 codes are exactly 2 uppercase letters
   if (any(nchar(region_code) != 2 || !grepl("^[A-Z]{2}$", region_code))) {
-    stop("Parameter '", name, "' must be a valid ISO 3166-1 alpha-2 region code (e.g., 'US', 'GB').", 
-         call. = FALSE)
+    abort("Invalid region code format",
+          parameter = name,
+          region_code = region_code,
+          expected_format = "ISO 3166-1 alpha-2 (2 uppercase letters)",
+          examples = c("US", "GB", "CA", "AU"),
+          class = "tuber_invalid_region_code")
   }
   
   invisible(NULL)
@@ -501,8 +564,12 @@ validate_language_code <- function(language_code, name = "language_code") {
   
   # Accept ISO 639-1 (2 letters) or BCP-47 format (e.g., en-US)
   if (any(!grepl("^[a-z]{2}(-[A-Z]{2})?$", language_code))) {
-    stop("Parameter '", name, "' must be a valid language code (e.g., 'en', 'en-US').", 
-         call. = FALSE)
+    abort("Invalid language code format",
+          parameter = name,
+          language_code = language_code,
+          expected_formats = c("ISO 639-1 (2 letters)", "BCP-47 (language-region)"),
+          examples = c("en", "en-US", "es", "es-ES"),
+          class = "tuber_invalid_language_code")
   }
   
   invisible(NULL)

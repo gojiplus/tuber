@@ -34,14 +34,23 @@
 list_caption_tracks <- function(part = "snippet", video_id = NULL, lang = "en",
                                  id = NULL, simplify = TRUE, ...) {
 
-  if (!is.character(video_id)) stop("Must specify a video ID.")
+  # Modern validation using checkmate
+  assert_character(video_id, len = 1, min.chars = 1, .var.name = "video_id")
+  assert_character(part, len = 1, min.chars = 1, .var.name = "part")
+  assert_character(lang, len = 1, min.chars = 1, .var.name = "lang")
+  assert_logical(simplify, len = 1, .var.name = "simplify")
+  
+  if (!is.null(id)) {
+    assert_character(id, min.chars = 1, .var.name = "id")
+  }
 
   querylist <- list(part = part, videoId = video_id, id = id)
   raw_res   <- tuber_GET("captions", query = querylist, ...)
 
   if (length(raw_res$items) == 0) {
-      warning("No caption tracks available. Likely cause: Incorrect video ID.
-        \n")
+      warn("No caption tracks available. Likely cause: Incorrect video ID",
+           video_id = video_id,
+           class = "tuber_no_captions")
       return(list())
     }
 

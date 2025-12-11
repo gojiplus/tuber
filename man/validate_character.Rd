@@ -4,7 +4,13 @@
 \alias{validate_character}
 \title{Validate required character parameters}
 \usage{
-validate_character(value, name, allow_empty = FALSE)
+validate_character(
+  value,
+  name,
+  allow_empty = FALSE,
+  any.missing = FALSE,
+  min.chars = NULL
+)
 }
 \arguments{
 \item{value}{The value to validate}
@@ -12,10 +18,14 @@ validate_character(value, name, allow_empty = FALSE)
 \item{name}{The parameter name for error messages}
 
 \item{allow_empty}{Whether to allow empty strings}
+
+\item{any.missing}{Allow missing/NA values}
+
+\item{min.chars}{Minimum number of characters}
 }
 \value{
 Invisible NULL if valid, stops execution if invalid
 }
 \description{
-Validate required character parameters
+Modern validation using checkmate for better performance and consistency
 }

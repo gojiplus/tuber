@@ -56,26 +56,39 @@ list_channel_activities <- function(filter = NULL, part = "snippet",
                                     published_before = NULL, region_code = NULL,
                                     simplify = TRUE, ...) {
 
-  if (max_results <= 0) {
-    stop("max_results must be a positive integer.")
+  # Modern validation using checkmate
+  assert_character(filter, len = 1, .var.name = "filter")
+  assert_choice(names(filter), "channel_id", .var.name = "filter names (must be 'channel_id')")
+  assert_choice(part, c("contentDetails", "id", "snippet"), .var.name = "part")
+  assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
+  assert_flag(simplify, .var.name = "simplify")
+  
+  if (!is.null(page_token)) {
+    assert_character(page_token, len = 1, min.chars = 1, .var.name = "page_token")
   }
-
-  if (!(names(filter) %in% c("channel_id"))) {
-    stop("filter can only take one of values: channel_id.")
-  }
-
-  if ( length(filter) != 1) stop("filter must be a vector of length 1.")
-
-  if (is.character(published_after))  {
+  
+  if (!is.null(published_after)) {
+    assert_character(published_after, len = 1, .var.name = "published_after")
     if (is.na(as.POSIXct(published_after, format = "%Y-%m-%dT%H:%M:%SZ"))) {
-      stop("The date is not properly formatted in RFC 339 Format.")
+      abort("published_after is not properly formatted in RFC 339 Format",
+            date = published_after,
+            expected_format = "YYYY-MM-DDTHH:MM:SSZ",
+            class = "tuber_invalid_date_format")
     }
   }
-
-  if (is.character(published_before)) {
+  
+  if (!is.null(published_before)) {
+    assert_character(published_before, len = 1, .var.name = "published_before")
     if (is.na(as.POSIXct(published_before, format = "%Y-%m-%dT%H:%M:%SZ"))) {
-      stop("The date is not properly formatted in RFC 339 Format.")
+      abort("published_before is not properly formatted in RFC 339 Format",
+            date = published_before,
+            expected_format = "YYYY-MM-DDTHH:MM:SSZ",
+            class = "tuber_invalid_date_format")
     }
+  }
+  
+  if (!is.null(region_code)) {
+    assert_character(region_code, len = 1, pattern = "^[A-Z]{2}$", .var.name = "region_code")
   }
 
   translate_filter   <- c(channel_id = "channelId")
@@ -104,7 +117,9 @@ list_channel_activities <- function(filter = NULL, part = "snippet",
   raw_res$items <- items
 
    if (length(raw_res$items) == 0) {
-      warning("No comment information available. Likely cause: Incorrect ID.\n")
+      warn("No activity information available. Likely cause: Incorrect channel ID",
+           channel_id = unname(filter)[1],
+           class = "tuber_no_activities")
       if (simplify == TRUE) return(data.frame())
       return(list())
     }

@@ -22,6 +22,11 @@
 
 list_regions <- function(hl = NULL, ...) {
 
+  # Modern validation using checkmate
+  if (!is.null(hl)) {
+    assert_character(hl, len = 1, min.chars = 1, .var.name = "hl")
+  }
+
   querylist <- list(part = "snippet")
 
   res <- tuber_GET("i18nRegions", querylist, ...)

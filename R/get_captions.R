@@ -30,7 +30,11 @@
 get_captions <- function(id = NULL, lang = "en",
                           format = "sbv", as_raw = TRUE, ...) {
 
-  validate_character(id, "id")
+  # Modern validation using checkmate
+  assert_character(id, len = 1, min.chars = 1, .var.name = "id")
+  assert_character(lang, len = 1, min.chars = 1, .var.name = "lang")
+  assert_character(format, len = 1, min.chars = 1, .var.name = "format")
+  assert_logical(as_raw, len = 1, .var.name = "as_raw")
 
   # Check authentication - captions require OAuth token and video ownership
   yt_check_token()
@@ -42,12 +46,19 @@ get_captions <- function(id = NULL, lang = "en",
     tuber_GET(paste0("captions", "/", id), query = querylist, ...)
   }, error = function(e) {
     if (grepl("403", e$message)) {
-      stop("HTTP 403: Access denied for caption ID '", id, "'. ",
-           "This usually means: (1) You don't own this video, ",
-           "(2) Video has no captions, or (3) Captions are auto-generated and not downloadable. ",
-           "Only video owners can download captions via the API.", call. = FALSE)
+      abort("HTTP 403: Access denied for caption ID",
+            caption_id = id,
+            help = c("This usually means:", 
+                     "(1) You don't own this video",
+                     "(2) Video has no captions", 
+                     "(3) Captions are auto-generated and not downloadable",
+                     "Only video owners can download captions via the API"),
+            class = "tuber_caption_access_denied")
     } else {
-      stop("Error retrieving captions: ", e$message, call. = FALSE)
+      abort("Error retrieving captions",
+            caption_id = id,
+            original_error = e$message,
+            class = "tuber_caption_fetch_error")
     }
   })
 

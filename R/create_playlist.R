@@ -17,7 +17,12 @@
 #'
 #' create_playlist(title = "My New Playlist", description = "This is a test playlist.")
 #' }
-create_playlist <- function(title, description, status, ...) {
+create_playlist <- function(title, description = "", status = "public", ...) {
+  # Modern validation using checkmate
+  assert_character(title, len = 1, min.chars = 1, .var.name = "title")
+  assert_character(description, len = 1, .var.name = "description")
+  assert_choice(status, c("private", "public", "unlisted"), .var.name = "status")
+  
   # Prepare the request body
   body <- list(
     snippet = list(title = title, description = description),

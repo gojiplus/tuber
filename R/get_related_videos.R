@@ -31,10 +31,10 @@
 get_related_videos <- function(video_id = NULL, max_results = 50,
                                 safe_search = "none", ...) {
 
-  if (!is.character(video_id)) stop("Must specify a video ID.")
-  if (max_results <= 0) {
-    stop("max_results must be a positive integer.")
-  }
+  # Modern validation using checkmate
+  assert_character(video_id, len = 1, min.chars = 1, .var.name = "video_id")
+  assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
+  assert_choice(safe_search, c("moderate", "none", "strict"), .var.name = "safe_search")
 
   querylist <- list(part = "snippet", relatedToVideoId = video_id,
              type = "video", maxResults = min(max_results, 50), safeSearch = safe_search)

@@ -8,6 +8,8 @@ get_video_details(
   video_id = NULL,
   part = "snippet",
   as.data.frame = FALSE,
+  batch_size = 50,
+  use_etag = TRUE,
   ...
 )
 }
@@ -19,7 +21,9 @@ details are requested. Required.}
 Options include:
 \code{contentDetails, fileDetails, id, liveStreamingDetails,
 localizations, player, processingDetails,
-recordingDetails, snippet, statistics, status, suggestions, topicDetails}}
+recordingDetails, snippet, statistics, status, suggestions, topicDetails}.
+Note: As of October 30, 2024, the \code{status} part includes 
+\code{containsSyntheticMedia} property for identifying AI-generated content.}
 
 \item{as.data.frame}{Logical, returns the requested information as data.frame.
 Does not work for:
@@ -78,6 +82,10 @@ channel_id <- details$items[[1]]$snippet$channelId
 #     "Video not found"
 #   }
 # })
+
+# Check for AI-generated content (requires status part):
+# status_details <- get_video_details(video_id = "yJXTXN4xrI8", part = "status")
+# is_synthetic <- status_details$items[[1]]$status$containsSyntheticMedia
 }
 
 }

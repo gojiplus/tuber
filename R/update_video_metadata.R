@@ -24,6 +24,15 @@
 #' }
 
 update_video_metadata <- function(video_id, title, category_id, description, privacy_status, made_for_kids, auth = "token") {
+  # Modern validation using checkmate
+  assert_character(video_id, len = 1, min.chars = 1, .var.name = "video_id")
+  assert_character(title, len = 1, min.chars = 1, .var.name = "title")
+  assert_character(category_id, len = 1, min.chars = 1, .var.name = "category_id")
+  assert_character(description, len = 1, .var.name = "description")
+  assert_choice(privacy_status, c("public", "private", "unlisted"), .var.name = "privacy_status")
+  assert_logical(made_for_kids, len = 1, .var.name = "made_for_kids")
+  assert_choice(auth, c("token", "key"), .var.name = "auth")
+  
   # Define the body for the PUT request
   body <- list(
     id = video_id,

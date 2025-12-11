@@ -30,17 +30,19 @@
 
 list_guidecats <- function(filter = NULL, hl = NULL, ...) {
 
-  if (!is.character(filter) || length(filter) != 1) {
-    stop("filter must be a character vector of length 1.")
+  # Modern validation using checkmate
+  assert_character(filter, len = 1, .var.name = "filter")
+  valid_filters <- c("category_id", "region_code")
+  assert_choice(names(filter), valid_filters, 
+                .var.name = "filter names (must be 'category_id' or 'region_code')")
+  
+  if (!is.null(hl)) {
+    assert_character(hl, len = 1, min.chars = 1, .var.name = "hl")
   }
 
   translate_filter <- c(category_id = "id", region_code = "regionCode")
   yt_filter_name <- translate_filter[names(filter)]
   names(filter) <- yt_filter_name
-
-  if (sum(is.na(names(filter))) > 0) {
-    stop("Filter can only have region_code or category_id.")
-  }
 
   querylist <- list(part = "snippet", hl = hl, filter)
 

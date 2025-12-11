@@ -18,7 +18,8 @@ yt_topic_search <- function(topic = NULL, ...) {
 
   .Deprecated("Freebase no longer supported by Google.\n")
 
-  if (!is.character(topic)) stop("Must specify a topic.")
+  # Modern validation using checkmate
+  assert_character(topic, len = 1, min.chars = 1, .var.name = "topic")
 
   yt_check_token()
 

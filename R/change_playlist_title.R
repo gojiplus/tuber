@@ -16,6 +16,11 @@
 #'
 
 change_playlist_title <- function(playlist_id, new_title, auth = "token") {
+  # Modern validation using checkmate
+  assert_character(playlist_id, len = 1, min.chars = 1, .var.name = "playlist_id")
+  assert_character(new_title, len = 1, min.chars = 1, .var.name = "new_title")
+  assert_choice(auth, c("token", "key"), .var.name = "auth")
+  
   # Define the body for the PUT request
   body <- list(
     id = playlist_id,

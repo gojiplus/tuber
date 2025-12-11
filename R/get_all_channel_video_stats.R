@@ -27,30 +27,44 @@
 #' }
 
 get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
-  if (!is.character(channel_id) && !identical(tolower(mine), "true")) {
-    stop("Must specify a valid channel ID or set mine = 'true'.")
+  # Modern validation using checkmate
+  if (!identical(tolower(mine), "true")) {
+    assert_character(channel_id, len = 1, min.chars = 1, .var.name = "channel_id")
   }
+  assert_logical(mine, len = 1, .var.name = "mine")
 
   # Get channel resources with proper error handling
   channel_resources <- tryCatch({
     list_channel_resources(filter = list(channel_id = channel_id), part = "contentDetails", ...)
   }, error = function(e) {
-    stop("Failed to get channel information for: ", channel_id, ". Error: ", e$message)
+    abort("Failed to get channel information", 
+          channel_id = channel_id,
+          original_error = e$message,
+          class = "tuber_channel_info_error")
   })
   
   # Safely extract playlist ID
   if (is.null(channel_resources$items) || length(channel_resources$items) == 0) {
-    stop("No channel data found for: ", channel_id, ". Channel may not exist or may be private.")
+    abort("No channel data found", 
+          channel_id = channel_id,
+          help = "Channel may not exist or may be private",
+          class = "tuber_channel_not_found")
   }
   
   content_details <- channel_resources$items[[1]]$contentDetails
   if (is.null(content_details) || is.null(content_details$relatedPlaylists)) {
-    stop("No content details available for channel: ", channel_id, ". Channel may not have uploaded videos.")
+    abort("No content details available for channel", 
+          channel_id = channel_id,
+          help = "Channel may not have uploaded videos",
+          class = "tuber_no_content_details")
   }
   
   playlist_id <- content_details$relatedPlaylists$uploads
   if (is.null(playlist_id)) {
-    stop("No uploads playlist found for channel: ", channel_id, ". Channel may not have any videos.")
+    abort("No uploads playlist found for channel",
+          channel_id = channel_id,
+          help = "Channel may not have any videos or may be private",
+          class = "tuber_no_uploads_playlist")
   }
 
   vid_ids <- character()

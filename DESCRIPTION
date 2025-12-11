@@ -6,6 +6,7 @@ Authors@R: c(
     person("Kate", "Lyons", , "k.lyons7@gmail.com", role = "ctb"),
     person("John", "Muschelli", , "muschellij2@gmail.com", role = "ctb")
   )
+Author: Gaurav Sood [aut, cre], Kate Lyons [ctb], John Muschelli [ctb]
 Maintainer: Gaurav Sood <gsood07@gmail.com>
 Description: Get comments posted on YouTube videos, information on how
     many times a video has been liked, search for videos with particular
@@ -16,11 +17,13 @@ License: MIT + file LICENSE
 URL: https://gojiplus.github.io/tuber/, https://github.com/gojiplus/tuber
 BugReports: https://github.com/gojiplus/tuber/issues
 Depends:
-    R (>= 4.1.0)
+    R (>= 4.2.0)
 Imports:
     askpass,
+    checkmate,
     digest,
     dplyr,
+    hms,
     httr,
     httr2,
     jsonlite,
@@ -28,18 +31,26 @@ Imports:
     mime,
     plyr,
     purrr,
+    R6,
+    rlang (>= 1.1.0),
     tibble,
     tidyr,
     tidyselect,
-    utils
+    utils,
+    yaml
 Suggests:
-    hms,
+    config,
+    future,
+    ggplot2,
     knitr (>= 1.11),
     lintr,
+    memoise,
+    promises,
+    progress,
     rmarkdown,
-    testthat,
+    testthat (>= 3.0.0),
     xml2
 VignetteBuilder: 
     knitr
 Encoding: UTF-8
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3

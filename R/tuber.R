@@ -5,6 +5,9 @@
 #'
 #' @name tuber
 #' @importFrom askpass askpass
+#' @importFrom checkmate assert_character assert_numeric assert_integerish
+#' @importFrom checkmate assert_logical assert_choice assert_string assert_list
+#' @importFrom rlang abort warn inform is_missing %||%
 #' @importFrom httr GET POST PUT DELETE authenticate config stop_for_status
 #' @importFrom httr upload_file content oauth_endpoints oauth_app oauth2.0_token
 #' @importFrom httr2 request req_url_path_append req_url_query req_headers
@@ -19,6 +22,7 @@
 #' @importFrom tidyselect everything all_of
 #' @importFrom tidyr pivot_wider unnest unnest_longer
 #' @importFrom purrr map_df map_dbl flatten
+#' @importFrom R6 R6Class
 NULL
 #' @keywords internal
 "_PACKAGE"
@@ -341,28 +345,98 @@ is_testing <- function() {
 #' @param \dots Additional arguments passed to \code{\link[httr]{GET}}.
 #' @return list
 
-tuber_GET <- function(path, query, auth = "token", ...) {
+tuber_GET <- function(path, query, auth = "token", use_etag = TRUE, ...) {
+  # Modern validation using checkmate
+  assert_character(path, len = 1, min.chars = 1, .var.name = "path")
+  assert_list(query, .var.name = "query")
+  assert_choice(auth, c("token", "key"), .var.name = "auth")
+  assert_flag(use_etag, .var.name = "use_etag")
+  
   # Track quota usage
   parts <- query$part %||% NULL
   track_quota_usage(path, parts)
+  
+  # Generate cache key for ETag support
+  cache_key <- NULL
+  if (use_etag && tuber_config_get("api.enable_etags", TRUE)) {
+    cache_key <- generate_cache_key(path, query, auth)
+    
+    # Check for cached ETag
+    cached_etag <- get_cached_etag(cache_key)
+    if (!is.null(cached_etag)) {
+      query$etag <- cached_etag
+    }
+  }
 
   if (auth == "token") {
     yt_check_token()
-    req <- GET("https://www.googleapis.com", path = paste0("youtube/v3/", path),
-               query = query, config(token = getOption("google_token")), ...)
+    
+    # Add ETag header support
+    headers <- list()
+    if (!is.null(query$etag)) {
+      headers[["If-None-Match"]] <- query$etag
+      query$etag <- NULL  # Remove from query params
+    }
+    
+    req <- GET("https://www.googleapis.com", 
+               path = paste0("youtube/v3/", path),
+               query = query, 
+               config(token = getOption("google_token")),
+               httr::add_headers(.headers = headers), 
+               ...)
+    
+    # Handle 304 Not Modified
+    if (status_code(req) == 304) {
+      cached_response <- get_cached_response(cache_key)
+      if (!is.null(cached_response)) {
+        return(cached_response)
+      }
+    }
+    
     res <- content(req)
+    
+    # Cache new ETag and response
+    if (use_etag && !is.null(cache_key) && status_code(req) == 200) {
+      response_etag <- headers(req)[["etag"]]
+      if (!is.null(response_etag)) {
+        cache_etag_and_response(cache_key, response_etag, res)
+      }
+    }
   }
 
   if (auth == "key") {
     yt_check_key()
-    req <-
-      request("https://www.googleapis.com") %>%
+    
+    req_builder <- request("https://www.googleapis.com") %>%
       req_url_path_append("youtube/v3", path) %>%
       req_url_query(!!!query) %>%
       req_headers("x-goog-api-key" = suppressMessages(yt_get_key())) %>%
-      req_user_agent("tuber (https://github.com/soodoku/tuber)") %>%
-      req_perform()
+      req_user_agent("tuber (https://github.com/gojiplus/tuber)")
+    
+    # Add ETag header support for httr2
+    if (!is.null(query$etag)) {
+      req_builder <- req_builder %>% req_headers("If-None-Match" = query$etag)
+    }
+    
+    req <- req_builder %>% req_perform()
+    
+    # Handle 304 Not Modified
+    if (resp_status(req) == 304) {
+      cached_response <- get_cached_response(cache_key)
+      if (!is.null(cached_response)) {
+        return(cached_response)
+      }
+    }
+    
     res <- req %>% resp_body_json()
+    
+    # Cache new ETag and response
+    if (use_etag && !is.null(cache_key) && resp_status(req) == 200) {
+      response_etag <- resp_headers(req)[["etag"]]
+      if (!is.null(response_etag)) {
+        cache_etag_and_response(cache_key, response_etag, res)
+      }
+    }
   }
 
   # Check for rate limiting and quota errors
@@ -421,7 +495,7 @@ tuber_POST <- function(path, query, body = "", auth = "token", ...) {
       req_url_path_append("youtube/v3", path) %>%
       req_url_query(!!!query) %>%
       req_headers("x-goog-api-key" = suppressMessages(yt_get_key())) %>%
-      req_user_agent("tuber (https://github.com/soodoku/tuber)") %>%
+      req_user_agent("tuber (https://github.com/gojiplus/tuber)") %>%
       req_body_raw(body) %>%
       req_perform()
     res <- req %>% resp_body_json()
@@ -505,7 +579,7 @@ tuber_PUT <- function(path, query, body = "", auth = "token", ...) {
       req_url_path_append("youtube/v3", path) %>%
       req_url_query(!!!query) %>%
       req_headers("x-goog-api-key" = suppressMessages(yt_get_key())) %>%
-      req_user_agent("tuber (https://github.com/soodoku/tuber)") %>%
+      req_user_agent("tuber (https://github.com/gojiplus/tuber)") %>%
       req_body_json(body) %>%
       req_perform()
     res <- req %>% resp_body_json()
@@ -563,7 +637,7 @@ tuber_DELETE <- function(path, query, auth = "token", ...) {
       req_url_path_append("youtube/v3", path) %>%
       req_url_query(!!!query) %>%
       req_headers("x-goog-api-key" = suppressMessages(yt_get_key())) %>%
-      req_user_agent("tuber (https://github.com/soodoku/tuber)") %>%
+      req_user_agent("tuber (https://github.com/gojiplus/tuber)") %>%
       req_method("DELETE") %>%
       req_perform()
     res <- req %>% resp_body_json()

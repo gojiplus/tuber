@@ -37,8 +37,21 @@ list_videos <- function(part = "contentDetails", max_results = 50,
                         page_token = NULL, hl = NULL, region_code = NULL,
                         video_category_id = NULL, ...) {
 
-  if (max_results <= 0) {
-    stop("max_results must be a positive integer.")
+  # Modern validation using checkmate
+  assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
+  assert_character(part, len = 1, min.chars = 1, .var.name = "part")
+  
+  if (!is.null(page_token)) {
+    assert_character(page_token, len = 1, min.chars = 1, .var.name = "page_token")
+  }
+  if (!is.null(hl)) {
+    assert_character(hl, len = 1, min.chars = 1, .var.name = "hl")
+  }
+  if (!is.null(region_code)) {
+    assert_character(region_code, len = 1, min.chars = 1, .var.name = "region_code")
+  }
+  if (!is.null(video_category_id)) {
+    assert_character(video_category_id, len = 1, min.chars = 1, .var.name = "video_category_id")
   }
 
   querylist <- list(chart = "mostPopular", part = part,

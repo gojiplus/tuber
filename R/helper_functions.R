@@ -40,8 +40,11 @@ analyze_channel <- function(channel_id,
                            include_comments = FALSE,
                            ...) {
   
-  validate_channel_id(channel_id)
-  validate_numeric(max_videos, "max_videos", min = 1, max = 500, integer_only = TRUE)
+  # Modern validation using checkmate
+  assert_character(channel_id, len = 1, min.chars = 1, .var.name = "channel_id")
+  assert_integerish(max_videos, len = 1, lower = 1, upper = 500, .var.name = "max_videos")
+  assert_choice(auth, c("token", "key"), .var.name = "auth")
+  assert_logical(include_comments, len = 1, .var.name = "include_comments")
   
   message("Analyzing channel: ", channel_id)
   
@@ -56,14 +59,18 @@ analyze_channel <- function(channel_id,
   )
   
   if (nrow(channel_info) == 0) {
-    stop("Channel not found or inaccessible: ", channel_id, call. = FALSE)
+    abort("Channel not found or inaccessible",
+          channel_id = channel_id,
+          class = "tuber_channel_not_found")
   }
   
   # Get upload playlist ID
   upload_playlist_id <- channel_info$contentDetails.relatedPlaylists.uploads[1]
   
   if (is.na(upload_playlist_id)) {
-    warning("No uploads playlist found for channel. Analysis will be limited.", call. = FALSE)
+    warn("No uploads playlist found for channel. Analysis will be limited.",
+         channel_id = channel_id,
+         class = "tuber_no_uploads_playlist")
     videos_info <- data.frame()
   } else {
     # Get recent videos
@@ -179,11 +186,11 @@ compare_channels <- function(channel_ids,
                             simplify = TRUE,
                             ...) {
   
-  validate_character(channel_ids, "channel_ids")
-  
-  if (length(channel_ids) < 2) {
-    stop("At least 2 channels required for comparison.", call. = FALSE)
-  }
+  # Modern validation using checkmate
+  assert_character(channel_ids, min.len = 2, .var.name = "channel_ids")
+  assert_character(metrics, min.len = 1, .var.name = "metrics")
+  assert_choice(auth, c("token", "key"), .var.name = "auth")
+  assert_flag(simplify, .var.name = "simplify")
   
   message("Comparing ", length(channel_ids), " channels...")
   
@@ -197,12 +204,19 @@ compare_channels <- function(channel_ids,
   )
   
   if (nrow(channels_info) == 0) {
-    stop("No channel information could be retrieved.", call. = FALSE)
+    abort("No channel information could be retrieved",
+          channel_ids = channel_ids,
+          help = "Check that channel IDs are valid and accessible",
+          class = "tuber_no_channel_data")
   }
   
   if (nrow(channels_info) < length(channel_ids)) {
     missing_count <- length(channel_ids) - nrow(channels_info)
-    warning(missing_count, " channel(s) could not be found or are inaccessible.", call. = FALSE)
+    warn("Some channels could not be found or are inaccessible",
+         missing_count = missing_count,
+         total_requested = length(channel_ids),
+         found = nrow(channels_info),
+         class = "tuber_partial_channel_data")
   }
   
   # Calculate additional metrics
@@ -283,13 +297,15 @@ analyze_trends <- function(search_terms,
                           auth = "key",
                           ...) {
   
-  validate_character(search_terms, "search_terms")
-  validate_choice(time_period, "time_period", c("week", "month", "year", "all"))
-  validate_choice(order, "order", c("relevance", "date", "rating", "viewCount"))
-  validate_numeric(max_results, "max_results", min = 1, max = 50, integer_only = TRUE)
+  # Modern validation using checkmate
+  assert_character(search_terms, min.len = 1, .var.name = "search_terms")
+  assert_choice(time_period, c("week", "month", "year", "all"), .var.name = "time_period")
+  assert_choice(order, c("relevance", "date", "rating", "viewCount"), .var.name = "order")
+  assert_integerish(max_results, len = 1, lower = 1, upper = 50, .var.name = "max_results")
+  assert_choice(auth, c("token", "key"), .var.name = "auth")
   
   if (!is.null(region_code)) {
-    validate_region_code(region_code)
+    assert_character(region_code, len = 1, pattern = "^[A-Z]{2}$", .var.name = "region_code")
   }
   
   message("Analyzing trends for ", length(search_terms), " search term(s)...")
@@ -436,7 +452,11 @@ bulk_video_analysis <- function(video_ids,
                                auth = "key",
                                ...) {
   
-  validate_character(video_ids, "video_ids")
+  # Modern validation using checkmate
+  assert_character(video_ids, min.len = 1, .var.name = "video_ids")
+  assert_flag(include_comments, .var.name = "include_comments")
+  assert_numeric(benchmark_percentiles, lower = 0, upper = 1, .var.name = "benchmark_percentiles")
+  assert_choice(auth, c("token", "key"), .var.name = "auth")
   
   message("Analyzing ", length(video_ids), " videos...")
   
@@ -450,7 +470,10 @@ bulk_video_analysis <- function(video_ids,
   )
   
   if (nrow(videos_data) == 0) {
-    stop("No video data could be retrieved.", call. = FALSE)
+    abort("No video data could be retrieved",
+          video_ids = video_ids,
+          help = "Check that video IDs are valid and accessible",
+          class = "tuber_no_video_data")
   }
   
   # Convert to numeric for analysis

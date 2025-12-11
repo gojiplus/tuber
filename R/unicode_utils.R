@@ -13,6 +13,14 @@ NULL
 #' @return Character vector with UTF-8 encoding
 #' @keywords internal
 safe_utf8 <- function(text, fallback_encoding = "latin1") {
+  
+  # Modern validation using checkmate
+  if (!is.null(text)) {
+    assert(check_character(text), check_list(text), check_null(text), 
+           .var.name = "text")
+  }
+  assert_character(fallback_encoding, len = 1, .var.name = "fallback_encoding")
+  
   if (is.null(text) || length(text) == 0) {
     return(character(0))
   }
@@ -54,7 +62,10 @@ safe_utf8 <- function(text, fallback_encoding = "latin1") {
     
     return(result)
   }, error = function(e) {
-    warning("Unicode conversion failed for some text: ", e$message)
+    warn("Unicode conversion failed for some text",
+         error = e$message,
+         fallback_encoding = fallback_encoding,
+         class = "tuber_unicode_conversion_error")
     return(as.character(text))
   })
 }
@@ -70,6 +81,18 @@ safe_utf8 <- function(text, fallback_encoding = "latin1") {
 #' @return Cleaned character vector
 #' @keywords internal
 clean_youtube_text <- function(text, remove_html = TRUE, normalize_whitespace = TRUE, max_length = NULL) {
+  
+  # Modern validation using checkmate
+  if (!is.null(text)) {
+    assert_character(text, .var.name = "text")
+  }
+  assert_flag(remove_html, .var.name = "remove_html")
+  assert_flag(normalize_whitespace, .var.name = "normalize_whitespace")
+  
+  if (!is.null(max_length)) {
+    assert_integerish(max_length, len = 1, lower = 1, .var.name = "max_length")
+  }
+  
   if (is.null(text) || length(text) == 0) {
     return(character(0))
   }
@@ -123,6 +146,10 @@ clean_youtube_text <- function(text, remove_html = TRUE, normalize_whitespace = 
 process_youtube_text <- function(response, 
                                 text_fields = c("title", "description", "textDisplay", "textOriginal", 
                                                "channelTitle", "authorDisplayName", "categoryId")) {
+  
+  # Modern validation using checkmate
+  assert_character(text_fields, min.len = 1, .var.name = "text_fields")
+  
   if (is.null(response)) {
     return(response)
   }

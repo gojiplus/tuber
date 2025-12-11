@@ -51,9 +51,8 @@ yt_get_quota_usage <- function() {
 #' yt_set_quota_limit(50000)
 #' }
 yt_set_quota_limit <- function(limit) {
-  if (!is.numeric(limit) || limit <= 0) {
-    stop("Quota limit must be a positive number")
-  }
+  # Modern validation using checkmate
+  assert_numeric(limit, len = 1, lower = 1, .var.name = "limit")
   .tuber_env$quota_limit <- as.integer(limit)
   invisible(.tuber_env$quota_limit)
 }
@@ -80,15 +79,24 @@ yt_reset_quota <- function() {
 #' 
 #' @keywords internal
 track_quota_usage <- function(endpoint, parts = NULL, additional_cost = 0) {
+  # Modern validation using checkmate
+  assert_character(endpoint, len = 1, min.chars = 1, .var.name = "endpoint")
+  if (!is.null(parts)) {
+    assert_character(parts, .var.name = "parts")
+  }
+  assert_integerish(additional_cost, len = 1, lower = 0, .var.name = "additional_cost")
+  
   # Reset quota if it's a new day
   if (Sys.time() > .tuber_env$quota_reset_time) {
     yt_reset_quota()
   }
   
   # Calculate cost based on endpoint and parts
+  # Updated December 4, 2025: Video upload quota reduced from ~1600 to 100 units
   base_costs <- list(
     search = 100,          # Search operations are expensive
-    videos = 1,            # Video details
+    videos = 1,            # Video details (read operations)
+    "videos/insert" = 100, # Video uploads (write operations) - updated cost
     channels = 1,          # Channel details  
     playlists = 1,         # Playlist details
     playlistItems = 1,     # Playlist items
@@ -125,15 +133,23 @@ track_quota_usage <- function(endpoint, parts = NULL, additional_cost = 0) {
   quota_status <- yt_get_quota_usage()
   
   if (quota_status$quota_remaining <= 0) {
-    warning("YouTube API quota limit reached (", .tuber_env$quota_used, "/", .tuber_env$quota_limit, 
-            "). Quota resets at ", format(.tuber_env$quota_reset_time, "%Y-%m-%d %H:%M:%S UTC"))
+    warn("YouTube API quota limit reached",
+         quota_used = .tuber_env$quota_used,
+         quota_limit = .tuber_env$quota_limit,
+         reset_time = format(.tuber_env$quota_reset_time, "%Y-%m-%d %H:%M:%S UTC"),
+         class = "tuber_quota_exceeded")
   } else if (quota_status$quota_remaining <= 100) {
-    warning("YouTube API quota nearly exhausted (", quota_status$quota_remaining, " units remaining)")
+    warn("YouTube API quota nearly exhausted",
+         quota_remaining = quota_status$quota_remaining,
+         class = "tuber_quota_warning")
   }
   
   # Rate limiting check (basic)
   if (quota_status$requests_last_minute > 50) {
-    message("High request rate detected. Consider adding delays between API calls.")
+    inform("High request rate detected",
+           requests_last_minute = quota_status$requests_last_minute,
+           help = "Consider adding delays between API calls",
+           class = "tuber_high_request_rate")
   }
   
   invisible(cost)
@@ -150,8 +166,16 @@ track_quota_usage <- function(endpoint, parts = NULL, additional_cost = 0) {
 #' @importFrom stats runif
 #' @keywords internal
 exponential_backoff <- function(attempt_number, max_attempts = 5, base_delay = 1) {
+  # Modern validation using checkmate
+  assert_integerish(attempt_number, len = 1, lower = 1, .var.name = "attempt_number")
+  assert_integerish(max_attempts, len = 1, lower = 1, .var.name = "max_attempts")
+  assert_numeric(base_delay, len = 1, lower = 0, .var.name = "base_delay")
+  
   if (attempt_number > max_attempts) {
-    stop("Maximum retry attempts (", max_attempts, ") exceeded")
+    abort("Maximum retry attempts exceeded",
+          attempt_number = attempt_number,
+          max_attempts = max_attempts,
+          class = "tuber_max_retries_exceeded")
   }
   
   if (attempt_number > 1) {

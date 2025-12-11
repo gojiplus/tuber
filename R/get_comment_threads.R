@@ -53,15 +53,20 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
                                 text_format = "html", simplify = TRUE,
                                 max_results = 100, page_token = NULL, ...) {
 
-  # Validate parameters using standardized functions
-  validate_numeric(max_results, "max_results", min = 1, max = 2000, integer_only = TRUE)
-  validate_choice(text_format, "text_format", c("html", "plainText"))
+  # Modern validation using checkmate
+  assert_integerish(max_results, len = 1, lower = 1, upper = 2000, .var.name = "max_results")
+  assert_choice(text_format, c("html", "plainText"), .var.name = "text_format")
+  assert_character(part, len = 1, min.chars = 1, .var.name = "part")
+  assert_logical(simplify, len = 1, .var.name = "simplify")
+  assert_character(filter, len = 1, .var.name = "filter")
+  
+  if (!is.null(page_token)) {
+    assert_character(page_token, len = 1, min.chars = 1, .var.name = "page_token")
+  }
   
   valid_filters <- c("video_id", "channel_id", "thread_id", "threads_related_to_channel")
-  if (length(filter) != 1 || !names(filter) %in% valid_filters) {
-    stop("Parameter 'filter' must be a named vector of length 1 with one of these names: ",
-         paste(valid_filters, collapse = ", "), ".", call. = FALSE)
-  }
+  assert_choice(names(filter), valid_filters, 
+                .var.name = "filter names (must be one of: video_id, channel_id, thread_id, threads_related_to_channel)")
 
   orig_filter <- filter
   translate_filter <- c(video_id = "videoId", thread_id = "id",

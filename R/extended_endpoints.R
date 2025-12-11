@@ -37,13 +37,26 @@ get_live_streams <- function(stream_id = NULL,
                             auth = "token",
                             ...) {
   
-  # Validate inputs
+  # Modern validation using checkmate
   if (is.null(stream_id) && is.null(channel_id)) {
-    stop("Either stream_id or channel_id must be provided.", call. = FALSE)
+    abort("Either stream_id or channel_id must be provided",
+          class = "tuber_missing_required_parameter")
   }
   
+  if (!is.null(stream_id)) {
+    assert_character(stream_id, len = 1, min.chars = 1, .var.name = "stream_id")
+  }
+  
+  if (!is.null(channel_id)) {
+    assert_character(channel_id, len = 1, min.chars = 1, .var.name = "channel_id")
+  }
+  
+  assert_character(part, len = 1, min.chars = 1, .var.name = "part")
+  assert_flag(simplify, .var.name = "simplify")
+  assert_choice(auth, c("token", "key"), .var.name = "auth")
+  
   if (!is.null(status)) {
-    validate_choice(status, "status", c("active", "upcoming", "completed"))
+    assert_choice(status, c("active", "upcoming", "completed"), .var.name = "status")
   }
   
   if (length(part) > 1) {
@@ -121,10 +134,13 @@ get_video_thumbnails <- function(video_id,
                                 auth = "key",
                                 ...) {
   
-  validate_character(video_id, "video_id")
+  # Modern validation using checkmate
+  assert_character(video_id, min.len = 1, .var.name = "video_id")
+  assert_flag(simplify, .var.name = "simplify")
+  assert_choice(auth, c("token", "key"), .var.name = "auth")
   
   if (!is.null(size)) {
-    validate_choice(size, "size", c("default", "medium", "high", "standard", "maxres"))
+    assert_choice(size, c("default", "medium", "high", "standard", "maxres"), .var.name = "size")
   }
   
   if (length(video_id) > 1) {
@@ -217,9 +233,23 @@ get_channel_sections <- function(channel_id = NULL,
                                 auth = "key",
                                 ...) {
   
+  # Modern validation using checkmate
   if (is.null(channel_id) && is.null(section_id)) {
-    stop("Either channel_id or section_id must be provided.", call. = FALSE)
+    abort("Either channel_id or section_id must be provided",
+          class = "tuber_missing_required_parameter")
   }
+  
+  if (!is.null(channel_id)) {
+    assert_character(channel_id, len = 1, min.chars = 1, .var.name = "channel_id")
+  }
+  
+  if (!is.null(section_id)) {
+    assert_character(section_id, len = 1, min.chars = 1, .var.name = "section_id")
+  }
+  
+  assert_character(part, len = 1, min.chars = 1, .var.name = "part")
+  assert_flag(simplify, .var.name = "simplify")
+  assert_choice(auth, c("token", "key"), .var.name = "auth")
   
   if (length(part) > 1) {
     part <- paste0(part, collapse = ",")
@@ -297,9 +327,12 @@ search_shorts <- function(query,
                          auth = "key",
                          ...) {
   
-  validate_character(query, "query")
-  validate_numeric(max_results, "max_results", min = 1, max = 50, integer_only = TRUE)
-  validate_choice(order, "order", c("date", "rating", "relevance", "title", "viewCount"))
+  # Modern validation using checkmate
+  assert_character(query, len = 1, min.chars = 1, .var.name = "query")
+  assert_integerish(max_results, len = 1, lower = 1, upper = 50, .var.name = "max_results")
+  assert_choice(order, c("date", "rating", "relevance", "title", "viewCount"), .var.name = "order")
+  assert_flag(simplify, .var.name = "simplify")
+  assert_choice(auth, c("token", "key"), .var.name = "auth")
   
   # Build search query
   search_query <- list(
@@ -313,17 +346,17 @@ search_shorts <- function(query,
   )
   
   if (!is.null(region_code)) {
-    validate_character(region_code, "region_code")
+    assert_character(region_code, len = 1, pattern = "^[A-Z]{2}$", .var.name = "region_code")
     search_query$regionCode <- region_code
   }
   
   if (!is.null(published_after)) {
-    validate_character(published_after, "published_after")
+    assert_character(published_after, len = 1, .var.name = "published_after")
     search_query$publishedAfter <- published_after
   }
   
   if (!is.null(published_before)) {
-    validate_character(published_before, "published_before")
+    assert_character(published_before, len = 1, .var.name = "published_before")
     search_query$publishedBefore <- published_before
   }
   
@@ -398,7 +431,10 @@ get_premiere_info <- function(video_id,
                              auth = "key",
                              ...) {
   
-  validate_character(video_id, "video_id")
+  # Modern validation using checkmate
+  assert_character(video_id, min.len = 1, .var.name = "video_id")
+  assert_flag(simplify, .var.name = "simplify")
+  assert_choice(auth, c("token", "key"), .var.name = "auth")
   
   if (length(video_id) > 1) {
     video_id <- paste0(video_id, collapse = ",")

@@ -5,7 +5,7 @@
 \alias{list_my_channel}
 \title{Get statistics of a Channel}
 \usage{
-get_channel_stats(channel_id = NULL, mine = NULL, ...)
+get_channel_stats(channel_id = NULL, mine = NULL, batch_size = 50, ...)
 
 list_my_channel(...)
 }

@@ -129,7 +129,7 @@ If you continue to experience issues:
 1. Check that your issue isn't covered in this troubleshooting guide
 2. Verify your Google Cloud setup matches the instructions exactly
 3. Test with simple examples before complex operations
-4. Check the [GitHub issues](https://github.com/soodoku/tuber/issues) for similar problems
+4. Check the [GitHub issues](https://github.com/gojiplus/tuber/issues) for similar problems
 5. When reporting issues, include:
    - Complete error messages
    - Minimal reproducible example

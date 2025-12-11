@@ -29,7 +29,9 @@
 
 list_abuse_report_reasons <- function(part = "id, snippet", hl = "en-US", ...) {
 
-  if (!is.character(part)) stop("Provide a valid value for part.")
+  # Modern validation using checkmate
+  assert_character(part, len = 1, min.chars = 1, .var.name = "part")
+  assert_character(hl, len = 1, min.chars = 1, .var.name = "hl")
 
   querylist <- list(part = part)
 

@@ -24,18 +24,15 @@
 
 list_videocats <- function(filter = NULL, ...) {
 
+  # Modern validation using checkmate
+  assert_character(filter, len = 1, .var.name = "filter")
   valid_filters <- c("category_id", "region_code")
-  if (!is.character(filter) || !names(filter) %in% valid_filters) {
-    stop("Specify a valid filter with a valid region code.")
-  }
+  assert_choice(names(filter), valid_filters, 
+                .var.name = "filter names (must be 'category_id' or 'region_code')")
 
   translate_filter <- c(category_id = "id", region_code = "regionCode")
   yt_filter_name <- translate_filter[names(filter)]
   names(filter) <- yt_filter_name
-
-  if (sum(is.na(names(filter))) > 0) {
-    stop("Filter can only have region_code or category_id.")
-  }
 
   querylist <- list(part = "snippet", filter)
 

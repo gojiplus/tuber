@@ -64,7 +64,9 @@ json_to_df <- function(res) {
 #' Options include:
 #' \code{contentDetails, fileDetails, id, liveStreamingDetails,
 #' localizations, player, processingDetails,
-#' recordingDetails, snippet, statistics, status, suggestions, topicDetails}
+#' recordingDetails, snippet, statistics, status, suggestions, topicDetails}.
+#' Note: As of October 30, 2024, the \code{status} part includes 
+#' \code{containsSyntheticMedia} property for identifying AI-generated content.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' @param as.data.frame Logical, returns the requested information as data.frame.
 #' Does not work for:
@@ -120,19 +122,40 @@ json_to_df <- function(res) {
 #' #     "Video not found"
 #' #   }
 #' # })
+#' 
+#' # Check for AI-generated content (requires status part):
+#' # status_details <- get_video_details(video_id = "yJXTXN4xrI8", part = "status")
+#' # is_synthetic <- status_details$items[[1]]$status$containsSyntheticMedia
 #' }
 #'
-get_video_details <- function(video_id = NULL, part = "snippet", as.data.frame = FALSE, ...) {
-  # Validate inputs using standardized functions
-  validate_character(video_id, "video_id")
-  validate_character(part, "part")
+get_video_details <- function(video_id = NULL, part = "snippet", as.data.frame = FALSE, batch_size = 50, use_etag = TRUE, ...) {
+  # Modern validation using checkmate
+  assert_character(video_id, any.missing = FALSE, min.len = 1, .var.name = "video_id")
+  assert_character(part, len = 1, min.chars = 1, .var.name = "part")
+  assert_logical(as.data.frame, len = 1, .var.name = "as.data.frame")
+  assert_integerish(batch_size, len = 1, lower = 1, upper = 50, .var.name = "batch_size")
+  
+  # AUTOMATIC BATCHING: If multiple video IDs provided, use batch operations
+  if (length(video_id) > 1) {
+    message("Multiple video IDs detected. Using automatic batch processing for efficiency.")
+    return(get_videos_batch(
+      video_ids = video_id,
+      part = part,
+      batch_size = batch_size,
+      simplify = as.data.frame,
+      show_progress = length(video_id) > 10,
+      ...
+    ))
+  }
   
   parts_only_for_video_owners <- c("fileDetails", "suggestions", "processingDetails")
 
   if (as.data.frame && any(part %in% parts_only_for_video_owners)) {
-    stop("When as.data.frame = TRUE, 'part' cannot include owner-only parts: ",
-         paste(parts_only_for_video_owners, collapse = ", "), ".", 
-         call. = FALSE)
+    abort("Data frame conversion not supported with owner-only parts",
+          owner_only_parts = parts_only_for_video_owners,
+          requested_parts = part,
+          help = "Use as.data.frame = FALSE for owner-only parts",
+          class = "tuber_incompatible_dataframe_parts")
   }
 
   if (length(part) > 1) {

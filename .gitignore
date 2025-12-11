@@ -16,3 +16,8 @@ tuber*.tgz
 .Rapp.history
 /doc/
 /Meta/
+/..Rcheck
+
+# Generated vignette figures
+vignettes/figure/
+figure/

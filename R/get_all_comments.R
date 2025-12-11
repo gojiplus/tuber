@@ -24,9 +24,8 @@
 #' }
 
 get_all_comments <- function(video_id = NULL, ...) {
-  if (is.null(video_id) || !is.character(video_id) || length(video_id) != 1) {
-    stop("video_id must be a single character string")
-  }
+  # Modern validation using checkmate
+  assert_character(video_id, len = 1, min.chars = 1, .var.name = "video_id")
   
   querylist <- list(videoId = video_id, part = "id,replies,snippet")
   
@@ -35,16 +34,23 @@ get_all_comments <- function(video_id = NULL, ...) {
     tuber_GET("commentThreads", query = querylist, ...)
   }, error = function(e) {
     if (grepl("disabled", e$message, ignore.case = TRUE)) {
-      warning("Comments appear to be disabled for video: ", video_id)
+      warn("Comments appear to be disabled for video", 
+           video_id = video_id,
+           class = "tuber_comments_disabled")
       return(data.frame())
     } else {
-      stop("Error retrieving comments for video ", video_id, ": ", e$message)
+      abort("Error retrieving comments for video", 
+            video_id = video_id,
+            original_error = e$message,
+            class = "tuber_comment_fetch_error")
     }
   })
   
   # Handle empty response (no comments)
   if (is.null(res$items) || length(res$items) == 0) {
-    warning("No comments found for video: ", video_id)
+    warn("No comments found for video", 
+         video_id = video_id,
+         class = "tuber_no_comments")
     empty_df <- data.frame()
     return(add_tuber_attributes(
       empty_df,

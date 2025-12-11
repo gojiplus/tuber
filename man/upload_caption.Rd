@@ -16,7 +16,8 @@ upload_caption(
 )
 }
 \arguments{
-\item{file}{Filename of the caption, probably `.srt`}
+\item{file}{Filename of the caption file with timing information (e.g., `.srt`, `.vtt`).
+As of April 12, 2024, timing information is required for all caption uploads.}
 
 \item{video_id}{YouTube Video ID.  Try \code{\link{list_my_videos}} for examples.}
 

@@ -29,13 +29,16 @@
 #' @importFrom jsonlite toJSON
 #' @importFrom utils browseURL
 #' @importFrom httr upload_file
+#' @importFrom mime guess_type
 #' @examples
+#' \dontrun{
 #' snippet = list(
 #' title = "Test Video",
 #' description = "This is just a random test.",
 #' tags = c("r language", "r programming", "data analysis")
 #' )
 #' status = list(privacyStatus = "private")
+#' }
 
 upload_video <- function(
   file,
@@ -45,11 +48,25 @@ upload_video <- function(
   open_url = FALSE,
   ...
 ) {
-  # Validate file input
-  validate_character(file, "file")
+  # Modern validation using checkmate
+  assert_character(file, len = 1, min.chars = 1, .var.name = "file")
+  assert_logical(open_url, len = 1, .var.name = "open_url")
   
   if (!file.exists(file)) {
-    stop("File '", file, "' does not exist.", call. = FALSE)
+    abort("File does not exist", 
+          file_path = file,
+          class = "tuber_file_not_found")
+  }
+  
+  # Validate optional parameters
+  if (!is.null(snippet)) {
+    assert_list(snippet, .var.name = "snippet")
+  }
+  if (!is.null(status)) {
+    assert_list(status, .var.name = "status")
+  }
+  if (!is.null(query)) {
+    assert_list(query, .var.name = "query")
   }
   if ("privacyStatus" %in% names(status)) {
     p <- status$privacyStatus
@@ -114,7 +131,9 @@ upload_video <- function(
   )
 
   if (httr::status_code(resumable_upload_req) != 200) {
-    stop("Failed to initiate resumable upload")
+    abort("Failed to initiate resumable upload", 
+          status_code = httr::status_code(resumable_upload_req),
+          class = "tuber_upload_init_failed")
   }
 
   upload_url <- httr::headers(resumable_upload_req)$`x-guploader-uploadid`
@@ -126,7 +145,9 @@ upload_video <- function(
   )
 
   if (httr::status_code(upload_req) != 200) {
-    stop("Failed to upload video")
+    abort("Failed to upload video", 
+          status_code = httr::status_code(upload_req),
+          class = "tuber_video_upload_failed")
   }
 
   tuber_check(upload_req)

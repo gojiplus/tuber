@@ -4,7 +4,14 @@
 \alias{validate_numeric}
 \title{Validate numeric parameters with range checking}
 \usage{
-validate_numeric(value, name, min = -Inf, max = Inf, integer_only = FALSE)
+validate_numeric(
+  value,
+  name,
+  min = -Inf,
+  max = Inf,
+  integer_only = FALSE,
+  any.missing = FALSE
+)
 }
 \arguments{
 \item{value}{The value to validate}
@@ -16,10 +23,12 @@ validate_numeric(value, name, min = -Inf, max = Inf, integer_only = FALSE)
 \item{max}{Maximum allowed value}
 
 \item{integer_only}{Whether value must be an integer}
+
+\item{any.missing}{Allow missing/NA values}
 }
 \value{
 Invisible NULL if valid, stops execution if invalid
 }
 \description{
-Validate numeric parameters with range checking
+Modern validation using checkmate for better performance and consistency
 }

@@ -23,14 +23,33 @@
 #' get_channel_stats(channel_id="UCMtFAi84ehTSYSE9Xo") # Incorrect channel ID
 #' }
 
-get_channel_stats <- function(channel_id = NULL, mine = NULL, ...) {
+get_channel_stats <- function(channel_id = NULL, mine = NULL, batch_size = 50, ...) {
+  
+  # Modern validation using checkmate
+  if (!is.null(mine)) {
+    assert_logical(mine, len = 1, .var.name = "mine")
+  }
+  
+  assert_integerish(batch_size, len = 1, lower = 1, .var.name = "batch_size")
   
   if (identical(tolower(mine), "false")) {
     mine <- NULL
   }
   
   if (!identical(tolower(mine), "true")) {
-    validate_character(channel_id, "channel_id")
+    assert_character(channel_id, any.missing = FALSE, min.len = 1, .var.name = "channel_id")
+    
+    # AUTOMATIC BATCHING: If multiple channel IDs provided, use batch operations
+    if (length(channel_id) > 1) {
+      message("Multiple channel IDs detected. Using automatic batch processing for efficiency.")
+      return(get_channels_batch(
+        channel_ids = channel_id,
+        part = "statistics,snippet",
+        batch_size = batch_size,
+        show_progress = length(channel_id) > 10,
+        ...
+      ))
+    }
   }
   
   querylist <- list(part = "statistics,snippet", id = channel_id, mine = mine)
@@ -38,7 +57,9 @@ get_channel_stats <- function(channel_id = NULL, mine = NULL, ...) {
   raw_res <- call_api_with_retry(tuber_GET, path = "channels", query = querylist, ...)
   
   if (length(raw_res$items) == 0) {
-    warning("No channel stats available. Likely cause: Incorrect channel_id.\n")
+    warn("No channel stats available. Likely cause: Incorrect channel_id",
+         channel_id = channel_id,
+         class = "tuber_channel_stats_empty")
     return(list())
   }
   
@@ -63,7 +84,8 @@ list_my_channel <- function(...) {
   raw_res <- call_api_with_retry(tuber_GET, path = "channels", query = querylist, ...)
   
   if (length(raw_res$items) == 0) {
-    warning("No channel stats available. Likely cause: No videos.\n")
+    warn("No channel stats available. Likely cause: No videos",
+         class = "tuber_my_channel_empty")
     return(list())
   }
   

@@ -22,8 +22,14 @@ tuber_cache_config <- function(enabled = TRUE,
                               max_size = 1000,
                               cache_dir = NULL) {
   
-  validate_numeric(default_ttl, "default_ttl", min = 60, max = 86400)  # 1 min to 24 hours
-  validate_numeric(max_size, "max_size", min = 10, max = 10000, integer_only = TRUE)
+  # Modern validation using checkmate
+  assert_flag(enabled, .var.name = "enabled")
+  assert_integerish(default_ttl, len = 1, lower = 60, upper = 86400, .var.name = "default_ttl")
+  assert_integerish(max_size, len = 1, lower = 10, upper = 10000, .var.name = "max_size")
+  
+  if (!is.null(cache_dir)) {
+    assert_character(cache_dir, len = 1, min.chars = 1, .var.name = "cache_dir")
+  }
   
   .tuber_cache$config <- list(
     enabled = enabled,
@@ -62,6 +68,15 @@ tuber_cache_info <- function() {
 #' @param older_than Clear entries older than this many seconds
 #' @export
 tuber_cache_clear <- function(pattern = NULL, older_than = NULL) {
+  
+  # Modern validation using checkmate
+  if (!is.null(pattern)) {
+    assert_character(pattern, len = 1, .var.name = "pattern")
+  }
+  
+  if (!is.null(older_than)) {
+    assert_integerish(older_than, len = 1, lower = 0, .var.name = "older_than")
+  }
   
   cache_keys <- ls(.tuber_cache, pattern = "^cache_")
   
@@ -235,6 +250,16 @@ store_cached_response <- function(cache_key, data, ttl = NULL) {
 tuber_GET_cached <- function(path, query, auth = "token", 
                             cache_ttl = NULL, force_refresh = FALSE, ...) {
   
+  # Modern validation using checkmate
+  assert_character(path, len = 1, min.chars = 1, .var.name = "path")
+  assert_list(query, .var.name = "query")
+  assert_choice(auth, c("token", "key"), .var.name = "auth")
+  assert_flag(force_refresh, .var.name = "force_refresh")
+  
+  if (!is.null(cache_ttl)) {
+    assert_integerish(cache_ttl, len = 1, lower = 60, .var.name = "cache_ttl")
+  }
+  
   # Check if this endpoint/query should be cached
   if (!force_refresh && is_cacheable_endpoint(path) && is_static_query(path, query)) {
     
@@ -275,7 +300,10 @@ tuber_GET_cached <- function(path, query, auth = "token",
 #' @export
 list_videocats_cached <- function(region_code = "US", auth = "key", cache_ttl = 86400, ...) {
   
-  validate_character(region_code, "region_code")
+  # Modern validation using checkmate
+  assert_character(region_code, len = 1, pattern = "^[A-Z]{2}$", .var.name = "region_code")
+  assert_choice(auth, c("token", "key"), .var.name = "auth")
+  assert_integerish(cache_ttl, len = 1, lower = 60, .var.name = "cache_ttl")
   
   query <- list(part = "snippet", regionCode = region_code)
   
@@ -293,6 +321,10 @@ list_videocats_cached <- function(region_code = "US", auth = "key", cache_ttl = 
 #' @export
 list_langs_cached <- function(auth = "key", cache_ttl = 86400, ...) {
   
+  # Modern validation using checkmate
+  assert_choice(auth, c("token", "key"), .var.name = "auth")
+  assert_integerish(cache_ttl, len = 1, lower = 60, .var.name = "cache_ttl")
+  
   query <- list(part = "snippet")
   
   result <- tuber_GET_cached("i18nLanguages", query, auth, cache_ttl = cache_ttl, ...)
@@ -308,6 +340,10 @@ list_langs_cached <- function(auth = "key", cache_ttl = 86400, ...) {
 #' @return Regions data
 #' @export  
 list_regions_cached <- function(auth = "key", cache_ttl = 86400, ...) {
+  
+  # Modern validation using checkmate
+  assert_choice(auth, c("token", "key"), .var.name = "auth")
+  assert_integerish(cache_ttl, len = 1, lower = 60, .var.name = "cache_ttl")
   
   query <- list(part = "snippet")
   
@@ -328,7 +364,11 @@ list_regions_cached <- function(auth = "key", cache_ttl = 86400, ...) {
 get_channel_info_cached <- function(channel_id, part = "snippet,brandingSettings", 
                                    auth = "key", cache_ttl = 3600, ...) {
   
-  validate_character(channel_id, "channel_id")
+  # Modern validation using checkmate
+  assert_character(channel_id, len = 1, min.chars = 1, .var.name = "channel_id")
+  assert_character(part, len = 1, min.chars = 1, .var.name = "part")
+  assert_choice(auth, c("token", "key"), .var.name = "auth")
+  assert_integerish(cache_ttl, len = 1, lower = 60, .var.name = "cache_ttl")
   
   query <- list(part = part, id = channel_id)
   

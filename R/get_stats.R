@@ -1,15 +1,19 @@
-#' Get statistics of a Video
+#' Get statistics of a Video or Videos
 #'
-#' Gets view count, like count, comment count and other statistics for a YouTube video.
+#' Gets view count, like count, comment count and other statistics for YouTube video(s).
 #' For unlisted videos, you must use OAuth authentication with the channel owner's credentials.
+#' Automatically uses batch processing when multiple video IDs are provided for efficiency.
 #'
-#' @param video_id Character. Id of the video. Required.
+#' @param video_id Character vector. One or more video IDs. Required.
 #' @param include_content_details Boolean. Include contentDetails (duration, definition, etc.) in response. Default: FALSE.
+#' @param batch_size Integer. Number of videos per API call when batching (max 50). Default: 50.
+#' @param simplify Boolean. Return simplified data frame for multiple videos. Default: TRUE.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'
-#' @return list with 6 elements: \code{id, viewCount, likeCount,
+#' @return For single video: list with elements \code{id, viewCount, likeCount,
 #' dislikeCount, favoriteCount, commentCount}. When \code{include_content_details = TRUE}, 
 #' also includes \code{duration, definition, dimension, licensedContent, projection}.
+#' For multiple videos: data frame with one row per video (if simplify=TRUE) or list of results.
 #'
 #' @export
 #'
@@ -20,7 +24,12 @@
 #'
 #' # Set API token via yt_oauth() first
 #'
+#' # Single video
 #' get_stats(video_id="N708P-A45D0")
+#' 
+#' # Multiple videos (automatic batching)
+#' video_ids <- c("N708P-A45D0", "M7FIvfx5J10", "kJQP7kiw5Fk") 
+#' stats_df <- get_stats(video_ids)
 #' 
 #' # Include video duration and other content details:
 #' get_stats(video_id="N708P-A45D0", include_content_details = TRUE)
@@ -30,11 +39,31 @@
 #' # get_stats(video_id="your_unlisted_video_id")
 #' }
 
-get_stats <- function(video_id = NULL, include_content_details = FALSE, ...) {
+get_stats <- function(video_id = NULL, include_content_details = FALSE, batch_size = 50, simplify = TRUE, ...) {
 
-  validate_character(video_id, "video_id")
+  # Modern validation
+  assert_character(video_id, any.missing = FALSE, min.len = 1, .var.name = "video_id")
+  assert_logical(include_content_details, len = 1, .var.name = "include_content_details")
+  assert_integerish(batch_size, len = 1, lower = 1, upper = 50, .var.name = "batch_size")
+  assert_logical(simplify, len = 1, .var.name = "simplify")
 
-  # Include contentDetails if requested for duration, definition, etc.
+  # AUTOMATIC BATCHING: If multiple video IDs provided, use batch operations
+  if (length(video_id) > 1) {
+    message("Multiple video IDs detected (", length(video_id), "). Using automatic batch processing for efficiency.")
+    
+    part <- if (include_content_details) "statistics,contentDetails" else "statistics"
+    
+    return(get_videos_batch(
+      video_ids = video_id,
+      part = part,
+      batch_size = batch_size,
+      simplify = simplify,
+      show_progress = length(video_id) > 10,
+      ...
+    ))
+  }
+
+  # Single video processing
   part <- if (include_content_details) "statistics,contentDetails" else "statistics"
   querylist <- list(part = part, id = video_id)
 

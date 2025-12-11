@@ -123,46 +123,49 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
                       video_type = "any", simplify = TRUE, get_all = TRUE,
                       page_token = NULL, max_pages = Inf, ...) {
 
-  # Input validation
-  if (!is.character(term) || is.null(term)) stop("Must specify a search term.\n")
-
-  if (max_results <= 0 || max_results > 500) {
-    stop("max_results must be between 1 and 500.")
-  }
+  # Modern validation using checkmate
+  assert_string(term, min.chars = 1, .var.name = "term")
+  assert_integerish(max_results, len = 1, lower = 1, upper = 500, .var.name = "max_results")
+  assert_choice(type, c("video", "channel", "playlist"), .var.name = "type")
+  assert_logical(simplify, len = 1, .var.name = "simplify")
+  assert_logical(get_all, len = 1, .var.name = "get_all")
+  assert_numeric(max_pages, len = 1, lower = 1, .var.name = "max_pages")
 
   # Validate video-specific parameters only when type is "video"
   if (type == "video") {
-    if (!(video_license %in% c("any", "creativeCommon", "youtube"))) {
-      stop("video_license can only take values: any, creativeCommon, or youtube.")
-    }
-
-    if (!(video_syndicated %in% c("any", "true"))) {
-      stop("video_syndicated can only take values: any or true.")
-    }
-
-    if (!(video_type %in% c("any", "episode", "movie"))) {
-      stop("video_type can only take values: any, episode, or movie.")
-    }
+    assert_choice(video_license, c("any", "creativeCommon", "youtube"), .var.name = "video_license")
+    assert_choice(video_syndicated, c("any", "true"), .var.name = "video_syndicated")
+    assert_choice(video_type, c("any", "episode", "movie"), .var.name = "video_type")
+    assert_choice(video_definition, c("any", "high", "standard"), .var.name = "video_definition")
+    assert_choice(video_caption, c("any", "closedCaption", "none"), .var.name = "video_caption")
   } else {
     # Set these to NULL if type is not "video" to avoid sending them in the API call
     video_caption <- video_license <- video_definition <-
       video_type <- video_syndicated <- NULL
   }
 
-  # Validate date formats
-  validate_rfc339_date <- function(date_str) {
+  # Modern RFC 3339 date validation using rlang
+  validate_rfc339_date <- function(date_str, param_name) {
     if (is.character(date_str) &&
         is.na(as.POSIXct(date_str, format = "%Y-%m-%dT%H:%M:%SZ"))) {
-      stop("The date is not properly formatted in RFC 339 Format (YYYY-MM-DDTHH:MM:SSZ).")
+      abort("Invalid RFC 3339 date format",
+            parameter = param_name,
+            date_string = date_str,
+            expected_format = "YYYY-MM-DDTHH:MM:SSZ",
+            example = "2023-01-01T00:00:00Z",
+            class = "tuber_invalid_date_format")
     }
   }
 
-  validate_rfc339_date(published_after)
-  validate_rfc339_date(published_before)
+  validate_rfc339_date(published_after, "published_after")
+  validate_rfc339_date(published_before, "published_before")
 
   # Validate location and location_radius together
   if (!is.null(location) && is.null(location_radius)) {
-    stop("Location radius must be specified with location")
+    abort("Location radius required when location is specified",
+          location = location,
+          help = "Provide location_radius parameter (e.g., '10km')",
+          class = "tuber_missing_location_radius")
   }
 
   # Build the query list

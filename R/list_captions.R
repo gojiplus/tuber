@@ -17,6 +17,13 @@ list_captions <- function(
   ...
 ) {
 
+  # Modern validation using checkmate
+  assert_character(video_id, len = 1, min.chars = 1, .var.name = "video_id")
+  assert_choice(auth, c("token", "key"), .var.name = "auth")
+  if (!is.null(query)) {
+    assert_list(query, .var.name = "query")
+  }
+
   part <- "id,snippet"
 
   query <- as.list(query)

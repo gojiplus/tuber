@@ -39,12 +39,19 @@ get_playlist_item_ids <- function(filter = NULL, part = "contentDetails",
                                   max_results = 50, video_id = NULL,
                                   page_token = NULL, simplify = TRUE, ...) {
 
-  validate_numeric(max_results, "max_results", min = 1, integer_only = TRUE)
+  # Modern validation using checkmate
+  assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
+  assert_character(filter, len = 1, .var.name = "filter")
+  assert_choice(names(filter), c("item_id", "playlist_id"), 
+                .var.name = "filter names (must be 'item_id' or 'playlist_id')")
+  assert_character(part, len = 1, min.chars = 1, .var.name = "part")
+  assert_logical(simplify, len = 1, .var.name = "simplify")
   
-  valid_filters <- c("item_id", "playlist_id")
-  if (length(filter) != 1 || !(names(filter) %in% valid_filters)) {
-    stop("Parameter 'filter' must be a named vector of length 1 with one of these names: ", 
-         paste(valid_filters, collapse = ", "), ".", call. = FALSE)
+  if (!is.null(video_id)) {
+    assert_character(video_id, len = 1, min.chars = 1, .var.name = "video_id")
+  }
+  if (!is.null(page_token)) {
+    assert_character(page_token, len = 1, min.chars = 1, .var.name = "page_token")
   }
 
   translate_filter <- c(item_id = "id", playlist_id = "playlistId")

@@ -4,7 +4,7 @@
 \alias{tuber_GET}
 \title{GET}
 \usage{
-tuber_GET(path, query, auth = "token", ...)
+tuber_GET(path, query, auth = "token", use_etag = TRUE, ...)
 }
 \arguments{
 \item{path}{path to specific API request URL}

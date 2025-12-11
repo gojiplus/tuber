@@ -36,9 +36,12 @@ get_videos_batch <- function(video_ids,
                             show_progress = TRUE,
                             ...) {
   
-  # Validate inputs
-  validate_character(video_ids, "video_ids")
-  validate_numeric(batch_size, "batch_size", min = 1, max = 50, integer_only = TRUE)
+  # Modern validation using checkmate
+  assert_character(video_ids, any.missing = FALSE, min.len = 1, .var.name = "video_ids")
+  assert_integerish(batch_size, len = 1, lower = 1, upper = 50, .var.name = "batch_size")
+  assert_choice(auth, c("token", "key"), .var.name = "auth")
+  assert_logical(simplify, len = 1, .var.name = "simplify")
+  assert_logical(show_progress, len = 1, .var.name = "show_progress")
   
   if (length(part) > 1) {
     part <- paste0(part, collapse = ",")
@@ -48,7 +51,8 @@ get_videos_batch <- function(video_ids,
   video_ids <- unique(video_ids[nchar(video_ids) > 0])
   
   if (length(video_ids) == 0) {
-    stop("No valid video IDs provided.", call. = FALSE)
+    abort("No valid video IDs provided", 
+                 class = "tuber_no_valid_ids")
   }
   
   # Split into batches
@@ -89,7 +93,8 @@ get_videos_batch <- function(video_ids,
   
   if (length(all_items) == 0) {
     suggest_solution("empty_results", "- Check if video IDs are correct\n- Videos may be private or deleted")
-    warning("No video details found for any of the provided IDs.", call. = FALSE)
+    warn("No video details found for any of the provided IDs", 
+                class = "tuber_batch_empty_result")
     empty_result <- if (simplify) data.frame() else list()
     return(add_tuber_attributes(
       empty_result,
@@ -109,7 +114,10 @@ get_videos_batch <- function(video_ids,
     result <- tryCatch({
       purrr::map_df(result$items, ~ flatten(.x))
     }, error = function(e) {
-      warning("Failed to convert to data frame: ", e$message, ". Returning list format.", call. = FALSE)
+      warn("Failed to convert to data frame", 
+                  message = e$message,
+                  help = "Returning list format",
+                  class = "tuber_batch_conversion_failed")
       result
     })
   }
@@ -157,9 +165,12 @@ get_channels_batch <- function(channel_ids,
                               show_progress = TRUE,
                               ...) {
   
-  # Validate inputs
-  validate_character(channel_ids, "channel_ids")
-  validate_numeric(batch_size, "batch_size", min = 1, max = 50, integer_only = TRUE)
+  # Modern validation using checkmate
+  assert_character(channel_ids, any.missing = FALSE, min.len = 1, .var.name = "channel_ids")
+  assert_integerish(batch_size, len = 1, lower = 1, upper = 50, .var.name = "batch_size")
+  assert_choice(auth, c("token", "key"), .var.name = "auth")
+  assert_logical(simplify, len = 1, .var.name = "simplify")
+  assert_logical(show_progress, len = 1, .var.name = "show_progress")
   
   if (length(part) > 1) {
     part <- paste0(part, collapse = ",")
@@ -169,7 +180,8 @@ get_channels_batch <- function(channel_ids,
   channel_ids <- unique(channel_ids[nchar(channel_ids) > 0])
   
   if (length(channel_ids) == 0) {
-    stop("No valid channel IDs provided.", call. = FALSE)
+    abort("No valid channel IDs provided", 
+                 class = "tuber_no_valid_ids")
   }
   
   # Split into batches
@@ -210,7 +222,8 @@ get_channels_batch <- function(channel_ids,
   
   if (length(all_items) == 0) {
     suggest_solution("empty_results", "- Check if channel IDs are correct\n- Channels may be private or deleted")
-    warning("No channel details found for any of the provided IDs.", call. = FALSE)
+    warn("No channel details found for any of the provided IDs", 
+                class = "tuber_batch_empty_result")
     empty_result <- if (simplify) data.frame() else list()
     return(add_tuber_attributes(
       empty_result,
@@ -263,7 +276,10 @@ get_channels_batch <- function(channel_ids,
       
       items_df
     }, error = function(e) {
-      warning("Failed to convert to data frame: ", e$message, ". Returning list format.", call. = FALSE)
+      warn("Failed to convert to data frame", 
+                  message = e$message,
+                  help = "Returning list format",
+                  class = "tuber_batch_conversion_failed")
       result
     })
   }
@@ -311,9 +327,12 @@ get_playlists_batch <- function(playlist_ids,
                                show_progress = TRUE,
                                ...) {
   
-  # Validate inputs
-  validate_character(playlist_ids, "playlist_ids")
-  validate_numeric(batch_size, "batch_size", min = 1, max = 50, integer_only = TRUE)
+  # Modern validation using checkmate
+  assert_character(playlist_ids, any.missing = FALSE, min.len = 1, .var.name = "playlist_ids")
+  assert_integerish(batch_size, len = 1, lower = 1, upper = 50, .var.name = "batch_size")
+  assert_choice(auth, c("token", "key"), .var.name = "auth")
+  assert_logical(simplify, len = 1, .var.name = "simplify")
+  assert_logical(show_progress, len = 1, .var.name = "show_progress")
   
   if (length(part) > 1) {
     part <- paste0(part, collapse = ",")
@@ -323,7 +342,8 @@ get_playlists_batch <- function(playlist_ids,
   playlist_ids <- unique(playlist_ids[nchar(playlist_ids) > 0])
   
   if (length(playlist_ids) == 0) {
-    stop("No valid playlist IDs provided.", call. = FALSE)
+    abort("No valid playlist IDs provided", 
+                 class = "tuber_no_valid_ids")
   }
   
   # Split into batches
@@ -364,7 +384,8 @@ get_playlists_batch <- function(playlist_ids,
   
   if (length(all_items) == 0) {
     suggest_solution("empty_results", "- Check if playlist IDs are correct\n- Playlists may be private or deleted")
-    warning("No playlist details found for any of the provided IDs.", call. = FALSE)
+    warn("No playlist details found for any of the provided IDs", 
+                class = "tuber_batch_empty_result")
     return(if (simplify) data.frame() else list())
   }
   
@@ -375,7 +396,10 @@ get_playlists_batch <- function(playlist_ids,
     result <- tryCatch({
       purrr::map_df(result$items, ~ flatten(.x))
     }, error = function(e) {
-      warning("Failed to convert to data frame: ", e$message, ". Returning list format.", call. = FALSE)
+      warn("Failed to convert to data frame", 
+                  message = e$message,
+                  help = "Returning list format",
+                  class = "tuber_batch_conversion_failed")
       result
     })
   }

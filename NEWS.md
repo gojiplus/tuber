@@ -144,8 +144,8 @@ This release fixes critical issues that were causing the package to be unreliabl
 
 # version 0.9.9
 
-* added functionality like upload_video etc. see https://github.com/soodoku/tuber/commit/2cf53c50e9079af0f6b1a478698d0bda15f4c5e0
-* bug fix: https://github.com/soodoku/tuber/commit/c1d6d82fe9334bb1aecbeb006521dcf99f803a88
+* added functionality like upload_video etc. see https://github.com/gojiplus/tuber/commit/2cf53c50e9079af0f6b1a478698d0bda15f4c5e0
+* bug fix: https://github.com/gojiplus/tuber/commit/c1d6d82fe9334bb1aecbeb006521dcf99f803a88
 
 # version 0.9.8
 
