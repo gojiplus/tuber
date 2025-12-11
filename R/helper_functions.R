@@ -384,13 +384,13 @@ analyze_trends <- function(search_terms,
 
   # Combine all results
   if (length(all_results) > 0) {
-    combined_data <- dplyr::bind_rows(all_results)
+    combined_data <- bind_rows(all_results)
 
     # Calculate trend metrics
     trend_summary <- combined_data %>%
-      dplyr::group_by(search_term) %>%
-      dplyr::summarise(
-        total_videos = dplyr::n(),
+      group_by(search_term) %>%
+      summarise(
+        total_videos = n(),
         avg_views = mean(view_count, na.rm = TRUE),
         total_views = sum(view_count, na.rm = TRUE),
         avg_engagement = mean(like_count / pmax(view_count, 1), na.rm = TRUE),
@@ -398,7 +398,7 @@ analyze_trends <- function(search_terms,
         trending_score = log10(total_views + 1) * avg_engagement * 100,
         .groups = "drop"
       ) %>%
-      dplyr::arrange(dplyr::desc(trending_score))
+      arrange(desc(trending_score))
 
     result <- list(
       detailed_results = combined_data,

@@ -6,8 +6,6 @@ Authors@R: c(
     person("Kate", "Lyons", , "k.lyons7@gmail.com", role = "ctb"),
     person("John", "Muschelli", , "muschellij2@gmail.com", role = "ctb")
   )
-Author: Gaurav Sood [aut, cre], Kate Lyons [ctb], John Muschelli [ctb]
-Maintainer: Gaurav Sood <gsood07@gmail.com>
 Description: Get comments posted on YouTube videos, information on how
     many times a video has been liked, search for videos with particular
     content, and much more. You can also scrape captions from a few
@@ -31,7 +29,6 @@ Imports:
     mime,
     plyr,
     purrr,
-    R6,
     rlang (>= 1.1.0),
     tibble,
     tidyr,

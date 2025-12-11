@@ -121,8 +121,29 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
     return(data.frame())
   }
 
-  # Standardize column names and add URL
+  # Map complex column names from get_video_details to expected simple names
   result_df <- video_data
+  
+  # Map column names from get_video_details output to expected names
+  # Note: get_video_details returns flattened column names directly
+  column_mapping <- c(
+    "title" = "title",
+    "publication_date" = "publishedAt", 
+    "description" = "description",
+    "channel_id" = "channelId",
+    "channel_title" = "channelTitle",
+    "view_count" = "viewCount",
+    "like_count" = "likeCount", 
+    "comment_count" = "commentCount"
+  )
+  
+  # Rename columns that exist
+  for (new_name in names(column_mapping)) {
+    old_name <- column_mapping[[new_name]]
+    if (old_name %in% names(result_df)) {
+      names(result_df)[names(result_df) == old_name] <- new_name
+    }
+  }
   
   # Add video URL
   result_df$url <- paste0("https://www.youtube.com/watch?v=", result_df$id)
@@ -132,9 +153,15 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
                      "channel_id", "channel_title", "view_count", "like_count", 
                      "comment_count", "url")
   
-  # Select available columns
-  available_columns <- intersect(final_columns, names(result_df))
-  result_df <- result_df[, available_columns, drop = FALSE]
+  # Add missing columns as NA if they don't exist
+  for (col in final_columns) {
+    if (!col %in% names(result_df)) {
+      result_df[[col]] <- NA
+    }
+  }
+  
+  # Select final columns in the right order
+  result_df <- result_df[, final_columns, drop = FALSE]
   
   message("Successfully retrieved data for ", nrow(result_df), " videos")
   

@@ -119,7 +119,7 @@ generate_cache_key <- function(endpoint, query, auth) {
   query_str <- paste(names(query_sorted), query_sorted, sep = "=", collapse = "&")
 
   key_parts <- c(endpoint, auth, query_str)
-  cache_key <- paste0("cache_", digest::digest(key_parts, algo = "md5"))
+  cache_key <- paste0("cache_", digest(key_parts, algo = "md5"))
 
   return(cache_key)
 }

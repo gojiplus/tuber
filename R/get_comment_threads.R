@@ -183,7 +183,7 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
 
     # Trim to actual size and combine efficiently
     all_items <- all_items[seq_len(item_count)]
-    agg_res_df <- dplyr::bind_rows(lapply(all_items, as.data.frame, stringsAsFactors = FALSE))
+    agg_res_df <- bind_rows(lapply(all_items, as.data.frame, stringsAsFactors = FALSE))
     # Unicode handling already applied above, no need to repeat
     if ("publishedAt" %in% colnames(agg_res_df)) {
       agg_res_df <- agg_res_df[order(agg_res_df$publishedAt), , drop = FALSE]

@@ -20,13 +20,13 @@
 #' @importFrom utils read.table modifyList head object.size
 #' @importFrom stats median quantile
 #' @importFrom digest digest
+#' @importFrom jsonlite toJSON fromJSON
 #' @importFrom plyr ldply rbind.fill
-#' @importFrom dplyr bind_rows select pull filter mutate
+#' @importFrom dplyr bind_rows select pull filter mutate group_by summarise n arrange desc rename
 #' @importFrom tibble enframe
 #' @importFrom tidyselect everything all_of
-#' @importFrom tidyr pivot_wider unnest unnest_longer
+#' @importFrom tidyr pivot_wider unnest unnest_longer unnest_wider
 #' @importFrom purrr map_df map_dbl flatten
-#' @importFrom R6 R6Class
 NULL
 #' @keywords internal
 "_PACKAGE"
@@ -629,7 +629,7 @@ tuber_check <- function(req) {
   if (req$status_code < 400) return(invisible(NULL))
   orig_out <-  httr::content(req, as = "text")
   out <- try({
-    jsonlite::fromJSON(
+    fromJSON(
       orig_out,
       flatten = TRUE)
   }, silent = TRUE)

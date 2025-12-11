@@ -1,7 +1,7 @@
 # helpers for data frame conversion in `get_video_details()`
 conditional_unnest_wider <- function(data_input, var) {
   if (var %in% names(data_input)) {
-    tidyr::unnest_wider(data_input, var, names_sep = "_")
+    unnest_wider(data_input, var, names_sep = "_")
   } else {
     data_input
   }
@@ -12,16 +12,16 @@ utils::globalVariables(c("kind", "etag", "items", "snippet"))
 
 json_to_df <- function(res) {
   intermediate <- res %>%
-    tibble::enframe() %>%
-    tidyr::pivot_wider() %>%
-    tidyr::unnest(cols = c(kind, etag)) %>%
+    enframe() %>%
+    pivot_wider() %>%
+    unnest(cols = c(kind, etag)) %>%
     # reflect level of nesting in column name
-    dplyr::rename(response_kind = kind, response_etag = etag) %>%
-    tidyr::unnest(items) %>%
-    tidyr::unnest_wider(col = items) %>%
+    rename(response_kind = kind, response_etag = etag) %>%
+    unnest(items) %>%
+    unnest_wider(col = items) %>%
     # reflect level of nesting in column name for those that may not be unique
-    dplyr::rename(items_kind = kind, items_etag = etag) %>%
-    tidyr::unnest_wider(snippet)
+    rename(items_kind = kind, items_etag = etag) %>%
+    unnest_wider(snippet)
 
   intermediate_2 <- intermediate %>%
     # fields that may not be available:
@@ -184,7 +184,7 @@ get_video_details <- function(video_ids,
     
     if (simplify) {
       raw_res <- tryCatch({
-        purrr::map_df(raw_res$items, ~ flatten(.x))
+        map_df(raw_res$items, ~ flatten(.x))
       }, error = function(e) {
         warn("Failed to convert to data frame",
              message = e$message,
@@ -263,7 +263,7 @@ get_video_details <- function(video_ids,
   
   if (simplify) {
     result <- tryCatch({
-      purrr::map_df(result$items, ~ flatten(.x))
+      map_df(result$items, ~ flatten(.x))
     }, error = function(e) {
       warn("Failed to convert to data frame",
            message = e$message,

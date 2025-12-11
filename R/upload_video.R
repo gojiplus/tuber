@@ -26,7 +26,6 @@
 #' and the URL of the uploaded
 #' @export
 #'
-#' @importFrom jsonlite toJSON
 #' @importFrom utils browseURL
 #' @importFrom httr upload_file
 #' @importFrom mime guess_type
@@ -105,7 +104,7 @@ upload_video <- function(
   query <- as.list(query)
   query$part <- part
 
-  body <- jsonlite::toJSON(body, auto_unbox = TRUE)
+  body <- toJSON(body, auto_unbox = TRUE)
   writeLines(body, metadata)
 
   body <- list(

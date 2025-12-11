@@ -94,7 +94,7 @@ get_live_streams <- function(stream_id = NULL,
 
   if (simplify) {
     result <- tryCatch({
-      purrr::map_df(result$items, ~ flatten(.x))
+      map_df(result$items, ~ flatten(.x))
     }, error = function(e) {
       warning("Failed to convert to data frame: ", e$message, ". Returning list format.", call. = FALSE)
       result
@@ -192,7 +192,7 @@ get_video_thumbnails <- function(video_id,
 
   if (simplify) {
     result <- tryCatch({
-      dplyr::bind_rows(thumbnail_data)
+      bind_rows(thumbnail_data)
     }, error = function(e) {
       warning("Failed to convert to data frame: ", e$message, ". Returning list format.", call. = FALSE)
       thumbnail_data
@@ -282,7 +282,7 @@ get_channel_sections <- function(channel_id = NULL,
 
   if (simplify) {
     result <- tryCatch({
-      purrr::map_df(result$items, ~ flatten(.x))
+      map_df(result$items, ~ flatten(.x))
     }, error = function(e) {
       warning("Failed to convert to data frame: ", e$message, ". Returning list format.", call. = FALSE)
       result
@@ -377,7 +377,7 @@ search_shorts <- function(query,
   if (simplify) {
     result <- tryCatch({
       # Convert to data frame with shorts-specific fields
-      shorts_df <- purrr::map_df(result$items, function(item) {
+      shorts_df <- map_df(result$items, function(item) {
         data.frame(
           video_id = item$id$videoId %||% NA_character_,
           title = item$snippet$title %||% NA_character_,
@@ -481,7 +481,7 @@ get_premiere_info <- function(video_id,
 
   if (simplify) {
     result <- tryCatch({
-      dplyr::bind_rows(premiere_data)
+      bind_rows(premiere_data)
     }, error = function(e) {
       warning("Failed to convert to data frame: ", e$message, ". Returning list format.", call. = FALSE)
       premiere_data

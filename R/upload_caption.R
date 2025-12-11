@@ -86,7 +86,7 @@ upload_caption <- function(
   query <- as.list(query)
   query$part <- part
 
-  body <- jsonlite::toJSON(body, auto_unbox = TRUE)
+  body <- toJSON(body, auto_unbox = TRUE)
   writeLines(body, metadata)
 
   body <- list(

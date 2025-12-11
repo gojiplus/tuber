@@ -275,7 +275,7 @@ list_my_channel <- function(...) {
 
 # Helper function to flatten channel data to data frame
 flatten_channel_data <- function(items) {
-  purrr::map_df(items, function(item) {
+  map_df(items, function(item) {
     # Flatten the nested structure
     flat_item <- list()
     
