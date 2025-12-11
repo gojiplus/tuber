@@ -1,4 +1,4 @@
-name: pkgdown
+name: Documentation
 
 on:
   push:
@@ -6,14 +6,21 @@ on:
   release:
     types: [ published ]
   workflow_dispatch:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [master]
 
 jobs:
-  pkgdown:
+  docs:
     runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success' || github.event_name != 'workflow_run'
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     permissions:
       contents: write
+      pages: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
 
@@ -28,7 +35,9 @@ jobs:
           extra-packages: any::pkgdown, local::.
           needs: website
 
-      - uses: r-lib/actions/pkgdown@v2
-        with:
-          pkgdown_branch: gh-pages
-          pkgdown_path: docs
+      - name: Build and deploy pkgdown site
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Actions"
+          pkgdown::deploy_to_branch(new_process = FALSE)
+        shell: Rscript {0}
