@@ -15,3 +15,4 @@ Logical indicating if error is transient
 \description{
 Check if an error is transient and worth retrying
 }
+\keyword{internal}

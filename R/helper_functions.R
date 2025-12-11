@@ -50,11 +50,13 @@ analyze_channel <- function(channel_id,
 
   # Get basic channel information
   message("Fetching channel statistics...")
-  channel_info <- get_channels_batch(
-    channel_id,
-    part = "snippet,statistics,brandingSettings,contentDetails",
-    auth = auth,
+  channel_info <- get_channel_stats(
+    channel_ids = channel_id,
+    part = c("snippet", "statistics", "brandingSettings", "contentDetails"),
+    simplify = TRUE,
     show_progress = FALSE,
+    auth = auth,
+    console_output = FALSE,
     ...
   )
 
@@ -87,11 +89,12 @@ analyze_channel <- function(channel_id,
 
       # Get detailed video information
       message("Fetching video statistics...")
-      videos_info <- get_videos_batch(
-        video_ids,
-        part = "snippet,statistics,contentDetails",
-        auth = auth,
+      videos_info <- get_video_details(
+        video_ids = video_ids,
+        part = c("snippet", "statistics", "contentDetails"),
+        simplify = TRUE,
         show_progress = FALSE,
+        auth = auth,
         ...
       )
 
@@ -195,11 +198,12 @@ compare_channels <- function(channel_ids,
   message("Comparing ", length(channel_ids), " channels...")
 
   # Get channel information
-  channels_info <- get_channels_batch(
-    channel_ids,
-    part = "snippet,statistics,brandingSettings",
-    auth = auth,
+  channels_info <- get_channel_stats(
+    channel_ids = channel_ids,
+    part = c("snippet", "statistics", "brandingSettings"),
+    simplify = TRUE,
     show_progress = TRUE,
+    auth = auth,
     ...
   )
 
@@ -346,11 +350,12 @@ analyze_trends <- function(search_terms,
       video_ids <- video_ids[!is.na(video_ids)]
 
       if (length(video_ids) > 0) {
-        videos_details <- get_videos_batch(
-          video_ids,
-          part = "statistics,contentDetails",
-          auth = auth,
+        videos_details <- get_video_details(
+          video_ids = video_ids,
+          part = c("statistics", "contentDetails"),
+          simplify = TRUE,
           show_progress = FALSE,
+          auth = auth,
           ...
         )
 
@@ -461,11 +466,12 @@ bulk_video_analysis <- function(video_ids,
   message("Analyzing ", length(video_ids), " videos...")
 
   # Get video details
-  videos_data <- get_videos_batch(
-    video_ids,
-    part = "snippet,statistics,contentDetails",
-    auth = auth,
+  videos_data <- get_video_details(
+    video_ids = video_ids,
+    part = c("snippet", "statistics", "contentDetails"),
+    simplify = TRUE,
     show_progress = TRUE,
+    auth = auth,
     ...
   )
 

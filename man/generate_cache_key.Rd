@@ -2,7 +2,7 @@
 % Please edit documentation in R/caching.R
 \name{generate_cache_key}
 \alias{generate_cache_key}
-\title{Generate cache key for API call}
+\title{Generate cache key for API request}
 \usage{
 generate_cache_key(endpoint, query, auth)
 }
@@ -17,5 +17,6 @@ generate_cache_key(endpoint, query, auth)
 Character cache key
 }
 \description{
-Generate cache key for API call
+Generate cache key for API request
 }
+\keyword{internal}

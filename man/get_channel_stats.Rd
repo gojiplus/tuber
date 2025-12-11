@@ -3,39 +3,85 @@
 \name{get_channel_stats}
 \alias{get_channel_stats}
 \alias{list_my_channel}
-\title{Get statistics of a Channel}
+\title{Get Channel Statistics}
 \usage{
-get_channel_stats(channel_id = NULL, mine = NULL, batch_size = 50, ...)
+get_channel_stats(
+  channel_ids = NULL,
+  mine = NULL,
+  part = c("statistics", "snippet"),
+  simplify = FALSE,
+  batch_size = 50,
+  show_progress = NULL,
+  auth = "token",
+  console_output = TRUE,
+  ...
+)
 
 list_my_channel(...)
 }
 \arguments{
-\item{channel_id}{Character. Id of the channel}
+\item{channel_ids}{Character vector of channel IDs to retrieve. Use \code{list_my_channel()} 
+to get your own channel ID.}
 
-\item{mine}{Boolean. TRUE if you want to fetch stats of your own channel. Default is NULL.}
+\item{mine}{Logical. Set to TRUE to get authenticated user's channel. 
+Overrides \code{channel_ids}. Default: NULL.}
 
-\item{batch_size}{Integer. When multiple channel IDs are provided, controls batch size for efficient processing. Default is 50.}
+\item{part}{Character vector of parts to retrieve. Default: c("statistics", "snippet").}
+
+\item{simplify}{Logical. If TRUE, returns a data frame. If FALSE, returns raw list. Default: FALSE.}
+
+\item{batch_size}{Number of channels per API call (max 50). Default: 50.}
+
+\item{show_progress}{Whether to show progress for large batches. Default: TRUE for >10 channels.}
+
+\item{auth}{Authentication method: "token" (OAuth2) or "key" (API key). Default: "token".}
+
+\item{console_output}{Logical. Show console output for single channel. Default: TRUE.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-nested named list with top element names:
-\code{kind, etag, id, snippet (list of details of the channel
-including title), statistics (list of 5)}
+When \code{simplify = FALSE} (default): List with channel details.
+When \code{simplify = TRUE}: Data frame with channel details.
 
-If the \code{channel_id} is mistyped or there is no information, an empty list is returned
+For single channels, returns the channel object directly (not in a list).
+For multiple channels, returns a list with items array.
 }
 \description{
-Get statistics of a Channel
+Get statistics and details for one or more YouTube channels efficiently using batch processing.
+}
+\details{
+Valid parts include: \code{auditDetails, brandingSettings, contentDetails, 
+contentOwnerDetails, id, localizations, snippet, statistics, status, 
+topicDetails}.
+
+The function automatically batches requests to minimize API quota usage:
+- 1 channel = 1 API call
+- 100 channels = 2 API calls (batched in groups of 50)
+
+When retrieving a single channel, the function displays key statistics 
+in the console by default (can be disabled with \code{console_output = FALSE}).
 }
 \examples{
 \dontrun{
+# Get stats for a single channel - displays console output
+stats <- get_channel_stats("UCT5Cx1l4IS3wHkJXNyuj4TA")
 
-# Set API token via yt_oauth() first
+# Get stats for multiple channels - automatically batched
+channel_ids <- c("UCT5Cx1l4IS3wHkJXNyuj4TA", "UCfK2eFCRQ64Gqfrpbrcj31w")
+stats <- get_channel_stats(channel_ids)
 
-get_channel_stats(channel_id="UCMtFAi84ehTSYSE9XoHefig")
-get_channel_stats(channel_id="UCMtFAi84ehTSYSE9Xo") # Incorrect channel ID
+# Get as data frame
+df <- get_channel_stats(channel_ids, simplify = TRUE)
+
+# Get your own channel stats
+my_stats <- get_channel_stats(mine = TRUE)
+
+# Get additional parts
+detailed <- get_channel_stats(channel_ids, 
+                             part = c("statistics", "snippet", "brandingSettings"))
 }
+
 }
 \references{
 \url{https://developers.google.com/youtube/v3/docs/channels/list}

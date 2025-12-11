@@ -105,12 +105,9 @@ reference:
     - yt_reset_quota
     - yt_set_quota_limit
 
-- title: "Batch Operations"
+- title: "Bulk Analysis"
   desc: "Functions for processing multiple items efficiently"
   contents:
-    - get_channels_batch
-    - get_playlists_batch
-    - get_videos_batch
     - bulk_video_analysis
 
 - title: "Extended Features"
@@ -177,7 +174,6 @@ reference:
   contents:
     - extended-endpoints
     - helper-functions
-    - batch-operations
     - caching
     - error-handling
     - null-coalesce

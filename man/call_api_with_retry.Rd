@@ -19,3 +19,4 @@ Result of API function call
 \description{
 Wrapper for tuber API calls with built-in retry logic
 }
+\keyword{internal}
