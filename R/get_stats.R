@@ -11,7 +11,7 @@
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'
 #' @return For single video: list with elements \code{id, viewCount, likeCount,
-#' dislikeCount, favoriteCount, commentCount}. When \code{include_content_details = TRUE}, 
+#' dislikeCount, favoriteCount, commentCount}. When \code{include_content_details = TRUE},
 #' also includes \code{duration, definition, dimension, licensedContent, projection}.
 #' For multiple videos: data frame with one row per video (if simplify=TRUE) or list of results.
 #'
@@ -26,14 +26,14 @@
 #'
 #' # Single video
 #' get_stats(video_id="N708P-A45D0")
-#' 
+#'
 #' # Multiple videos (automatic batching)
-#' video_ids <- c("N708P-A45D0", "M7FIvfx5J10", "kJQP7kiw5Fk") 
+#' video_ids <- c("N708P-A45D0", "M7FIvfx5J10", "kJQP7kiw5Fk")
 #' stats_df <- get_stats(video_ids)
-#' 
+#'
 #' # Include video duration and other content details:
 #' get_stats(video_id="N708P-A45D0", include_content_details = TRUE)
-#' 
+#'
 #' # For unlisted videos, must authenticate as channel owner:
 #' # yt_oauth("your_client_id", "your_client_secret")
 #' # get_stats(video_id="your_unlisted_video_id")
@@ -50,9 +50,9 @@ get_stats <- function(video_id = NULL, include_content_details = FALSE, batch_si
   # AUTOMATIC BATCHING: If multiple video IDs provided, use batch operations
   if (length(video_id) > 1) {
     message("Multiple video IDs detected (", length(video_id), "). Using automatic batch processing for efficiency.")
-    
+
     part <- if (include_content_details) "statistics,contentDetails" else "statistics"
-    
+
     return(get_videos_batch(
       video_ids = video_id,
       part = part,
@@ -84,7 +84,7 @@ get_stats <- function(video_id = NULL, include_content_details = FALSE, batch_si
 
   res      <- raw_res$items[[1]]
   stat_res <- res$statistics
-  
+
   # Include contentDetails if requested
   if (include_content_details && !is.null(res$contentDetails)) {
     content_res <- res$contentDetails
@@ -92,7 +92,7 @@ get_stats <- function(video_id = NULL, include_content_details = FALSE, batch_si
   } else {
     result <- c(id = res$id, stat_res)
   }
-  
+
   # Add standardized attributes
   result <- add_tuber_attributes(
     result,
@@ -102,6 +102,6 @@ get_stats <- function(video_id = NULL, include_content_details = FALSE, batch_si
     results_found = 1,
     content_details_included = include_content_details
   )
-  
+
   result
 }

@@ -32,10 +32,10 @@ list_channel_sections <- function(filter = NULL, part = "snippet",
 
   # Modern validation using checkmate
   assert_character(filter, len = 1, .var.name = "filter")
-  assert_choice(names(filter), c("id", "channel_id"), 
+  assert_choice(names(filter), c("id", "channel_id"),
                 .var.name = "filter names (must be 'id' or 'channel_id')")
   assert_character(part, len = 1, min.chars = 1, .var.name = "part")
-  
+
   if (!is.null(hl)) {
     assert_character(hl, len = 1, min.chars = 1, .var.name = "hl")
   }

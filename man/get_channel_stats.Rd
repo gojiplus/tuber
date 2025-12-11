@@ -14,6 +14,8 @@ list_my_channel(...)
 
 \item{mine}{Boolean. TRUE if you want to fetch stats of your own channel. Default is NULL.}
 
+\item{batch_size}{Integer. When multiple channel IDs are provided, controls batch size for efficient processing. Default is 50.}
+
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{

@@ -36,7 +36,7 @@
 #'
 #' get_playlists(filter=c(channel_id="UCMtFAi84ehTSYSE9XoHefig"))
 #' get_playlists(filter=c(channel_id="UCMtFAi84ehTSYSE9X")) # incorrect Channel ID
-#' 
+#'
 #' # For searching playlists by keyword, use yt_search() instead:
 #' # yt_search(term="tutorial", channel_id="UCMtFAi84ehTSYSE9XoHefig", type="playlist")
 #' }
@@ -49,11 +49,11 @@ get_playlists <- function(filter = NULL,
   # Modern validation using checkmate
   assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
   assert_character(filter, len = 1, .var.name = "filter")
-  assert_choice(names(filter), c("channel_id", "playlist_id"), 
+  assert_choice(names(filter), c("channel_id", "playlist_id"),
                 .var.name = "filter names (must be 'channel_id' or 'playlist_id')")
   assert_character(part, len = 1, min.chars = 1, .var.name = "part")
   assert_logical(simplify, len = 1, .var.name = "simplify")
-  
+
   if (!is.null(hl)) {
     assert_character(hl, len = 1, min.chars = 1, .var.name = "hl")
   }
@@ -84,7 +84,7 @@ get_playlists <- function(filter = NULL,
   raw_res$items <- items
 
   if (length(raw_res$items) == 0) {
-    warn("No playlists available", 
+    warn("No playlists available",
          filter = filter,
          class = "tuber_playlists_empty")
     if (simplify) return(data.frame())

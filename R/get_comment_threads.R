@@ -59,13 +59,13 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
   assert_character(part, len = 1, min.chars = 1, .var.name = "part")
   assert_logical(simplify, len = 1, .var.name = "simplify")
   assert_character(filter, len = 1, .var.name = "filter")
-  
+
   if (!is.null(page_token)) {
     assert_character(page_token, len = 1, min.chars = 1, .var.name = "page_token")
   }
-  
+
   valid_filters <- c("video_id", "channel_id", "thread_id", "threads_related_to_channel")
-  assert_choice(names(filter), valid_filters, 
+  assert_choice(names(filter), valid_filters,
                 .var.name = "filter names (must be one of: video_id, channel_id, thread_id, threads_related_to_channel)")
 
   orig_filter <- filter
@@ -107,20 +107,20 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
     page_token <- res$nextPageToken
     collected_ids <- character(estimated_items)  # Preallocate ID tracking
     id_count <- 0
-    
+
     # Process initial results
     for (x in res$items) {
       comment_id <- x$snippet$topLevelComment$id
       if (!comment_id %in% collected_ids[seq_len(id_count)]) {
         item_count <- item_count + 1
         id_count <- id_count + 1
-        
+
         # Expand vectors if needed
         if (item_count > length(all_items)) {
           length(all_items) <- length(all_items) * 2
           length(collected_ids) <- length(collected_ids) * 2
         }
-        
+
         snippet <- unlist(x$snippet$topLevelComment$snippet)
         # Apply consistent Unicode handling
         text_fields <- c("textDisplay", "textOriginal", "authorDisplayName")
@@ -133,31 +133,31 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
         collected_ids[id_count] <- comment_id
       }
     }
-    
+
     # Continue pagination while we need more results and have a token
-    while (!is.null(page_token) && is.character(page_token) && 
+    while (!is.null(page_token) && is.character(page_token) &&
            length(all_items) < max_results) {
-      
+
       querylist$pageToken <- page_token
       querylist$maxResults <- min(100, max_results - length(all_items))
-      
+
       a_res <- call_api_with_retry(tuber_GET, path = "commentThreads", query = querylist, ...)
-      
+
       # Process new results with efficient deduplication
       for (x in a_res$items) {
         if (item_count >= max_results) break
-        
+
         comment_id <- x$snippet$topLevelComment$id
         if (!comment_id %in% collected_ids[seq_len(id_count)]) {
           item_count <- item_count + 1
           id_count <- id_count + 1
-          
+
           # Expand vectors if needed
           if (item_count > length(all_items)) {
             length(all_items) <- length(all_items) * 2
             length(collected_ids) <- length(collected_ids) * 2
           }
-          
+
           snippet <- unlist(x$snippet$topLevelComment$snippet)
           # Apply consistent Unicode handling
           text_fields <- c("textDisplay", "textOriginal", "authorDisplayName")
@@ -170,9 +170,9 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
           collected_ids[id_count] <- comment_id
         }
       }
-      
+
       page_token <- a_res$nextPageToken
-      
+
       # Safety break if we get no new unique items
       if (length(a_res$items) == 0) break
     }
@@ -180,7 +180,7 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
     if (item_count == 0) {
       return(data.frame())
     }
-    
+
     # Trim to actual size and combine efficiently
     all_items <- all_items[seq_len(item_count)]
     agg_res_df <- dplyr::bind_rows(lapply(all_items, as.data.frame, stringsAsFactors = FALSE))

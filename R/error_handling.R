@@ -17,18 +17,18 @@ NULL
 #' @param min.chars Minimum number of characters
 #' @return Invisible NULL if valid, stops execution if invalid
 validate_character <- function(value, name, allow_empty = FALSE, any.missing = FALSE, min.chars = NULL) {
-  
+
   # Use checkmate for modern, fast validation
   min_chars <- if (allow_empty) 0 else if (!is.null(min.chars)) min.chars else 1
-  
+
   assert_character(
-    value, 
+    value,
     len = 1,
     any.missing = any.missing,
     min.chars = min_chars,
     .var.name = name
   )
-  
+
   invisible(NULL)
 }
 
@@ -44,7 +44,7 @@ validate_character <- function(value, name, allow_empty = FALSE, any.missing = F
 #' @param any.missing Allow missing/NA values
 #' @return Invisible NULL if valid, stops execution if invalid
 validate_numeric <- function(value, name, min = -Inf, max = Inf, integer_only = FALSE, any.missing = FALSE) {
-  
+
   if (integer_only) {
     assert_integerish(
       value,
@@ -64,7 +64,7 @@ validate_numeric <- function(value, name, min = -Inf, max = Inf, integer_only = 
       .var.name = name
     )
   }
-  
+
   invisible(NULL)
 }
 
@@ -78,13 +78,13 @@ validate_numeric <- function(value, name, min = -Inf, max = Inf, integer_only = 
 #' @param any.missing Allow missing/NA values
 #' @return Invisible NULL if valid, stops execution if invalid
 validate_choice <- function(value, name, allowed, any.missing = FALSE) {
-  
+
   assert_choice(
     value,
     choices = allowed,
     .var.name = name
   )
-  
+
   invisible(NULL)
 }
 
@@ -96,14 +96,14 @@ validate_choice <- function(value, name, allowed, any.missing = FALSE) {
 #' @param channel_id Channel ID if applicable for better error messages
 #' @return Stops execution with informative error message
 handle_api_error <- function(error_response, context_msg = "", video_id = NULL, channel_id = NULL) {
-  
+
   # Extract error details from response
   if (is.list(error_response) && !is.null(error_response$error)) {
     error_info <- error_response$error
     error_code <- error_info$code %||% "Unknown"
     error_reason <- error_info$errors[[1]]$reason %||% "Unknown"
     error_message <- error_info$message %||% "Unknown error"
-    
+
     # Provide specific guidance based on error type
     guidance <- switch(error_reason,
       "videoNotFound" = paste0(
@@ -126,7 +126,7 @@ handle_api_error <- function(error_response, context_msg = "", video_id = NULL, 
       # Default message
       error_message
     )
-    
+
     context_part <- if (nchar(context_msg) > 0) paste0(context_msg, ": ") else ""
     abort(paste0(context_part, guidance),
           api_error_code = error_code,
@@ -134,7 +134,7 @@ handle_api_error <- function(error_response, context_msg = "", video_id = NULL, 
           video_id = video_id,
           channel_id = channel_id,
           class = c(paste0("tuber_api_", error_reason), "tuber_api_error"))
-    
+
   } else {
     # Fallback for non-standard error responses
     context_part <- if (nchar(context_msg) > 0) paste0(context_msg, ": ") else ""
@@ -152,9 +152,9 @@ handle_api_error <- function(error_response, context_msg = "", video_id = NULL, 
 handle_network_error <- function(error, context_msg = "") {
   # Modern validation using checkmate
   assert_character(context_msg, len = 1, .var.name = "context_msg")
-  
+
   context_part <- if (nchar(context_msg) > 0) paste0(context_msg, ": ") else ""
-  
+
   if (grepl("timeout|connection|network", error$message, ignore.case = TRUE)) {
     abort(paste0(context_part, "Network connection failed"),
           original_error = error$message,
@@ -178,7 +178,7 @@ warn_deprecated <- function(old_function, new_function, version = "next major ve
   assert_character(old_function, len = 1, .var.name = "old_function")
   assert_character(new_function, len = 1, .var.name = "new_function")
   assert_character(version, len = 1, .var.name = "version")
-  
+
   warn("Function is deprecated and will be removed",
        old_function = old_function,
        new_function = new_function,
@@ -194,7 +194,7 @@ warn_deprecated <- function(old_function, new_function, version = "next major ve
 #' @param issue_type Type of issue encountered
 #' @param details Additional details for the suggestion
 suggest_solution <- function(issue_type, details = "") {
-  
+
   suggestions <- list(
     auth_token = paste0(
       "Authentication required. Run yt_oauth() to set up OAuth2 authentication, ",
@@ -208,26 +208,26 @@ suggest_solution <- function(issue_type, details = "") {
     ),
     rate_limit = paste0(
       "Rate limited by YouTube API. Consider:\n",
-      "- Adding delays between requests with Sys.sleep(0.1)\n", 
+      "- Adding delays between requests with Sys.sleep(0.1)\n",
       "- Using smaller batch sizes for bulk operations\n",
       "- Implementing exponential backoff retry logic"
     ),
     empty_results = paste0(
       "No results found. This could be due to:\n",
       "- Incorrect ID or search parameters\n",
-      "- Content being private or deleted\n", 
+      "- Content being private or deleted\n",
       "- Regional restrictions\n",
       details
     )
   )
-  
+
   if (issue_type %in% names(suggestions)) {
     message("Suggestion: ", suggestions[[issue_type]])
   }
 }
 
 #' Exponential backoff retry logic for API calls
-#' 
+#'
 #' Implements exponential backoff with jitter for retrying failed API calls
 #'
 #' @param expr Expression to evaluate (usually an API call)
@@ -240,18 +240,18 @@ suggest_solution <- function(issue_type, details = "") {
 #' @param on_retry Function called on each retry attempt with attempt number and error
 #' @return Result of successful expression evaluation
 #' @export
-with_retry <- function(expr, 
-                       max_retries = 3, 
-                       base_delay = 1, 
+with_retry <- function(expr,
+                       max_retries = 3,
+                       base_delay = 1,
                        max_delay = 60,
                        backoff_factor = 2,
                        jitter = TRUE,
                        retry_on = function(e) is_transient_error(e),
                        on_retry = NULL) {
-  
+
   attempt <- 1
   last_error <- NULL
-  
+
   repeat {
     result <- tryCatch({
       # Execute the expression
@@ -260,12 +260,12 @@ with_retry <- function(expr,
       last_error <<- e
       e  # Return the error
     })
-    
+
     # If successful, return result
     if (!inherits(result, "error")) {
       return(result)
     }
-    
+
     # If we've reached max retries or error is not transient, give up
     if (attempt > max_retries || !retry_on(result)) {
       # Call the original error with context
@@ -279,20 +279,20 @@ with_retry <- function(expr,
               class = "tuber_api_call_failed")
       }
     }
-    
+
     # Calculate delay with exponential backoff and optional jitter
     delay <- min(base_delay * (backoff_factor ^ (attempt - 1)), max_delay)
     if (jitter) {
       delay <- delay * (0.5 + 0.5 * runif(1))  # Add 0-50% jitter
     }
-    
+
     # Call retry callback if provided
     if (!is.null(on_retry)) {
       on_retry(attempt, result)
     } else {
       message("Retry attempt ", attempt, "/", max_retries, " in ", round(delay, 2), " seconds...")
     }
-    
+
     # Wait before retry
     Sys.sleep(delay)
     attempt <- attempt + 1
@@ -300,48 +300,48 @@ with_retry <- function(expr,
 }
 
 #' Check if an error is transient and worth retrying
-#' 
+#'
 #' @param error Error object to check
 #' @return Logical indicating if error is transient
 is_transient_error <- function(error) {
   error_msg <- tolower(error$message)
-  
+
   # Network/connection errors
   if (grepl("timeout|connection reset|network|socket|dns", error_msg)) {
     return(TRUE)
   }
-  
+
   # HTTP 5xx server errors (but not 4xx client errors)
   if (grepl("internal server error|bad gateway|service unavailable|gateway timeout", error_msg)) {
     return(TRUE)
   }
-  
+
   # Rate limiting (429)
   if (grepl("rate limit|too many requests|429", error_msg)) {
     return(TRUE)
   }
-  
+
   # Specific YouTube API temporary errors
   if (grepl("backend error|service error|temporarily unavailable", error_msg)) {
     return(TRUE)
   }
-  
+
   # SSL/TLS handshake issues
   if (grepl("ssl|tls|certificate", error_msg)) {
     return(TRUE)
   }
-  
+
   return(FALSE)
 }
 
 #' Wrapper for tuber API calls with built-in retry logic
-#' 
+#'
 #' @param api_function The tuber API function to call
 #' @param ... Arguments to pass to the API function
 #' @param retry_config List of retry configuration options
 #' @return Result of API function call
 call_api_with_retry <- function(api_function, ..., retry_config = list()) {
-  
+
   # Default retry configuration
   default_config <- list(
     max_retries = 3,
@@ -350,10 +350,10 @@ call_api_with_retry <- function(api_function, ..., retry_config = list()) {
     backoff_factor = 2,
     jitter = TRUE
   )
-  
+
   # Merge user config with defaults
   config <- modifyList(default_config, retry_config)
-  
+
   # Custom retry callback for API calls
   api_on_retry <- function(attempt, error) {
     if (grepl("rate limit|429", tolower(error$message))) {
@@ -364,7 +364,7 @@ call_api_with_retry <- function(api_function, ..., retry_config = list()) {
       message("Transient error detected. Retrying attempt ", attempt, "/", config$max_retries, "...")
     }
   }
-  
+
   with_retry(
     api_function(...),
     max_retries = config$max_retries,
@@ -387,7 +387,7 @@ call_api_with_retry <- function(api_function, ..., retry_config = list()) {
 #' @return Invisible NULL if valid, stops execution if invalid
 validate_video_id <- function(video_id, name = "video_id") {
   validate_character(video_id, name)
-  
+
   # YouTube video IDs are typically 11 characters long
   if (any(nchar(video_id) != 11)) {
     abort("Invalid YouTube video ID length",
@@ -397,7 +397,7 @@ validate_video_id <- function(video_id, name = "video_id") {
           actual_length = nchar(video_id),
           class = "tuber_invalid_video_id_length")
   }
-  
+
   # Basic pattern check (alphanumeric, hyphens, underscores)
   if (any(!grepl("^[A-Za-z0-9_-]+$", video_id))) {
     abort("Invalid characters in YouTube video ID",
@@ -406,7 +406,7 @@ validate_video_id <- function(video_id, name = "video_id") {
           help = "Video IDs must contain only alphanumeric characters, hyphens, and underscores",
           class = "tuber_invalid_video_id_format")
   }
-  
+
   invisible(NULL)
 }
 
@@ -417,7 +417,7 @@ validate_video_id <- function(video_id, name = "video_id") {
 #' @return Invisible NULL if valid, stops execution if invalid
 validate_channel_id <- function(channel_id, name = "channel_id") {
   validate_character(channel_id, name)
-  
+
   # YouTube channel IDs start with "UC" and are 24 characters total
   if (any(!grepl("^UC[A-Za-z0-9_-]{22}$", channel_id))) {
     abort("Invalid YouTube channel ID format",
@@ -426,7 +426,7 @@ validate_channel_id <- function(channel_id, name = "channel_id") {
           help = "Channel IDs must start with 'UC' and be 24 characters total",
           class = "tuber_invalid_channel_id")
   }
-  
+
   invisible(NULL)
 }
 
@@ -437,7 +437,7 @@ validate_channel_id <- function(channel_id, name = "channel_id") {
 #' @return Invisible NULL if valid, stops execution if invalid
 validate_playlist_id <- function(playlist_id, name = "playlist_id") {
   validate_character(playlist_id, name)
-  
+
   # YouTube playlist IDs typically start with "PL" or "UU" and are 34 characters total
   if (any(!grepl("^(PL|UU|FL|LL)[A-Za-z0-9_-]{32}$", playlist_id))) {
     abort("Invalid YouTube playlist ID format",
@@ -446,7 +446,7 @@ validate_playlist_id <- function(playlist_id, name = "playlist_id") {
           help = "Playlist IDs must start with 'PL', 'UU', 'FL', or 'LL' and be 34 characters total",
           class = "tuber_invalid_playlist_id")
   }
-  
+
   invisible(NULL)
 }
 
@@ -457,10 +457,10 @@ validate_playlist_id <- function(playlist_id, name = "playlist_id") {
 #' @return Invisible NULL if valid, stops execution if invalid
 validate_rfc3339_date <- function(date_string, name) {
   validate_character(date_string, name)
-  
+
   # RFC 3339 format: YYYY-MM-DDTHH:MM:SSZ or YYYY-MM-DDTHH:MM:SS+HH:MM
   rfc3339_pattern <- "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(Z|[+-]\\d{2}:\\d{2})$"
-  
+
   if (any(!grepl(rfc3339_pattern, date_string))) {
     abort("Invalid RFC 3339 date format",
           parameter = name,
@@ -469,7 +469,7 @@ validate_rfc3339_date <- function(date_string, name) {
           example = "2023-01-01T00:00:00Z",
           class = "tuber_invalid_date_format")
   }
-  
+
   # Try to parse the date to ensure it's valid
   tryCatch({
     as.POSIXct(date_string, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC")
@@ -480,7 +480,7 @@ validate_rfc3339_date <- function(date_string, name) {
           parse_error = e$message,
           class = "tuber_date_parse_error")
   })
-  
+
   invisible(NULL)
 }
 
@@ -492,10 +492,10 @@ validate_rfc3339_date <- function(date_string, name) {
 #' @return Invisible NULL if valid, stops execution if invalid
 validate_part_parameter <- function(part, endpoint, name = "part") {
   validate_character(part, name)
-  
+
   # Define valid parts for each endpoint
   valid_parts <- list(
-    videos = c("contentDetails", "fileDetails", "id", "liveStreamingDetails", 
+    videos = c("contentDetails", "fileDetails", "id", "liveStreamingDetails",
                "localizations", "paidProductPlacementDetails", "player", "processingDetails", "recordingDetails",
                "snippet", "statistics", "status", "suggestions", "topicDetails"),
     channels = c("auditDetails", "brandingSettings", "contentDetails", "contentOwnerDetails",
@@ -514,12 +514,12 @@ validate_part_parameter <- function(part, endpoint, name = "part") {
     i18nLanguages = c("snippet"),
     i18nRegions = c("snippet")
   )
-  
+
   if (endpoint %in% names(valid_parts)) {
     # Split comma-separated parts
     parts <- trimws(strsplit(part, ",")[[1]])
     invalid_parts <- setdiff(parts, valid_parts[[endpoint]])
-    
+
     if (length(invalid_parts) > 0) {
       abort("Invalid API parts for endpoint",
             parameter = name,
@@ -529,7 +529,7 @@ validate_part_parameter <- function(part, endpoint, name = "part") {
             class = "tuber_invalid_api_parts")
     }
   }
-  
+
   invisible(NULL)
 }
 
@@ -540,7 +540,7 @@ validate_part_parameter <- function(part, endpoint, name = "part") {
 #' @return Invisible NULL if valid, stops execution if invalid
 validate_region_code <- function(region_code, name = "region_code") {
   validate_character(region_code, name)
-  
+
   # ISO 3166-1 alpha-2 codes are exactly 2 uppercase letters
   if (any(nchar(region_code) != 2 || !grepl("^[A-Z]{2}$", region_code))) {
     abort("Invalid region code format",
@@ -550,7 +550,7 @@ validate_region_code <- function(region_code, name = "region_code") {
           examples = c("US", "GB", "CA", "AU"),
           class = "tuber_invalid_region_code")
   }
-  
+
   invisible(NULL)
 }
 
@@ -561,7 +561,7 @@ validate_region_code <- function(region_code, name = "region_code") {
 #' @return Invisible NULL if valid, stops execution if invalid
 validate_language_code <- function(language_code, name = "language_code") {
   validate_character(language_code, name)
-  
+
   # Accept ISO 639-1 (2 letters) or BCP-47 format (e.g., en-US)
   if (any(!grepl("^[a-z]{2}(-[A-Z]{2})?$", language_code))) {
     abort("Invalid language code format",
@@ -571,7 +571,7 @@ validate_language_code <- function(language_code, name = "language_code") {
           examples = c("en", "en-US", "es", "es-ES"),
           class = "tuber_invalid_language_code")
   }
-  
+
   invisible(NULL)
 }
 
@@ -581,12 +581,12 @@ validate_language_code <- function(language_code, name = "language_code") {
 #' @param endpoint API endpoint for context-specific validation
 #' @return Invisible NULL if all valid, stops execution if any invalid
 validate_youtube_params <- function(params, endpoint = NULL) {
-  
+
   for (param_name in names(params)) {
     param_value <- params[[param_name]]
-    
+
     if (is.null(param_value)) next  # Skip NULL parameters
-    
+
     # Apply appropriate validation based on parameter name
     switch(param_name,
       video_id = validate_video_id(param_value, param_name),
@@ -609,6 +609,6 @@ validate_youtube_params <- function(params, endpoint = NULL) {
       if (is.character(param_value)) validate_character(param_value, param_name)
     )
   }
-  
+
   invisible(NULL)
 }

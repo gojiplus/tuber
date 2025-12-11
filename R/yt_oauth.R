@@ -41,21 +41,21 @@
 #' }
 
 yt_oauth <- function(app_id = NULL, app_secret = NULL, scope = "ssl", token = ".httr-oauth", ...) {
-  
+
   # Modern validation using checkmate
   if (!is.null(app_id)) {
     assert_character(app_id, len = 1, min.chars = 1, .var.name = "app_id")
   }
-  
+
   if (!is.null(app_secret)) {
     assert_character(app_secret, len = 1, min.chars = 1, .var.name = "app_secret")
   }
-  
+
   assert_choice(scope, c("ssl", "basic", "own_account_readonly",
-                         "upload_and_manage_own_videos", "partner", "partner_audit"), 
+                         "upload_and_manage_own_videos", "partner", "partner_audit"),
                 .var.name = "scope")
   assert_character(token, len = 1, min.chars = 1, .var.name = "token")
-  
+
   # Try to read existing token first
   google_token <- NULL
   if (file.exists(token)) {
@@ -80,7 +80,7 @@ yt_oauth <- function(app_id = NULL, app_secret = NULL, scope = "ssl", token = ".
                      "Visit: https://console.cloud.google.com/apis/credentials"),
             class = "tuber_oauth_credentials_required")
     }
-    
+
     myapp <- oauth_app("google", key = app_id, secret = app_secret)
     scope <- match.arg(scope, c(
       "ssl", "basic", "own_account_readonly",
@@ -94,9 +94,9 @@ yt_oauth <- function(app_id = NULL, app_secret = NULL, scope = "ssl", token = ".
       partner_audit = "https://www.googleapis.com/auth/youtubepartner-channel-audit",
       partner = "https://www.googleapis.com/auth/youtubepartner"
     )
-    
+
     google_token <- oauth2.0_token(oauth_endpoints("google"), myapp, scope = scope_url, ...)
-    
+
     # Try to save the token for future use
     tryCatch({
       saveRDS(google_token, file = token)

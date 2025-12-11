@@ -31,3 +31,4 @@ _pkgdown.yml
 ^CLAUDE\.md$
 ^ISSUE_FIXES\.md$
 ^RELEASE_CHECKLIST\.md$
+^CITATION\.cff$

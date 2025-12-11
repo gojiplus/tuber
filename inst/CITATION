@@ -2,15 +2,19 @@ citHeader("To cite package 'tuber' in publications use:")
 
 bibentry(
   bibtype = "Manual",
-  title   = "tuber: Access YouTube from R",
-  author  = person("Gaurav", "Sood"),
-  year    = "2023",
-  note    = "R package version 0.9.9",
-  url     = "https://CRAN.R-project.org/package=tuber",
+  title   = "tuber: Client for the YouTube API",
+  author  = c(
+    person("Gaurav", "Sood", email = "gsood07@gmail.com", role = c("aut", "cre")),
+    person("Kate", "Lyons", email = "k.lyons7@gmail.com", role = "ctb"),
+    person("John", "Muschelli", email = "muschellij2@gmail.com", role = "ctb")
+  ),
+  year    = "2024",
+  note    = "R package version 1.3.0",
+  url     = "https://gojiplus.github.io/tuber/",
   textVersion = paste0(
-    "Gaurav Sood (2023). ",
-    "tuber: Access YouTube from R. ",
-    "R package version 0.9.9. ",
-    "https://CRAN.R-project.org/package=tuber"
+    "Gaurav Sood, Kate Lyons, and John Muschelli (2024). ",
+    "tuber: Client for the YouTube API. ",
+    "R package version 1.3.0. ",
+    "https://gojiplus.github.io/tuber/"
   )
 )

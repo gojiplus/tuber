@@ -22,12 +22,16 @@ Options include:
 \code{contentDetails, fileDetails, id, liveStreamingDetails,
 localizations, player, processingDetails,
 recordingDetails, snippet, statistics, status, suggestions, topicDetails}.
-Note: As of October 30, 2024, the \code{status} part includes 
+Note: As of October 30, 2024, the \code{status} part includes
 \code{containsSyntheticMedia} property for identifying AI-generated content.}
 
 \item{as.data.frame}{Logical, returns the requested information as data.frame.
 Does not work for:
 \code{fileDetails, suggestions, processingDetails}}
+
+\item{batch_size}{Integer. When multiple video IDs are provided, controls batch size for efficient processing. Default is 50.}
+
+\item{use_etag}{Logical. Whether to use ETag for caching. Default is TRUE.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
@@ -58,7 +62,7 @@ get_video_details(video_id = c("LDZX4ooRsWs", "yJXTXN4xrI8"), as.data.frame = TR
 details <- get_video_details(video_id = "yJXTXN4xrI8")
 # Get video title:
 video_title <- details$items[[1]]$snippet$title
-# Get video description:  
+# Get video description:
 video_desc <- details$items[[1]]$snippet$description
 
 # Shiny usage - extract video title safely:
@@ -74,7 +78,7 @@ video_desc <- details$items[[1]]$snippet$description
 channel_id <- details$items[[1]]$snippet$channelId
 
 # For Shiny applications - extract title:
-# output$videotitle <- renderText({ 
+# output$videotitle <- renderText({
 #   details <- get_video_details(input$video_id)
 #   if (length(details$items) > 0) {
 #     details$items[[1]]$snippet$title

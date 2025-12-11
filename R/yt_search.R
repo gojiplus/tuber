@@ -241,22 +241,22 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
   # Get all pages up to max_pages limit and requested max_results
   while (!is.null(page_token) && page_count < max_pages &&
          total_returned < max_results) {
-    
+
     # Calculate how many more results we actually need
     remaining_needed <- max_results - total_returned
     request_size <- min(remaining_needed, 50)  # Don't request more than we need
-    
+
     querylist$pageToken <- page_token
     querylist$maxResults <- request_size
     a_res <- tuber_GET("search", querylist, ...)
 
     next_results <- process_results(a_res$items, type)
-    
+
     # Only take what we need if we get more than requested
     if (nrow(next_results) > remaining_needed) {
       next_results <- next_results[seq_len(remaining_needed), , drop = FALSE]
     }
-    
+
     all_results <- rbind(all_results, next_results)
     total_returned <- nrow(all_results)
     page_token <- a_res$nextPageToken
@@ -276,21 +276,21 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
 
   # Add warning if we hit the max_pages limit but there are still more results
   if (!is.null(page_token) && page_count >= max_pages && total_returned < max_results) {
-    warning(sprintf("Only retrieved %d pages of results (got %d/%d items). Set max_pages higher to get more results.", 
+    warning(sprintf("Only retrieved %d pages of results (got %d/%d items). Set max_pages higher to get more results.",
                    max_pages, total_returned, max_results))
   }
 
   # Calculate actual API calls made
   api_calls_made <- page_count
-  
+
   # Add standardized attributes (preserving existing ones)
   result <- add_tuber_attributes(
     all_results,
     api_calls_made = api_calls_made,
     function_name = "yt_search",
     parameters = list(
-      term = term, 
-      max_results = max_results, 
+      term = term,
+      max_results = max_results,
       type = type,
       get_all = get_all,
       max_pages = max_pages
@@ -299,10 +299,10 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
     pages_retrieved = page_count,
     search_exhausted = is.null(page_token) || page_count >= max_pages
   )
-  
+
   # Preserve existing attributes
   attr(result, "total_results") <- res$pageInfo$totalResults
-  attr(result, "actual_results") <- nrow(all_results) 
+  attr(result, "actual_results") <- nrow(all_results)
   attr(result, "api_limit_reached") <- nrow(all_results) >= 500
 
   return(result)

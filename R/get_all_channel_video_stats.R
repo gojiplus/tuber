@@ -37,28 +37,28 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
   channel_resources <- tryCatch({
     list_channel_resources(filter = list(channel_id = channel_id), part = "contentDetails", ...)
   }, error = function(e) {
-    abort("Failed to get channel information", 
+    abort("Failed to get channel information",
           channel_id = channel_id,
           original_error = e$message,
           class = "tuber_channel_info_error")
   })
-  
+
   # Safely extract playlist ID
   if (is.null(channel_resources$items) || length(channel_resources$items) == 0) {
-    abort("No channel data found", 
+    abort("No channel data found",
           channel_id = channel_id,
           help = "Channel may not exist or may be private",
           class = "tuber_channel_not_found")
   }
-  
+
   content_details <- channel_resources$items[[1]]$contentDetails
   if (is.null(content_details) || is.null(content_details$relatedPlaylists)) {
-    abort("No content details available for channel", 
+    abort("No content details available for channel",
           channel_id = channel_id,
           help = "Channel may not have uploaded videos",
           class = "tuber_no_content_details")
   }
-  
+
   playlist_id <- content_details$relatedPlaylists$uploads
   if (is.null(playlist_id)) {
     abort("No uploads playlist found for channel",
@@ -96,18 +96,18 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
   batch_size <- 50
   res <- list()
   details <- list()
-  
+
   # Process videos in batches
   for (i in seq(1, length(vid_ids), by = batch_size)) {
     end_idx <- min(i + batch_size - 1, length(vid_ids))
     batch_ids <- vid_ids[i:end_idx]
-    
+
     # Batch get statistics
     tryCatch({
-      batch_stats <- tuber_GET("videos", 
+      batch_stats <- tuber_GET("videos",
                                list(part = "statistics", id = paste(batch_ids, collapse = ",")),
                                ...)
-      
+
       # Process batch results
       for (item in batch_stats$items) {
         res[[length(res) + 1]] <- list(
@@ -126,13 +126,13 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
         })
       }
     })
-    
+
     # Batch get video details
     tryCatch({
       batch_details <- tuber_GET("videos",
                                  list(part = "snippet", id = paste(batch_ids, collapse = ",")),
                                  ...)
-      
+
       # Process batch results
       for (item in batch_details$items) {
         details[[length(details) + 1]] <- list(
@@ -153,7 +153,7 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
         })
       }
     })
-    
+
     # Add progress indicator
     if (interactive() && length(vid_ids) > batch_size) {
       cat(sprintf("Processed %d/%d videos\n", min(end_idx, length(vid_ids)), length(vid_ids)))
@@ -169,7 +169,7 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
     comment_count = character(0),
     stringsAsFactors = FALSE
   )
-  
+
   for (stat in res) {
     if (!is.null(stat$id) && !is.null(stat$statistics)) {
       res_df <- rbind(res_df, data.frame(

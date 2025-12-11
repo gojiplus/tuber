@@ -41,10 +41,10 @@ get_subscriptions <- function(filter = NULL, part = "contentDetails",
   # Modern validation using checkmate
   assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
   assert_character(filter, len = 1, .var.name = "filter")
-  assert_choice(names(filter), c("channel_id", "subscription_id"), 
+  assert_choice(names(filter), c("channel_id", "subscription_id"),
                 .var.name = "filter names (must be 'channel_id' or 'subscription_id')")
   assert_character(part, len = 1, min.chars = 1, .var.name = "part")
-  
+
   if (!is.null(for_channel_id)) {
     assert_character(for_channel_id, min.chars = 1, .var.name = "for_channel_id")
   }

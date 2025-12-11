@@ -51,13 +51,13 @@ upload_video <- function(
   # Modern validation using checkmate
   assert_character(file, len = 1, min.chars = 1, .var.name = "file")
   assert_logical(open_url, len = 1, .var.name = "open_url")
-  
+
   if (!file.exists(file)) {
-    abort("File does not exist", 
+    abort("File does not exist",
           file_path = file,
           class = "tuber_file_not_found")
   }
-  
+
   # Validate optional parameters
   if (!is.null(snippet)) {
     assert_list(snippet, .var.name = "snippet")
@@ -131,7 +131,7 @@ upload_video <- function(
   )
 
   if (httr::status_code(resumable_upload_req) != 200) {
-    abort("Failed to initiate resumable upload", 
+    abort("Failed to initiate resumable upload",
           status_code = httr::status_code(resumable_upload_req),
           class = "tuber_upload_init_failed")
   }
@@ -145,7 +145,7 @@ upload_video <- function(
   )
 
   if (httr::status_code(upload_req) != 200) {
-    abort("Failed to upload video", 
+    abort("Failed to upload video",
           status_code = httr::status_code(upload_req),
           class = "tuber_video_upload_failed")
   }

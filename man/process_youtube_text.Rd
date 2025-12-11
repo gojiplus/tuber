@@ -13,7 +13,7 @@ process_youtube_text(
 \arguments{
 \item{response}{List or data.frame containing YouTube API response data}
 
-\item{text_fields}{Character vector of field names to process. 
+\item{text_fields}{Character vector of field names to process.
 Default: common YouTube text fields}
 }
 \value{

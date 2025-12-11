@@ -43,11 +43,11 @@ get_playlist_items <- function(filter = NULL, part = "contentDetails",
   # Modern validation using checkmate
   assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
   assert_character(filter, len = 1, .var.name = "filter")
-  assert_choice(names(filter), c("item_id", "playlist_id"), 
+  assert_choice(names(filter), c("item_id", "playlist_id"),
                 .var.name = "filter names (must be 'item_id' or 'playlist_id')")
   assert_character(part, len = 1, min.chars = 1, .var.name = "part")
   assert_logical(simplify, len = 1, .var.name = "simplify")
-  
+
   if (!is.null(video_id)) {
     assert_character(video_id, len = 1, min.chars = 1, .var.name = "video_id")
   }
@@ -66,7 +66,7 @@ get_playlist_items <- function(filter = NULL, part = "contentDetails",
 
   # Initial API call with retry logic
   res <- call_api_with_retry(tuber_GET, path = "playlistItems", query = querylist, ...)
-  
+
   # Check if we got any results
   if (is.null(res$items) || length(res$items) == 0) {
     if (simplify) {
@@ -75,22 +75,22 @@ get_playlist_items <- function(filter = NULL, part = "contentDetails",
       return(res)
     }
   }
-  
+
   # Use standardized pagination pattern
   all_items <- res$items
   page_token <- res$nextPageToken
   api_calls_made <- 1  # Track API calls for attributes
-  
+
   # Continue pagination while we need more results and have a token
-  while (!is.null(page_token) && is.character(page_token) && 
+  while (!is.null(page_token) && is.character(page_token) &&
          length(all_items) < max_results) {
-    
+
     querylist$pageToken <- page_token
     querylist$maxResults <- min(50, max_results - length(all_items))
-    
+
     a_res <- call_api_with_retry(tuber_GET, path = "playlistItems", query = querylist, ...)
     api_calls_made <- api_calls_made + 1
-    
+
     # Add new items if available
     if (!is.null(a_res$items) && length(a_res$items) > 0) {
       # Only take what we need
@@ -102,21 +102,21 @@ get_playlist_items <- function(filter = NULL, part = "contentDetails",
       }
       all_items <- c(all_items, items_to_add)
     }
-    
+
     page_token <- a_res$nextPageToken
-    
+
     # Safety break if no new items
     if (is.null(a_res$items) || length(a_res$items) == 0) {
       break
     }
   }
-  
+
   # Update response with all collected items
   res$items <- all_items
   res$nextPageToken <- page_token
 
   if (simplify) {
-    # Improved simplification logic 
+    # Improved simplification logic
     if (length(all_items) == 0) {
       empty_df <- data.frame()
       return(add_tuber_attributes(
@@ -128,7 +128,7 @@ get_playlist_items <- function(filter = NULL, part = "contentDetails",
         response_format = "data.frame"
       ))
     }
-    
+
     # Process each item and flatten to data.frame
     simplified_items <- lapply(all_items, function(item) {
       # Flatten the nested structure
@@ -136,10 +136,10 @@ get_playlist_items <- function(filter = NULL, part = "contentDetails",
       # Convert to single-row data.frame
       as.data.frame(t(flattened), stringsAsFactors = FALSE)
     })
-    
+
     # Combine all rows into single data.frame
     res <- do.call(plyr::rbind.fill, simplified_items)
-    
+
     # Add attributes to simplified result
     res <- add_tuber_attributes(
       res,
@@ -151,7 +151,7 @@ get_playlist_items <- function(filter = NULL, part = "contentDetails",
       pagination_used = api_calls_made > 1
     )
   } else {
-    # Add attributes to list result 
+    # Add attributes to list result
     res <- add_tuber_attributes(
       res,
       api_calls_made = api_calls_made,

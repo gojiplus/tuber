@@ -1,0 +1,56 @@
+# Citation File Format for tuber package
+# See: https://citation-file-format.github.io/
+
+cff-version: 1.2.0
+title: "tuber: Client for the YouTube API"
+message: "If you use this software, please cite it as below."
+type: software
+
+authors:
+  - given-names: Gaurav
+    family-names: Sood
+    email: gsood07@gmail.com
+    orcid: "https://orcid.org/0000-0001-5385-2502"
+  - given-names: Kate
+    family-names: Lyons
+    email: k.lyons7@gmail.com
+  - given-names: John
+    family-names: Muschelli
+    email: muschellij2@gmail.com
+    orcid: "https://orcid.org/0000-0001-6469-1750"
+
+repository-code: "https://github.com/gojiplus/tuber"
+url: "https://gojiplus.github.io/tuber/"
+abstract: >
+  tuber provides access to the YouTube Data API v3, allowing users to retrieve
+  comments, video statistics, channel information, playlists, and perform
+  searches. The package supports both OAuth2 authentication and API key
+  authentication methods, and includes comprehensive quota management features.
+
+keywords:
+  - youtube
+  - api
+  - r-package
+  - data-science
+  - social-media
+
+license: MIT
+version: "1.3.0"
+date-released: "2024-12-11"
+
+preferred-citation:
+  type: manual
+  title: "tuber: Client for the YouTube API"
+  authors:
+    - given-names: Gaurav
+      family-names: Sood
+      email: gsood07@gmail.com
+    - given-names: Kate
+      family-names: Lyons
+      email: k.lyons7@gmail.com
+    - given-names: John
+      family-names: Muschelli
+      email: muschellij2@gmail.com
+  year: 2024
+  notes: "R package version 1.3.0"
+  url: "https://gojiplus.github.io/tuber/"

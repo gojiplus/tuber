@@ -57,7 +57,7 @@ get_comments <- function(filter = NULL, part = "snippet", max_results = 100,
   assert_integerish(max_results, len = 1, lower = 20, upper = 100, .var.name = "max_results")
   assert_choice(text_format, c("html", "plainText"), .var.name = "text_format")
   assert_character(filter, len = 1, .var.name = "filter")
-  assert_choice(names(filter), c("parent_id", "comment_id"), 
+  assert_choice(names(filter), c("parent_id", "comment_id"),
                 .var.name = "filter names (must be 'comment_id' or 'parent_id')")
   assert_character(part, len = 1, min.chars = 1, .var.name = "part")
   assert_logical(simplify, len = 1, .var.name = "simplify")
@@ -74,7 +74,7 @@ get_comments <- function(filter = NULL, part = "snippet", max_results = 100,
   raw_res <- tuber_GET("comments", querylist, ...)
 
   if (length(raw_res$items) == 0) {
-      warn("No comment information available. Likely cause: Incorrect ID.", 
+      warn("No comment information available. Likely cause: Incorrect ID.",
            class = "tuber_empty_result")
       if (simplify == TRUE) return(data.frame())
       return(list())

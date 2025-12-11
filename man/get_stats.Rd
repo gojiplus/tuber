@@ -25,7 +25,7 @@ get_stats(
 }
 \value{
 For single video: list with elements \code{id, viewCount, likeCount,
-dislikeCount, favoriteCount, commentCount}. When \code{include_content_details = TRUE}, 
+dislikeCount, favoriteCount, commentCount}. When \code{include_content_details = TRUE},
 also includes \code{duration, definition, dimension, licensedContent, projection}.
 For multiple videos: data frame with one row per video (if simplify=TRUE) or list of results.
 }
@@ -43,7 +43,7 @@ Automatically uses batch processing when multiple video IDs are provided for eff
 get_stats(video_id="N708P-A45D0")
 
 # Multiple videos (automatic batching)
-video_ids <- c("N708P-A45D0", "M7FIvfx5J10", "kJQP7kiw5Fk") 
+video_ids <- c("N708P-A45D0", "M7FIvfx5J10", "kJQP7kiw5Fk")
 stats_df <- get_stats(video_ids)
 
 # Include video duration and other content details:

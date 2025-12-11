@@ -45,11 +45,11 @@ get_playlist_item_videoids <- function(filter = NULL, part = "contentDetails",
   assert_choice(part, c("contentDetails", "id", "snippet", "status"), .var.name = "part")
   assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
   assert_flag(simplify, .var.name = "simplify")
-  
+
   if (!is.null(video_id)) {
     assert_character(video_id, len = 1, min.chars = 1, .var.name = "video_id")
   }
-  
+
   if (!is.null(page_token)) {
     assert_character(page_token, len = 1, min.chars = 1, .var.name = "page_token")
   }

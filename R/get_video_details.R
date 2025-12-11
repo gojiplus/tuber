@@ -65,12 +65,14 @@ json_to_df <- function(res) {
 #' \code{contentDetails, fileDetails, id, liveStreamingDetails,
 #' localizations, player, processingDetails,
 #' recordingDetails, snippet, statistics, status, suggestions, topicDetails}.
-#' Note: As of October 30, 2024, the \code{status} part includes 
+#' Note: As of October 30, 2024, the \code{status} part includes
 #' \code{containsSyntheticMedia} property for identifying AI-generated content.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' @param as.data.frame Logical, returns the requested information as data.frame.
 #' Does not work for:
 #' \code{fileDetails, suggestions, processingDetails}
+#' @param batch_size Integer. When multiple video IDs are provided, controls batch size for efficient processing. Default is 50.
+#' @param use_etag Logical. Whether to use ETag for caching. Default is TRUE.
 #'
 #' @return list. If part is snippet, the list will have the following elements:
 #' \code{id} (video id that was passed), \code{publishedAt, channelId,
@@ -93,14 +95,14 @@ json_to_df <- function(res) {
 #' get_video_details(video_id = "yJXTXN4xrI8", part = c("contentDetails", "status"))
 #' # get details for multiple videos as data frame
 #' get_video_details(video_id = c("LDZX4ooRsWs", "yJXTXN4xrI8"), as.data.frame = TRUE)
-#' 
+#'
 #' # Extract specific fields (common use case):
 #' details <- get_video_details(video_id = "yJXTXN4xrI8")
 #' # Get video title:
 #' video_title <- details$items[[1]]$snippet$title
-#' # Get video description:  
+#' # Get video description:
 #' video_desc <- details$items[[1]]$snippet$description
-#' 
+#'
 #' # Shiny usage - extract video title safely:
 #' # output$videotitle <- renderText({
 #' #   details <- get_video_details(input$commentkey)
@@ -112,9 +114,9 @@ json_to_df <- function(res) {
 #' # })
 #' # Get channel ID:
 #' channel_id <- details$items[[1]]$snippet$channelId
-#' 
+#'
 #' # For Shiny applications - extract title:
-#' # output$videotitle <- renderText({ 
+#' # output$videotitle <- renderText({
 #' #   details <- get_video_details(input$video_id)
 #' #   if (length(details$items) > 0) {
 #' #     details$items[[1]]$snippet$title
@@ -122,7 +124,7 @@ json_to_df <- function(res) {
 #' #     "Video not found"
 #' #   }
 #' # })
-#' 
+#'
 #' # Check for AI-generated content (requires status part):
 #' # status_details <- get_video_details(video_id = "yJXTXN4xrI8", part = "status")
 #' # is_synthetic <- status_details$items[[1]]$status$containsSyntheticMedia
@@ -134,7 +136,7 @@ get_video_details <- function(video_id = NULL, part = "snippet", as.data.frame =
   assert_character(part, len = 1, min.chars = 1, .var.name = "part")
   assert_logical(as.data.frame, len = 1, .var.name = "as.data.frame")
   assert_integerish(batch_size, len = 1, lower = 1, upper = 50, .var.name = "batch_size")
-  
+
   # AUTOMATIC BATCHING: If multiple video IDs provided, use batch operations
   if (length(video_id) > 1) {
     message("Multiple video IDs detected. Using automatic batch processing for efficiency.")
@@ -147,7 +149,7 @@ get_video_details <- function(video_id = NULL, part = "snippet", as.data.frame =
       ...
     ))
   }
-  
+
   parts_only_for_video_owners <- c("fileDetails", "suggestions", "processingDetails")
 
   if (as.data.frame && any(part %in% parts_only_for_video_owners)) {
@@ -170,8 +172,8 @@ get_video_details <- function(video_id = NULL, part = "snippet", as.data.frame =
 
   # Handle API call with retry logic
   raw_res <- call_api_with_retry(
-    tuber_GET, 
-    path = "videos", 
+    tuber_GET,
+    path = "videos",
     query = querylist,
     ...
   )
@@ -179,7 +181,7 @@ get_video_details <- function(video_id = NULL, part = "snippet", as.data.frame =
   if (length(raw_res$items) == 0) {
     suggest_solution("empty_results", "- Check if the video ID is correct\n- Video may be private or deleted")
     warning("No video details found for ID: ", video_id, call. = FALSE)
-    
+
     # Add attributes even to empty results for consistency
     empty_result <- list()
     return(add_tuber_attributes(
@@ -199,12 +201,12 @@ get_video_details <- function(video_id = NULL, part = "snippet", as.data.frame =
   result <- add_tuber_attributes(
     raw_res,
     api_calls_made = 1,
-    function_name = "get_video_details", 
+    function_name = "get_video_details",
     parameters = list(video_id = video_id, part = part, as.data.frame = as.data.frame),
     results_found = length(raw_res$items %||% nrow(raw_res)),
     response_format = if (as.data.frame) "data.frame" else "list"
   )
-  
+
   result
 }
 

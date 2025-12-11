@@ -11,9 +11,9 @@ test_that("Core functions exist", {
 })
 
 test_that("Parameter validation works", {
-  expect_error(get_all_comments(video_id = NULL), "video_id must be")
-  expect_error(get_all_comments(video_id = c("a", "b")), "video_id must be")
-  expect_error(yt_search(term = NULL), "Must specify a search term")
+  expect_error(get_all_comments(video_id = NULL), "Must be of type 'character'")
+  expect_error(get_all_comments(video_id = c("a", "b")), "Must have length 1")
+  expect_error(yt_search(term = NULL), "Must be of type 'string'")
 })
 
 test_that("Quota management functions work", {

@@ -44,38 +44,38 @@
 
 list_channel_resources <- function(filter = NULL, part = "contentDetails",
                          max_results = 50, page_token = NULL, hl = "en-US", ...) {
-  
+
   # Modern validation using checkmate
   assert_character(filter, min.len = 1, .var.name = "filter")
-  assert_choice(part, c("auditDetails", "brandingSettings", "contentDetails", 
-                        "contentOwnerDetails", "id", "invideoPromotion", 
-                        "localizations", "snippet", "statistics", "status", 
+  assert_choice(part, c("auditDetails", "brandingSettings", "contentDetails",
+                        "contentOwnerDetails", "id", "invideoPromotion",
+                        "localizations", "snippet", "statistics", "status",
                         "topicDetails"), .var.name = "part")
   assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
   assert_character(hl, len = 1, min.chars = 1, .var.name = "hl")
-  
+
   if (!is.null(page_token)) {
     assert_character(page_token, len = 1, min.chars = 1, .var.name = "page_token")
   }
-  
+
   # Validate filter names
   if (!all(names(filter) == names(filter)[1])) {
     abort("filter must have a single valid name",
           filter_names = names(filter),
           class = "tuber_mixed_filter_names")
   }
-  
+
   filter_name <- names(filter)[1]
-  assert_choice(filter_name, c("category_id", "username", "channel_id"), 
+  assert_choice(filter_name, c("category_id", "username", "channel_id"),
                 .var.name = "filter name")
-  
+
   if (filter_name != "username" && length(filter) != 1) {
     abort("filter must be a vector of length 1 for channel_id or category_id",
           filter_name = filter_name,
           filter_length = length(filter),
           class = "tuber_invalid_filter_length")
   }
-  
+
   # Check for username BEFORE translation
   if (names(filter)[1] == "username") {
     usernames <- unname(filter)
@@ -92,12 +92,12 @@ list_channel_resources <- function(filter = NULL, part = "contentDetails",
       max_retries <- 3
       retry_count <- 0
       res <- NULL
-      
+
       while (retry_count < max_retries && (is.null(res) || length(res$items) == 0)) {
         if (retry_count > 0) {
           Sys.sleep(0.5)  # Brief pause before retry
         }
-        
+
         tryCatch({
           res <- tuber_GET("channels", querylist, ...)
         }, error = function(e) {
@@ -107,7 +107,7 @@ list_channel_resources <- function(filter = NULL, part = "contentDetails",
                class = "tuber_username_fetch_error")
           res <<- NULL
         })
-        
+
         retry_count <- retry_count + 1
       }
 
@@ -140,14 +140,14 @@ list_channel_resources <- function(filter = NULL, part = "contentDetails",
 
     return(res_df)
   }
-  
+
   # Translate filter names for non-username cases
   translate_filter   <- c(channel_id = "id", category_id = "categoryId",
                           username = "forUsername")
   yt_filter_name     <- as.vector(translate_filter[match(names(filter),
                                                       names(translate_filter))])
   names(filter)      <- yt_filter_name
-  
+
   querylist <- list(part = part, maxResults = min(max_results, 50),
                     pageToken = page_token, hl = hl)
   querylist <- c(querylist, filter)

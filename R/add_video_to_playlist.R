@@ -24,7 +24,7 @@ add_video_to_playlist <- function(playlist_id, video_id, position = NULL, ...) {
   # Modern validation using checkmate
   assert_character(playlist_id, len = 1, min.chars = 1, .var.name = "playlist_id")
   assert_character(video_id, len = 1, min.chars = 1, .var.name = "video_id")
-  
+
   if (!is.null(position)) {
     assert_integerish(position, len = 1, lower = 0, .var.name = "position")
   }

@@ -27,7 +27,7 @@ list_videocats <- function(filter = NULL, ...) {
   # Modern validation using checkmate
   assert_character(filter, len = 1, .var.name = "filter")
   valid_filters <- c("category_id", "region_code")
-  assert_choice(names(filter), valid_filters, 
+  assert_choice(names(filter), valid_filters,
                 .var.name = "filter names (must be 'category_id' or 'region_code')")
 
   translate_filter <- c(category_id = "id", region_code = "regionCode")

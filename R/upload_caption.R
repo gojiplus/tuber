@@ -42,29 +42,29 @@ upload_caption <- function(
   assert_character(caption_name, len = 1, min.chars = 1, .var.name = "caption_name")
   assert_logical(is_draft, len = 1, .var.name = "is_draft")
   assert_logical(open_url, len = 1, .var.name = "open_url")
-  
+
   if (!file.exists(file)) {
-    abort("Caption file does not exist", 
+    abort("Caption file does not exist",
           file_path = file,
           class = "tuber_file_not_found")
   }
-  
+
   # As of April 12, 2024, timing information is required for all caption uploads
   caption_content <- readLines(file, warn = FALSE)
-  has_timing <- any(grepl("-->|\\d+:\\d+:\\d+", caption_content)) || 
+  has_timing <- any(grepl("-->|\\d+:\\d+:\\d+", caption_content)) ||
                 grepl("\\.(srt|vtt|ttml|dfxp)$", file, ignore.case = TRUE)
-  
+
   if (!has_timing) {
-    abort("Caption file must contain timing information", 
+    abort("Caption file must contain timing information",
           file_path = file,
           help = c("Supported formats: .srt, .vtt, .ttml, .dfxp",
                    "Plain text captions are no longer supported as of April 12, 2024"),
           class = "tuber_caption_no_timing")
   }
-  
+
   # Validate video ID format
   if (!grepl("^[A-Za-z0-9_-]{11}$", video_id)) {
-    abort("Invalid YouTube video ID format", 
+    abort("Invalid YouTube video ID format",
           video_id = video_id,
           help = "Video IDs must be 11 characters long and contain only letters, numbers, hyphens, and underscores",
           class = "tuber_invalid_video_id")

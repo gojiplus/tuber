@@ -40,7 +40,7 @@ get_captions <- function(id = NULL, lang = "en",
   yt_check_token()
 
   querylist <- list(tlang = lang, tfmt = format)
-  
+
   # Enhanced error handling for common caption access issues
   raw_res <- tryCatch({
     tuber_GET(paste0("captions", "/", id), query = querylist, ...)
@@ -48,9 +48,9 @@ get_captions <- function(id = NULL, lang = "en",
     if (grepl("403", e$message)) {
       abort("HTTP 403: Access denied for caption ID",
             caption_id = id,
-            help = c("This usually means:", 
+            help = c("This usually means:",
                      "(1) You don't own this video",
-                     "(2) Video has no captions", 
+                     "(2) Video has no captions",
                      "(3) Captions are auto-generated and not downloadable",
                      "Only video owners can download captions via the API"),
             class = "tuber_caption_access_denied")

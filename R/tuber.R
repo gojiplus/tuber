@@ -7,12 +7,16 @@
 #' @importFrom askpass askpass
 #' @importFrom checkmate assert_character assert_numeric assert_integerish
 #' @importFrom checkmate assert_logical assert_choice assert_string assert_list
+#' @importFrom checkmate assert_flag assert_count assert_directory assert_file assert
+#' @importFrom checkmate check_character check_list check_null
 #' @importFrom rlang abort warn inform is_missing %||%
 #' @importFrom httr GET POST PUT DELETE authenticate config stop_for_status
 #' @importFrom httr upload_file content oauth_endpoints oauth_app oauth2.0_token
+#' @importFrom httr status_code headers
 #' @importFrom httr2 request req_url_path_append req_url_query req_headers
 #' @importFrom httr2 req_user_agent req_perform resp_body_json req_body_json
 #' @importFrom httr2 req_method resp_body_string req_body_raw secret_encrypt secret_decrypt
+#' @importFrom httr2 resp_status resp_headers
 #' @importFrom utils read.table modifyList head object.size
 #' @importFrom stats median quantile
 #' @importFrom digest digest
@@ -62,38 +66,38 @@ NULL
 #'
 #' @return The result object with standardized attributes added
 #' @keywords internal
-add_tuber_attributes <- function(result, 
+add_tuber_attributes <- function(result,
                                 api_calls_made = 1,
-                                quota_used = NULL, 
+                                quota_used = NULL,
                                 function_name = NULL,
                                 parameters = list(),
                                 timestamp = Sys.time(),
                                 ...) {
-  
+
   # Get current quota status if not provided
   if (is.null(quota_used)) {
     quota_status <- yt_get_quota_usage()
     quota_used <- quota_status$quota_used
   }
-  
+
   # Standard attributes
   attr(result, "tuber_api_calls") <- api_calls_made
   attr(result, "tuber_quota_used") <- quota_used
   attr(result, "tuber_timestamp") <- timestamp
   attr(result, "tuber_function") <- function_name %||% deparse(sys.call(-1)[[1]])
   attr(result, "tuber_parameters") <- parameters
-  
+
   # Add any custom attributes
   extra_attrs <- list(...)
   for (name in names(extra_attrs)) {
     attr(result, paste0("tuber_", name)) <- extra_attrs[[name]]
   }
-  
+
   # Add class for potential S3 methods
   if (!inherits(result, "tuber_result")) {
     class(result) <- c("tuber_result", class(result))
   }
-  
+
   return(result)
 }
 
@@ -115,17 +119,17 @@ tuber_info <- function(result) {
     message("This object doesn't have tuber metadata attributes.")
     return(invisible(NULL))
   }
-  
+
   cat("Tuber Function Metadata\n")
   cat("=======================\n")
-  
+
   attrs <- attributes(result)
   tuber_attrs <- attrs[grep("^tuber_", names(attrs))]
-  
+
   for (name in names(tuber_attrs)) {
     clean_name <- sub("^tuber_", "", name)
     value <- tuber_attrs[[name]]
-    
+
     # Format different types appropriately
     formatted_value <- if (inherits(value, "POSIXct")) {
       format(value, "%Y-%m-%d %H:%M:%S %Z")
@@ -136,10 +140,10 @@ tuber_info <- function(result) {
     } else {
       as.character(value)
     }
-    
+
     cat(sprintf("%-15s: %s\n", clean_name, formatted_value))
   }
-  
+
   invisible(result)
 }
 
@@ -155,35 +159,35 @@ print.tuber_result <- function(x, ...) {
   content_classes <- class(x)[class(x) != "tuber_result"]
   class(x) <- content_classes
   print(x, ...)
-  
+
   # Show metadata summary
   attrs <- attributes(x)
   tuber_attrs <- attrs[grep("^tuber_", names(attrs))]
-  
+
   if (length(tuber_attrs) > 0) {
     cat("\n--- Tuber Metadata ---\n")
-    
+
     # Show most important attributes
     key_attrs <- c("tuber_function", "tuber_api_calls", "tuber_results_found", "tuber_timestamp")
-    
+
     for (attr_name in key_attrs) {
       if (attr_name %in% names(tuber_attrs)) {
         value <- tuber_attrs[[attr_name]]
         clean_name <- sub("^tuber_", "", attr_name)
-        
+
         formatted_value <- if (inherits(value, "POSIXct")) {
           format(value, "%Y-%m-%d %H:%M:%S")
         } else {
           as.character(value)
         }
-        
+
         cat(sprintf("%s: %s  ", clean_name, formatted_value))
       }
     }
-    
+
     cat("\n(Use tuber_info() for full metadata)\n")
   }
-  
+
   # Restore the original class
   class(x) <- c("tuber_result", content_classes)
   invisible(x)
@@ -342,6 +346,7 @@ is_testing <- function() {
 #' @param path path to specific API request URL
 #' @param query query list
 #' @param auth A character vector of the authentication method, either "token" (the default) or "key"
+#' @param use_etag Logical. Whether to use ETag for caching. Default is TRUE.
 #' @param \dots Additional arguments passed to \code{\link[httr]{GET}}.
 #' @return list
 
@@ -351,92 +356,39 @@ tuber_GET <- function(path, query, auth = "token", use_etag = TRUE, ...) {
   assert_list(query, .var.name = "query")
   assert_choice(auth, c("token", "key"), .var.name = "auth")
   assert_flag(use_etag, .var.name = "use_etag")
-  
+
   # Track quota usage
   parts <- query$part %||% NULL
   track_quota_usage(path, parts)
-  
-  # Generate cache key for ETag support
+
+  # ETag support disabled until caching functions are fully implemented
+  # TODO: Implement tuber_config_get, get_cached_etag, cache_etag_and_response functions
   cache_key <- NULL
-  if (use_etag && tuber_config_get("api.enable_etags", TRUE)) {
-    cache_key <- generate_cache_key(path, query, auth)
-    
-    # Check for cached ETag
-    cached_etag <- get_cached_etag(cache_key)
-    if (!is.null(cached_etag)) {
-      query$etag <- cached_etag
-    }
-  }
 
   if (auth == "token") {
     yt_check_token()
-    
-    # Add ETag header support
-    headers <- list()
-    if (!is.null(query$etag)) {
-      headers[["If-None-Match"]] <- query$etag
-      query$etag <- NULL  # Remove from query params
-    }
-    
-    req <- GET("https://www.googleapis.com", 
+
+    req <- GET("https://www.googleapis.com",
                path = paste0("youtube/v3/", path),
-               query = query, 
+               query = query,
                config(token = getOption("google_token")),
-               httr::add_headers(.headers = headers), 
                ...)
-    
-    # Handle 304 Not Modified
-    if (status_code(req) == 304) {
-      cached_response <- get_cached_response(cache_key)
-      if (!is.null(cached_response)) {
-        return(cached_response)
-      }
-    }
-    
+
     res <- content(req)
-    
-    # Cache new ETag and response
-    if (use_etag && !is.null(cache_key) && status_code(req) == 200) {
-      response_etag <- headers(req)[["etag"]]
-      if (!is.null(response_etag)) {
-        cache_etag_and_response(cache_key, response_etag, res)
-      }
-    }
   }
 
   if (auth == "key") {
     yt_check_key()
-    
+
     req_builder <- request("https://www.googleapis.com") %>%
       req_url_path_append("youtube/v3", path) %>%
       req_url_query(!!!query) %>%
       req_headers("x-goog-api-key" = suppressMessages(yt_get_key())) %>%
       req_user_agent("tuber (https://github.com/gojiplus/tuber)")
-    
-    # Add ETag header support for httr2
-    if (!is.null(query$etag)) {
-      req_builder <- req_builder %>% req_headers("If-None-Match" = query$etag)
-    }
-    
+
     req <- req_builder %>% req_perform()
-    
-    # Handle 304 Not Modified
-    if (resp_status(req) == 304) {
-      cached_response <- get_cached_response(cache_key)
-      if (!is.null(cached_response)) {
-        return(cached_response)
-      }
-    }
-    
+
     res <- req %>% resp_body_json()
-    
-    # Cache new ETag and response
-    if (use_etag && !is.null(cache_key) && resp_status(req) == 200) {
-      response_etag <- resp_headers(req)[["etag"]]
-      if (!is.null(response_etag)) {
-        cache_etag_and_response(cache_key, response_etag, res)
-      }
-    }
   }
 
   # Check for rate limiting and quota errors
@@ -446,14 +398,14 @@ tuber_GET <- function(path, query, auth = "token", use_etag = TRUE, ...) {
       error_content <- tryCatch({
         if (auth == "token") content(req, as = "text") else httr2::resp_body_string(req)
       }, error = function(e) "")
-      
+
       if (grepl("quotaExceeded|dailyLimitExceeded", error_content)) {
         quota_status <- yt_get_quota_usage()
-        stop("YouTube API quota exhausted. Used: ", quota_status$quota_used, "/", quota_status$quota_limit, 
+        stop("YouTube API quota exhausted. Used: ", quota_status$quota_used, "/", quota_status$quota_limit,
              ". Quota resets at: ", format(quota_status$reset_time, "%Y-%m-%d %H:%M:%S UTC"))
       }
     }
-    
+
     if (req$status_code == 429) {
       warning("Rate limited by YouTube API. Consider adding delays between requests.")
     }
@@ -507,14 +459,14 @@ tuber_POST <- function(path, query, body = "", auth = "token", ...) {
       error_content <- tryCatch({
         if (auth == "token") content(req, as = "text") else httr2::resp_body_string(req)
       }, error = function(e) "")
-      
+
       if (grepl("quotaExceeded|dailyLimitExceeded", error_content)) {
         quota_status <- yt_get_quota_usage()
-        stop("YouTube API quota exhausted. Used: ", quota_status$quota_used, "/", quota_status$quota_limit, 
+        stop("YouTube API quota exhausted. Used: ", quota_status$quota_used, "/", quota_status$quota_limit,
              ". Quota resets at: ", format(quota_status$reset_time, "%Y-%m-%d %H:%M:%S UTC"))
       }
     }
-    
+
     if (req$status_code == 429) {
       warning("Rate limited by YouTube API. Consider adding delays between requests.")
     }
@@ -574,7 +526,7 @@ tuber_PUT <- function(path, query, body = "", auth = "token", ...) {
 
   if (auth == "key") {
     yt_check_key()
-    req <- 
+    req <-
       request("https://www.googleapis.com") %>%
       req_url_path_append("youtube/v3", path) %>%
       req_url_query(!!!query) %>%
@@ -591,21 +543,21 @@ tuber_PUT <- function(path, query, body = "", auth = "token", ...) {
       error_content <- tryCatch({
         if (auth == "token") content(req, as = "text") else httr2::resp_body_string(req)
       }, error = function(e) "")
-      
+
       if (grepl("quotaExceeded|dailyLimitExceeded", error_content)) {
         quota_status <- yt_get_quota_usage()
-        stop("YouTube API quota exhausted. Used: ", quota_status$quota_used, "/", quota_status$quota_limit, 
+        stop("YouTube API quota exhausted. Used: ", quota_status$quota_used, "/", quota_status$quota_limit,
              ". Quota resets at: ", format(quota_status$reset_time, "%Y-%m-%d %H:%M:%S UTC"))
       }
     }
-    
+
     if (req$status_code == 429) {
       warning("Rate limited by YouTube API. Consider adding delays between requests.")
     }
   }
 
   tuber_check(req)
-  
+
   res
 }
 
@@ -649,14 +601,14 @@ tuber_DELETE <- function(path, query, auth = "token", ...) {
       error_content <- tryCatch({
         if (auth == "token") content(req, as = "text") else httr2::resp_body_string(req)
       }, error = function(e) "")
-      
+
       if (grepl("quotaExceeded|dailyLimitExceeded", error_content)) {
         quota_status <- yt_get_quota_usage()
-        stop("YouTube API quota exhausted. Used: ", quota_status$quota_used, "/", quota_status$quota_limit, 
+        stop("YouTube API quota exhausted. Used: ", quota_status$quota_used, "/", quota_status$quota_limit,
              ". Quota resets at: ", format(quota_status$reset_time, "%Y-%m-%d %H:%M:%S UTC"))
       }
     }
-    
+
     if (req$status_code == 429) {
       warning("Rate limited by YouTube API. Consider adding delays between requests.")
     }
@@ -686,7 +638,7 @@ tuber_check <- function(req) {
   } else {
     msg <- out$error$message
   }
-  
+
   # Enhanced error handling for common 403 issues
   if (req$status_code == 403) {
     if (grepl("accessNotConfigured|has not been used|is disabled", msg, ignore.case = TRUE)) {
@@ -704,7 +656,7 @@ tuber_check <- function(req) {
       stop("HTTP failure: ", req$status_code, "\n", enhanced_msg, call. = FALSE)
     }
   }
-  
+
   msg <- paste0(msg, "\n")
   stop("HTTP failure: ", req$status_code, "\n", msg, call. = FALSE)
 }

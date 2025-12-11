@@ -40,7 +40,7 @@ list_videos <- function(part = "contentDetails", max_results = 50,
   # Modern validation using checkmate
   assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
   assert_character(part, len = 1, min.chars = 1, .var.name = "part")
-  
+
   if (!is.null(page_token)) {
     assert_character(page_token, len = 1, min.chars = 1, .var.name = "page_token")
   }

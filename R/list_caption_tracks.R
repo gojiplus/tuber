@@ -39,7 +39,7 @@ list_caption_tracks <- function(part = "snippet", video_id = NULL, lang = "en",
   assert_character(part, len = 1, min.chars = 1, .var.name = "part")
   assert_character(lang, len = 1, min.chars = 1, .var.name = "lang")
   assert_logical(simplify, len = 1, .var.name = "simplify")
-  
+
   if (!is.null(id)) {
     assert_character(id, min.chars = 1, .var.name = "id")
   }

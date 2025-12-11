@@ -33,9 +33,9 @@ list_guidecats <- function(filter = NULL, hl = NULL, ...) {
   # Modern validation using checkmate
   assert_character(filter, len = 1, .var.name = "filter")
   valid_filters <- c("category_id", "region_code")
-  assert_choice(names(filter), valid_filters, 
+  assert_choice(names(filter), valid_filters,
                 .var.name = "filter names (must be 'category_id' or 'region_code')")
-  
+
   if (!is.null(hl)) {
     assert_character(hl, len = 1, min.chars = 1, .var.name = "hl")
   }

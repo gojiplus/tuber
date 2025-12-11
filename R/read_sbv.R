@@ -22,13 +22,13 @@
 read_sbv <- function(file) {
   # Modern validation using checkmate
   assert_character(file, len = 1, min.chars = 1, .var.name = "file")
-  
+
   if (!file.exists(file)) {
-    abort("SBV file does not exist", 
+    abort("SBV file does not exist",
           file_path = file,
           class = "tuber_file_not_found")
   }
-  
+
   x <- readLines(file)
   x <- matrix(x, ncol = 3, byrow = TRUE)
   colnames(x) <- c("time", "text", "empty")

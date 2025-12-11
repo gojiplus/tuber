@@ -42,11 +42,11 @@ get_playlist_item_ids <- function(filter = NULL, part = "contentDetails",
   # Modern validation using checkmate
   assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
   assert_character(filter, len = 1, .var.name = "filter")
-  assert_choice(names(filter), c("item_id", "playlist_id"), 
+  assert_choice(names(filter), c("item_id", "playlist_id"),
                 .var.name = "filter names (must be 'item_id' or 'playlist_id')")
   assert_character(part, len = 1, min.chars = 1, .var.name = "part")
   assert_logical(simplify, len = 1, .var.name = "simplify")
-  
+
   if (!is.null(video_id)) {
     assert_character(video_id, len = 1, min.chars = 1, .var.name = "video_id")
   }

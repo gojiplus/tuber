@@ -32,7 +32,7 @@ update_video_metadata <- function(video_id, title, category_id, description, pri
   assert_choice(privacy_status, c("public", "private", "unlisted"), .var.name = "privacy_status")
   assert_logical(made_for_kids, len = 1, .var.name = "made_for_kids")
   assert_choice(auth, c("token", "key"), .var.name = "auth")
-  
+
   # Define the body for the PUT request
   body <- list(
     id = video_id,

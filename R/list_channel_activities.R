@@ -62,11 +62,11 @@ list_channel_activities <- function(filter = NULL, part = "snippet",
   assert_choice(part, c("contentDetails", "id", "snippet"), .var.name = "part")
   assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
   assert_flag(simplify, .var.name = "simplify")
-  
+
   if (!is.null(page_token)) {
     assert_character(page_token, len = 1, min.chars = 1, .var.name = "page_token")
   }
-  
+
   if (!is.null(published_after)) {
     assert_character(published_after, len = 1, .var.name = "published_after")
     if (is.na(as.POSIXct(published_after, format = "%Y-%m-%dT%H:%M:%SZ"))) {
@@ -76,7 +76,7 @@ list_channel_activities <- function(filter = NULL, part = "snippet",
             class = "tuber_invalid_date_format")
     }
   }
-  
+
   if (!is.null(published_before)) {
     assert_character(published_before, len = 1, .var.name = "published_before")
     if (is.na(as.POSIXct(published_before, format = "%Y-%m-%dT%H:%M:%SZ"))) {
@@ -86,7 +86,7 @@ list_channel_activities <- function(filter = NULL, part = "snippet",
             class = "tuber_invalid_date_format")
     }
   }
-  
+
   if (!is.null(region_code)) {
     assert_character(region_code, len = 1, pattern = "^[A-Z]{2}$", .var.name = "region_code")
   }
