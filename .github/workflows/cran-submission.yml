@@ -129,7 +129,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck, any::devtools
+          extra-packages: any::rcmdcheck, any::devtools, any::desc
           needs: check
 
       - name: Final local check
@@ -147,14 +147,19 @@ jobs:
       - name: Extract package info
         id: pkg-info
         run: |
-          DESC=$(cat DESCRIPTION)
-          PACKAGE=$(echo "$DESC" | grep "^Package:" | cut -d' ' -f2)
-          VERSION=$(echo "$DESC" | grep "^Version:" | cut -d' ' -f2)
-          MAINTAINER=$(echo "$DESC" | grep "^Maintainer:" | cut -d' ' -f2-)
+          # Extract package info using R and desc package to handle Authors@R
+          Rscript -e "
+          library(desc)
+          desc_obj <- desc::desc()
           
-          echo "package-name=$PACKAGE" >> $GITHUB_OUTPUT
-          echo "package-version=$VERSION" >> $GITHUB_OUTPUT  
-          echo "maintainer=$MAINTAINER" >> $GITHUB_OUTPUT
+          pkg_name <- desc_obj\$get('Package')
+          pkg_version <- desc_obj\$get('Version')
+          maintainer_info <- desc_obj\$get_maintainer()
+          
+          cat('package-name=', pkg_name, '\\n', sep='', file=stdout())
+          cat('package-version=', pkg_version, '\\n', sep='', file=stdout())
+          cat('maintainer=', maintainer_info, '\\n', sep='', file=stdout())
+          " >> $GITHUB_OUTPUT
 
       - name: Submit to CRAN
         id: cran-submit
@@ -163,15 +168,16 @@ jobs:
           
           Rscript -e "
           library(devtools)
+          library(desc)
           
-          # Read package info
-          desc <- read.dcf('DESCRIPTION')
-          pkg_name <- desc[1, 'Package']
-          pkg_version <- desc[1, 'Version']
-          maintainer <- desc[1, 'Maintainer']
+          # Read package info using desc package
+          desc_obj <- desc::desc()
+          pkg_name <- desc_obj\$get('Package')
+          pkg_version <- desc_obj\$get('Version')
+          maintainer_info <- desc_obj\$get_maintainer()
           
           cat('📦 Submitting', pkg_name, 'version', pkg_version, 'to CRAN\n')
-          cat('👤 Maintainer:', maintainer, '\n')
+          cat('👤 Maintainer:', maintainer_info, '\n')
           
           # Submit using devtools::submit_cran
           tryCatch({
