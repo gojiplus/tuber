@@ -60,7 +60,12 @@ yt_oauth <- function(app_id = NULL, app_secret = NULL, scope = "ssl", token = ".
   google_token <- NULL
   if (file.exists(token)) {
     google_token <- tryCatch({
-      suppressWarnings(readRDS(token))
+      saved_token <- suppressWarnings(readRDS(token))
+      # httr saves tokens in a list with hash as key - extract the actual token
+      if (is.list(saved_token) && !inherits(saved_token, "Token")) {
+        saved_token <- saved_token[[1]]
+      }
+      saved_token
     }, error = function(e) {
       warn("Unable to read existing OAuth token",
            token_file = token,
