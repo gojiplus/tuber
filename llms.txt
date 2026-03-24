@@ -1,4 +1,4 @@
-## :sweet_potato: tuber: Access YouTube API via R
+## 🍠 tuber: Access YouTube API via R
 
 [![CI](https://github.com/gojiplus/tuber/actions/workflows/ci.yml/badge.svg)](https://github.com/gojiplus/tuber/actions/workflows/ci.yml)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/tuber)](https://cran.r-project.org/package=tuber)
