@@ -5,7 +5,7 @@ Get all the comments for a video including replies
 ## Usage
 
 ``` r
-get_all_comments(video_id = NULL, ...)
+get_all_comments(video_id = NULL, max_results = NULL, ...)
 ```
 
 ## Arguments
@@ -13,6 +13,12 @@ get_all_comments(video_id = NULL, ...)
 - video_id:
 
   string; Required. `video_id`: video ID.
+
+- max_results:
+
+  Integer. Maximum number of comments to return. Default is NULL which
+  returns all comments. Set this to avoid long-running requests on
+  popular videos.
 
 - ...:
 
@@ -37,5 +43,6 @@ if (FALSE) { # \dontrun{
 # Set API token via yt_oauth() first
 
 get_all_comments(video_id = "a-UQz7fqR3w")
+get_all_comments(video_id = "a-UQz7fqR3w", max_results = 100)
 } # }
 ```

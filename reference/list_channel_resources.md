@@ -11,6 +11,7 @@ list_channel_resources(
   max_results = 50,
   page_token = NULL,
   hl = "en-US",
+  simplify = TRUE,
   ...
 )
 ```
@@ -50,6 +51,11 @@ list_channel_resources(
   other allowed language codes, see
   [`list_langs`](https://gojiplus.github.io/tuber/reference/list_langs.md).
 
+- simplify:
+
+  Logical. If TRUE, returns a data frame. If FALSE, returns raw list.
+  Default: TRUE.
+
 - ...:
 
   Additional arguments passed to
@@ -57,8 +63,8 @@ list_channel_resources(
 
 ## Value
 
-list. If `username` is used in `filter`, a data frame with columns
-`username` and `channel_id` is returned.
+If `simplify = TRUE` (default) or `username` is used in `filter`, a data
+frame. Otherwise returns a list.
 
 ## References
 

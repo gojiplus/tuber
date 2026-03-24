@@ -1,6 +1,14 @@
 # Get Related Videos
 
-Takes a video id and returns related videos
+\`r lifecycle::badge("deprecated")\`
+
+Takes a video id and returns related videos.
+
+\*\*Note:\*\* YouTube deprecated the \`relatedToVideoId\` parameter in
+August 2023. This function will return an error as the API endpoint no
+longer works. Consider using
+[`yt_search`](https://gojiplus.github.io/tuber/reference/yt_search.md)
+with relevant keywords instead.
 
 ## Usage
 
@@ -50,6 +58,7 @@ get_related_videos(
 if (FALSE) { # \dontrun{
 
 # Set API token via yt_oauth() first
+# NOTE: This function no longer works due to YouTube API deprecation
 
 get_related_videos(video_id = "yJXTXN4xrI8")
 } # }

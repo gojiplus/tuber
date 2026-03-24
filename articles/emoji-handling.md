@@ -1,88 +1,162 @@
 # Handling Emojis and Unicode in YouTube Data
 
-## Handling Emojis and Unicode in YouTube Data
-
 YouTube content frequently contains emojis, special Unicode characters,
-and text in various languages. The `tuber` package provides robust
-utilities for handling these characters consistently.
+and text in various languages. The `tuber` package provides built-in
+functions for detecting, extracting, and manipulating emojis without
+external dependencies.
 
-### Unicode Processing Functions
-
-The package includes several helper functions for text processing:
-
-- [`safe_utf8()`](https://gojiplus.github.io/tuber/reference/safe_utf8.md):
-  Safely converts text to UTF-8 encoding
-- [`clean_youtube_text()`](https://gojiplus.github.io/tuber/reference/clean_youtube_text.md):
-  Removes HTML tags and normalizes text
-- [`process_youtube_text()`](https://gojiplus.github.io/tuber/reference/process_youtube_text.md):
-  Applies consistent processing to API responses
-
-### Working with Emojis in Comments
+## Quick Start
 
 ``` r
 library(tuber)
 
-# Set up authentication
-yt_oauth("your_app_id", "your_app_secret")
-
-# Get comments that may contain emojis
+# Get comments from a video
 comments <- get_all_comments(video_id = "your_video_id")
 
-# Text is automatically processed for Unicode compatibility
-head(comments$textDisplay)
+# Check which comments contain emojis
+comments$has_emoji <- has_emoji(comments$textDisplay)
+
+# Count emojis per comment
+comments$emoji_count <- count_emojis(comments$textDisplay)
+
+# Filter to emoji-rich comments
+emoji_comments <- comments[comments$emoji_count > 0, ]
 ```
 
-### Manual Text Cleaning
+## Emoji Detection Functions
 
-You can also manually clean YouTube text data:
+The package provides five main functions for working with emojis:
+
+### `has_emoji()` - Check for emoji presence
 
 ``` r
-# Example text with emojis and HTML
-raw_text <- "Great video! 👍 &lt;3 &amp; more..."
+has_emoji("Hello world")
+# FALSE
 
-# Clean the text
-clean_text <- clean_youtube_text(raw_text)
-print(clean_text)
-# Output: "Great video! 👍 <3 & more..."
+has_emoji("Great video! \U0001F44D")
+# TRUE
+
+has_emoji(c("No emoji", "Has emoji \U0001F600", "Also none"))
+# c(FALSE, TRUE, FALSE)
 ```
 
-### Handling Different Encodings
-
-The package automatically handles various text encodings:
+### `count_emojis()` - Count emojis in text
 
 ``` r
-# Process text with potential encoding issues
-problematic_text <- c("café", "naïve", "résumé")
+count_emojis("Hello world")
+# 0
+
+count_emojis("Rating: \U0001F600\U0001F600\U0001F600")
+# 3
+
+count_emojis(c("None", "\U0001F44D", "\U0001F600\U0001F601"))
+# c(0, 1, 2)
+```
+
+### `extract_emojis()` - Get emojis from text
+
+``` r
+extract_emojis("Hello \U0001F44B World \U0001F30D!")
+# list(c("\U0001F44B", "\U0001F30D"))
+
+extract_emojis(c("No emoji", "\U0001F600\U0001F601"))
+# list(character(0), c("\U0001F600", "\U0001F601"))
+```
+
+### `remove_emojis()` - Strip emojis from text
+
+``` r
+remove_emojis("Hello \U0001F44B World!")
+# "Hello  World!"
+
+remove_emojis(c("No emoji", "Has \U0001F600 emoji"))
+# c("No emoji", "Has  emoji")
+```
+
+### `replace_emojis()` - Substitute emojis
+
+``` r
+replace_emojis("Hello \U0001F44B World!", replacement = "[emoji]")
+# "Hello [emoji] World!"
+
+replace_emojis("Rate: \U0001F600\U0001F600\U0001F600", replacement = "*")
+# "Rate: ***"
+```
+
+## Common Use Cases
+
+### Filter comments with high emoji usage
+
+``` r
+comments <- get_all_comments(video_id = "your_video_id")
+comments$emoji_count <- count_emojis(comments$textDisplay)
+
+# Top 10 most emoji-heavy comments
+top_emoji <- comments[order(-comments$emoji_count), ][1:10, ]
+```
+
+### Text analysis without emojis
+
+``` r
+# Remove emojis for text analysis
+comments$clean_text <- remove_emojis(comments$textDisplay)
+
+# Now use clean_text for sentiment analysis or word clouds
+```
+
+### Emoji frequency analysis
+
+``` r
+# Extract all emojis from comments
+all_emojis <- unlist(extract_emojis(comments$textDisplay))
+
+# Count frequency
+emoji_freq <- table(all_emojis)
+sort(emoji_freq, decreasing = TRUE)[1:10]
+```
+
+## Unicode Text Processing
+
+Beyond emojis, `tuber` handles Unicode text consistently:
+
+### `safe_utf8()` - Ensure UTF-8 encoding
+
+``` r
+problematic_text <- c("caf\xe9", "na\xefve")
 safe_text <- safe_utf8(problematic_text)
 ```
 
-### Tips for Working with Unicode Data
+### `clean_youtube_text()` - Clean HTML and normalize text
 
-1.  **Always save files with UTF-8 encoding** when working with YouTube
-    data
-2.  **Use the built-in text processing functions** rather than manual
-    string operations
-3.  **Be aware of display limitations** in different R environments
-    (some consoles may not display all emojis correctly)
-4.  **Consider text length limits** when processing large amounts of
-    comment data
+``` r
+raw_text <- "Great video! &lt;3 &amp; more..."
+clean_text <- clean_youtube_text(raw_text)
+# "Great video! <3 & more..."
+```
 
-### Common Issues and Solutions
+## Troubleshooting
 
-#### Issue: Emojis appear as question marks
+### Emojis appear as question marks
 
-**Solution**: Ensure your R environment supports UTF-8 and consider
-using
-[`clean_youtube_text()`](https://gojiplus.github.io/tuber/reference/clean_youtube_text.md)
-for better compatibility.
+Your R environment may not support UTF-8 display. The data is still
+correct; only the display is affected. Try:
 
-#### Issue: HTML entities in text
+``` r
+# Check locale
+Sys.getlocale("LC_CTYPE")
 
-**Solution**: The package automatically decodes common HTML entities
-like `&amp;`, `&lt;`, `&gt;`.
+# Set UTF-8 locale on macOS/Linux
+Sys.setlocale("LC_CTYPE", "en_US.UTF-8")
+```
 
-#### Issue: Inconsistent text formatting
+### Emoji counts seem too high
 
-**Solution**: Use
-[`process_youtube_text()`](https://gojiplus.github.io/tuber/reference/process_youtube_text.md)
-for consistent processing across all text fields.
+Compound emojis (like family emojis or skin tone modifiers) may be
+counted as multiple characters. This is due to how Unicode encodes these
+as sequences of code points.
+
+### Some emojis not detected
+
+The emoji pattern covers most common Unicode emoji blocks. Very new
+emojis added in recent Unicode versions may not be detected until the
+pattern is updated.

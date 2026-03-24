@@ -9,7 +9,7 @@ processing.
 get_video_details(
   video_ids,
   part = "snippet",
-  simplify = FALSE,
+  simplify = TRUE,
   batch_size = 50,
   show_progress = NULL,
   auth = "token",
@@ -30,7 +30,7 @@ get_video_details(
 - simplify:
 
   Logical. If TRUE, returns a data frame. If FALSE, returns raw list.
-  Default: FALSE.
+  Default: TRUE.
 
 - batch_size:
 
@@ -53,9 +53,9 @@ get_video_details(
 
 ## Value
 
-When `simplify = FALSE` (default): List with items containing video
-details. When `simplify = TRUE`: Data frame with video details (not
-available for owner-only parts).
+When `simplify = TRUE` (default): Data frame with video details (not
+available for owner-only parts). When `simplify = FALSE`: List with
+items containing video details.
 
 The result includes metadata as attributes: - `api_calls_made`: Number
 of API calls made - `quota_used`: Estimated quota units consumed -

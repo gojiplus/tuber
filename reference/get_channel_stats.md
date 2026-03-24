@@ -10,11 +10,10 @@ get_channel_stats(
   channel_ids = NULL,
   mine = NULL,
   part = c("statistics", "snippet"),
-  simplify = FALSE,
+  simplify = TRUE,
   batch_size = 50,
   show_progress = NULL,
   auth = "token",
-  console_output = TRUE,
   ...
 )
 
@@ -40,8 +39,8 @@ list_my_channel(...)
 
 - simplify:
 
-  Logical. If TRUE, returns a data frame. If FALSE, returns raw list.
-  Default: FALSE.
+  Logical. If TRUE (default), returns a data frame. If FALSE, returns
+  raw list.
 
 - batch_size:
 
@@ -57,10 +56,6 @@ list_my_channel(...)
   Authentication method: "token" (OAuth2) or "key" (API key). Default:
   "token".
 
-- console_output:
-
-  Logical. Show console output for single channel. Default: TRUE.
-
 - ...:
 
   Additional arguments passed to
@@ -68,8 +63,8 @@ list_my_channel(...)
 
 ## Value
 
-When `simplify = FALSE` (default): List with channel details. When
-`simplify = TRUE`: Data frame with channel details.
+When `simplify = TRUE` (default): Data frame with channel details. When
+`simplify = FALSE`: List with channel details.
 
 For single channels, returns the channel object directly (not in a
 list). For multiple channels, returns a list with items array.
@@ -82,10 +77,6 @@ Valid parts include:
 The function automatically batches requests to minimize API quota
 usage: - 1 channel = 1 API call - 100 channels = 2 API calls (batched in
 groups of 50)
-
-When retrieving a single channel, the function displays key statistics
-in the console by default (can be disabled with
-`console_output = FALSE`).
 
 ## References
 

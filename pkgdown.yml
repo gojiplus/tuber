@@ -2,11 +2,12 @@ pandoc: 3.1.11
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
+  batch-processing-quota: batch-processing-quota.html
   emoji-analysis: emoji-analysis.html
   emoji-handling: emoji-handling.html
   troubleshooting: troubleshooting.html
   tuber-ex: tuber-ex.html
-last_built: 2026-01-14T00:17Z
+last_built: 2026-03-24T01:30Z
 urls:
   reference: https://gojiplus.github.io/tuber/reference
   article: https://gojiplus.github.io/tuber/articles

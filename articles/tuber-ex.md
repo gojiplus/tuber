@@ -47,7 +47,7 @@ yt_oauth("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.c
 #### Get Statistics of a Video
 
 ``` r
-get_stats(video_id="N708P-A45D0")
+get_stats(video_id = "N708P-A45D0")
 ```
 
     ## No. of Views 525112 
@@ -59,13 +59,13 @@ get_stats(video_id="N708P-A45D0")
 #### Get Information About a Video
 
 ``` r
-get_video_details(video_id="N708P-A45D0")
+get_video_details(video_id = "N708P-A45D0")
 ```
 
 #### Get Caption of a Video
 
 ``` r
-get_captions(video_id="yJXTXN4xrI8")
+get_captions(video_id = "yJXTXN4xrI8")
 ```
 
     ## <?xml version="1.0" encoding="utf-8"?>
@@ -182,7 +182,7 @@ head(res[, 1:3])
 #### Get Comments on a video
 
 ``` r
-res <- get_comment_threads(c(video_id="N708P-A45D0"))
+res <- get_comment_threads(c(video_id = "N708P-A45D0"))
 head(res)
 ```
 
@@ -197,13 +197,13 @@ head(res)
 ### Get statistics of all the videos in a channel
 
 ``` r
-a <- list_channel_resources(filter = c(channel_id = "UCT5Cx1l4IS3wHkJXNyuj4TA"), part="contentDetails")
+a <- list_channel_resources(filter = c(channel_id = "UCT5Cx1l4IS3wHkJXNyuj4TA"), part = "contentDetails")
 
 # Uploaded playlists:
 playlist_id <- a$items[[1]]$contentDetails$relatedPlaylists$uploads
 
 # Get videos on the playlist
-vids <- get_playlist_items(filter= c(playlist_id=playlist_id)) 
+vids <- get_playlist_items(filter = c(playlist_id = playlist_id))
 
 # Video ids
 vid_ids <- as.vector(vids$contentDetails.videoId)
@@ -211,9 +211,9 @@ vid_ids <- as.vector(vids$contentDetails.videoId)
 # Function to scrape stats for all vids
 get_all_stats <- function(id) {
   get_stats(id)
-} 
+}
 
-# Get stats and convert results to data frame 
+# Get stats and convert results to data frame
 res <- lapply(vid_ids, get_all_stats)
 res_df <- do.call(rbind, lapply(res, data.frame))
 
@@ -224,13 +224,13 @@ If you need to find a channel ID from a `username`, the
 `list_channel_resources` function can help. You can use it like:
 
 ``` r
-res = list_channel_resources(filter = c(username = "GoogleDevelopers"), part="id")
+res <- list_channel_resources(filter = c(username = "GoogleDevelopers"), part = "id")
 
 # Parse out channel_id
-if(!is.null(res$items[[1]]$id)){
+if (!is.null(res$items[[1]]$id)) {
   channel_id <- res$items[[1]]$id
 } else {
-  stop("User not found") 
+  stop("User not found")
 }
 # channel_id should be UC_x5XG1OV2P6uZZ5FSM9Ttw
 ```

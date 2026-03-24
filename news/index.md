@@ -1,6 +1,43 @@
 # Changelog
 
-## version 1.3.0
+## version 1.4.0
+
+### Major API Coverage Enhancements (Closing the Gap)
+
+This release significantly expands `tuber`’s capabilities to support
+full programmatic channel management and deep creator economy analytics:
+
+#### 1. Community Engagement & Moderation
+
+Added functions to actively manage and engage with your community: \*
+[`post_comment()`](https://gojiplus.github.io/tuber/reference/post_comment.md):
+Programmatically post new top-level comments to videos or channels. \*
+[`reply_to_comment()`](https://gojiplus.github.io/tuber/reference/reply_to_comment.md):
+Reply to existing comments. \*
+[`set_comment_moderation_status()`](https://gojiplus.github.io/tuber/reference/set_comment_moderation_status.md):
+Approve, reject, or hold comments for review, with an option to ban
+authors.
+
+#### 2. Monetization & Live Chat Data Extraction
+
+Added highly requested data extraction tools for analysts tracking the
+creator economy: \*
+[`get_super_chat_events()`](https://gojiplus.github.io/tuber/reference/get_super_chat_events.md):
+Retrieve all Super Chat and Super Sticker events, including currency
+amounts and donor details. \*
+[`get_live_chat_messages()`](https://gojiplus.github.io/tuber/reference/get_live_chat_messages.md):
+Extract real-time chat messages from active live broadcasts. \*
+[`list_channel_members()`](https://gojiplus.github.io/tuber/reference/list_channel_members.md):
+List all active channel members and their tier levels.
+
+#### 3. Channel Branding & Customization
+
+Completed the video publishing pipeline with new media upload endpoints:
+\*
+[`set_video_thumbnail()`](https://gojiplus.github.io/tuber/reference/set_video_thumbnail.md):
+Upload and set custom thumbnails for your videos. \*
+[`insert_channel_banner()`](https://gojiplus.github.io/tuber/reference/insert_channel_banner.md):
+Upload custom channel banner art.
 
 ### Critical Issue Resolution and Enhanced Error Handling
 
@@ -70,6 +107,13 @@ improving package reliability and user experience:
 
 **Impact**: Package reliability increased from ~60% to ~95% with most
 critical user-reported issues resolved.
+
+## version 1.3.0
+
+### Previous attempt
+
+This version was prepared but incorporated into 1.4.0 before final
+release.
 
 ## version 1.2.0
 

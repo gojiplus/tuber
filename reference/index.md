@@ -109,7 +109,7 @@ Functions for working with captions
 
 ## Comment Functions
 
-Functions for working with comments
+Functions for working with comments and moderation
 
 - [`get_comment_threads()`](https://gojiplus.github.io/tuber/reference/get_comment_threads.md)
   : Get Comments Threads
@@ -117,8 +117,34 @@ Functions for working with comments
   : Get Comments
 - [`get_all_comments()`](https://gojiplus.github.io/tuber/reference/get_all_comments.md)
   : Get all the comments for a video including replies
+- [`post_comment()`](https://gojiplus.github.io/tuber/reference/post_comment.md)
+  : Post a Top-Level Comment
+- [`reply_to_comment()`](https://gojiplus.github.io/tuber/reference/reply_to_comment.md)
+  : Reply to a Comment
+- [`set_comment_moderation_status()`](https://gojiplus.github.io/tuber/reference/set_comment_moderation_status.md)
+  : Set Comment Moderation Status
 - [`delete_comments()`](https://gojiplus.github.io/tuber/reference/delete_comments.md)
   : Delete a Particular Comment
+
+## Monetization & Engagement
+
+Functions for Super Chats, Memberships, and Live Interaction
+
+- [`get_super_chat_events()`](https://gojiplus.github.io/tuber/reference/get_super_chat_events.md)
+  : Get Super Chat Events
+- [`get_live_chat_messages()`](https://gojiplus.github.io/tuber/reference/get_live_chat_messages.md)
+  : Get Live Chat Messages
+- [`list_channel_members()`](https://gojiplus.github.io/tuber/reference/list_channel_members.md)
+  : List Channel Members
+
+## Branding & Media
+
+Functions for thumbnails and channel branding
+
+- [`set_video_thumbnail()`](https://gojiplus.github.io/tuber/reference/set_video_thumbnail.md)
+  : Set Video Thumbnail
+- [`insert_channel_banner()`](https://gojiplus.github.io/tuber/reference/insert_channel_banner.md)
+  : Insert Channel Banner
 
 ## Search Functions
 
@@ -181,6 +207,21 @@ Advanced analysis and specialized functions
 - [`search_shorts()`](https://gojiplus.github.io/tuber/reference/search_shorts.md)
   : Search for shorts (YouTube Shorts)
 
+## Unicode & Emoji Utilities
+
+Functions for handling emojis and Unicode in YouTube text
+
+- [`count_emojis()`](https://gojiplus.github.io/tuber/reference/count_emojis.md)
+  : Count emojis in text
+- [`extract_emojis()`](https://gojiplus.github.io/tuber/reference/extract_emojis.md)
+  : Extract emojis from text
+- [`has_emoji()`](https://gojiplus.github.io/tuber/reference/has_emoji.md)
+  : Detect emojis in text
+- [`remove_emojis()`](https://gojiplus.github.io/tuber/reference/remove_emojis.md)
+  : Remove emojis from text
+- [`replace_emojis()`](https://gojiplus.github.io/tuber/reference/replace_emojis.md)
+  : Replace emojis in text
+
 ## Caching & Performance
 
 Functions for caching and performance optimization
@@ -214,8 +255,6 @@ Additional utility functions and information
 
 - [`tuber_info()`](https://gojiplus.github.io/tuber/reference/tuber_info.md)
   : Display tuber function metadata
-- [`list_captions()`](https://gojiplus.github.io/tuber/reference/list_captions.md)
-  : List Captions for YouTube Video
 
 ## Developer & Advanced Functions
 
@@ -237,14 +276,12 @@ Advanced functions and low-level utilities
   : PUT
 - [`print(`*`<tuber_result>`*`)`](https://gojiplus.github.io/tuber/reference/print.tuber_result.md)
   : Print method for tuber results
-- [`validate_character()`](https://gojiplus.github.io/tuber/reference/validate_character.md)
-  : Validate required character parameters
-- [`validate_choice()`](https://gojiplus.github.io/tuber/reference/validate_choice.md)
-  : Validate that parameter matches allowed values
-- [`validate_numeric()`](https://gojiplus.github.io/tuber/reference/validate_numeric.md)
-  : Validate numeric parameters with range checking
+- [`summary(`*`<tuber_result>`*`)`](https://gojiplus.github.io/tuber/reference/summary.tuber_result.md)
+  : Summary method for tuber results
+- [`` `[`( ``*`<tuber_result>`*`)`](https://gojiplus.github.io/tuber/reference/sub-.tuber_result.md)
+  : Subset method for tuber results
 - [`validate_video_id()`](https://gojiplus.github.io/tuber/reference/validate_video_id.md)
-  : Validate YouTube-specific IDs and parameters
+  : Validate YouTube video ID format
 - [`validate_channel_id()`](https://gojiplus.github.io/tuber/reference/validate_channel_id.md)
   : Validate YouTube channel ID format
 - [`validate_playlist_id()`](https://gojiplus.github.io/tuber/reference/validate_playlist_id.md)
@@ -282,8 +319,6 @@ Package documentation and function groups
   Response Caching for YouTube API
 - [`error-handling`](https://gojiplus.github.io/tuber/reference/error-handling.md)
   : Tuber Error Handling Utilities
-- [`` `%||%` ``](https://gojiplus.github.io/tuber/reference/null-coalesce.md)
-  : Null coalescing operator
 
 ## Helper Functions
 

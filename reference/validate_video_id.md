@@ -1,7 +1,6 @@
-# Validate YouTube-specific IDs and parameters
+# Validate YouTube video ID format
 
-Specialized validation functions for YouTube API parameters Validate
-YouTube video ID format
+Validate YouTube video ID format
 
 ## Usage
 
