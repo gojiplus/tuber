@@ -1,4 +1,4 @@
-# version 1.3.0
+# version 1.4.0
 
 ## Critical Issue Resolution and Enhanced Error Handling
 
@@ -30,6 +30,11 @@ This release resolves **19 out of 22 total GitHub issues**, dramatically improvi
 * **RESUMABLE UPLOADS**: Current implementation uses basic resumable protocol; full chunked resumption planned for future major version (#81)
 
 **Impact**: Package reliability increased from ~60% to ~95% with most critical user-reported issues resolved.
+
+# version 1.3.0
+
+## Previous attempt
+This version was prepared but incorporated into 1.4.0 before final release.
 
 # version 1.2.0
 

@@ -139,7 +139,6 @@ reference:
   desc: "Additional utility functions and information"
   contents:
     - tuber_info
-    - list_captions
 
 - title: "Developer & Advanced Functions"
   desc: "Advanced functions and low-level utilities"
@@ -152,9 +151,6 @@ reference:
     - warn_deprecated
     - tuber_PUT
     - print.tuber_result
-    - validate_character
-    - validate_choice
-    - validate_numeric
     - validate_video_id
     - validate_channel_id
     - validate_playlist_id
@@ -176,7 +172,6 @@ reference:
     - helper-functions
     - caching
     - error-handling
-    - null-coalesce
 
 - title: "Helper Functions" 
   desc: "Internal helper functions"

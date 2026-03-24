@@ -42,7 +42,7 @@ comments <- get_all_comments(video_id = "your_video_id", max_results = 500)
 ### Emoji Presence and Counts
 
 ```{r basic-analysis, eval=FALSE}
-comments <- comments %>%
+comments <- comments |>
   mutate(
     has_emoji = has_emoji(textDisplay),
     emoji_count = count_emojis(textDisplay)
@@ -57,8 +57,8 @@ cat("Comments with emojis:", round(emoji_rate, 1), "%\n")
 ### Distribution of Emoji Usage
 
 ```{r distribution, eval=FALSE}
-comments %>%
-  filter(emoji_count > 0) %>%
+comments |>
+  filter(emoji_count > 0) |>
   ggplot(aes(x = emoji_count)) +
   geom_histogram(binwidth = 1, fill = "steelblue", color = "white") +
   labs(
@@ -82,8 +82,8 @@ emoji_freq <- emoji_freq[order(-emoji_freq$count), ]
 
 head(emoji_freq, 15)
 
-emoji_freq %>%
-  head(10) %>%
+emoji_freq |>
+  head(10) |>
   ggplot(aes(x = reorder(emoji, count), y = count)) +
   geom_col(fill = "steelblue") +
   coord_flip() +
@@ -100,14 +100,14 @@ emoji_freq %>%
 ### Emoji Usage Over Time
 
 ```{r temporal, eval=FALSE}
-comments <- comments %>%
+comments <- comments |>
   mutate(
     date = as.Date(publishedAt),
     emoji_count = count_emojis(textDisplay)
   )
 
-daily_emoji <- comments %>%
-  group_by(date) %>%
+daily_emoji <- comments |>
+  group_by(date) |>
   summarise(
     total_comments = n(),
     comments_with_emoji = sum(has_emoji, na.rm = TRUE),
@@ -143,7 +143,7 @@ negative_emojis <- c(
   "\U0001F625", "\U0001F62D", "\U0001F44E", "\U0001F4A9", "\U0001F61E"
 )
 
-comments <- comments %>%
+comments <- comments |>
   mutate(
     emojis = extract_emojis(textDisplay),
     pos_emoji = sapply(emojis, function(e) sum(e %in% positive_emojis)),
@@ -164,8 +164,8 @@ table(comments$emoji_sentiment)
 ### Do emoji comments get more likes?
 
 ```{r engagement, eval=FALSE}
-engagement_summary <- comments %>%
-  group_by(has_emoji) %>%
+engagement_summary <- comments |>
+  group_by(has_emoji) |>
   summarise(
     n = n(),
     mean_likes = mean(likeCount, na.rm = TRUE),
@@ -199,9 +199,9 @@ all_comments <- lapply(video_ids, function(vid) {
 })
 all_comments <- bind_rows(all_comments)
 
-video_emoji_stats <- all_comments %>%
-  mutate(emoji_count = count_emojis(textDisplay)) %>%
-  group_by(video_id) %>%
+video_emoji_stats <- all_comments |>
+  mutate(emoji_count = count_emojis(textDisplay)) |>
+  group_by(video_id) |>
   summarise(
     total_comments = n(),
     emoji_rate = mean(emoji_count > 0) * 100,
@@ -216,7 +216,7 @@ print(video_emoji_stats)
 For text analysis that should exclude emojis:
 
 ```{r clean-text, eval=FALSE}
-comments <- comments %>%
+comments <- comments |>
   mutate(
     clean_text = remove_emojis(textDisplay),
     clean_text = trimws(gsub("\\s+", " ", clean_text))
@@ -232,7 +232,7 @@ For large datasets:
 ```{r performance, eval=FALSE}
 comments_sample <- comments[sample(nrow(comments), min(1000, nrow(comments))), ]
 
-comments_sample <- comments_sample %>%
+comments_sample <- comments_sample |>
   mutate(emoji_count = count_emojis(textDisplay))
 
 emoji_rate_estimate <- mean(comments_sample$emoji_count > 0) * 100

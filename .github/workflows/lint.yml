@@ -26,10 +26,7 @@ jobs:
 
       - name: Lint package
         run: |
-          lintr::lint_package(linters = lintr::linters_with_defaults(
-            line_length_linter = lintr::line_length_linter(120),
-            object_name_linter = lintr::object_name_linter(styles = c("snake_case", "camelCase", "dotted.case"))
-          ))
+          lintr::lint_package()
         shell: Rscript {0}
         env:
           LINTR_ERROR_ON_LINT: true

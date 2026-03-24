@@ -1,6 +1,7 @@
 ---
 title: "Handling Emojis and Unicode in YouTube Data"
 output: rmarkdown::html_vignette
+# lintr: disable: commented_code_linter
 vignette: >
   %\VignetteIndexEntry{Handling Emojis and Unicode in YouTube Data}
   %\VignetteEngine{knitr::rmarkdown}
