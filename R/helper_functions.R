@@ -294,12 +294,12 @@ compare_channels <- function(channel_ids,
 #' trends_us <- analyze_trends("music", region_code = "US", time_period = "week")
 #' }
 analyze_trends <- function(search_terms,
-                          max_results = 50,
-                          time_period = "month",
-                          order = "viewCount",
-                          region_code = NULL,
-                          auth = "key",
-                          ...) {
+                           max_results = 50,
+                           time_period = "month",
+                           order = "viewCount",
+                           region_code = NULL,
+                           auth = "key",
+                           ...) {
 
   # Modern validation using checkmate
   assert_character(search_terms, min.len = 1, .var.name = "search_terms")
@@ -387,8 +387,8 @@ analyze_trends <- function(search_terms,
     combined_data <- bind_rows(all_results)
 
     # Calculate trend metrics
-    trend_summary <- combined_data %>%
-      group_by(search_term) %>%
+    trend_summary <- combined_data |>
+      group_by(search_term) |>
       summarise(
         total_videos = n(),
         avg_views = mean(view_count, na.rm = TRUE),
@@ -397,7 +397,7 @@ analyze_trends <- function(search_terms,
         top_video_views = max(view_count, na.rm = TRUE),
         trending_score = log10(total_views + 1) * avg_engagement * 100,
         .groups = "drop"
-      ) %>%
+      ) |>
       arrange(desc(trending_score))
 
     result <- list(
@@ -452,10 +452,10 @@ analyze_trends <- function(search_terms,
 #' detailed <- bulk_video_analysis(video_ids, include_comments = TRUE)
 #' }
 bulk_video_analysis <- function(video_ids,
-                               include_comments = FALSE,
-                               benchmark_percentiles = c(0.25, 0.5, 0.75, 0.9),
-                               auth = "key",
-                               ...) {
+                                include_comments = FALSE,
+                                benchmark_percentiles = c(0.25, 0.5, 0.75, 0.9),
+                                auth = "key",
+                                ...) {
 
   # Modern validation using checkmate
   assert_character(video_ids, min.len = 1, .var.name = "video_ids")
@@ -522,4 +522,3 @@ bulk_video_analysis <- function(video_ids,
   message("Bulk video analysis complete!")
   return(result)
 }
-

@@ -5,7 +5,11 @@ template:
   bootstrap: 5
   bootswatch: flatly
 
+home:
+  title: "🍠 tuber: Access YouTube API via R"
+
 navbar:
+  title: "🍠 tuber"
   structure:
     left:  [intro, reference, articles, tutorials, news]
     right: [github]

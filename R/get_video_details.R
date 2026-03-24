@@ -11,43 +11,43 @@ conditional_unnest_wider <- function(data_input, var) {
 utils::globalVariables(c("kind", "etag", "items", "snippet"))
 
 json_to_df <- function(res) {
-  intermediate <- res %>%
-    enframe() %>%
-    pivot_wider() %>%
-    unnest(cols = c(kind, etag)) %>%
+  intermediate <- res |>
+    enframe() |>
+    pivot_wider() |>
+    unnest(cols = c(kind, etag)) |>
     # reflect level of nesting in column name
-    rename(response_kind = kind, response_etag = etag) %>%
-    unnest(items) %>%
-    unnest_wider(col = items) %>%
+    rename(response_kind = kind, response_etag = etag) |>
+    unnest(items) |>
+    unnest_wider(col = items) |>
     # reflect level of nesting in column name for those that may not be unique
-    rename(items_kind = kind, items_etag = etag) %>%
+    rename(items_kind = kind, items_etag = etag) |>
     # snippet may not be present (e.g., when only statistics is requested)
     conditional_unnest_wider(var = "snippet")
 
-  intermediate_2 <- intermediate %>%
+  intermediate_2 <- intermediate |>
     # fields that may not be available:
     # live streaming details
-    conditional_unnest_wider(var = "liveStreamingDetails") %>%
+    conditional_unnest_wider(var = "liveStreamingDetails") |>
     # region restriction (rental videos)
-    conditional_unnest_wider(var = "regionRestriction") %>%
-    conditional_unnest_wider(var = "regionRestriction_allowed") %>%
+    conditional_unnest_wider(var = "regionRestriction") |>
+    conditional_unnest_wider(var = "regionRestriction_allowed") |>
     # statistics
-    conditional_unnest_wider(var = "statistics") %>%
+    conditional_unnest_wider(var = "statistics") |>
     # status
-    conditional_unnest_wider(var = "status") %>%
+    conditional_unnest_wider(var = "status") |>
     # player
-    conditional_unnest_wider(var = "player") %>%
+    conditional_unnest_wider(var = "player") |>
     # contentDetails
-    conditional_unnest_wider(var = "contentDetails") %>%
-    conditional_unnest_wider(var = "topicDetails") %>%
-    conditional_unnest_wider(var = "localized") %>%
-    conditional_unnest_wider(var = "pageInfo") %>%
+    conditional_unnest_wider(var = "contentDetails") |>
+    conditional_unnest_wider(var = "topicDetails") |>
+    conditional_unnest_wider(var = "localized") |>
+    conditional_unnest_wider(var = "pageInfo") |>
     # thumbnails
-    conditional_unnest_wider(var = "thumbnails") %>%
-    conditional_unnest_wider(var = "thumbnails_default") %>%
-    conditional_unnest_wider(var = "thumbnails_standard") %>%
-    conditional_unnest_wider(var = "thumbnails_medium") %>%
-    conditional_unnest_wider(var = "thumbnails_high") %>%
+    conditional_unnest_wider(var = "thumbnails") |>
+    conditional_unnest_wider(var = "thumbnails_default") |>
+    conditional_unnest_wider(var = "thumbnails_standard") |>
+    conditional_unnest_wider(var = "thumbnails_medium") |>
+    conditional_unnest_wider(var = "thumbnails_high") |>
     conditional_unnest_wider(var = "thumbnails_maxres")
 
   return(intermediate_2)
