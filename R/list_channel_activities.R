@@ -125,8 +125,10 @@ list_channel_activities <- function(filter = NULL, part = "snippet",
     }
 
     if (simplify == TRUE & part == "snippet") {
-    simple_res  <- lapply(raw_res$items, function(x) unlist(x$snippet))
-    simpler_res <- ldply(simple_res, rbind)
+    simple_res  <- lapply(raw_res$items, function(x) {
+      as.data.frame(t(unlist(x$snippet)), stringsAsFactors = FALSE)
+    })
+    simpler_res <- bind_rows(simple_res)
     return(simpler_res)
   }
 

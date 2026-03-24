@@ -61,6 +61,9 @@ get_comments <- function(filter = NULL, part = "snippet", max_results = 100,
                 .var.name = "filter names (must be 'comment_id' or 'parent_id')")
   assert_character(part, len = 1, min.chars = 1, .var.name = "part")
   assert_logical(simplify, len = 1, .var.name = "simplify")
+  if (!is.null(page_token)) {
+    assert_character(page_token, len = 1, min.chars = 1, .var.name = "page_token")
+  }
 
   translate_filter   <- c("parent_id" = "parentId", "comment_id" = "id")
   yt_filter_name     <- as.vector(translate_filter[match(names(filter),
@@ -81,8 +84,10 @@ get_comments <- function(filter = NULL, part = "snippet", max_results = 100,
     }
 
   if (simplify == TRUE & part == "snippet") {
-    simple_res  <- lapply(raw_res$items, function(x) unlist(x$snippet))
-    simpler_res <- ldply(simple_res, rbind)
+    simple_res  <- lapply(raw_res$items, function(x) {
+      as.data.frame(t(unlist(x$snippet)), stringsAsFactors = FALSE)
+    })
+    simpler_res <- bind_rows(simple_res)
     simpler_res$id <- raw_res$items[[1]]$id
     return(simpler_res)
   }

@@ -21,7 +21,8 @@ json_to_df <- function(res) {
     unnest_wider(col = items) %>%
     # reflect level of nesting in column name for those that may not be unique
     rename(items_kind = kind, items_etag = etag) %>%
-    unnest_wider(snippet)
+    # snippet may not be present (e.g., when only statistics is requested)
+    conditional_unnest_wider(var = "snippet")
 
   intermediate_2 <- intermediate %>%
     # fields that may not be available:
@@ -58,7 +59,7 @@ json_to_df <- function(res) {
 #'
 #' @param video_ids Character vector of video IDs to retrieve
 #' @param part Character vector of parts to retrieve. See \code{Details} for options.
-#' @param simplify Logical. If TRUE, returns a data frame. If FALSE, returns raw list. Default: FALSE.
+#' @param simplify Logical. If TRUE, returns a data frame. If FALSE, returns raw list. Default: TRUE.
 #' @param batch_size Number of videos per API call (max 50). Default: 50.
 #' @param show_progress Whether to show progress for large batches. Default: TRUE for >10 videos.
 #' @param auth Authentication method: "token" (OAuth2) or "key" (API key). Default: "token".
@@ -78,8 +79,8 @@ json_to_df <- function(res) {
 #' - 100 videos = 2 API calls (batched in groups of 50)
 #'
 #' @return 
-#' When \code{simplify = FALSE} (default): List with items containing video details.
-#' When \code{simplify = TRUE}: Data frame with video details (not available for owner-only parts).
+#' When \code{simplify = TRUE} (default): Data frame with video details (not available for owner-only parts).
+#' When \code{simplify = FALSE}: List with items containing video details.
 #' 
 #' The result includes metadata as attributes:
 #' - \code{api_calls_made}: Number of API calls made
@@ -112,9 +113,9 @@ json_to_df <- function(res) {
 #' view_count <- details$items[[1]]$statistics$viewCount
 #' }
 #'
-get_video_details <- function(video_ids, 
+get_video_details <- function(video_ids,
                              part = "snippet",
-                             simplify = FALSE,
+                             simplify = TRUE,
                              batch_size = 50,
                              show_progress = NULL,
                              auth = "token",
@@ -184,12 +185,12 @@ get_video_details <- function(video_ids,
     
     if (simplify) {
       raw_res <- tryCatch({
-        map_df(raw_res$items, ~ flatten(.x))
+        json_to_df(raw_res)
       }, error = function(e) {
-        warn("Failed to convert to data frame",
-             message = e$message,
-             help = "Returning list format",
-             class = "tuber_conversion_failed")
+        warn(
+          paste("Failed to convert to data frame:", e$message, "- Returning list format"),
+          class = "tuber_conversion_failed"
+        )
         raw_res
       })
     }
@@ -258,17 +259,22 @@ get_video_details <- function(video_ids,
     ))
   }
   
-  # Combine results
-  result <- list(items = all_items)
-  
+  # Combine results - wrap in structure that json_to_df expects
+  result <- list(
+    kind = "youtube#videoListResponse",
+    etag = "batch_combined",
+    items = all_items,
+    pageInfo = list(totalResults = length(all_items), resultsPerPage = length(all_items))
+  )
+
   if (simplify) {
     result <- tryCatch({
-      map_df(result$items, ~ flatten(.x))
+      json_to_df(result)
     }, error = function(e) {
-      warn("Failed to convert to data frame",
-           message = e$message,
-           help = "Returning list format",
-           class = "tuber_batch_conversion_failed")
+      warn(
+        paste("Failed to convert to data frame:", e$message, "- Returning list format"),
+        class = "tuber_batch_conversion_failed"
+      )
       result
     })
   }

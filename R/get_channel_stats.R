@@ -2,34 +2,30 @@
 #'
 #' Get statistics and details for one or more YouTube channels efficiently using batch processing.
 #'
-#' @param channel_ids Character vector of channel IDs to retrieve. Use \code{list_my_channel()} 
+#' @param channel_ids Character vector of channel IDs to retrieve. Use \code{list_my_channel()}
 #' to get your own channel ID.
-#' @param mine Logical. Set to TRUE to get authenticated user's channel. 
+#' @param mine Logical. Set to TRUE to get authenticated user's channel.
 #' Overrides \code{channel_ids}. Default: NULL.
 #' @param part Character vector of parts to retrieve. Default: c("statistics", "snippet").
-#' @param simplify Logical. If TRUE, returns a data frame. If FALSE, returns raw list. Default: FALSE.
+#' @param simplify Logical. If TRUE (default), returns a data frame. If FALSE, returns raw list.
 #' @param batch_size Number of channels per API call (max 50). Default: 50.
 #' @param show_progress Whether to show progress for large batches. Default: TRUE for >10 channels.
 #' @param auth Authentication method: "token" (OAuth2) or "key" (API key). Default: "token".
-#' @param console_output Logical. Show console output for single channel. Default: TRUE.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
-#' 
-#' @details 
-#' Valid parts include: \code{auditDetails, brandingSettings, contentDetails, 
-#' contentOwnerDetails, id, localizations, snippet, statistics, status, 
+#'
+#' @details
+#' Valid parts include: \code{auditDetails, brandingSettings, contentDetails,
+#' contentOwnerDetails, id, localizations, snippet, statistics, status,
 #' topicDetails}.
-#' 
+#'
 #' The function automatically batches requests to minimize API quota usage:
 #' - 1 channel = 1 API call
 #' - 100 channels = 2 API calls (batched in groups of 50)
-#' 
-#' When retrieving a single channel, the function displays key statistics 
-#' in the console by default (can be disabled with \code{console_output = FALSE}).
 #'
-#' @return 
-#' When \code{simplify = FALSE} (default): List with channel details.
-#' When \code{simplify = TRUE}: Data frame with channel details.
-#' 
+#' @return
+#' When \code{simplify = TRUE} (default): Data frame with channel details.
+#' When \code{simplify = FALSE}: List with channel details.
+#'
 #' For single channels, returns the channel object directly (not in a list).
 #' For multiple channels, returns a list with items array.
 #'
@@ -56,14 +52,13 @@
 #'                              part = c("statistics", "snippet", "brandingSettings"))
 #' }
 #'
-get_channel_stats <- function(channel_ids = NULL, 
+get_channel_stats <- function(channel_ids = NULL,
                              mine = NULL,
                              part = c("statistics", "snippet"),
-                             simplify = FALSE,
+                             simplify = TRUE,
                              batch_size = 50,
                              show_progress = NULL,
                              auth = "token",
-                             console_output = TRUE,
                              ...) {
   
   # Modern validation using checkmate
@@ -73,7 +68,6 @@ get_channel_stats <- function(channel_ids = NULL,
   assert_logical(simplify, len = 1, .var.name = "simplify")
   assert_integerish(batch_size, len = 1, lower = 1, upper = 50, .var.name = "batch_size")
   assert_choice(auth, c("token", "key"), .var.name = "auth")
-  assert_logical(console_output, len = 1, .var.name = "console_output")
   
   # Handle mine parameter
   if (identical(tolower(mine), "false")) {
@@ -97,16 +91,7 @@ get_channel_stats <- function(channel_ids = NULL,
     }
     
     res <- raw_res$items[[1]]
-    
-    if (console_output) {
-      res_stats <- res$statistics
-      res_snippet <- res$snippet
-      cat("Channel Title:", res_snippet$title, "\n")
-      cat("No. of Views:", res_stats$viewCount, "\n")
-      cat("No. of Subscribers:", res_stats$subscriberCount, "\n")
-      cat("No. of Videos:", res_stats$videoCount, "\n")
-    }
-    
+
     if (simplify) {
       res <- tryCatch({
         flatten_channel_data(list(res))
@@ -118,10 +103,10 @@ get_channel_stats <- function(channel_ids = NULL,
         res
       })
     }
-    
+
     return(res)
   }
-  
+
   # Validate channel_ids
   assert_character(channel_ids, any.missing = FALSE, min.len = 1, .var.name = "channel_ids")
   
@@ -158,16 +143,7 @@ get_channel_stats <- function(channel_ids = NULL,
     }
     
     res <- raw_res$items[[1]]
-    
-    if (console_output) {
-      res_stats <- res$statistics
-      res_snippet <- res$snippet
-      cat("Channel Title:", res_snippet$title, "\n")
-      cat("No. of Views:", res_stats$viewCount, "\n")
-      cat("No. of Subscribers:", res_stats$subscriberCount, "\n")
-      cat("No. of Videos:", res_stats$videoCount, "\n")
-    }
-    
+
     if (simplify) {
       res <- tryCatch({
         flatten_channel_data(list(res))
@@ -179,10 +155,10 @@ get_channel_stats <- function(channel_ids = NULL,
         res
       })
     }
-    
+
     return(res)
   }
-  
+
   # For multiple channels, use batching
   total_batches <- ceiling(length(channel_ids) / batch_size)
   batches <- split(channel_ids, ceiling(seq_along(channel_ids) / batch_size))

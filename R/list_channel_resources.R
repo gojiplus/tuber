@@ -23,10 +23,11 @@
 #'  may increase API quota usage.
 #' @param page_token specific page in the result set that should be returned,
 #' optional
+#' @param simplify Logical. If TRUE, returns a data frame. If FALSE, returns raw list. Default: TRUE.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'
-#' @return list. If \code{username} is used in \code{filter},
-#'   a data frame with columns \code{username} and \code{channel_id} is returned.
+#' @return If \code{simplify = TRUE} (default) or \code{username} is used in \code{filter},
+#'   a data frame. Otherwise returns a list.
 #' @export
 #' @references \url{https://developers.google.com/youtube/v3/docs/channels/list}
 #'
@@ -43,7 +44,8 @@
 #' }
 
 list_channel_resources <- function(filter = NULL, part = "contentDetails",
-                         max_results = 50, page_token = NULL, hl = "en-US", ...) {
+                         max_results = 50, page_token = NULL, hl = "en-US",
+                         simplify = TRUE, ...) {
 
   # Modern validation using checkmate
   assert_character(filter, min.len = 1, .var.name = "filter")
@@ -53,6 +55,7 @@ list_channel_resources <- function(filter = NULL, part = "contentDetails",
                         "topicDetails"), .var.name = "part")
   assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
   assert_character(hl, len = 1, min.chars = 1, .var.name = "hl")
+  assert_logical(simplify, len = 1, .var.name = "simplify")
 
   if (!is.null(page_token)) {
     assert_character(page_token, len = 1, min.chars = 1, .var.name = "page_token")
@@ -138,7 +141,14 @@ list_channel_resources <- function(filter = NULL, part = "contentDetails",
       }
     }
 
-    return(res_df)
+    return(add_tuber_attributes(
+      res_df,
+      api_calls_made = num_usernames,
+      function_name = "list_channel_resources",
+      parameters = list(filter = filter, part = part),
+      results_found = sum(!is.na(res_df$channel_id)),
+      response_format = "data.frame"
+    ))
   }
 
   # Translate filter names for non-username cases
@@ -165,6 +175,42 @@ list_channel_resources <- function(filter = NULL, part = "contentDetails",
   }
 
   res$items <- items
-  res
+  api_calls <- ceiling(length(items) / 50)
+
+  if (simplify && length(items) > 0) {
+    simplified <- tryCatch({
+      simplified_items <- lapply(items, function(item) {
+        flattened <- unlist(item, recursive = TRUE)
+        as.data.frame(t(flattened), stringsAsFactors = FALSE)
+      })
+      bind_rows(simplified_items)
+    }, error = function(e) {
+      warn("Failed to convert to data frame",
+           message = e$message,
+           help = "Returning list format",
+           class = "tuber_conversion_failed")
+      NULL
+    })
+
+    if (!is.null(simplified)) {
+      return(add_tuber_attributes(
+        simplified,
+        api_calls_made = api_calls,
+        function_name = "list_channel_resources",
+        parameters = list(filter = filter, part = part, max_results = max_results),
+        results_found = nrow(simplified),
+        response_format = "data.frame"
+      ))
+    }
+  }
+
+  add_tuber_attributes(
+    res,
+    api_calls_made = api_calls,
+    function_name = "list_channel_resources",
+    parameters = list(filter = filter, part = part, max_results = max_results),
+    results_found = length(items),
+    response_format = "list"
+  )
 }
 

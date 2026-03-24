@@ -1,8 +1,162 @@
 #' Unicode and Text Processing Utilities
 #'
-#' Internal functions for consistent text and Unicode handling across tuber
+#' Functions for consistent text and Unicode handling across tuber,
+#' including emoji detection, extraction, and manipulation.
 #' @name unicode_utils
 NULL
+
+#' Emoji Unicode Pattern
+#'
+#' Comprehensive regex pattern covering major emoji Unicode blocks:
+#' - Emoticons (U+1F600-U+1F64F)
+#' - Miscellaneous Symbols and Pictographs (U+1F300-U+1F5FF)
+#' - Transport and Map Symbols (U+1F680-U+1F6FF)
+#' - Flags (U+1F1E0-U+1F1FF)
+#' - Dingbats (U+2700-U+27BF)
+#' - Supplemental Symbols and Pictographs (U+1F900-U+1F9FF)
+#' - Symbols and Pictographs Extended-A (U+1FA00-U+1FAFF)
+#' - Miscellaneous Symbols (U+2600-U+26FF)
+#' - Various common emoji symbols
+#'
+#' @keywords internal
+EMOJI_PATTERN <- paste0(
+"[",
+"\U0001F600-\U0001F64F",
+"\U0001F300-\U0001F5FF",
+"\U0001F680-\U0001F6FF",
+"\U0001F1E0-\U0001F1FF",
+"\U00002702-\U000027B0",
+"\U0001F900-\U0001F9FF",
+"\U0001FA00-\U0001FA6F",
+"\U0001FA70-\U0001FAFF",
+"\U00002600-\U000026FF",
+"\U0000231A-\U0000231B",
+"\U00002328",
+"\U000023CF",
+"\U000023E9-\U000023F3",
+"\U000023F8-\U000023FA",
+"\U00002934-\U00002935",
+"\U000025AA-\U000025AB",
+"\U000025B6",
+"\U000025C0",
+"\U000025FB-\U000025FE",
+"\U00002B05-\U00002B07",
+"\U00002B1B-\U00002B1C",
+"\U00002B50",
+"\U00002B55",
+"\U00003030",
+"\U0000303D",
+"\U00003297",
+"\U00003299",
+"\U0000FE0F",
+"]"
+)
+
+#' Detect emojis in text
+#'
+#' Checks whether text contains any emoji characters.
+#'
+#' @param text Character vector to check for emojis
+#' @return Logical vector indicating whether each element contains emojis
+#' @export
+#' @examples
+#' has_emoji("Hello world")
+#' has_emoji("Hello world! \U0001F44B")
+#' has_emoji(c("No emoji", "Has emoji \U0001F600", "Also none"))
+has_emoji <- function(text) {
+  if (is.null(text) || length(text) == 0) {
+    return(logical(0))
+  }
+  assert_character(text, .var.name = "text")
+  grepl(EMOJI_PATTERN, text, perl = TRUE)
+}
+
+#' Extract emojis from text
+#'
+#' Extracts all emoji characters from text.
+#'
+#' @param text Character vector to extract emojis from
+#' @return List of character vectors, one per input element, containing
+#'   extracted emojis. Returns empty character vector for elements without emojis.
+#' @export
+#' @examples
+#' extract_emojis("Hello \U0001F44B World \U0001F30D!")
+#' extract_emojis(c("No emoji", "\U0001F600 \U0001F601 \U0001F602"))
+extract_emojis <- function(text) {
+  if (is.null(text) || length(text) == 0) {
+    return(list())
+  }
+  assert_character(text, .var.name = "text")
+
+  lapply(text, function(t) {
+    if (is.na(t)) return(character(0))
+    matches <- gregexpr(EMOJI_PATTERN, t, perl = TRUE)
+    result <- regmatches(t, matches)[[1]]
+    if (length(result) == 0) character(0) else result
+  })
+}
+
+#' Count emojis in text
+#'
+#' Counts the number of emoji characters in text.
+#'
+#' @param text Character vector to count emojis in
+#' @return Integer vector with emoji counts for each element
+#' @export
+#' @examples
+#' count_emojis("Hello world")
+#' count_emojis("Hello \U0001F44B World \U0001F30D!")
+#' count_emojis(c("No emoji", "\U0001F600\U0001F601\U0001F602"))
+count_emojis <- function(text) {
+  if (is.null(text) || length(text) == 0) {
+    return(integer(0))
+  }
+  assert_character(text, .var.name = "text")
+
+  vapply(text, function(t) {
+    if (is.na(t)) return(0L)
+    matches <- gregexpr(EMOJI_PATTERN, t, perl = TRUE)[[1]]
+    if (matches[1] == -1) 0L else length(matches)
+  }, integer(1), USE.NAMES = FALSE)
+}
+
+#' Remove emojis from text
+#'
+#' Removes all emoji characters from text.
+#'
+#' @param text Character vector to remove emojis from
+#' @return Character vector with emojis removed
+#' @export
+#' @examples
+#' remove_emojis("Hello \U0001F44B World!")
+#' remove_emojis(c("No emoji", "Has \U0001F600 emoji"))
+remove_emojis <- function(text) {
+  if (is.null(text) || length(text) == 0) {
+    return(character(0))
+  }
+  assert_character(text, .var.name = "text")
+  gsub(EMOJI_PATTERN, "", text, perl = TRUE)
+}
+
+#' Replace emojis in text
+#'
+#' Replaces all emoji characters with a specified string.
+#'
+#' @param text Character vector to process
+#' @param replacement String to replace emojis with. Default: "" (empty string)
+#' @return Character vector with emojis replaced
+#' @export
+#' @examples
+#' replace_emojis("Hello \U0001F44B World!", replacement = "[emoji]")
+#' replace_emojis("Rate: \U0001F600\U0001F600\U0001F600", replacement = "*")
+replace_emojis <- function(text, replacement = "") {
+  if (is.null(text) || length(text) == 0) {
+    return(character(0))
+  }
+  assert_character(text, .var.name = "text")
+  assert_character(replacement, len = 1, .var.name = "replacement")
+  gsub(EMOJI_PATTERN, replacement, text, perl = TRUE)
+}
 
 #' Safely Convert Text to UTF-8
 #'

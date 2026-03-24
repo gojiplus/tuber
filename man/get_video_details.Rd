@@ -7,7 +7,7 @@
 get_video_details(
   video_ids,
   part = "snippet",
-  simplify = FALSE,
+  simplify = TRUE,
   batch_size = 50,
   show_progress = NULL,
   auth = "token",
@@ -19,7 +19,7 @@ get_video_details(
 
 \item{part}{Character vector of parts to retrieve. See \code{Details} for options.}
 
-\item{simplify}{Logical. If TRUE, returns a data frame. If FALSE, returns raw list. Default: FALSE.}
+\item{simplify}{Logical. If TRUE, returns a data frame. If FALSE, returns raw list. Default: TRUE.}
 
 \item{batch_size}{Number of videos per API call (max 50). Default: 50.}
 
@@ -30,8 +30,8 @@ get_video_details(
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-When \code{simplify = FALSE} (default): List with items containing video details.
-When \code{simplify = TRUE}: Data frame with video details (not available for owner-only parts).
+When \code{simplify = TRUE} (default): Data frame with video details (not available for owner-only parts).
+When \code{simplify = FALSE}: List with items containing video details.
 
 The result includes metadata as attributes:
 - \code{api_calls_made}: Number of API calls made

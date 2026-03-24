@@ -62,7 +62,8 @@ yt_oauth <- function(app_id = NULL, app_secret = NULL, scope = "ssl", token = ".
     google_token <- tryCatch({
       saved_token <- suppressWarnings(readRDS(token))
       # httr saves tokens in a list with hash as key - extract the actual token
-      if (is.list(saved_token) && !inherits(saved_token, "Token")) {
+      # Check if it's a list but not a Token object itself (Token2.0 inherits from Token)
+      if (is.list(saved_token) && !inherits(saved_token, "Token2.0") && !inherits(saved_token, "Token")) {
         saved_token <- saved_token[[1]]
       }
       saved_token

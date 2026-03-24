@@ -34,7 +34,7 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
 
   # Get channel resources with proper error handling
   channel_resources <- tryCatch({
-    list_channel_resources(filter = list(channel_id = channel_id), part = "contentDetails", ...)
+    list_channel_resources(filter = c(channel_id = channel_id), part = "contentDetails", ...)
   }, error = function(e) {
     abort("Failed to get channel information",
           channel_id = channel_id,
@@ -79,7 +79,7 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
     }
     
     playlist_items <- get_playlist_items(
-      filter = list(playlist_id = playlist_id),
+      filter = c(playlist_id = playlist_id),
       max_results = 50,
       page_token = page_token,
       simplify = FALSE,
@@ -116,8 +116,8 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
     ...
   )
   
-  if (nrow(video_data) == 0) {
-    warning("No video data could be retrieved")
+  if (!is.data.frame(video_data) || nrow(video_data) == 0) {
+    warning("No video data could be retrieved or conversion to data frame failed")
     return(data.frame())
   }
 
@@ -125,16 +125,16 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
   result_df <- video_data
   
   # Map column names from get_video_details output to expected names
-  # Note: get_video_details returns flattened column names directly
+  # Note: json_to_df prefixes nested fields with parent name (e.g., snippet_title, statistics_viewCount)
   column_mapping <- c(
-    "title" = "title",
-    "publication_date" = "publishedAt", 
-    "description" = "description",
-    "channel_id" = "channelId",
-    "channel_title" = "channelTitle",
-    "view_count" = "viewCount",
-    "like_count" = "likeCount", 
-    "comment_count" = "commentCount"
+    "title" = "snippet_title",
+    "publication_date" = "snippet_publishedAt",
+    "description" = "snippet_description",
+    "channel_id" = "snippet_channelId",
+    "channel_title" = "snippet_channelTitle",
+    "view_count" = "statistics_viewCount",
+    "like_count" = "statistics_likeCount",
+    "comment_count" = "statistics_commentCount"
   )
   
   # Rename columns that exist
@@ -164,6 +164,14 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
   result_df <- result_df[, final_columns, drop = FALSE]
   
   message("Successfully retrieved data for ", nrow(result_df), " videos")
-  
-  return(result_df)
+
+  add_tuber_attributes(
+    result_df,
+    api_calls_made = page_count + ceiling(length(vid_ids) / 50),
+    function_name = "get_all_channel_video_stats",
+    parameters = list(channel_id = channel_id),
+    results_found = nrow(result_df),
+    videos_in_channel = length(vid_ids),
+    response_format = "data.frame"
+  )
 }

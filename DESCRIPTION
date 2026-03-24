@@ -27,7 +27,6 @@ Imports:
     jsonlite,
     magrittr,
     mime,
-    plyr,
     purrr,
     rlang (>= 1.1.0),
     tibble,

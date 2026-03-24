@@ -19,274 +19,235 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Emoji Analysis in YouTube Comments
+Emojis are increasingly important in social media communication. This vignette demonstrates how to analyze emoji usage patterns in YouTube comments using `tuber`'s built-in emoji functions.
 
-Depending on the video(s) you are exploring, it might be useful to account for and analyze the use of emojis in comments. As emojis become more and more popular and more complex in the meanings they are able to signify, the more important it is to at least account for emojis and include them in textual analyses. Here's how you can do this with YouTube data!
-
-## Setup and Dependencies
+## Setup
 
 ```{r setup, message=FALSE, warning=FALSE, eval=FALSE}
 library(tuber)
-library(ggplot2)
 library(dplyr)
-library(tidyr)
-library(tidytext)
-library(readr)
-
-# Optional packages for enhanced emoji analysis
-# install.packages(c("DataCombine", "anytime"))
-library(DataCombine)  # For FindReplace functionality
-library(anytime)      # For date/time parsing
-
-# Optional emoji packages (install if desired)
-# remotes::install_github("hadley/emo")
-# library(emo)
+library(ggplot2)
 ```
 
-## Getting YouTube Data
-
-I wanted to choose something that had both 1) a lot of comments and 2) a strong likelihood of comments containing emojis, so let's look at the comments from the 'Emoji Movie' trailer. This also has a lot of varying sentiment.
-
-If you don't have the YouTube API set up, please see instructions on how to do so [here](https://developers.google.com/youtube/v3/).
+## Collecting Comments
 
 ```{r get-comments, eval=FALSE}
-# Set up authentication
 yt_oauth("your_app_id", "your_app_secret")
 
-# Get comments with emoji content
-emojimovie <- get_comment_threads(
-  filter = c(video_id = "o_nfdzMhmrA"), 
-  max_results = 101
-)
-
-# Save data for offline analysis (optional)
-# write_csv(emojimovie, "sampletubedata.csv")
+comments <- get_all_comments(video_id = "your_video_id", max_results = 500)
 ```
 
-## Emoji Detection and Processing
+## Basic Emoji Analysis
 
-To identify emojis in our data, we'll use an emoji dictionary that maps emoji Unicode to prose names. This approach allows us to systematically identify and analyze emoji usage patterns.
+### Emoji Presence and Counts
 
-```{r emoji-processing, eval=FALSE}
-# Load emoji dictionary
-emojis <- read_csv("https://raw.githubusercontent.com/lyons7/emojidictionary/master/emoji_dictionary.csv")
+```{r basic-analysis, eval=FALSE}
+comments <- comments %>%
+  mutate(
+    has_emoji = has_emoji(textDisplay),
+    emoji_count = count_emojis(textDisplay)
+  )
 
-# Clean emoji dictionary for YouTube data
-emojis <- emojis[!emojis$Name == " SHRUGFACE ", ]
+summary(comments$emoji_count)
 
-# Convert Unicode codepoints to R escape sequences
-# Change U+1F469 U+200D U+1F467 to \U1F469\U200D\U1F467
-emojis$escapes <- gsub("[[:space:]]*\\U\\+", "\\\\U", emojis$Codepoint)
-
-# Convert to UTF-8 using the R parser
-emojis$codes <- sapply(
-  parse(text = paste0("'", emojis$escapes, "'"), keep.source = FALSE), 
-  eval
-)
+emoji_rate <- mean(comments$has_emoji, na.rm = TRUE) * 100
+cat("Comments with emojis:", round(emoji_rate, 1), "%\n")
 ```
 
-```{r load-sample-data, eval=FALSE}
-# For demonstration, load sample data
-emojimovie <- read_csv("https://github.com/gojiplus/tuber/blob/master/data-raw/sampletubedata.csv?raw=True")
-emojimovie <- as.data.frame(emojimovie)
+### Distribution of Emoji Usage
 
-# Prepare text for analysis
-emojimovie$text <- as.character(emojimovie$textOriginal)
-
-# Replace emojis with their names using FindReplace
-emoemo <- FindReplace(
-  data = emojimovie, 
-  Var = "text", 
-  replaceData = emojis,
-  from = "codes", 
-  to = "Name", 
-  exact = FALSE
-)
+```{r distribution, eval=FALSE}
+comments %>%
+  filter(emoji_count > 0) %>%
+  ggplot(aes(x = emoji_count)) +
+  geom_histogram(binwidth = 1, fill = "steelblue", color = "white") +
+  labs(
+    title = "Distribution of Emojis per Comment",
+    x = "Number of Emojis",
+    y = "Number of Comments"
+  ) +
+  theme_minimal()
 ```
 
-## Analyzing Emoji Frequency
+## Emoji Frequency Analysis
 
-Now you have your comments with emojis identified. Let's look at the top emojis in our data set.
+### Top Emojis
 
-```{r emoji-analysis, eval=FALSE}
-# Create unique ID for each comment
-emoemo$comment_id <- 1:nrow(emoemo)
+```{r frequency, eval=FALSE}
+all_emojis <- unlist(extract_emojis(comments$textDisplay))
 
-# Tokenize text while preserving emoji names (case-sensitive)
-emotidy_tube <- emoemo %>%
-  unnest_tokens(word, text, to_lower = FALSE)
+emoji_freq <- as.data.frame(table(all_emojis), stringsAsFactors = FALSE)
+names(emoji_freq) <- c("emoji", "count")
+emoji_freq <- emoji_freq[order(-emoji_freq$count), ]
 
-# Prepare emoji dictionary for joining
-emojis$Name <- as.character(emojis$Name)
-tube_tidy_emojis <- emojis %>%
-  unnest_tokens(word, Name, to_lower = FALSE)
+head(emoji_freq, 15)
 
-# Join to keep only emoji matches
-tube_emojis_total <- tube_tidy_emojis %>%
-  inner_join(emotidy_tube, by = "word")
-
-# Calculate emoji frequencies
-tube_freqe <- tube_emojis_total %>%
-  count(word, sort = TRUE)
-
-# Visualize top 10 emojis
-tube_freqe %>%
-  slice_head(n = 10) %>%
-  ggplot(aes(x = reorder(word, n), y = n)) +
+emoji_freq %>%
+  head(10) %>%
+  ggplot(aes(x = reorder(emoji, count), y = count)) +
   geom_col(fill = "steelblue") +
   coord_flip() +
   labs(
-    x = "Emoji", 
-    y = "Count",
-    title = "Top 10 Emojis in Comments",
-    subtitle = "YouTube Emoji Movie Trailer Comments"
+    title = "Top 10 Most Used Emojis",
+    x = "Emoji",
+    y = "Count"
   ) +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(size = 14, face = "bold"),
-    axis.text = element_text(size = 10)
-  )
+  theme_minimal()
 ```
 
-## Temporal Analysis of Emoji Usage
+## Temporal Analysis
 
-What if we want to look at how the use of these emojis has changed over time? We can analyze WHEN the posts were generated.
+### Emoji Usage Over Time
 
-```{r temporal-analysis, eval=FALSE, fig.width=8, fig.height=4}
-# Filter to top emojis for temporal analysis
-top_emojis <- c(
-  "FACEWITHTEARSOFJOY", "BOY", "MOBILEPHONE", "FACETHROWINGAKISS", 
-  "MAN", "SKULLANDCROSSBONES", "ATOMSYMBOL", "COLONEWOMANWITHBUNNYEARS",
-  "GRIMACINGFACE", "KISSINGFACEWITHSMILINGEYES"
-)
-
-top_ten <- tube_emojis_total %>%
-  filter(word %in% top_emojis)
-
-# Convert timestamps to proper date format
-top_ten$created <- anytime(as.factor(top_ten$publishedAt))
-
-# Create temporal frequency plot
-minutes <- 60
-ggplot(top_ten, aes(x = created, colour = word)) +
-  geom_freqpoly(binwidth = 10080 * minutes) +
-  labs(
-    title = "Emoji Comment Frequency Over Time",
-    x = "Date",
-    y = "Number of Comments",
-    colour = "Emoji"
-  ) +
-  theme_minimal() +
-  theme(
-    legend.position = "bottom",
-    legend.title = element_text(size = 10),
-    legend.text = element_text(size = 8)
-  ) +
-  guides(colour = guide_legend(nrow = 2))
-```
-
-## Individual Emoji Temporal Patterns
-
-We can examine individual emoji patterns over time:
-
-```{r individual-patterns, eval=FALSE, fig.width=7, fig.height=4}
-# Function to create individual emoji plots
-plot_emoji_over_time <- function(data, emoji_name, emoji_title) {
-  emoji_data <- data[data$word == emoji_name, ]
-  
-  ggplot(emoji_data, aes(x = created)) +
-    geom_freqpoly(binwidth = 10080 * minutes, color = "steelblue", size = 1) +
-    labs(
-      title = paste(emoji_title, "Usage Over Time"),
-      x = "Date", 
-      y = "Number of Comments"
-    ) +
-    theme_minimal() +
-    theme(
-      plot.title = element_text(size = 12, face = "bold")
-    )
-}
-
-# Create plots for specific emojis
-plot_emoji_over_time(top_ten, "FACEWITHTEARSOFJOY", "😂 Tears of Joy")
-plot_emoji_over_time(top_ten, "BOY", "👦 Boy Emoji") 
-plot_emoji_over_time(top_ten, "SKULLANDCROSSBONES", "☠️ Skull")
-plot_emoji_over_time(top_ten, "GRIMACINGFACE", "😬 Grimacing Face")
-```
-
-## Emoji Sentiment Analysis
-
-Using a categorization of positive and negative emojis, we can gauge the overall tone of the conversation.
-
-```{r sentiment-analysis, eval=FALSE}
-# Define positive and negative emoji categories
-pos_emojis <- c(
-  "FACEWITHTEARSOFJOY", 
-  "FACETHROWINGAKISS",
-  "KISSINGFACEWITHSMILINGEYES"
-)
-
-neg_emojis <- c(
-  "SKULLANDCROSSBONES", 
-  "GRIMACINGFACE"
-)
-
-# Calculate sentiment distribution
-sentiment_summary <- tube_emojis_total %>%
+```{r temporal, eval=FALSE}
+comments <- comments %>%
   mutate(
-    sentiment = case_when(
-      word %in% pos_emojis ~ "positive",
-      word %in% neg_emojis ~ "negative",
+    date = as.Date(publishedAt),
+    emoji_count = count_emojis(textDisplay)
+  )
+
+daily_emoji <- comments %>%
+  group_by(date) %>%
+  summarise(
+    total_comments = n(),
+    comments_with_emoji = sum(has_emoji, na.rm = TRUE),
+    total_emojis = sum(emoji_count, na.rm = TRUE),
+    emoji_rate = comments_with_emoji / total_comments * 100,
+    avg_emojis = total_emojis / total_comments
+  )
+
+ggplot(daily_emoji, aes(x = date, y = emoji_rate)) +
+  geom_line(color = "steelblue") +
+  geom_smooth(method = "loess", se = TRUE, alpha = 0.2) +
+  labs(
+    title = "Emoji Usage Rate Over Time",
+    x = "Date",
+    y = "% of Comments with Emojis"
+  ) +
+  theme_minimal()
+```
+
+## Sentiment Categories
+
+Emojis can indicate sentiment. Here's a simple categorization approach:
+
+```{r sentiment, eval=FALSE}
+positive_emojis <- c(
+  "\U0001F600", "\U0001F601", "\U0001F602", "\U0001F603", "\U0001F604",
+  "\U0001F605", "\U0001F606", "\U0001F60A", "\U0001F60D", "\U0001F618",
+  "\U0001F44D", "\U0001F44F", "\U00002764", "\U0001F389", "\U0001F38A"
+)
+
+negative_emojis <- c(
+  "\U0001F620", "\U0001F621", "\U0001F622", "\U0001F623", "\U0001F624",
+  "\U0001F625", "\U0001F62D", "\U0001F44E", "\U0001F4A9", "\U0001F61E"
+)
+
+comments <- comments %>%
+  mutate(
+    emojis = extract_emojis(textDisplay),
+    pos_emoji = sapply(emojis, function(e) sum(e %in% positive_emojis)),
+    neg_emoji = sapply(emojis, function(e) sum(e %in% negative_emojis)),
+    emoji_sentiment = case_when(
+      pos_emoji > neg_emoji ~ "positive",
+      neg_emoji > pos_emoji ~ "negative",
+      pos_emoji == 0 & neg_emoji == 0 ~ "none",
       TRUE ~ "neutral"
     )
-  ) %>%
-  count(sentiment, name = "count") %>%
-  mutate(
-    percentage = round(100 * count / sum(count), 1)
   )
 
-# Display results
-sentiment_summary
-
-# Visualize sentiment distribution
-ggplot(sentiment_summary, aes(x = sentiment, y = count, fill = sentiment)) +
-  geom_col(alpha = 0.8) +
-  geom_text(
-    aes(label = paste0(count, "\n(", percentage, "%)")), 
-    vjust = -0.5
-  ) +
-  scale_fill_manual(
-    values = c("positive" = "green", "negative" = "red", "neutral" = "gray")
-  ) +
-  labs(
-    title = "Emoji Sentiment Distribution",
-    x = "Sentiment Category",
-    y = "Number of Emoji Uses",
-    fill = "Sentiment"
-  ) +
-  theme_minimal() +
-  theme(legend.position = "none")
+table(comments$emoji_sentiment)
 ```
 
-## Key Insights
+## Engagement Correlation
 
-The analysis reveals several interesting patterns:
+### Do emoji comments get more likes?
 
-1. **Positive emojis dominate**: Positive emojis appear more frequently than negative ones, suggesting that most commenters express amusement or affection rather than hostility.
+```{r engagement, eval=FALSE}
+engagement_summary <- comments %>%
+  group_by(has_emoji) %>%
+  summarise(
+    n = n(),
+    mean_likes = mean(likeCount, na.rm = TRUE),
+    median_likes = median(likeCount, na.rm = TRUE)
+  )
 
-2. **Temporal patterns**: Emoji usage shows distinct temporal patterns that may correlate with video release timing and viral spread.
+print(engagement_summary)
 
-3. **Emoji diversity**: The variety of emojis used reflects the rich emotional landscape of video comments.
+ggplot(comments, aes(x = has_emoji, y = likeCount + 1)) +
+  geom_boxplot(fill = "steelblue", alpha = 0.7) +
+  scale_y_log10() +
+  labs(
+    title = "Like Counts: Emoji vs Non-Emoji Comments",
+    x = "Contains Emoji",
+    y = "Likes (log scale)"
+  ) +
+  theme_minimal()
+```
 
-## Advanced Analysis Tips
+## Cross-Video Comparison
 
-For more sophisticated emoji analysis, consider:
+### Compare emoji usage across videos
 
-- **Clustering emojis** by semantic similarity
-- **Co-occurrence analysis** to find emojis that appear together
-- **User-level analysis** to understand individual emoji usage patterns
-- **Cross-platform comparison** with other social media data
+```{r comparison, eval=FALSE}
+video_ids <- c("video_id_1", "video_id_2", "video_id_3")
 
-## Note on Dependencies
+all_comments <- lapply(video_ids, function(vid) {
+  comments <- get_all_comments(video_id = vid, max_results = 200)
+  comments$video_id <- vid
+  comments
+})
+all_comments <- bind_rows(all_comments)
 
-This analysis uses several packages that may not be available on all systems. The core `tuber` package provides built-in Unicode handling functions (`safe_utf8()`, `clean_youtube_text()`) that can serve as alternatives for basic emoji processing needs.
+video_emoji_stats <- all_comments %>%
+  mutate(emoji_count = count_emojis(textDisplay)) %>%
+  group_by(video_id) %>%
+  summarise(
+    total_comments = n(),
+    emoji_rate = mean(emoji_count > 0) * 100,
+    avg_emojis = mean(emoji_count)
+  )
+
+print(video_emoji_stats)
+```
+
+## Working with Clean Text
+
+For text analysis that should exclude emojis:
+
+```{r clean-text, eval=FALSE}
+comments <- comments %>%
+  mutate(
+    clean_text = remove_emojis(textDisplay),
+    clean_text = trimws(gsub("\\s+", " ", clean_text))
+  )
+
+head(comments$clean_text[comments$has_emoji], 3)
+```
+
+## Performance Tips
+
+For large datasets:
+
+```{r performance, eval=FALSE}
+comments_sample <- comments[sample(nrow(comments), min(1000, nrow(comments))), ]
+
+comments_sample <- comments_sample %>%
+  mutate(emoji_count = count_emojis(textDisplay))
+
+emoji_rate_estimate <- mean(comments_sample$emoji_count > 0) * 100
+```
+
+## Summary
+
+Key functions used in this analysis:
+
+| Function | Purpose |
+|----------|---------|
+| `has_emoji()` | Check if text contains emojis |
+| `count_emojis()` | Count emojis in text |
+| `extract_emojis()` | Get list of emojis from text |
+| `remove_emojis()` | Strip emojis from text |
+| `replace_emojis()` | Replace emojis with custom text |
+
+These functions work directly on character vectors, making them easy to use with `dplyr::mutate()` and other tidyverse workflows.

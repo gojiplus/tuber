@@ -84,7 +84,6 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
   if (simplify && part == "snippet" && max_results < 101) {
     simpler_res <- lapply(res$items, function(x) {
       snippet <- unlist(x$snippet$topLevelComment$snippet)
-      # Apply consistent Unicode handling
       text_fields <- c("textDisplay", "textOriginal", "authorDisplayName")
       for (field in text_fields) {
         if (field %in% names(snippet)) {
@@ -97,7 +96,14 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
     if ("publishedAt" %in% colnames(simpler_res)) {
       simpler_res <- simpler_res[order(simpler_res[, "publishedAt"]), , drop = FALSE]
     }
-    return(simpler_res)
+    return(add_tuber_attributes(
+      simpler_res,
+      api_calls_made = 1,
+      function_name = "get_comment_threads",
+      parameters = list(filter = orig_filter, part = part, max_results = max_results),
+      results_found = nrow(simpler_res),
+      response_format = "data.frame"
+    ))
 
   } else if (simplify && part == "snippet" && max_results > 100) {
     # Use optimized pagination with preallocated memory
@@ -189,10 +195,24 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
       agg_res_df <- agg_res_df[order(agg_res_df$publishedAt), , drop = FALSE]
     }
     agg_res_df$id <- NULL
-    return(agg_res_df)
+    return(add_tuber_attributes(
+      agg_res_df,
+      api_calls_made = ceiling(item_count / 100) + 1,
+      function_name = "get_comment_threads",
+      parameters = list(filter = orig_filter, part = part, max_results = max_results),
+      results_found = nrow(agg_res_df),
+      response_format = "data.frame"
+    ))
   }
 
-  res
+  add_tuber_attributes(
+    res,
+    api_calls_made = 1,
+    function_name = "get_comment_threads",
+    parameters = list(filter = orig_filter, part = part, max_results = max_results),
+    results_found = length(res$items),
+    response_format = "list"
+  )
 }
 
 

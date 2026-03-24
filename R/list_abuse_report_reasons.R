@@ -45,12 +45,12 @@ list_abuse_report_reasons <- function(part = "id, snippet", hl = "en-US", ...) {
       simple_res  <- lapply(res$items, function(x) c(etag = x$etag, id = x$id,
         label = x$snippet$label,
         secReasons = paste(unlist(x$snippet$secondaryReasons), collapse = ",")))
-      resdf       <- ldply(simple_res, rbind)
+      resdf       <- bind_rows(lapply(simple_res, as.data.frame, stringsAsFactors = FALSE))
     }
 
     if (part == "id") {
       simple_res  <- lapply(res$items, function(x) c(etag = x$etag, id = x$id))
-      resdf       <- ldply(simple_res, rbind)
+      resdf       <- bind_rows(lapply(simple_res, as.data.frame, stringsAsFactors = FALSE))
     }
   }
 

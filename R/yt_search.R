@@ -218,7 +218,9 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
       return(data.frame())
     }
 
-    return(ldply(simple_res, rbind))
+    return(bind_rows(lapply(simple_res, function(x) {
+      as.data.frame(t(x), stringsAsFactors = FALSE)
+    })))
   }
 
   # Make initial API call

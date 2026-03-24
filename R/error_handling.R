@@ -7,88 +7,6 @@
 #' @keywords internal
 NULL
 
-#' Validate required character parameters
-#'
-#' Modern validation using checkmate for better performance and consistency
-#'
-#' @param value The value to validate
-#' @param name The parameter name for error messages
-#' @param allow_empty Whether to allow empty strings
-#' @param any.missing Allow missing/NA values
-#' @param min.chars Minimum number of characters
-#' @return Invisible NULL if valid, stops execution if invalid
-validate_character <- function(value, name, allow_empty = FALSE, any.missing = FALSE, min.chars = NULL) {
-
-  # Use checkmate for modern, fast validation
-  min_chars <- if (allow_empty) 0 else if (!is.null(min.chars)) min.chars else 1
-
-  assert_character(
-    value,
-    len = 1,
-    any.missing = any.missing,
-    min.chars = min_chars,
-    .var.name = name
-  )
-
-  invisible(NULL)
-}
-
-#' Validate numeric parameters with range checking
-#'
-#' Modern validation using checkmate for better performance and consistency
-#'
-#' @param value The value to validate
-#' @param name The parameter name for error messages
-#' @param min Minimum allowed value
-#' @param max Maximum allowed value
-#' @param integer_only Whether value must be an integer
-#' @param any.missing Allow missing/NA values
-#' @return Invisible NULL if valid, stops execution if invalid
-validate_numeric <- function(value, name, min = -Inf, max = Inf, integer_only = FALSE, any.missing = FALSE) {
-
-  if (integer_only) {
-    assert_integerish(
-      value,
-      len = 1,
-      lower = min,
-      upper = max,
-      any.missing = any.missing,
-      .var.name = name
-    )
-  } else {
-    assert_numeric(
-      value,
-      len = 1,
-      lower = min,
-      upper = max,
-      any.missing = any.missing,
-      .var.name = name
-    )
-  }
-
-  invisible(NULL)
-}
-
-#' Validate that parameter matches allowed values
-#'
-#' Modern validation using checkmate for better performance and consistency
-#'
-#' @param value The value to validate
-#' @param name The parameter name for error messages
-#' @param allowed Vector of allowed values
-#' @param any.missing Allow missing/NA values
-#' @return Invisible NULL if valid, stops execution if invalid
-validate_choice <- function(value, name, allowed, any.missing = FALSE) {
-
-  assert_choice(
-    value,
-    choices = allowed,
-    .var.name = name
-  )
-
-  invisible(NULL)
-}
-
 #' Handle YouTube API errors with context-specific messages
 #'
 #' @param error_response The error response from the API
@@ -383,13 +301,64 @@ call_api_with_retry <- function(api_function, ..., retry_config = list()) {
 #'
 #' Specialized validation functions for YouTube API parameters
 
+#' Validate max_results parameter
+#'
+#' @param max_results Value to validate
+#' @param api_max Maximum allowed by the API endpoint (default: 50)
+#' @param name Parameter name for error messages
+#' @return Invisible NULL if valid, stops execution if invalid
+#' @keywords internal
+validate_max_results <- function(max_results, api_max = 50, name = "max_results") {
+  assert_integerish(max_results, len = 1, lower = 1, .var.name = name)
+
+  if (max_results > api_max) {
+    inform(paste0("max_results (", max_results, ") exceeds API limit (", api_max,
+                  "). Multiple requests will be made."),
+           class = "tuber_max_results_info")
+  }
+
+  invisible(NULL)
+}
+
+#' Validate filter parameter for YouTube API functions
+#'
+#' @param filter Named vector filter parameter
+#' @param valid_names Character vector of valid filter names
+#' @param name Parameter name for error messages
+#' @return Invisible NULL if valid, stops execution if invalid
+#' @keywords internal
+validate_filter <- function(filter, valid_names, name = "filter") {
+  if (is.null(filter)) {
+    abort("filter parameter is required",
+          class = "tuber_missing_filter")
+  }
+
+  assert_character(filter, min.len = 1, .var.name = name)
+
+  if (is.null(names(filter)) || any(names(filter) == "")) {
+    abort("filter must be a named vector",
+          filter = filter,
+          class = "tuber_unnamed_filter")
+  }
+
+  filter_name <- names(filter)[1]
+  if (!filter_name %in% valid_names) {
+    abort("Invalid filter name",
+          filter_name = filter_name,
+          valid_names = valid_names,
+          class = "tuber_invalid_filter_name")
+  }
+
+  invisible(NULL)
+}
+
 #' Validate YouTube video ID format
 #'
 #' @param video_id Video ID to validate
 #' @param name Parameter name for error messages
 #' @return Invisible NULL if valid, stops execution if invalid
 validate_video_id <- function(video_id, name = "video_id") {
-  validate_character(video_id, name)
+  assert_character(video_id, len = 1, min.chars = 1, .var.name = name)
 
   # YouTube video IDs are typically 11 characters long
   if (any(nchar(video_id) != 11)) {
@@ -419,7 +388,7 @@ validate_video_id <- function(video_id, name = "video_id") {
 #' @param name Parameter name for error messages
 #' @return Invisible NULL if valid, stops execution if invalid
 validate_channel_id <- function(channel_id, name = "channel_id") {
-  validate_character(channel_id, name)
+  assert_character(channel_id, len = 1, min.chars = 1, .var.name = name)
 
   # YouTube channel IDs start with "UC" and are 24 characters total
   if (any(!grepl("^UC[A-Za-z0-9_-]{22}$", channel_id))) {
@@ -439,7 +408,7 @@ validate_channel_id <- function(channel_id, name = "channel_id") {
 #' @param name Parameter name for error messages
 #' @return Invisible NULL if valid, stops execution if invalid
 validate_playlist_id <- function(playlist_id, name = "playlist_id") {
-  validate_character(playlist_id, name)
+  assert_character(playlist_id, len = 1, min.chars = 1, .var.name = name)
 
   # YouTube playlist IDs typically start with "PL" or "UU" and are 34 characters total
   if (any(!grepl("^(PL|UU|FL|LL)[A-Za-z0-9_-]{32}$", playlist_id))) {
@@ -459,7 +428,7 @@ validate_playlist_id <- function(playlist_id, name = "playlist_id") {
 #' @param name Parameter name for error messages
 #' @return Invisible NULL if valid, stops execution if invalid
 validate_rfc3339_date <- function(date_string, name) {
-  validate_character(date_string, name)
+  assert_character(date_string, len = 1, min.chars = 1, .var.name = name)
 
   # RFC 3339 format: YYYY-MM-DDTHH:MM:SSZ or YYYY-MM-DDTHH:MM:SS+HH:MM
   rfc3339_pattern <- "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(Z|[+-]\\d{2}:\\d{2})$"
@@ -494,7 +463,7 @@ validate_rfc3339_date <- function(date_string, name) {
 #' @param name Parameter name for error messages
 #' @return Invisible NULL if valid, stops execution if invalid
 validate_part_parameter <- function(part, endpoint, name = "part") {
-  validate_character(part, name)
+  assert_character(part, len = 1, min.chars = 1, .var.name = name)
 
   # Define valid parts for each endpoint
   valid_parts <- list(
@@ -542,7 +511,7 @@ validate_part_parameter <- function(part, endpoint, name = "part") {
 #' @param name Parameter name for error messages
 #' @return Invisible NULL if valid, stops execution if invalid
 validate_region_code <- function(region_code, name = "region_code") {
-  validate_character(region_code, name)
+  assert_character(region_code, len = 1, min.chars = 1, .var.name = name)
 
   # ISO 3166-1 alpha-2 codes are exactly 2 uppercase letters
   if (any(nchar(region_code) != 2 || !grepl("^[A-Z]{2}$", region_code))) {
@@ -563,7 +532,7 @@ validate_region_code <- function(region_code, name = "region_code") {
 #' @param name Parameter name for error messages
 #' @return Invisible NULL if valid, stops execution if invalid
 validate_language_code <- function(language_code, name = "language_code") {
-  validate_character(language_code, name)
+  assert_character(language_code, len = 1, min.chars = 1, .var.name = name)
 
   # Accept ISO 639-1 (2 letters) or BCP-47 format (e.g., en-US)
   if (any(!grepl("^[a-z]{2}(-[A-Z]{2})?$", language_code))) {
@@ -607,10 +576,10 @@ validate_youtube_params <- function(params, endpoint = NULL) {
       publishedAfter = validate_rfc3339_date(param_value, "published_after"),
       published_before = validate_rfc3339_date(param_value, param_name),
       publishedBefore = validate_rfc3339_date(param_value, "published_before"),
-      max_results = validate_numeric(param_value, param_name, min = 1, max = 50, integer_only = TRUE),
-      maxResults = validate_numeric(param_value, "max_results", min = 1, max = 50, integer_only = TRUE),
+      max_results = assert_integerish(param_value, len = 1, lower = 1, upper = 50, .var.name = param_name),
+      maxResults = assert_integerish(param_value, len = 1, lower = 1, upper = 50, .var.name = "max_results"),
       # Default: basic validation for other parameters
-      if (is.character(param_value)) validate_character(param_value, param_name)
+      if (is.character(param_value)) assert_character(param_value, len = 1, min.chars = 1, .var.name = param_name)
     )
   }
 

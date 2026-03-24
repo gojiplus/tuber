@@ -2,7 +2,7 @@
 % Please edit documentation in R/error_handling.R
 \name{validate_video_id}
 \alias{validate_video_id}
-\title{Validate YouTube-specific IDs and parameters}
+\title{Validate YouTube video ID format}
 \usage{
 validate_video_id(video_id, name = "video_id")
 }
@@ -15,6 +15,5 @@ validate_video_id(video_id, name = "video_id")
 Invisible NULL if valid, stops execution if invalid
 }
 \description{
-Specialized validation functions for YouTube API parameters
 Validate YouTube video ID format
 }

@@ -4,5 +4,6 @@
 \alias{unicode_utils}
 \title{Unicode and Text Processing Utilities}
 \description{
-Internal functions for consistent text and Unicode handling across tuber
+Functions for consistent text and Unicode handling across tuber,
+including emoji detection, extraction, and manipulation.
 }

@@ -110,5 +110,14 @@ list_channel_videos <- function(channel_id = NULL, max_results = 50,
                                  "and may not appear in public playlist results.")
   }
 
+  if (!inherits(videos, "tuber_result")) {
+    videos <- add_tuber_attributes(
+      videos,
+      function_name = "list_channel_videos",
+      parameters = list(channel_id = channel_id, max_results = max_results),
+      results_found = if (is.data.frame(videos)) nrow(videos) else length(videos$items)
+    )
+  }
+
   videos
 }

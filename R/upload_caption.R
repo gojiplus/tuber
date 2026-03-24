@@ -102,13 +102,13 @@ upload_caption <- function(
                     config(token = getOption("google_token")),
                     ...)
   if (httr::status_code(req) > 300)  {
-    print(body)
-    print(paste0("File is: ", metadata))
-    cat(readLines(metadata))
-    cat("\n")
-    print(query)
-    print(httr::content(req)$error)
-    stop("Request was bad")
+    error_content <- httr::content(req)$error
+    abort(
+      paste0("Caption upload failed with status ", httr::status_code(req)),
+      class = "tuber_caption_upload_failed",
+      status_code = httr::status_code(req),
+      error_details = error_content
+    )
   }
   tuber_check(req)
   res <- content(req)

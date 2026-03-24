@@ -9,26 +9,25 @@ get_channel_stats(
   channel_ids = NULL,
   mine = NULL,
   part = c("statistics", "snippet"),
-  simplify = FALSE,
+  simplify = TRUE,
   batch_size = 50,
   show_progress = NULL,
   auth = "token",
-  console_output = TRUE,
   ...
 )
 
 list_my_channel(...)
 }
 \arguments{
-\item{channel_ids}{Character vector of channel IDs to retrieve. Use \code{list_my_channel()} 
+\item{channel_ids}{Character vector of channel IDs to retrieve. Use \code{list_my_channel()}
 to get your own channel ID.}
 
-\item{mine}{Logical. Set to TRUE to get authenticated user's channel. 
+\item{mine}{Logical. Set to TRUE to get authenticated user's channel.
 Overrides \code{channel_ids}. Default: NULL.}
 
 \item{part}{Character vector of parts to retrieve. Default: c("statistics", "snippet").}
 
-\item{simplify}{Logical. If TRUE, returns a data frame. If FALSE, returns raw list. Default: FALSE.}
+\item{simplify}{Logical. If TRUE (default), returns a data frame. If FALSE, returns raw list.}
 
 \item{batch_size}{Number of channels per API call (max 50). Default: 50.}
 
@@ -36,13 +35,11 @@ Overrides \code{channel_ids}. Default: NULL.}
 
 \item{auth}{Authentication method: "token" (OAuth2) or "key" (API key). Default: "token".}
 
-\item{console_output}{Logical. Show console output for single channel. Default: TRUE.}
-
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-When \code{simplify = FALSE} (default): List with channel details.
-When \code{simplify = TRUE}: Data frame with channel details.
+When \code{simplify = TRUE} (default): Data frame with channel details.
+When \code{simplify = FALSE}: List with channel details.
 
 For single channels, returns the channel object directly (not in a list).
 For multiple channels, returns a list with items array.
@@ -51,16 +48,13 @@ For multiple channels, returns a list with items array.
 Get statistics and details for one or more YouTube channels efficiently using batch processing.
 }
 \details{
-Valid parts include: \code{auditDetails, brandingSettings, contentDetails, 
-contentOwnerDetails, id, localizations, snippet, statistics, status, 
+Valid parts include: \code{auditDetails, brandingSettings, contentDetails,
+contentOwnerDetails, id, localizations, snippet, statistics, status,
 topicDetails}.
 
 The function automatically batches requests to minimize API quota usage:
 - 1 channel = 1 API call
 - 100 channels = 2 API calls (batched in groups of 50)
-
-When retrieving a single channel, the function displays key statistics 
-in the console by default (can be disabled with \code{console_output = FALSE}).
 }
 \examples{
 \dontrun{

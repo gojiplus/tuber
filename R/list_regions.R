@@ -39,7 +39,7 @@ list_regions <- function(hl = NULL, ...) {
   if (length(res$items) != 0) {
     simple_res  <- lapply(res$items, function(x) c(unlist(x$snippet),
                           etag = x$etag))
-    resdf       <- ldply(simple_res, rbind)
+    resdf       <- bind_rows(lapply(simple_res, as.data.frame, stringsAsFactors = FALSE))
   }
 
   resdf

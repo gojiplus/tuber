@@ -138,7 +138,7 @@ get_playlist_items <- function(filter = NULL, part = "contentDetails",
     })
 
     # Combine all rows into single data.frame
-    res <- do.call(rbind.fill, simplified_items)
+    res <- bind_rows(simplified_items)
 
     # Add attributes to simplified result
     res <- add_tuber_attributes(
