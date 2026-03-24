@@ -1,5 +1,26 @@
 # version 1.4.0
 
+## Major API Coverage Enhancements (Closing the Gap)
+
+This release significantly expands `tuber`'s capabilities to support full programmatic channel management and deep creator economy analytics:
+
+### 1. Community Engagement & Moderation
+Added functions to actively manage and engage with your community:
+* `post_comment()`: Programmatically post new top-level comments to videos or channels.
+* `reply_to_comment()`: Reply to existing comments.
+* `set_comment_moderation_status()`: Approve, reject, or hold comments for review, with an option to ban authors.
+
+### 2. Monetization & Live Chat Data Extraction
+Added highly requested data extraction tools for analysts tracking the creator economy:
+* `get_super_chat_events()`: Retrieve all Super Chat and Super Sticker events, including currency amounts and donor details.
+* `get_live_chat_messages()`: Extract real-time chat messages from active live broadcasts.
+* `list_channel_members()`: List all active channel members and their tier levels.
+
+### 3. Channel Branding & Customization
+Completed the video publishing pipeline with new media upload endpoints:
+* `set_video_thumbnail()`: Upload and set custom thumbnails for your videos.
+* `insert_channel_banner()`: Upload custom channel banner art.
+
 ## Critical Issue Resolution and Enhanced Error Handling
 
 This release resolves **19 out of 22 total GitHub issues**, dramatically improving package reliability and user experience:
