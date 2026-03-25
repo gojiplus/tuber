@@ -71,13 +71,13 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
   vid_ids <- character()
   page_token <- NULL
   page_count <- 0
-  
+
   repeat {
     page_count <- page_count + 1
     if (page_count > 1) {
       message("Fetching playlist page ", page_count, "...")
     }
-    
+
     playlist_items <- get_playlist_items(
       filter = c(playlist_id = playlist_id),
       max_results = 50,
@@ -85,7 +85,7 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
       simplify = FALSE,
       ...
     )
-    
+
     # Extract video IDs from this page
     page_video_ids <- vapply(
       playlist_items$items,
@@ -93,18 +93,18 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
       character(1)
     )
     vid_ids <- c(vid_ids, page_video_ids)
-    
+
     page_token <- playlist_items$nextPageToken
     if (is.null(page_token)) {
       break
     }
   }
-  
+
   if (length(vid_ids) == 0) {
     warning("No videos found in channel uploads playlist")
     return(data.frame())
   }
-  
+
   message("Found ", length(vid_ids), " videos. Fetching video details and statistics...")
 
   # Use the new unified get_video_details function for efficient batch processing
@@ -115,7 +115,7 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
     show_progress = TRUE,
     ...
   )
-  
+
   if (!is.data.frame(video_data) || nrow(video_data) == 0) {
     warning("No video data could be retrieved or conversion to data frame failed")
     return(data.frame())
@@ -123,7 +123,7 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
 
   # Map complex column names from get_video_details to expected simple names
   result_df <- video_data
-  
+
   # Map column names from get_video_details output to expected names
   # Note: json_to_df prefixes nested fields with parent name (e.g., snippet_title, statistics_viewCount)
   column_mapping <- c(
@@ -136,7 +136,7 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
     "like_count" = "statistics_likeCount",
     "comment_count" = "statistics_commentCount"
   )
-  
+
   # Rename columns that exist
   for (new_name in names(column_mapping)) {
     old_name <- column_mapping[[new_name]]
@@ -144,25 +144,25 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
       names(result_df)[names(result_df) == old_name] <- new_name
     }
   }
-  
+
   # Add video URL
   result_df$url <- paste0("https://www.youtube.com/watch?v=", result_df$id)
-  
+
   # Ensure consistent column order
-  final_columns <- c("id", "title", "publication_date", "description", 
-                     "channel_id", "channel_title", "view_count", "like_count", 
+  final_columns <- c("id", "title", "publication_date", "description",
+                     "channel_id", "channel_title", "view_count", "like_count",
                      "comment_count", "url")
-  
+
   # Add missing columns as NA if they don't exist
   for (col in final_columns) {
     if (!col %in% names(result_df)) {
       result_df[[col]] <- NA
     }
   }
-  
+
   # Select final columns in the right order
   result_df <- result_df[, final_columns, drop = FALSE]
-  
+
   message("Successfully retrieved data for ", nrow(result_df), " videos")
 
   add_tuber_attributes(

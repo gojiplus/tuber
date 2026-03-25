@@ -91,7 +91,7 @@ get_playlists <- function(filter = NULL,
     return(list())
   }
 
-  if (simplify & part == "contentDetails") {
+  if (simplify && part == "contentDetails") {
     simpler_res <- do.call(rbind, lapply(raw_res$items, unlist))
     return(simpler_res)
   }

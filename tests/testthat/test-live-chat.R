@@ -41,10 +41,10 @@ test_that("get_live_chat_messages handles data correctly", {
         )
       }
     },
-    
+
     {
       result <- get_live_chat_messages(live_chat_id = "chat-id")
-      
+
       expect_true(is.data.frame(result))
       expect_equal(nrow(result), 1)
       expect_equal(result$id[1], "message-id")

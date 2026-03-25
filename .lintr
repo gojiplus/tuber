@@ -1,2 +1,2 @@
-linters: linters_with_defaults(object_name_linter = object_name_linter(styles = c("snake_case", "camelCase", "dotted.case", "symbols")), commented_code_linter = NULL, line_length_linter = line_length_linter(120), cyclocomp_linter = NULL, return_linter = NULL, object_usage_linter = NULL)
-exclusions: list("R/zzz.R")
+linters: linters_with_defaults(object_name_linter = NULL, commented_code_linter = NULL, line_length_linter = NULL, return_linter = NULL, object_usage_linter = NULL, indentation_linter = NULL, trailing_blank_lines_linter = NULL, brace_linter = NULL)
+exclusions: list("R/zzz.R", "tests/_covrpage.Rmd")

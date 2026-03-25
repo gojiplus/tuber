@@ -41,7 +41,7 @@ list_abuse_report_reasons <- function(part = "id, snippet", hl = "en-US", ...) {
 
   if (length(res$items) != 0) {
 
-    if (part == "id, snippet" | part == "snippet") {
+    if (part == "id, snippet" || part == "snippet") {
       simple_res  <- lapply(res$items, function(x) c(etag = x$etag, id = x$id,
         label = x$snippet$label,
         secReasons = paste(unlist(x$snippet$secondaryReasons), collapse = ",")))

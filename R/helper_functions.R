@@ -135,7 +135,7 @@ analyze_channel <- function(channel_id,
       total_recent_views = sum(videos_info$view_count_num, na.rm = TRUE),
       engagement_rate = mean(videos_info$like_count_num / pmax(videos_info$view_count_num, 1), na.rm = TRUE),
       videos_analyzed = nrow(videos_info),
-      top_performing_video = if(nrow(videos_info) > 0) {
+      top_performing_video = if (nrow(videos_info) > 0) {
         videos_info[which.max(videos_info$view_count_num), c("title", "view_count_num")]
       } else NULL
     )

@@ -34,10 +34,10 @@ test_that("get_super_chat_events handles data correctly", {
         )
       }
     },
-    
+
     {
       result <- get_super_chat_events()
-      
+
       expect_true(is.data.frame(result))
       expect_equal(nrow(result), 1)
       expect_equal(result$id[1], "test-id")
@@ -52,7 +52,7 @@ test_that("get_super_chat_events handles forbidden error gracefully", {
     tuber_GET = function(path, query, ...) {
       stop("forbidden: The request is not authorized.")
     },
-    
+
     {
       expect_error(get_super_chat_events(), class = "tuber_super_chat_forbidden")
     }

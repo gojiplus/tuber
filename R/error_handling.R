@@ -202,7 +202,7 @@ with_retry <- function(expr,
     # Calculate delay with exponential backoff and optional jitter
     delay <- min(base_delay * (backoff_factor ^ (attempt - 1)), max_delay)
     if (jitter) {
-      delay <- delay * (0.5 + 0.5 * runif(1))  # Add 0-50% jitter
+      delay <- delay * (0.5 + 0.5 * runif(1))
     }
 
     # Call retry callback if provided
@@ -568,7 +568,7 @@ validate_youtube_params <- function(params, endpoint = NULL) {
       channelId = validate_channel_id(param_value, "channel_id"),
       playlist_id = validate_playlist_id(param_value, param_name),
       playlistId = validate_playlist_id(param_value, "playlist_id"),
-      part = if(!is.null(endpoint)) validate_part_parameter(param_value, endpoint, param_name),
+      part = if (!is.null(endpoint)) validate_part_parameter(param_value, endpoint, param_name),
       region_code = validate_region_code(param_value, param_name),
       regionCode = validate_region_code(param_value, "region_code"),
       hl = validate_language_code(param_value, "language_code"),

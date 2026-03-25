@@ -30,7 +30,7 @@ add_video_to_playlist <- function(playlist_id, video_id, position = NULL, ...) {
   }
 
   # Prepare the request body
-  if(is.null(position)){
+  if (is.null(position)) {
     body <- list(
       snippet = list(
         playlistId = playlist_id,

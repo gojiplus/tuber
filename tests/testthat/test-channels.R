@@ -5,7 +5,7 @@
 # - get_all_channel_video_stats() - Get statistics for all videos in a channel
 # - list_channel_resources() - Get channel information and playlists
 # - get_playlist_items() - Used internally by channel stats functions
-# 
+#
 # Tests use accurate YouTube API v3 mocks that reflect current API behavior:
 # - dislikeCount is private since December 2021
 # - Proper response structure with kind, etag, pageInfo fields
@@ -40,7 +40,7 @@ test_that("get_all_channel_video_stats handles video details correctly", {
         )
       )
     },
-    
+
     # Mock get_playlist_items to return 2 video IDs
     get_playlist_items = function(...) {
       list(
@@ -71,7 +71,7 @@ test_that("get_all_channel_video_stats handles video details correctly", {
         nextPageToken = NULL
       )
     },
-    
+
     # Mock tuber_GET for video stats and details
     tuber_GET = function(path, query, ...) {
       # Handle combined snippet,statistics call (what get_video_details does)
@@ -195,25 +195,25 @@ test_that("get_all_channel_video_stats handles video details correctly", {
         )
       }
     },
-    
+
     {
       # Test the function
       result <- get_all_channel_video_stats(channel_id = "UCad-_hTvV-yBPcpy9jwQWeA")
-      
+
       # Verify the result structure
       expect_true(is.data.frame(result))
       expect_equal(nrow(result), 2)
-      
+
       # Check column names (note: dislike_count may be present but NA)
-      expected_cols <- c("id", "title", "publication_date", "description", 
-                        "channel_id", "channel_title", "view_count", 
+      expected_cols <- c("id", "title", "publication_date", "description",
+                        "channel_id", "channel_title", "view_count",
                         "like_count", "comment_count", "url")
       expect_true(all(expected_cols %in% names(result)))
       # dislike_count column may exist but should be NA (private since Dec 2021)
       if ("dislike_count" %in% names(result)) {
         expect_true(all(is.na(result$dislike_count)))
       }
-      
+
       # Verify data integrity
       expect_equal(result$id[1], "video1")
       expect_equal(result$id[2], "video2")
@@ -223,7 +223,7 @@ test_that("get_all_channel_video_stats handles video details correctly", {
       expect_equal(result$publication_date[2], "2024-01-02T00:00:00Z")
       expect_equal(result$view_count[1], "1000")
       expect_equal(result$view_count[2], "2000")
-      
+
       # Check URL generation
       expect_equal(result$url[1], "https://www.youtube.com/watch?v=video1")
       expect_equal(result$url[2], "https://www.youtube.com/watch?v=video2")
@@ -259,7 +259,7 @@ test_that("get_all_channel_video_stats handles missing publishedAt field", {
         )
       )
     },
-    
+
     get_playlist_items = function(...) {
       list(
         kind = "youtube#playlistItemListResponse",
@@ -281,7 +281,7 @@ test_that("get_all_channel_video_stats handles missing publishedAt field", {
         nextPageToken = NULL
       )
     },
-    
+
     tuber_GET = function(path, query, ...) {
       # Handle combined snippet,statistics call (what get_video_details does)
       if (grepl("statistics", query$part) && grepl("snippet", query$part)) {
@@ -360,10 +360,10 @@ test_that("get_all_channel_video_stats handles missing publishedAt field", {
         )
       }
     },
-    
+
     {
       result <- get_all_channel_video_stats(channel_id = "UCtest")
-      
+
       # Should handle missing publishedAt gracefully with NA
       expect_true(is.data.frame(result))
       expect_equal(nrow(result), 1)

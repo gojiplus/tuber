@@ -2,12 +2,12 @@ context("Comment Threads")
 
 test_that("get_comment_threads returns all comments", {
   skip_on_cran()
-  
+
   # Skip if no token file exists
   if (!file.exists("token_file.rds.enc")) {
     skip("No token file available for API testing")
   }
-  
+
   tryCatch({
     google_token <- readRDS("token_file.rds.enc")$google_token
     options(google_token = google_token)
@@ -25,7 +25,7 @@ test_that("get_comment_threads returns all comments", {
 
     expect_s3_class(all_comments, "data.frame")
     expect_equal(nrow(all_comments), total)
-    
+
   }, error = function(e) {
     skip(paste("API test failed:", e$message))
   })

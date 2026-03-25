@@ -54,7 +54,7 @@ list_caption_tracks <- function(part = "snippet", video_id = NULL, lang = "en",
       return(list())
     }
 
-    if (simplify == TRUE & part == "snippet") {
+    if (simplify == TRUE && part == "snippet") {
       res_df <- bind_rows(lapply(raw_res$items, function(x) {
         as.data.frame(t(unlist(x$snippet)), stringsAsFactors = FALSE)
       }))

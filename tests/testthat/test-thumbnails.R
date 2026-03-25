@@ -1,6 +1,6 @@
 test_that("set_video_thumbnail functions correctly", {
   skip_on_cran()
-  
+
   with_mocked_bindings(
     yt_check_token = function() TRUE,
     tuber_check = function(req) invisible(TRUE),
@@ -20,16 +20,16 @@ test_that("set_video_thumbnail functions correctly", {
           res
         },
         .package = "httr",
-        
+
         {
           tmp <- tempfile(fileext = ".jpg")
           writeBin(as.raw(1:10), tmp)
-          
+
           result <- set_video_thumbnail(video_id = "test_vid", file = tmp)
-          
+
           expect_true(is.list(result))
           expect_equal(result$content$items[[1]]$default$url, "https://example.com/thumb.jpg")
-          
+
           unlink(tmp)
         }
       )
@@ -39,7 +39,7 @@ test_that("set_video_thumbnail functions correctly", {
 
 test_that("insert_channel_banner functions correctly", {
   skip_on_cran()
-  
+
   with_mocked_bindings(
     yt_check_token = function() TRUE,
     tuber_check = function(req) invisible(TRUE),
@@ -58,16 +58,16 @@ test_that("insert_channel_banner functions correctly", {
           res
         },
         .package = "httr",
-        
+
         {
           tmp <- tempfile(fileext = ".jpg")
           writeBin(as.raw(1:10), tmp)
-          
+
           result <- insert_channel_banner(file = tmp)
-          
+
           expect_true(is.list(result))
           expect_equal(result$content$url, "https://example.com/banner.jpg")
-          
+
           unlink(tmp)
         }
       )

@@ -180,7 +180,7 @@ exponential_backoff <- function(attempt_number, max_attempts = 5, base_delay = 1
 
   if (attempt_number > 1) {
     delay <- base_delay * (2 ^ (attempt_number - 2))  # 1, 2, 4, 8 seconds...
-    delay <- delay + runif(1, 0, 0.5)  # Add jitter
+    delay <- delay + runif(1, 0, 0.5)
     message("Rate limited. Waiting ", round(delay, 2), " seconds before retry...")
     Sys.sleep(delay)
   }

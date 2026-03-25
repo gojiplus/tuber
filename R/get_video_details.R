@@ -64,24 +64,24 @@ json_to_df <- function(res) {
 #' @param show_progress Whether to show progress for large batches. Default: TRUE for >10 videos.
 #' @param auth Authentication method: "token" (OAuth2) or "key" (API key). Default: "token".
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
-#' 
-#' @details 
-#' Valid values for \code{part}: \code{contentDetails, fileDetails, id, 
-#' liveStreamingDetails, localizations, paidProductPlacementDetails, player, 
-#' processingDetails, recordingDetails, snippet, statistics, status, 
+#'
+#' @details
+#' Valid values for \code{part}: \code{contentDetails, fileDetails, id,
+#' liveStreamingDetails, localizations, paidProductPlacementDetails, player,
+#' processingDetails, recordingDetails, snippet, statistics, status,
 #' suggestions, topicDetails}.
-#' 
-#' Certain parts like \code{fileDetails, suggestions, processingDetails} are 
+#'
+#' Certain parts like \code{fileDetails, suggestions, processingDetails} are
 #' only available to video owners and require OAuth authentication.
-#' 
+#'
 #' The function automatically batches requests to minimize API quota usage:
 #' - 1 video = 1 API call
 #' - 100 videos = 2 API calls (batched in groups of 50)
 #'
-#' @return 
+#' @return
 #' When \code{simplify = TRUE} (default): Data frame with video details (not available for owner-only parts).
 #' When \code{simplify = FALSE}: List with items containing video details.
-#' 
+#'
 #' The result includes metadata as attributes:
 #' - \code{api_calls_made}: Number of API calls made
 #' - \code{quota_used}: Estimated quota units consumed
@@ -96,17 +96,17 @@ json_to_df <- function(res) {
 #' \dontrun{
 #' # Single video
 #' details <- get_video_details("yJXTXN4xrI8")
-#' 
+#'
 #' # Multiple videos - automatically batched
 #' video_ids <- c("yJXTXN4xrI8", "LDZX4ooRsWs", "kJQP7kiw5Fk")
 #' details <- get_video_details(video_ids)
-#' 
+#'
 #' # Get as data frame
 #' df <- get_video_details(video_ids, simplify = TRUE)
-#' 
+#'
 #' # Get specific parts
 #' stats <- get_video_details(video_ids, part = c("statistics", "contentDetails"))
-#' 
+#'
 #' # Extract specific fields:
 #' details <- get_video_details("yJXTXN4xrI8")
 #' title <- details$items[[1]]$snippet$title
@@ -120,25 +120,25 @@ get_video_details <- function(video_ids,
                              show_progress = NULL,
                              auth = "token",
                              ...) {
-  
+
   # Modern validation using checkmate
   assert_character(video_ids, any.missing = FALSE, min.len = 1, .var.name = "video_ids")
   assert_character(part, min.len = 1, .var.name = "part")
   assert_logical(simplify, len = 1, .var.name = "simplify")
   assert_integerish(batch_size, len = 1, lower = 1, upper = 50, .var.name = "batch_size")
   assert_choice(auth, c("token", "key"), .var.name = "auth")
-  
+
   # Auto-detect whether to show progress
   if (is.null(show_progress)) {
     show_progress <- length(video_ids) > 10
   }
   assert_logical(show_progress, len = 1, .var.name = "show_progress")
-  
+
   # Join part parameter if vector
   if (length(part) > 1) {
     part <- paste0(part, collapse = ",")
   }
-  
+
   # Check for owner-only parts when simplify is TRUE
   parts_only_for_video_owners <- c("fileDetails", "suggestions", "processingDetails")
   if (simplify && any(strsplit(part, ",")[[1]] %in% parts_only_for_video_owners)) {
@@ -148,19 +148,19 @@ get_video_details <- function(video_ids,
           help = "Use simplify = FALSE for owner-only parts",
           class = "tuber_incompatible_dataframe_parts")
   }
-  
+
   # Remove duplicates and empty IDs
   video_ids <- unique(video_ids[nchar(video_ids) > 0])
-  
+
   if (length(video_ids) == 0) {
     abort("No valid video IDs provided",
           class = "tuber_no_valid_ids")
   }
-  
+
   # For single video, keep simple behavior
   if (length(video_ids) == 1) {
     querylist <- list(part = part, id = video_ids)
-    
+
     raw_res <- call_api_with_retry(
       tuber_GET,
       path = "videos",
@@ -168,11 +168,11 @@ get_video_details <- function(video_ids,
       auth = auth,
       ...
     )
-    
+
     if (length(raw_res$items) == 0) {
       suggest_solution("empty_results", "- Check if the video ID is correct\n- Video may be private or deleted")
       warning("No video details found for ID: ", video_ids, call. = FALSE)
-      
+
       empty_result <- if (simplify) data.frame() else list()
       return(add_tuber_attributes(
         empty_result,
@@ -182,7 +182,7 @@ get_video_details <- function(video_ids,
         results_found = 0
       ))
     }
-    
+
     if (simplify) {
       raw_res <- tryCatch({
         json_to_df(raw_res)
@@ -194,7 +194,7 @@ get_video_details <- function(video_ids,
         raw_res
       })
     }
-    
+
     return(add_tuber_attributes(
       raw_res,
       api_calls_made = 1,
@@ -204,25 +204,25 @@ get_video_details <- function(video_ids,
       response_format = if (simplify) "data.frame" else "list"
     ))
   }
-  
+
   # For multiple videos, use batching
   total_batches <- ceiling(length(video_ids) / batch_size)
   batches <- split(video_ids, ceiling(seq_along(video_ids) / batch_size))
-  
+
   if (show_progress) {
     message("Processing ", length(video_ids), " videos in ", total_batches, " batch(es)...")
   }
-  
+
   all_items <- list()
   api_calls_made <- 0
-  
+
   for (i in seq_along(batches)) {
     batch_ids <- paste0(batches[[i]], collapse = ",")
-    
+
     if (show_progress && total_batches > 1) {
       message("Batch ", i, "/", total_batches, " (", length(batches[[i]]), " videos)")
     }
-    
+
     # Make API call with retry logic
     batch_result <- call_api_with_retry(
       tuber_GET,
@@ -232,22 +232,22 @@ get_video_details <- function(video_ids,
       ...
     )
     api_calls_made <- api_calls_made + 1
-    
+
     if (!is.null(batch_result$items) && length(batch_result$items) > 0) {
       all_items <- c(all_items, batch_result$items)
     }
-    
+
     # Add small delay between batches to be respectful
     if (i < length(batches)) {
       Sys.sleep(0.1)
     }
   }
-  
+
   if (length(all_items) == 0) {
     suggest_solution("empty_results", "- Check if video IDs are correct\n- Videos may be private or deleted")
     warn("No video details found for any of the provided IDs",
          class = "tuber_batch_empty_result")
-    
+
     empty_result <- if (simplify) data.frame() else list()
     return(add_tuber_attributes(
       empty_result,
@@ -258,7 +258,7 @@ get_video_details <- function(video_ids,
       response_format = if (simplify) "data.frame" else "list"
     ))
   }
-  
+
   # Combine results - wrap in structure that json_to_df expects
   result <- list(
     kind = "youtube#videoListResponse",
@@ -278,7 +278,7 @@ get_video_details <- function(video_ids,
       result
     })
   }
-  
+
   # Add standardized attributes
   result <- add_tuber_attributes(
     result,
@@ -290,6 +290,6 @@ get_video_details <- function(video_ids,
     batches_processed = total_batches,
     response_format = if (simplify) "data.frame" else "list"
   )
-  
+
   return(result)
 }

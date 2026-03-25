@@ -83,7 +83,7 @@ get_comments <- function(filter = NULL, part = "snippet", max_results = 100,
       return(list())
     }
 
-  if (simplify == TRUE & part == "snippet") {
+  if (simplify == TRUE && part == "snippet") {
     simple_res  <- lapply(raw_res$items, function(x) {
       as.data.frame(t(unlist(x$snippet)), stringsAsFactors = FALSE)
     })

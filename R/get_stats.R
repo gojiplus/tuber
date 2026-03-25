@@ -63,7 +63,7 @@ get_stats <- function(video_ids = NULL, include_content_details = FALSE, batch_s
   if (length(video_ids) == 1 && !simplify && !is.null(result$items)) {
     res <- result$items[[1]]
     stat_res <- res$statistics
-    
+
     # Include contentDetails if requested
     if (include_content_details && !is.null(res$contentDetails)) {
       content_res <- res$contentDetails
@@ -71,7 +71,7 @@ get_stats <- function(video_ids = NULL, include_content_details = FALSE, batch_s
     } else {
       extracted <- c(id = res$id, stat_res)
     }
-    
+
     # Add standardized attributes
     result <- add_tuber_attributes(
       extracted,
