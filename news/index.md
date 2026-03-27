@@ -2,6 +2,8 @@
 
 ## version 1.4.0
 
+CRAN release: 2026-03-25
+
 ### Major API Coverage Enhancements (Closing the Gap)
 
 This release significantly expands `tuber`’s capabilities to support
