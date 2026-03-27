@@ -31,6 +31,7 @@ test_that("list_channel_resources works", {
   result <- list_channel_resources(
     filter = c(channel_id = "UC_x5XG1OV2P6uZZ5FSM9Ttw"),
     part = "snippet",
+    simplify = FALSE,
     auth = "key"
   )
 

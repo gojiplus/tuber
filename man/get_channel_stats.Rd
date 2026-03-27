@@ -72,7 +72,7 @@ df <- get_channel_stats(channel_ids, simplify = TRUE)
 my_stats <- get_channel_stats(mine = TRUE)
 
 # Get additional parts
-detailed <- get_channel_stats(channel_ids, 
+detailed <- get_channel_stats(channel_ids,
                              part = c("statistics", "snippet", "brandingSettings"))
 }
 

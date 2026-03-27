@@ -43,12 +43,12 @@ The result includes metadata as attributes:
 Get details for one or more YouTube videos efficiently using batch processing.
 }
 \details{
-Valid values for \code{part}: \code{contentDetails, fileDetails, id, 
-liveStreamingDetails, localizations, paidProductPlacementDetails, player, 
-processingDetails, recordingDetails, snippet, statistics, status, 
+Valid values for \code{part}: \code{contentDetails, fileDetails, id,
+liveStreamingDetails, localizations, paidProductPlacementDetails, player,
+processingDetails, recordingDetails, snippet, statistics, status,
 suggestions, topicDetails}.
 
-Certain parts like \code{fileDetails, suggestions, processingDetails} are 
+Certain parts like \code{fileDetails, suggestions, processingDetails} are
 only available to video owners and require OAuth authentication.
 
 The function automatically batches requests to minimize API quota usage:

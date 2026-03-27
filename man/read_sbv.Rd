@@ -16,7 +16,7 @@ A \code{data.frame} with start/stop times and the text
 Read SBV file
 }
 \examples{
-if (yt_authorized()){
+if (yt_authorized()) {
 vids <- list_my_videos()
 res <- list_caption_tracks(video_id = vids$contentDetails.videoId[1])
 cap <- get_captions(id = res$id, as_raw = FALSE)

@@ -34,7 +34,7 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
 
   # Get channel resources with proper error handling
   channel_resources <- tryCatch({
-    list_channel_resources(filter = c(channel_id = channel_id), part = "contentDetails", ...)
+    list_channel_resources(filter = c(channel_id = channel_id), part = "contentDetails", simplify = FALSE, ...)
   }, error = function(e) {
     abort("Failed to get channel information",
           channel_id = channel_id,
