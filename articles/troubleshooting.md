@@ -70,6 +70,7 @@ calls
 **Solution**: Add delays between requests:
 
 ``` r
+
 # Add small delays between requests
 Sys.sleep(0.1)  # 100ms delay
 ```
@@ -100,6 +101,7 @@ results
 **Solution**: Use channel IDs instead of usernames when possible:
 
 ``` r
+
 # Instead of username
 get_channel_stats(channel_id = "UC_x5XG1OV2P6uZZ5FSM9Ttw")
 # Instead of 

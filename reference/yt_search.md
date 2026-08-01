@@ -178,6 +178,7 @@ The returned data.frame also has the following attributes:
 ## Examples
 
 ``` r
+
 if (FALSE) { # \dontrun{
 
 # Set API token via yt_oauth() first

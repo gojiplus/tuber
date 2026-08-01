@@ -8,6 +8,7 @@ external dependencies.
 ## Quick Start
 
 ``` r
+
 library(tuber)
 
 # Get comments from a video
@@ -30,6 +31,7 @@ The package provides five main functions for working with emojis:
 ### `has_emoji()` - Check for emoji presence
 
 ``` r
+
 has_emoji("Hello world")
 # FALSE
 
@@ -43,6 +45,7 @@ has_emoji(c("No emoji", "Has emoji \U0001F600", "Also none"))
 ### `count_emojis()` - Count emojis in text
 
 ``` r
+
 count_emojis("Hello world")
 # 0
 
@@ -56,6 +59,7 @@ count_emojis(c("None", "\U0001F44D", "\U0001F600\U0001F601"))
 ### `extract_emojis()` - Get emojis from text
 
 ``` r
+
 extract_emojis("Hello \U0001F44B World \U0001F30D!")
 # list(c("\U0001F44B", "\U0001F30D"))
 
@@ -66,6 +70,7 @@ extract_emojis(c("No emoji", "\U0001F600\U0001F601"))
 ### `remove_emojis()` - Strip emojis from text
 
 ``` r
+
 remove_emojis("Hello \U0001F44B World!")
 # "Hello  World!"
 
@@ -76,6 +81,7 @@ remove_emojis(c("No emoji", "Has \U0001F600 emoji"))
 ### `replace_emojis()` - Substitute emojis
 
 ``` r
+
 replace_emojis("Hello \U0001F44B World!", replacement = "[emoji]")
 # "Hello [emoji] World!"
 
@@ -88,6 +94,7 @@ replace_emojis("Rate: \U0001F600\U0001F600\U0001F600", replacement = "*")
 ### Filter comments with high emoji usage
 
 ``` r
+
 comments <- get_all_comments(video_id = "your_video_id")
 comments$emoji_count <- count_emojis(comments$textDisplay)
 
@@ -98,6 +105,7 @@ top_emoji <- comments[order(-comments$emoji_count), ][1:10, ]
 ### Text analysis without emojis
 
 ``` r
+
 # Remove emojis for text analysis
 comments$clean_text <- remove_emojis(comments$textDisplay)
 
@@ -107,6 +115,7 @@ comments$clean_text <- remove_emojis(comments$textDisplay)
 ### Emoji frequency analysis
 
 ``` r
+
 # Extract all emojis from comments
 all_emojis <- unlist(extract_emojis(comments$textDisplay))
 
@@ -122,6 +131,7 @@ Beyond emojis, `tuber` handles Unicode text consistently:
 ### `safe_utf8()` - Ensure UTF-8 encoding
 
 ``` r
+
 problematic_text <- c("caf\xe9", "na\xefve")
 safe_text <- safe_utf8(problematic_text)
 ```
@@ -129,6 +139,7 @@ safe_text <- safe_utf8(problematic_text)
 ### `clean_youtube_text()` - Clean HTML and normalize text
 
 ``` r
+
 raw_text <- "Great video! &lt;3 &amp; more..."
 clean_text <- clean_youtube_text(raw_text)
 # "Great video! <3 & more..."
@@ -142,6 +153,7 @@ Your R environment may not support UTF-8 display. The data is still
 correct; only the display is affected. Try:
 
 ``` r
+
 # Check locale
 Sys.getlocale("LC_CTYPE")
 

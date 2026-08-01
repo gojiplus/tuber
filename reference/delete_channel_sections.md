@@ -26,6 +26,7 @@ delete_channel_sections(id = NULL, ...)
 ## Examples
 
 ``` r
+
 if (FALSE) { # \dontrun{
 
 # Set API token via yt_oauth() first

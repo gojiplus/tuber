@@ -7,6 +7,7 @@
 To install the latest version from CRAN:
 
 ``` r
+
 install.packages("tuber")
 ```
 
@@ -14,12 +15,14 @@ The latest development version of the package will always be on GitHub.
 Instructions for installing the package from Github are provided below.
 
 ``` r
+
 devtools::install_github("gojiplus/tuber", build_vignettes = TRUE)
 ```
 
 Next, load the package:
 
 ``` r
+
 library(tuber)
 ```
 
@@ -35,10 +38,12 @@ your Application Type. Then set the application id and password via the
 Guide](https://developers.google.com/youtube/v3/guides/authentication).
 
 ``` r
+
 yt_oauth("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.com", "MbOSt6cQhhFkwETXKur-L9rN")
 ```
 
 ``` r
+
 ## Waiting for authentication in browser...
 ## Press Esc/Ctrl + C to abort
 ## Authentication complete.
@@ -47,6 +52,7 @@ yt_oauth("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.c
 #### Get Statistics of a Video
 
 ``` r
+
 get_stats(video_id = "N708P-A45D0")
 ```
 
@@ -59,12 +65,14 @@ get_stats(video_id = "N708P-A45D0")
 #### Get Information About a Video
 
 ``` r
+
 get_video_details(video_id = "N708P-A45D0")
 ```
 
 #### Get Caption of a Video
 
 ``` r
+
 get_captions(video_id = "yJXTXN4xrI8")
 ```
 
@@ -167,6 +175,7 @@ get_captions(video_id = "yJXTXN4xrI8")
 #### Search Videos
 
 ``` r
+
 res <- yt_search("Barack Obama")
 head(res[, 1:3])
 ```
@@ -182,6 +191,7 @@ head(res[, 1:3])
 #### Get Comments on a video
 
 ``` r
+
 res <- get_comment_threads(c(video_id = "N708P-A45D0"))
 head(res)
 ```
@@ -197,6 +207,7 @@ head(res)
 ### Get statistics of all the videos in a channel
 
 ``` r
+
 a <- list_channel_resources(filter = c(channel_id = "UCT5Cx1l4IS3wHkJXNyuj4TA"), part = "contentDetails")
 
 # Uploaded playlists:
@@ -224,6 +235,7 @@ If you need to find a channel ID from a `username`, the
 `list_channel_resources` function can help. You can use it like:
 
 ``` r
+
 res <- list_channel_resources(filter = c(username = "GoogleDevelopers"), part = "id")
 
 # Parse out channel_id

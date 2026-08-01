@@ -15,6 +15,7 @@ of videos you own. To learn more about the YouTube API, see
 To get the current development version from GitHub:
 
 ``` r
+
 # install.packages("devtools")
 devtools::install_github("soodoku/tuber", build_vignettes = TRUE)
 ```
@@ -33,6 +34,7 @@ the YouTube APIs. Then set the application id and password via the
 Guide](https://developers.google.com/youtube/v3/guides/authentication).
 
 ``` r
+
 yt_oauth("app_id", "app_password")
 ```
 
@@ -54,18 +56,21 @@ httr::set_config(httr::config( ssl_verifypeer = 0L ) )
 **Get Statistics of a Video**
 
 ``` r
+
 get_stats(video_id = "N708P-A45D0")
 ```
 
 **Get Information About a Video**
 
 ``` r
+
 get_video_details(video_id = "N708P-A45D0")
 ```
 
 **Get Captions of a Video**
 
 ``` r
+
 get_captions(video_id = "yJXTXN4xrI8")
 ```
 
@@ -81,12 +86,14 @@ package](https://github.com/jooyoungseo/youtubecaption).
 **Search Videos**
 
 ``` r
+
 yt_search("Barack Obama")
 ```
 
 **Get All the Comments Including Replies**
 
 ``` r
+
 get_all_comments(video_id = "a-UQz7fqR3w")
 ```
 

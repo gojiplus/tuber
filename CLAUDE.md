@@ -11,6 +11,7 @@ standard R package development workflow:
 **Build and Check:**
 
 ``` r
+
 # Build package
 devtools::build()
 
@@ -27,6 +28,7 @@ devtools::load_all()
 **Testing:**
 
 ``` r
+
 # Run all tests
 devtools::test()
 
@@ -44,6 +46,7 @@ testthat::test_file("tests/testthat/test-integration-ready.R")
 **Documentation:**
 
 ``` r
+
 # Update documentation from roxygen comments
 devtools::document()
 

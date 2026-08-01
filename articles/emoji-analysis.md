@@ -7,6 +7,7 @@ comments using `tuber`’s built-in emoji functions.
 ## Setup
 
 ``` r
+
 library(tuber)
 library(dplyr)
 library(ggplot2)
@@ -15,6 +16,7 @@ library(ggplot2)
 ## Collecting Comments
 
 ``` r
+
 yt_oauth("your_app_id", "your_app_secret")
 
 comments <- get_all_comments(video_id = "your_video_id", max_results = 500)
@@ -25,6 +27,7 @@ comments <- get_all_comments(video_id = "your_video_id", max_results = 500)
 ### Emoji Presence and Counts
 
 ``` r
+
 comments <- comments |>
   mutate(
     has_emoji = has_emoji(textDisplay),
@@ -40,6 +43,7 @@ cat("Comments with emojis:", round(emoji_rate, 1), "%\n")
 ### Distribution of Emoji Usage
 
 ``` r
+
 comments |>
   filter(emoji_count > 0) |>
   ggplot(aes(x = emoji_count)) +
@@ -57,6 +61,7 @@ comments |>
 ### Top Emojis
 
 ``` r
+
 all_emojis <- unlist(extract_emojis(comments$textDisplay))
 
 emoji_freq <- as.data.frame(table(all_emojis), stringsAsFactors = FALSE)
@@ -83,6 +88,7 @@ emoji_freq |>
 ### Emoji Usage Over Time
 
 ``` r
+
 comments <- comments |>
   mutate(
     date = as.Date(publishedAt),
@@ -115,6 +121,7 @@ ggplot(daily_emoji, aes(x = date, y = emoji_rate)) +
 Emojis can indicate sentiment. Here’s a simple categorization approach:
 
 ``` r
+
 positive_emojis <- c(
   "\U0001F600", "\U0001F601", "\U0001F602", "\U0001F603", "\U0001F604",
   "\U0001F605", "\U0001F606", "\U0001F60A", "\U0001F60D", "\U0001F618",
@@ -147,6 +154,7 @@ table(comments$emoji_sentiment)
 ### Do emoji comments get more likes?
 
 ``` r
+
 engagement_summary <- comments |>
   group_by(has_emoji) |>
   summarise(
@@ -173,6 +181,7 @@ ggplot(comments, aes(x = has_emoji, y = likeCount + 1)) +
 ### Compare emoji usage across videos
 
 ``` r
+
 video_ids <- c("video_id_1", "video_id_2", "video_id_3")
 
 all_comments <- lapply(video_ids, function(vid) {
@@ -199,6 +208,7 @@ print(video_emoji_stats)
 For text analysis that should exclude emojis:
 
 ``` r
+
 comments <- comments |>
   mutate(
     clean_text = remove_emojis(textDisplay),
@@ -213,6 +223,7 @@ head(comments$clean_text[comments$has_emoji], 3)
 For large datasets:
 
 ``` r
+
 comments_sample <- comments[sample(nrow(comments), min(1000, nrow(comments))), ]
 
 comments_sample <- comments_sample |>
@@ -225,12 +236,12 @@ emoji_rate_estimate <- mean(comments_sample$emoji_count > 0) * 100
 
 Key functions used in this analysis:
 
-| Function                                                                           | Purpose                         |
-|------------------------------------------------------------------------------------|---------------------------------|
-| [`has_emoji()`](https://gojiplus.github.io/tuber/reference/has_emoji.md)           | Check if text contains emojis   |
-| [`count_emojis()`](https://gojiplus.github.io/tuber/reference/count_emojis.md)     | Count emojis in text            |
-| [`extract_emojis()`](https://gojiplus.github.io/tuber/reference/extract_emojis.md) | Get list of emojis from text    |
-| [`remove_emojis()`](https://gojiplus.github.io/tuber/reference/remove_emojis.md)   | Strip emojis from text          |
+| Function | Purpose |
+|----|----|
+| [`has_emoji()`](https://gojiplus.github.io/tuber/reference/has_emoji.md) | Check if text contains emojis |
+| [`count_emojis()`](https://gojiplus.github.io/tuber/reference/count_emojis.md) | Count emojis in text |
+| [`extract_emojis()`](https://gojiplus.github.io/tuber/reference/extract_emojis.md) | Get list of emojis from text |
+| [`remove_emojis()`](https://gojiplus.github.io/tuber/reference/remove_emojis.md) | Strip emojis from text |
 | [`replace_emojis()`](https://gojiplus.github.io/tuber/reference/replace_emojis.md) | Replace emojis with custom text |
 
 These functions work directly on character vectors, making them easy to

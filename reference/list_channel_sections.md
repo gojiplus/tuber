@@ -43,6 +43,7 @@ captions for the video from one of the first track
 ## Examples
 
 ``` r
+
 if (FALSE) { # \dontrun{
 
 # Set API token via yt_oauth() first
