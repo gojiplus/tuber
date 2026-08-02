@@ -55,8 +55,13 @@ list_videocats <- function(filter = NULL, ...) {
 
   if (length(res$items) > 0) {
     simple_res <- lapply(res$items, function(x) {
-      as.data.frame(t(c(unlist(x$snippet), etag = x$etag, id = x$id)),
-                    stringsAsFactors = FALSE)
+      # Build the row column-wise rather than through c() + t(). Combining a
+      # logical with characters in one atomic vector coerces it, so
+      # snippet.assignable -- documented as a boolean -- came back as the
+      # string "TRUE", and the column's type depended on whether any rows were
+      # returned: logical in the zero-item frame above, character otherwise.
+      row <- c(as.list(x$snippet), etag = x$etag, id = x$id)
+      as.data.frame(row, stringsAsFactors = FALSE)
     })
 
     resdf <- bind_rows(simple_res)
