@@ -71,7 +71,7 @@ get_comments <- function(filter = NULL, part = "snippet", max_results = 100,
   names(filter)      <- yt_filter_name
 
   querylist <- list(part = part, maxResults = max_results,
-                    textFormat = text_format)
+                    textFormat = text_format, pageToken = page_token)
   querylist <- c(querylist, filter)
 
   raw_res <- tuber_GET("comments", querylist, ...)

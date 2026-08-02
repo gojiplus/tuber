@@ -44,7 +44,7 @@ list_guidecats <- function(filter = NULL, hl = NULL, ...) {
   yt_filter_name <- translate_filter[names(filter)]
   names(filter) <- yt_filter_name
 
-  querylist <- list(part = "snippet", hl = hl, filter)
+  querylist <- c(list(part = "snippet", hl = hl), as.list(filter))
 
   res <- tuber_GET("guideCategories", querylist, ...)
 
@@ -58,13 +58,17 @@ list_guidecats <- function(filter = NULL, hl = NULL, ...) {
   # Cat total results
   cat("Total Number of Categories:", length(res$items), "\n")
 
+  # `filter` is a named character vector, so it must be indexed by name. A
+  # category_id filter carries no region, which yields NA.
+  region_code <- unname(filter["regionCode"])
+
   if (length(res$items) > 0) {
     simple_res <- lapply(res$items, function(x)
-      c(unlist(x$snippet), etag = x$etag, id = x$id))
-    resdf <- do.call(rbind, simple_res)
-    resdf$region_code <- filter["regionCode"]
-  } else {
-    resdf$region_code <- filter["regionCode"]
+      as.data.frame(t(c(unlist(x$snippet), etag = x$etag, id = x$id)),
+                    stringsAsFactors = FALSE))
+    resdf <- bind_rows(simple_res)
+    resdf$region_code <- region_code
+    resdf <- resdf[, union("region_code", names(resdf)), drop = FALSE]
   }
 
   resdf

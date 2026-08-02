@@ -27,7 +27,7 @@ list_regions <- function(hl = NULL, ...) {
     assert_character(hl, len = 1, min.chars = 1, .var.name = "hl")
   }
 
-  querylist <- list(part = "snippet")
+  querylist <- list(part = "snippet", hl = hl)
 
   res <- tuber_GET("i18nRegions", querylist, ...)
 
