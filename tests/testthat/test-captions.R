@@ -1,5 +1,3 @@
-context("List Captions")
-
 test_that("list_captions runs successfully", {
 
   skip_on_cran()
@@ -15,7 +13,7 @@ test_that("list_captions runs successfully", {
 
     video_id <- "M7FIvfx5J10"
     get_info <- list_caption_tracks(video_id = video_id)
-    expect_that(get_info, is_a("data.frame"))
+    expect_s3_class(get_info, "data.frame")
 
   }, error = function(e) {
     skip(paste("API test failed:", e$message))

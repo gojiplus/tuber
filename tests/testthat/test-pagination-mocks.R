@@ -1,7 +1,4 @@
 # Mock tests for pagination logic (no API calls required)
-
-context("Pagination Logic Tests")
-
 # Mock tuber_GET function for testing
 mock_tuber_GET <- function(path, query, ...) {
   # Simulate different response types based on path and query

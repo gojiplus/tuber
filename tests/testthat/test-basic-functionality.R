@@ -1,7 +1,4 @@
 # Basic functionality tests that don't require API access
-
-context("Basic Package Functionality")
-
 test_that("Core functions exist", {
   expect_true(exists("yt_search"))
   expect_true(exists("get_video_details"))

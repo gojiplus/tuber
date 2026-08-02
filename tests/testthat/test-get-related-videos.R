@@ -1,5 +1,3 @@
-context("Get Details")
-
 test_that("get_related_videos runs successfully", {
 
   skip_on_cran()
@@ -14,7 +12,7 @@ test_that("get_related_videos runs successfully", {
     options(google_token = google_token)
 
     get_info <- get_related_videos(video_id = "yJXTXN4xrI8")
-    expect_that(get_info, is_a("data.frame"))
+    expect_s3_class(get_info, "data.frame")
 
   }, error = function(e) {
     skip(paste("API test failed:", e$message))

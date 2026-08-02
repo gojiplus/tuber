@@ -1,5 +1,3 @@
-context("Get Details")
-
 test_that("get_video_details runs successfully", {
 
   skip_on_cran()
@@ -20,9 +18,6 @@ test_that("get_video_details runs successfully", {
     skip(paste("API test failed:", e$message))
   })
 })
-
-context("Get Details as Data Frame")
-
 test_that("get_video_details(as.data.frame = TRUE) runs successfully for multiple videos", {
 
   skip_on_cran()

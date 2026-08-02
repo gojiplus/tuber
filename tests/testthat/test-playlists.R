@@ -1,5 +1,3 @@
-context("Get Playlists")
-
 test_that("get_playlists returns >50 results when requested", {
   skip_on_cran()
 

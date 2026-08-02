@@ -1,9 +1,6 @@
 # Tests for write/mutation operations using mock-based testing
 # These tests ensure parameter validation and error handling work correctly
 # without making actual API calls that could modify data.
-
-context("Write Operations Tests")
-
 # ============================================================================
 # Mock Functions for POST/PUT/DELETE Operations
 # ============================================================================

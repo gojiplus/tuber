@@ -1,5 +1,3 @@
-context("Comment Threads")
-
 test_that("get_comment_threads returns all comments", {
   skip_on_cran()
 

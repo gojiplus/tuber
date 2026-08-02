@@ -1,8 +1,5 @@
 # Integration tests for real API testing
 # These tests run when an API key is available via yt_set_key() or YOUTUBE_KEY env var
-
-context("API Integration Tests")
-
 # Helper to check if API key is available
 skip_if_no_api_key <- function() {
   api_key <- suppressMessages(yt_get_key())

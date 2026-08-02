@@ -1,5 +1,3 @@
-context("yt_oauth token caching")
-
 test_that("yt_oauth uses cached token when available", {
   fake_token <- structure(
     list(credentials = list(access_token = "abc"), app = NULL, endpoint = NULL, params = list()),

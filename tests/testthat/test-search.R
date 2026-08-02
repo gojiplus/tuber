@@ -1,5 +1,3 @@
-context("YT Search")
-
 test_that("yt_search obeys max_results", {
   skip_on_cran()
 

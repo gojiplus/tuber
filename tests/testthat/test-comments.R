@@ -1,6 +1,3 @@
-context("Get All Comments")
-
-
 test_that("get_all_comments runs successfully with real API", {
   skip_on_cran()
 
