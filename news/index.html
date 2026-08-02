@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tuber</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,9 +39,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.4.0.9000" id="version-1409000-development">version 1.4.0.9000 (development)<a class="anchor" aria-label="anchor" href="#version-1409000-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.4.1" id="version-141">version 1.4.1<a class="anchor" aria-label="anchor" href="#version-141"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-4-0-9000">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-4-0-9000"></a></h3>
+<h3 id="bug-fixes-1-4-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-4-1"></a></h3>
 <ul><li><p><code><a href="../reference/list_videocats.html">list_videocats()</a></code> and <code><a href="../reference/list_guidecats.html">list_guidecats()</a></code> appended the translated filter to the query list as an unnamed element, so the query contained an unnamed component. Both <code>httr</code> and <code>httr2</code> reject such a query (“All components of query must be named”), so neither function could issue a request at all. The filter is now merged by name, and <code>regionCode</code>/<code>id</code> reach the API.</p></li>
 <li><p><code><a href="../reference/list_videocats.html">list_videocats()</a></code> indexed its filter with <code>filter$regionCode</code>. <code>filter</code> is a named character vector, so this raised “$ operator is invalid for atomic vectors” on every call. <code><a href="../reference/list_guidecats.html">list_guidecats()</a></code> failed the same way when assembling its result: with no items it raised “replacement has 1 row, data has 0”, and with items it returned a list rather than the documented <code>data.frame</code>. Both now index by name and return a <code>data.frame</code> in every case.</p></li>
 <li><p><code><a href="../reference/get_comments.html">get_comments()</a></code> documented and validated a <code>page_token</code> argument but never placed it in the query, so paging through replies with a <code>parent_id</code> filter always returned the first page. It is now sent as <code>pageToken</code>.</p></li>

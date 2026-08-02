@@ -34,8 +34,7 @@ upload_caption(
 - language:
 
   character string of \`BCP47\` language type. See
-  <https://www.rfc-editor.org/rfc/bcp/bcp47.txt> for language
-  specification
+  <https://www.rfc-editor.org/info/bcp47> for language specification
 
 - caption_name:
 
