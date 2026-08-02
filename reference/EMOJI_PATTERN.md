@@ -13,7 +13,3 @@ common emoji symbols
 ``` r
 EMOJI_PATTERN
 ```
-
-## Format
-
-An object of class `character` of length 1.

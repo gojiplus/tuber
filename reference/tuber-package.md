@@ -19,6 +19,10 @@ Useful links:
 
 **Maintainer**: Gaurav Sood <gsood07@gmail.com>
 
+Authors:
+
+- Gaurav Sood <gsood07@gmail.com>
+
 Other contributors:
 
 - Kate Lyons <k.lyons7@gmail.com> \[contributor\]
