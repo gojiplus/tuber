@@ -1,5 +1,46 @@
 # Changelog
 
+## version 1.4.0.9000 (development)
+
+### Bug fixes
+
+- [`list_videocats()`](https://gojiplus.github.io/tuber/reference/list_videocats.md)
+  and
+  [`list_guidecats()`](https://gojiplus.github.io/tuber/reference/list_guidecats.md)
+  appended the translated filter to the query list as an unnamed
+  element, so the query contained an unnamed component. Both `httr` and
+  `httr2` reject such a query (“All components of query must be named”),
+  so neither function could issue a request at all. The filter is now
+  merged by name, and `regionCode`/`id` reach the API.
+
+- [`list_videocats()`](https://gojiplus.github.io/tuber/reference/list_videocats.md)
+  indexed its filter with `filter$regionCode`. `filter` is a named
+  character vector, so this raised “\$ operator is invalid for atomic
+  vectors” on every call.
+  [`list_guidecats()`](https://gojiplus.github.io/tuber/reference/list_guidecats.md)
+  failed the same way when assembling its result: with no items it
+  raised “replacement has 1 row, data has 0”, and with items it returned
+  a list rather than the documented `data.frame`. Both now index by name
+  and return a `data.frame` in every case.
+
+- [`get_comments()`](https://gojiplus.github.io/tuber/reference/get_comments.md)
+  documented and validated a `page_token` argument but never placed it
+  in the query, so paging through replies with a `parent_id` filter
+  always returned the first page. It is now sent as `pageToken`.
+
+- [`list_regions()`](https://gojiplus.github.io/tuber/reference/list_regions.md)
+  and
+  [`list_abuse_report_reasons()`](https://gojiplus.github.io/tuber/reference/list_abuse_report_reasons.md)
+  documented and validated an `hl` argument that never reached the
+  query. Both `i18nRegions.list` and `videoAbuseReportReasons.list`
+  support `hl`, and the sibling
+  [`list_langs()`](https://gojiplus.github.io/tuber/reference/list_langs.md)
+  already sent it. It is now sent.
+
+- [`get_live_streams()`](https://gojiplus.github.io/tuber/reference/get_live_streams.md)
+  sent its `status` filter as `eventType`, which is a `search.list`
+  parameter. `liveBroadcasts.list` filters on `broadcastStatus`.
+
 ## version 1.4.0
 
 CRAN release: 2026-03-25
