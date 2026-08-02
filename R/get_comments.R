@@ -70,8 +70,15 @@ get_comments <- function(filter = NULL, part = "snippet", max_results = 100,
                                                       names(translate_filter))])
   names(filter)      <- yt_filter_name
 
-  querylist <- list(part = part, maxResults = max_results,
-                    textFormat = text_format, pageToken = page_token)
+  querylist <- list(part = part, textFormat = text_format)
+
+  # comments.list documents maxResults and pageToken as unsupported when the
+  # request filters by `id`; sending them there is an invalid combination.
+  if (!identical(unname(yt_filter_name), "id")) {
+    querylist$maxResults <- max_results
+    querylist$pageToken <- page_token
+  }
+
   querylist <- c(querylist, filter)
 
   raw_res <- tuber_GET("comments", querylist, ...)
@@ -88,7 +95,14 @@ get_comments <- function(filter = NULL, part = "snippet", max_results = 100,
       as.data.frame(t(unlist(x$snippet)), stringsAsFactors = FALSE)
     })
     simpler_res <- bind_rows(simple_res)
-    simpler_res$id <- raw_res$items[[1]]$id
+    # One id per row. This took raw_res$items[[1]]$id, a scalar, which R then
+    # recycled over the whole frame -- two comments came back carrying the
+    # first one's id and the second id was lost.
+    simpler_res$id <- vapply(
+      raw_res$items,
+      function(x) if (is.null(x$id)) NA_character_ else as.character(x$id),
+      character(1)
+    )
     return(simpler_res)
   }
 

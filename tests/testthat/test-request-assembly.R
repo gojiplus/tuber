@@ -117,13 +117,37 @@ test_that("list_abuse_report_reasons forwards hl", {
   expect_equal(cap$reqs[[1]]$query$hl, "fr")
 })
 
-test_that("get_live_streams sends the status filter as broadcastStatus", {
-  # liveBroadcasts.list has no eventType parameter; the documented filter for
-  # broadcast state is broadcastStatus.
+test_that("get_live_streams sends exactly one liveBroadcasts.list filter", {
+  # liveBroadcasts.list accepts exactly one of broadcastStatus, id or mine, has
+  # no eventType, and has no channelId at all. The first version of this test
+  # asserted the invalid id + broadcastStatus pair, which an independent review
+  # caught.
   cap <- new_capture(list(items = list()))
   local_mocked_bindings(tuber_GET = cap$fn, .package = "tuber")
-  get_live_streams(stream_id = "S1", status = "completed")
+
+  get_live_streams(status = "completed")
   expect_equal(cap$reqs[[1]]$path, "liveBroadcasts")
   expect_equal(cap$reqs[[1]]$query$broadcastStatus, "completed")
   expect_null(cap$reqs[[1]]$query$eventType)
+  expect_null(cap$reqs[[1]]$query$id)
+
+  get_live_streams(stream_id = "S1")
+  expect_equal(cap$reqs[[2]]$query$id, "S1")
+  expect_null(cap$reqs[[2]]$query$broadcastStatus)
+
+  get_live_streams(mine = TRUE)
+  expect_equal(cap$reqs[[3]]$query$mine, "true")
+})
+
+test_that("get_live_streams refuses combinations the API does not accept", {
+  # Two filters at once, and a channelId that the endpoint has no parameter for.
+  expect_error(
+    get_live_streams(stream_id = "S1", status = "completed"),
+    class = "tuber_conflicting_parameters"
+  )
+  expect_error(
+    get_live_streams(channel_id = "UC123"),
+    class = "tuber_unsupported_parameter"
+  )
+  expect_error(get_live_streams(), class = "tuber_missing_required_parameter")
 })

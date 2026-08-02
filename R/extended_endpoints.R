@@ -11,8 +11,10 @@ NULL
 #' Retrieves information about live streams and premieres.
 #'
 #' @param stream_id Live stream ID (optional if using other filters)
-#' @param channel_id Channel ID to get live streams for
+#' @param channel_id Deprecated. liveBroadcasts.list has no channelId
+#'   parameter; supplying it is an error. Use \code{status} or \code{mine}.
 #' @param part Parts to retrieve
+#' @param mine Logical. List the authenticated user's own broadcasts.
 #' @param status Filter by status: "active", "upcoming", "completed"
 #' @param simplify Whether to return a simplified data frame
 #' @param auth Authentication method: "token" (OAuth2) or "key" (API key)
@@ -24,7 +26,7 @@ NULL
 #' @examples
 #' \dontrun{
 #' # Get live streams for a channel
-#' streams <- get_live_streams(channel_id = "UCuAXFkgsw1L7xaCfnd5JJOw")
+#' streams <- get_live_streams(status = "active")
 #'
 #' # Get specific live stream details
 #' stream <- get_live_streams(stream_id = "abc123", part = c("snippet", "status"))
@@ -33,25 +35,41 @@ get_live_streams <- function(stream_id = NULL,
                             channel_id = NULL,
                             part = "snippet,status",
                             status = NULL,
+                            mine = FALSE,
                             simplify = TRUE,
                             auth = "token",
                             ...) {
 
-  # Modern validation using checkmate
-  if (is.null(stream_id) && is.null(channel_id)) {
-    abort("Either stream_id or channel_id must be provided",
-          class = "tuber_missing_required_parameter")
+  # liveBroadcasts.list accepts EXACTLY ONE of broadcastStatus, id or mine, and
+  # has no channelId parameter at all. Requiring stream_id or channel_id made a
+  # status-only query impossible and sent an unsupported channelId; supplying
+  # both stream_id and status sent two filters at once.
+  if (!is.null(channel_id)) {
+    abort(paste0(
+      "liveBroadcasts.list has no channelId parameter. It filters on exactly ",
+      "one of broadcastStatus, id, or mine. Pass `status` to list a channel's ",
+      "own broadcasts by state, or `stream_id` for a specific broadcast."
+    ), class = "tuber_unsupported_parameter")
+  }
+
+  n_filters <- sum(!is.null(stream_id), !is.null(status), isTRUE(mine))
+  if (n_filters == 0) {
+    abort(paste0(
+      "Provide exactly one filter: `stream_id`, `status`, or `mine = TRUE`."
+    ), class = "tuber_missing_required_parameter")
+  }
+  if (n_filters > 1) {
+    abort(paste0(
+      "liveBroadcasts.list accepts exactly one of `stream_id`, `status` or ",
+      "`mine`; ", n_filters, " were supplied."
+    ), class = "tuber_conflicting_parameters")
   }
 
   if (!is.null(stream_id)) {
     assert_character(stream_id, len = 1, min.chars = 1, .var.name = "stream_id")
   }
 
-  if (!is.null(channel_id)) {
-    assert_character(channel_id, len = 1, min.chars = 1, .var.name = "channel_id")
-  }
-
-  assert_character(part, len = 1, min.chars = 1, .var.name = "part")
+  assert_character(part, min.len = 1, .var.name = "part")
   assert_flag(simplify, .var.name = "simplify")
   assert_choice(auth, c("token", "key"), .var.name = "auth")
 
@@ -70,14 +88,14 @@ get_live_streams <- function(stream_id = NULL,
     query$id <- stream_id
   }
 
-  if (!is.null(channel_id)) {
-    query$channelId <- channel_id
-  }
-
   if (!is.null(status)) {
     # liveBroadcasts.list filters on broadcastStatus; eventType belongs to
     # search.list and is ignored here.
     query$broadcastStatus <- status
+  }
+
+  if (isTRUE(mine)) {
+    query$mine <- "true"
   }
 
   # Make API call

@@ -8,6 +8,24 @@
   query must be named"), so neither function could issue a request at all. The
   filter is now merged by name, and `regionCode`/`id` reach the API.
 
+  Note for `list_guidecats()` specifically: Google deprecated the
+  `guideCategories` endpoint in September 2020 and it no longer returns data.
+  The request is now assembled correctly, but the method it targets is gone, so
+  this repairs the client rather than restoring the feature.
+
+* `get_live_streams()` accepted `channel_id` and required either that or
+  `stream_id`, then sent `channelId` alongside `broadcastStatus`.
+  `liveBroadcasts.list` has no `channelId` parameter and accepts exactly one of
+  `broadcastStatus`, `id` or `mine`, so a status-only query was impossible and
+  the combinations it did send were invalid. It now takes exactly one filter,
+  gains `mine`, and errors clearly on the rest.
+
+* `get_comments(simplify = TRUE)` assigned the first comment's id to every row,
+  because `raw_res$items[[1]]$id` is a scalar that R recycled over the frame.
+  Two comments came back carrying the same id and the second was lost. It also
+  sent `pageToken` and `maxResults` alongside a `comment_id` filter, which
+  `comments.list` documents as unsupported with `id`.
+
 * `list_videocats()` indexed its filter with `filter$regionCode`. `filter` is a
   named character vector, so this raised "$ operator is invalid for atomic
   vectors" on every call. `list_guidecats()` failed the same way when

@@ -9,6 +9,7 @@ get_live_streams(
   channel_id = NULL,
   part = "snippet,status",
   status = NULL,
+  mine = FALSE,
   simplify = TRUE,
   auth = "token",
   ...
@@ -17,11 +18,14 @@ get_live_streams(
 \arguments{
 \item{stream_id}{Live stream ID (optional if using other filters)}
 
-\item{channel_id}{Channel ID to get live streams for}
+\item{channel_id}{Deprecated. liveBroadcasts.list has no channelId
+parameter; supplying it is an error. Use \code{status} or \code{mine}.}
 
 \item{part}{Parts to retrieve}
 
 \item{status}{Filter by status: "active", "upcoming", "completed"}
+
+\item{mine}{Logical. List the authenticated user's own broadcasts.}
 
 \item{simplify}{Whether to return a simplified data frame}
 
@@ -38,7 +42,7 @@ Retrieves information about live streams and premieres.
 \examples{
 \dontrun{
 # Get live streams for a channel
-streams <- get_live_streams(channel_id = "UCuAXFkgsw1L7xaCfnd5JJOw")
+streams <- get_live_streams(status = "active")
 
 # Get specific live stream details
 stream <- get_live_streams(stream_id = "abc123", part = c("snippet", "status"))
