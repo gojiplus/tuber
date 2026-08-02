@@ -75,7 +75,9 @@ get_live_streams <- function(stream_id = NULL,
   }
 
   if (!is.null(status)) {
-    query$eventType <- status
+    # liveBroadcasts.list filters on broadcastStatus; eventType belongs to
+    # search.list and is ignored here.
+    query$broadcastStatus <- status
   }
 
   # Make API call

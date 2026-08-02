@@ -33,7 +33,7 @@ list_abuse_report_reasons <- function(part = "id, snippet", hl = "en-US", ...) {
   assert_character(part, len = 1, min.chars = 1, .var.name = "part")
   assert_character(hl, len = 1, min.chars = 1, .var.name = "hl")
 
-  querylist <- list(part = part)
+  querylist <- list(part = part, hl = hl)
 
   res <- tuber_GET("videoAbuseReportReasons", querylist, ...)
 

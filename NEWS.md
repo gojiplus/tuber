@@ -1,3 +1,32 @@
+# version 1.4.0.9000 (development)
+
+## Bug fixes
+
+* `list_videocats()` and `list_guidecats()` appended the translated filter to
+  the query list as an unnamed element, so the query contained an unnamed
+  component. Both `httr` and `httr2` reject such a query ("All components of
+  query must be named"), so neither function could issue a request at all. The
+  filter is now merged by name, and `regionCode`/`id` reach the API.
+
+* `list_videocats()` indexed its filter with `filter$regionCode`. `filter` is a
+  named character vector, so this raised "$ operator is invalid for atomic
+  vectors" on every call. `list_guidecats()` failed the same way when
+  assembling its result: with no items it raised "replacement has 1 row, data
+  has 0", and with items it returned a list rather than the documented
+  `data.frame`. Both now index by name and return a `data.frame` in every case.
+
+* `get_comments()` documented and validated a `page_token` argument but never
+  placed it in the query, so paging through replies with a `parent_id` filter
+  always returned the first page. It is now sent as `pageToken`.
+
+* `list_regions()` and `list_abuse_report_reasons()` documented and validated an
+  `hl` argument that never reached the query. Both `i18nRegions.list` and
+  `videoAbuseReportReasons.list` support `hl`, and the sibling `list_langs()`
+  already sent it. It is now sent.
+
+* `get_live_streams()` sent its `status` filter as `eventType`, which is a
+  `search.list` parameter. `liveBroadcasts.list` filters on `broadcastStatus`.
+
 # version 1.4.0
 
 ## Major API Coverage Enhancements (Closing the Gap)
