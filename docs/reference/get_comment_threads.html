@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tuber</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,7 +18,10 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/tuber-ex.html">Using tuber</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/emoji-analysis.html">Emoji Analysis in YouTube Comments</a></li>
+    <li><a class="dropdown-item" href="../articles/emoji-handling.html">Handling Emojis and Unicode in YouTube Data</a></li>
+    <li><a class="dropdown-item" href="../articles/troubleshooting.html">Troubleshooting Common Issues</a></li>
+    <li><a class="dropdown-item" href="../articles/tuber-ex.html">Using tuber</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/gojiplus/tuber/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
@@ -69,8 +72,8 @@ potential names of the entry in the vector:
 <dt id="arg-part">part<a class="anchor" aria-label="anchor" href="#arg-part"></a></dt>
 <dd><p>Comment resource requested. Required. Comma separated list
 of one or more of the
-following: <code>id, snippet</code>. e.g., <code>"id, snippet"</code>,
-<code>"id"</code>, etc. Default: <code>snippet</code>.</p></dd>
+following: <code>id, replies, snippet</code>. e.g., <code>"id,snippet"</code>,
+<code>"replies"</code>, etc. Default: <code>snippet</code>.</p></dd>
 
 
 <dt id="arg-text-format">text_format<a class="anchor" aria-label="anchor" href="#arg-text-format"></a></dt>
@@ -86,9 +89,9 @@ information returned.</p></dd>
 
 <dt id="arg-max-results">max_results<a class="anchor" aria-label="anchor" href="#arg-max-results"></a></dt>
 <dd><p>Maximum number of items that should be returned.
- Integer. Optional. Default is 100.
-If the value is greater than 100 then the function fetches all the
-results. The outcome is a simplified <code>data.frame</code>.</p></dd>
+ Integer. Optional. Can be 1-2000. Default is 100.
+If the value is greater than 100, multiple API calls are made to fetch all
+results. Each API call is limited to 100 items per the YouTube API.</p></dd>
 
 
 <dt id="arg-page-token">page_token<a class="anchor" aria-label="anchor" href="#arg-page-token"></a></dt>
@@ -137,7 +140,7 @@ canRate, viewerRating, likeCount, publishedAt, updatedAt</code></p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer></div>

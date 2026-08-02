@@ -4,11 +4,15 @@
 \alias{get_all_comments}
 \title{Get all the comments for a video including replies}
 \usage{
-get_all_comments(video_id = NULL, ...)
+get_all_comments(video_id = NULL, max_results = NULL, ...)
 }
 \arguments{
 \item{video_id}{string; Required.
 \code{video_id}: video ID.}
+
+\item{max_results}{Integer. Maximum number of comments to return. Default is
+NULL which returns all comments. Set this to avoid long-running requests
+on popular videos.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
@@ -28,6 +32,7 @@ Get all the comments for a video including replies
 # Set API token via yt_oauth() first
 
 get_all_comments(video_id = "a-UQz7fqR3w")
+get_all_comments(video_id = "a-UQz7fqR3w", max_results = 100)
 }
 }
 \references{

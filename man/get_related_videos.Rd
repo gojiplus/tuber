@@ -33,12 +33,19 @@ thumbnails.high.width,
 thumbnails.high.height, channelTitle, liveBroadcastContent}
 }
 \description{
-Takes a video id and returns related videos
+`r lifecycle::badge("deprecated")`
+
+Takes a video id and returns related videos.
+
+**Note:** YouTube deprecated the `relatedToVideoId` parameter in August 2023.
+This function will return an error as the API endpoint no longer works.
+Consider using \code{\link{yt_search}} with relevant keywords instead.
 }
 \examples{
 \dontrun{
 
 # Set API token via yt_oauth() first
+# NOTE: This function no longer works due to YouTube API deprecation
 
 get_related_videos(video_id = "yJXTXN4xrI8")
 }

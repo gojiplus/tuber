@@ -4,6 +4,7 @@
 #'
 #' @param playlist_id A character string specifying the ID of the playlist you want to update.
 #' @param new_title A character string specifying the new title for the playlist.
+#' @param auth Authentication method: "token" (OAuth2) or "key" (API key)
 #'
 #' @return A list containing the server response after the update attempt.
 #' @export
@@ -14,9 +15,11 @@
 #' }
 #'
 
-change_playlist_title <- function(playlist_id, new_title) {
-  # Check for a valid token
-  yt_check_token()
+change_playlist_title <- function(playlist_id, new_title, auth = "token") {
+  # Modern validation using checkmate
+  assert_character(playlist_id, len = 1, min.chars = 1, .var.name = "playlist_id")
+  assert_character(new_title, len = 1, min.chars = 1, .var.name = "new_title")
+  assert_choice(auth, c("token", "key"), .var.name = "auth")
 
   # Define the body for the PUT request
   body <- list(
@@ -24,25 +27,12 @@ change_playlist_title <- function(playlist_id, new_title) {
     snippet = list(title = new_title)
   )
 
-  body_json <- jsonlite::toJSON(body, auto_unbox = TRUE)
+  query <- list(part = "snippet")
 
-  # Use the existing tuber infrastructure to send the PUT request
-  req <- httr::PUT(
-    url = "https://www.googleapis.com/youtube/v3/playlists",
-    query = list(key = getOption("google_key"), part = "snippet"),
-    config = httr::config(token = getOption("google_token")),
-    body = body_json,
-    httr::add_headers(
-      `Accept` = "application/json",
-      `Content-Type` = "application/json"
-    )
-  )
+  # Use the centralized tuber_PUT function
+  res <- tuber_PUT("playlists", query = query, body = body, auth = auth)
 
-  # Check for errors
-  tuber_check(req)
-
-  # Extract and return the content
-  return(httr::content(req))
+  return(res)
 }
 
 # Example usage:

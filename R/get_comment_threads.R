@@ -10,12 +10,12 @@
 #'
 #' @param part  Comment resource requested. Required. Comma separated list
 #' of one or more of the
-#' following: \code{id, snippet}. e.g., \code{"id, snippet"},
-#' \code{"id"}, etc. Default: \code{snippet}.
+#' following: \code{id, replies, snippet}. e.g., \code{"id,snippet"},
+#' \code{"replies"}, etc. Default: \code{snippet}.
 #' @param max_results  Maximum number of items that should be returned.
-#'  Integer. Optional. Default is 100.
-#' If the value is greater than 100 then the function fetches all the
-#' results. The outcome is a simplified \code{data.frame}.
+#'  Integer. Optional. Can be 1-2000. Default is 100.
+#' If the value is greater than 100, multiple API calls are made to fetch all
+#' results. Each API call is limited to 100 items per the YouTube API.
 #' @param page_token  Specific page in the result set that should be
 #' returned. Optional.
 #' @param text_format Data Type: Character. Default is \code{"html"}.
@@ -53,23 +53,20 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
                                 text_format = "html", simplify = TRUE,
                                 max_results = 100, page_token = NULL, ...) {
 
-  if (max_results < 20) {
-    stop("max_results must be a value greater than or equal to 20. For values above 100, it outputs all the results.")
-  }
+  # Modern validation using checkmate
+  assert_integerish(max_results, len = 1, lower = 1, upper = 2000, .var.name = "max_results")
+  assert_choice(text_format, c("html", "plainText"), .var.name = "text_format")
+  assert_character(part, len = 1, min.chars = 1, .var.name = "part")
+  assert_logical(simplify, len = 1, .var.name = "simplify")
+  assert_character(filter, len = 1, .var.name = "filter")
 
-  valid_formats <- c("html", "plainText")
-  if (!text_format %in% valid_formats) {
-    stop("Provide a valid value for textFormat.")
+  if (!is.null(page_token)) {
+    assert_character(page_token, len = 1, min.chars = 1, .var.name = "page_token")
   }
 
   valid_filters <- c("video_id", "channel_id", "thread_id", "threads_related_to_channel")
-  if (!(names(filter) %in% valid_filters)) {
-    stop("filter can only take one of the following values: channel_id, video_id, thread_id, threads_related_to_channel.")
-  }
-
-  if (length(filter) != 1) {
-    stop("filter must be a vector of length 1.")
-  }
+  assert_choice(names(filter), valid_filters,
+                .var.name = "filter names (must be one of: video_id, channel_id, thread_id, threads_related_to_channel)")
 
   orig_filter <- filter
   translate_filter <- c(video_id = "videoId", thread_id = "id",
@@ -87,7 +84,6 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
   if (simplify && part == "snippet" && max_results < 101) {
     simpler_res <- lapply(res$items, function(x) {
       snippet <- unlist(x$snippet$topLevelComment$snippet)
-      # Apply consistent Unicode handling
       text_fields <- c("textDisplay", "textOriginal", "authorDisplayName")
       for (field in text_fields) {
         if (field %in% names(snippet)) {
@@ -100,29 +96,37 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
     if ("publishedAt" %in% colnames(simpler_res)) {
       simpler_res <- simpler_res[order(simpler_res[, "publishedAt"]), , drop = FALSE]
     }
-    return(simpler_res)
+    return(add_tuber_attributes(
+      simpler_res,
+      api_calls_made = 1,
+      function_name = "get_comment_threads",
+      parameters = list(filter = orig_filter, part = part, max_results = max_results),
+      results_found = nrow(simpler_res),
+      response_format = "data.frame"
+    ))
 
   } else if (simplify && part == "snippet" && max_results > 100) {
-    agg_res <- lapply(res$items, function(x) {
-      snippet <- unlist(x$snippet$topLevelComment$snippet)
-      # Apply consistent Unicode handling
-      text_fields <- c("textDisplay", "textOriginal", "authorDisplayName")
-      for (field in text_fields) {
-        if (field %in% names(snippet)) {
-          snippet[field] <- clean_youtube_text(snippet[field])
-        }
-      }
-      id <- x$snippet$topLevelComment$id
-      c(snippet, id = id)
-    })
-
+    # Use optimized pagination with preallocated memory
+    estimated_items <- min(max_results, 500)  # Reasonable upper bound
+    all_items <- vector("list", estimated_items)
+    item_count <- 0
     page_token <- res$nextPageToken
-    querylist$pageToken <- page_token
-    querylist$maxResults <- 100
+    collected_ids <- character(estimated_items)  # Preallocate ID tracking
+    id_count <- 0
 
-    while (is.character(page_token)) {
-      a_res <- tuber_GET("commentThreads", querylist, ...)
-      new_res <- lapply(a_res$items, function(x) {
+    # Process initial results
+    for (x in res$items) {
+      comment_id <- x$snippet$topLevelComment$id
+      if (!comment_id %in% collected_ids[seq_len(id_count)]) {
+        item_count <- item_count + 1
+        id_count <- id_count + 1
+
+        # Expand vectors if needed
+        if (item_count > length(all_items)) {
+          length(all_items) <- length(all_items) * 2
+          length(collected_ids) <- length(collected_ids) * 2
+        }
+
         snippet <- unlist(x$snippet$topLevelComment$snippet)
         # Apply consistent Unicode handling
         text_fields <- c("textDisplay", "textOriginal", "authorDisplayName")
@@ -131,25 +135,84 @@ get_comment_threads <- function(filter = NULL, part = "snippet",
             snippet[field] <- clean_youtube_text(snippet[field])
           }
         }
-        id <- x$snippet$topLevelComment$id
-        c(snippet, id = id)
-      })
-      agg_res <- c(agg_res, new_res)
-      page_token <- a_res$nextPageToken
-      querylist$pageToken <- page_token
+        all_items[[item_count]] <- c(snippet, id = comment_id)
+        collected_ids[id_count] <- comment_id
+      }
     }
 
-    agg_res_df <- do.call(rbind, agg_res)
-    agg_res_df <- agg_res_df[!duplicated(agg_res_df$id), , drop = FALSE]
+    # Continue pagination while we need more results and have a token
+    while (!is.null(page_token) && is.character(page_token) &&
+           length(all_items) < max_results) {
+
+      querylist$pageToken <- page_token
+      querylist$maxResults <- min(100, max_results - length(all_items))
+
+      a_res <- call_api_with_retry(tuber_GET, path = "commentThreads", query = querylist, ...)
+
+      # Process new results with efficient deduplication
+      for (x in a_res$items) {
+        if (item_count >= max_results) break
+
+        comment_id <- x$snippet$topLevelComment$id
+        if (!comment_id %in% collected_ids[seq_len(id_count)]) {
+          item_count <- item_count + 1
+          id_count <- id_count + 1
+
+          # Expand vectors if needed
+          if (item_count > length(all_items)) {
+            length(all_items) <- length(all_items) * 2
+            length(collected_ids) <- length(collected_ids) * 2
+          }
+
+          snippet <- unlist(x$snippet$topLevelComment$snippet)
+          # Apply consistent Unicode handling
+          text_fields <- c("textDisplay", "textOriginal", "authorDisplayName")
+          for (field in text_fields) {
+            if (field %in% names(snippet)) {
+              snippet[field] <- clean_youtube_text(snippet[field])
+            }
+          }
+          all_items[[item_count]] <- c(snippet, id = comment_id)
+          collected_ids[id_count] <- comment_id
+        }
+      }
+
+      page_token <- a_res$nextPageToken
+
+      # Safety break if we get no new unique items
+      if (length(a_res$items) == 0) break
+    }
+
+    if (item_count == 0) {
+      return(data.frame())
+    }
+
+    # Trim to actual size and combine efficiently
+    all_items <- all_items[seq_len(item_count)]
+    agg_res_df <- bind_rows(lapply(all_items, as.data.frame, stringsAsFactors = FALSE))
     # Unicode handling already applied above, no need to repeat
     if ("publishedAt" %in% colnames(agg_res_df)) {
       agg_res_df <- agg_res_df[order(agg_res_df$publishedAt), , drop = FALSE]
     }
     agg_res_df$id <- NULL
-    return(agg_res_df)
+    return(add_tuber_attributes(
+      agg_res_df,
+      api_calls_made = ceiling(item_count / 100) + 1,
+      function_name = "get_comment_threads",
+      parameters = list(filter = orig_filter, part = part, max_results = max_results),
+      results_found = nrow(agg_res_df),
+      response_format = "data.frame"
+    ))
   }
 
-  res
+  add_tuber_attributes(
+    res,
+    api_calls_made = 1,
+    function_name = "get_comment_threads",
+    parameters = list(filter = orig_filter, part = part, max_results = max_results),
+    results_found = length(res$items),
+    response_format = "list"
+  )
 }
 
 

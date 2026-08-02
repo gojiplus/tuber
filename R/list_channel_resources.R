@@ -23,10 +23,11 @@
 #'  may increase API quota usage.
 #' @param page_token specific page in the result set that should be returned,
 #' optional
+#' @param simplify Logical. If TRUE, returns a data frame. If FALSE, returns raw list. Default: TRUE.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'
-#' @return list. If \code{username} is used in \code{filter},
-#'   a data frame with columns \code{username} and \code{channel_id} is returned.
+#' @return If \code{simplify = TRUE} (default) or \code{username} is used in \code{filter},
+#'   a data frame. Otherwise returns a list.
 #' @export
 #' @references \url{https://developers.google.com/youtube/v3/docs/channels/list}
 #'
@@ -43,20 +44,41 @@
 #' }
 
 list_channel_resources <- function(filter = NULL, part = "contentDetails",
-                         max_results = 50, page_token = NULL, hl = "en-US", ...) {
-  if (max_results <= 0) {
-    stop("max_results must be a positive integer.")
+                         max_results = 50, page_token = NULL, hl = "en-US",
+                         simplify = TRUE, ...) {
+
+  # Modern validation using checkmate
+  assert_character(filter, min.len = 1, .var.name = "filter")
+  assert_choice(part, c("auditDetails", "brandingSettings", "contentDetails",
+                        "contentOwnerDetails", "id", "invideoPromotion",
+                        "localizations", "snippet", "statistics", "status",
+                        "topicDetails"), .var.name = "part")
+  assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
+  assert_character(hl, len = 1, min.chars = 1, .var.name = "hl")
+  assert_logical(simplify, len = 1, .var.name = "simplify")
+
+  if (!is.null(page_token)) {
+    assert_character(page_token, len = 1, min.chars = 1, .var.name = "page_token")
   }
+
+  # Validate filter names
   if (!all(names(filter) == names(filter)[1])) {
-    stop("filter must have a single valid name")
+    abort("filter must have a single valid name",
+          filter_names = names(filter),
+          class = "tuber_mixed_filter_names")
   }
-  if (!(names(filter)[1] %in% c("category_id", "username", "channel_id"))) {
-    stop("filter can only take one of three values: category_id, username or channel_id.")
+
+  filter_name <- names(filter)[1]
+  assert_choice(filter_name, c("category_id", "username", "channel_id"),
+                .var.name = "filter name")
+
+  if (filter_name != "username" && length(filter) != 1) {
+    abort("filter must be a vector of length 1 for channel_id or category_id",
+          filter_name = filter_name,
+          filter_length = length(filter),
+          class = "tuber_invalid_filter_length")
   }
-  if (names(filter)[1] != "username" && length(filter) != 1) {
-    stop("filter must be a vector of length 1 for channel_id or category_id.")
-  }
-  
+
   # Check for username BEFORE translation
   if (names(filter)[1] == "username") {
     usernames <- unname(filter)
@@ -73,26 +95,32 @@ list_channel_resources <- function(filter = NULL, part = "contentDetails",
       max_retries <- 3
       retry_count <- 0
       res <- NULL
-      
+
       while (retry_count < max_retries && (is.null(res) || length(res$items) == 0)) {
         if (retry_count > 0) {
           Sys.sleep(0.5)  # Brief pause before retry
         }
-        
+
         tryCatch({
           res <- tuber_GET("channels", querylist, ...)
         }, error = function(e) {
-          warning("Error fetching username '", usernames[i], "': ", e$message)
+          warn("Error fetching username",
+               username = usernames[i],
+               error = e$message,
+               class = "tuber_username_fetch_error")
           res <<- NULL
         })
-        
+
         retry_count <- retry_count + 1
       }
 
       # Robust error handling and data extraction
       if (is.null(res) || length(res$items) == 0) {
-        warning("No channel found for username '", usernames[i], "' after ", max_retries, " attempts. ", 
-                "This may indicate: (1) username doesn't exist, (2) channel was deleted, or (3) username was changed to custom URL.")
+        warn("No channel found for username after multiple attempts",
+             username = usernames[i],
+             max_retries = max_retries,
+             possible_causes = c("username doesn't exist", "channel was deleted", "username was changed to custom URL"),
+             class = "tuber_username_not_found")
         res_df$channel_id[i] <- NA_character_
       } else {
         # Safely extract channel ID with multiple fallbacks
@@ -100,7 +128,10 @@ list_channel_resources <- function(filter = NULL, part = "contentDetails",
         if (!is.null(item$id)) {
           res_df$channel_id[i] <- item$id
         } else {
-          warning("Channel found for username '", usernames[i], "' but no ID returned. API response may be incomplete.")
+          warn("Channel found for username but no ID returned",
+               username = usernames[i],
+               help = "API response may be incomplete",
+               class = "tuber_incomplete_response")
           res_df$channel_id[i] <- NA_character_
         }
       }
@@ -110,16 +141,23 @@ list_channel_resources <- function(filter = NULL, part = "contentDetails",
       }
     }
 
-    return(res_df)
+    return(add_tuber_attributes(
+      res_df,
+      api_calls_made = num_usernames,
+      function_name = "list_channel_resources",
+      parameters = list(filter = filter, part = part),
+      results_found = sum(!is.na(res_df$channel_id)),
+      response_format = "data.frame"
+    ))
   }
-  
+
   # Translate filter names for non-username cases
   translate_filter   <- c(channel_id = "id", category_id = "categoryId",
                           username = "forUsername")
   yt_filter_name     <- as.vector(translate_filter[match(names(filter),
                                                       names(translate_filter))])
   names(filter)      <- yt_filter_name
-  
+
   querylist <- list(part = part, maxResults = min(max_results, 50),
                     pageToken = page_token, hl = hl)
   querylist <- c(querylist, filter)
@@ -137,6 +175,42 @@ list_channel_resources <- function(filter = NULL, part = "contentDetails",
   }
 
   res$items <- items
-  res
+  api_calls <- ceiling(length(items) / 50)
+
+  if (simplify && length(items) > 0) {
+    simplified <- tryCatch({
+      simplified_items <- lapply(items, function(item) {
+        flattened <- unlist(item, recursive = TRUE)
+        as.data.frame(t(flattened), stringsAsFactors = FALSE)
+      })
+      bind_rows(simplified_items)
+    }, error = function(e) {
+      warn("Failed to convert to data frame",
+           message = e$message,
+           help = "Returning list format",
+           class = "tuber_conversion_failed")
+      NULL
+    })
+
+    if (!is.null(simplified)) {
+      return(add_tuber_attributes(
+        simplified,
+        api_calls_made = api_calls,
+        function_name = "list_channel_resources",
+        parameters = list(filter = filter, part = part, max_results = max_results),
+        results_found = nrow(simplified),
+        response_format = "data.frame"
+      ))
+    }
+  }
+
+  add_tuber_attributes(
+    res,
+    api_calls_made = api_calls,
+    function_name = "list_channel_resources",
+    parameters = list(filter = filter, part = part, max_results = max_results),
+    results_found = length(items),
+    response_format = "list"
+  )
 }
 

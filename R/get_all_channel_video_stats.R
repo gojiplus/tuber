@@ -1,8 +1,7 @@
 #' Get statistics on all the videos in a Channel
 #'
-#' Iterates through the channel's uploads playlist, collecting video IDs from
-#' each page until no further pages are available. Statistics and details are
-#' then fetched for every video.
+#' Efficiently collects all video IDs from a channel's uploads playlist, then
+#' fetches statistics and details using batch processing for optimal API quota usage.
 #'
 #' @param channel_id Character. Id of the channel
 #' @param mine Boolean. TRUE if you want to fetch stats of your own channel. Default is FALSE.
@@ -27,175 +26,152 @@
 #' }
 
 get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
-  if (!is.character(channel_id) && !identical(tolower(mine), "true")) {
-    stop("Must specify a valid channel ID or set mine = 'true'.")
+  # Modern validation using checkmate
+  if (!identical(tolower(mine), "true")) {
+    assert_character(channel_id, len = 1, min.chars = 1, .var.name = "channel_id")
   }
+  assert_logical(mine, len = 1, .var.name = "mine")
 
   # Get channel resources with proper error handling
   channel_resources <- tryCatch({
-    list_channel_resources(filter = list(channel_id = channel_id), part = "contentDetails", ...)
+    list_channel_resources(filter = c(channel_id = channel_id), part = "contentDetails", simplify = FALSE, ...)
   }, error = function(e) {
-    stop("Failed to get channel information for: ", channel_id, ". Error: ", e$message)
+    abort("Failed to get channel information",
+          channel_id = channel_id,
+          original_error = e$message,
+          class = "tuber_channel_info_error")
   })
-  
+
   # Safely extract playlist ID
   if (is.null(channel_resources$items) || length(channel_resources$items) == 0) {
-    stop("No channel data found for: ", channel_id, ". Channel may not exist or may be private.")
-  }
-  
-  content_details <- channel_resources$items[[1]]$contentDetails
-  if (is.null(content_details) || is.null(content_details$relatedPlaylists)) {
-    stop("No content details available for channel: ", channel_id, ". Channel may not have uploaded videos.")
-  }
-  
-  playlist_id <- content_details$relatedPlaylists$uploads
-  if (is.null(playlist_id)) {
-    stop("No uploads playlist found for channel: ", channel_id, ". Channel may not have any videos.")
+    abort("No channel data found",
+          channel_id = channel_id,
+          help = "Channel may not exist or may be private",
+          class = "tuber_channel_not_found")
   }
 
+  content_details <- channel_resources$items[[1]]$contentDetails
+  if (is.null(content_details) || is.null(content_details$relatedPlaylists)) {
+    abort("No content details available for channel",
+          channel_id = channel_id,
+          help = "Channel may not have uploaded videos",
+          class = "tuber_no_content_details")
+  }
+
+  playlist_id <- content_details$relatedPlaylists$uploads
+  if (is.null(playlist_id)) {
+    abort("No uploads playlist found for channel",
+          channel_id = channel_id,
+          help = "Channel may not have any videos or may be private",
+          class = "tuber_no_uploads_playlist")
+  }
+
+  # Collect all video IDs from the uploads playlist
+  message("Collecting video IDs from uploads playlist...")
   vid_ids <- character()
   page_token <- NULL
+  page_count <- 0
+
   repeat {
+    page_count <- page_count + 1
+    if (page_count > 1) {
+      message("Fetching playlist page ", page_count, "...")
+    }
+
     playlist_items <- get_playlist_items(
-      filter = list(playlist_id = playlist_id),
+      filter = c(playlist_id = playlist_id),
       max_results = 50,
       page_token = page_token,
       simplify = FALSE,
       ...
     )
-    vid_ids <- c(
-      vid_ids,
-      vapply(
-        playlist_items$items,
-        function(x) x$contentDetails$videoId,
-        character(1)
-      )
+
+    # Extract video IDs from this page
+    page_video_ids <- vapply(
+      playlist_items$items,
+      function(x) x$contentDetails$videoId,
+      character(1)
     )
+    vid_ids <- c(vid_ids, page_video_ids)
+
     page_token <- playlist_items$nextPageToken
     if (is.null(page_token)) {
       break
     }
   }
 
-  # Batch API calls to avoid quota exhaustion
-  # YouTube API allows up to 50 video IDs per request
-  batch_size <- 50
-  res <- list()
-  details <- list()
-  
-  # Process videos in batches
-  for (i in seq(1, length(vid_ids), by = batch_size)) {
-    end_idx <- min(i + batch_size - 1, length(vid_ids))
-    batch_ids <- vid_ids[i:end_idx]
-    
-    # Batch get statistics
-    tryCatch({
-      batch_stats <- tuber_GET("videos", 
-                               list(part = "statistics", id = paste(batch_ids, collapse = ",")),
-                               ...)
-      
-      # Process batch results
-      for (item in batch_stats$items) {
-        res[[length(res) + 1]] <- list(
-          id = item$id,
-          statistics = item$statistics
-        )
-      }
-    }, error = function(e) {
-      warning("Failed to get statistics for batch starting at position ", i, ": ", e$message)
-      # Fall back to individual calls for this batch
-      for (vid_id in batch_ids) {
-        tryCatch({
-          res[[length(res) + 1]] <- get_stats(vid_id, ...)
-        }, error = function(e2) {
-          warning("Failed to get statistics for video ", vid_id, ": ", e2$message)
-        })
-      }
-    })
-    
-    # Batch get video details
-    tryCatch({
-      batch_details <- tuber_GET("videos",
-                                 list(part = "snippet", id = paste(batch_ids, collapse = ",")),
-                                 ...)
-      
-      # Process batch results
-      for (item in batch_details$items) {
-        details[[length(details) + 1]] <- list(
-          items = list(list(
-            id = item$id,
-            snippet = item$snippet
-          ))
-        )
-      }
-    }, error = function(e) {
-      warning("Failed to get details for batch starting at position ", i, ": ", e$message)
-      # Fall back to individual calls for this batch
-      for (vid_id in batch_ids) {
-        tryCatch({
-          details[[length(details) + 1]] <- get_video_details(vid_id, ...)
-        }, error = function(e2) {
-          warning("Failed to get details for video ", vid_id, ": ", e2$message)
-        })
-      }
-    })
-    
-    # Add progress indicator
-    if (interactive() && length(vid_ids) > batch_size) {
-      cat(sprintf("Processed %d/%d videos\n", min(end_idx, length(vid_ids)), length(vid_ids)))
-    }
+  if (length(vid_ids) == 0) {
+    warning("No videos found in channel uploads playlist")
+    return(data.frame())
   }
 
-  # Build statistics dataframe with safe extraction
-  res_df <- data.frame(
-    id = character(0),
-    view_count = character(0),
-    like_count = character(0),
-    dislike_count = character(0),
-    comment_count = character(0),
-    stringsAsFactors = FALSE
+  message("Found ", length(vid_ids), " videos. Fetching video details and statistics...")
+
+  # Use the new unified get_video_details function for efficient batch processing
+  video_data <- get_video_details(
+    video_ids = vid_ids,
+    part = c("snippet", "statistics"),
+    simplify = TRUE,
+    show_progress = TRUE,
+    ...
   )
-  
-  for (stat in res) {
-    if (!is.null(stat$id) && !is.null(stat$statistics)) {
-      res_df <- rbind(res_df, data.frame(
-        id = stat$id,
-        view_count = stat$statistics$viewCount %||% NA_character_,
-        like_count = stat$statistics$likeCount %||% NA_character_,
-        dislike_count = stat$statistics$dislikeCount %||% NA_character_,
-        comment_count = stat$statistics$commentCount %||% NA_character_,
-        stringsAsFactors = FALSE
-      ))
+
+  if (!is.data.frame(video_data) || nrow(video_data) == 0) {
+    warning("No video data could be retrieved or conversion to data frame failed")
+    return(data.frame())
+  }
+
+  # Map complex column names from get_video_details to expected simple names
+  result_df <- video_data
+
+  # Map column names from get_video_details output to expected names
+  # Note: json_to_df prefixes nested fields with parent name (e.g., snippet_title, statistics_viewCount)
+  column_mapping <- c(
+    "title" = "snippet_title",
+    "publication_date" = "snippet_publishedAt",
+    "description" = "snippet_description",
+    "channel_id" = "snippet_channelId",
+    "channel_title" = "snippet_channelTitle",
+    "view_count" = "statistics_viewCount",
+    "like_count" = "statistics_likeCount",
+    "comment_count" = "statistics_commentCount"
+  )
+
+  # Rename columns that exist
+  for (new_name in names(column_mapping)) {
+    old_name <- column_mapping[[new_name]]
+    if (old_name %in% names(result_df)) {
+      names(result_df)[names(result_df) == old_name] <- new_name
     }
   }
 
-  details_df <- data.frame(id = character(),
-                           title = character(),
-                           publication_date = character(),
-                           description = character(),
-                           channel_id = character(),
-                           channel_title = character(),
-                           stringsAsFactors = FALSE)
+  # Add video URL
+  result_df$url <- paste0("https://www.youtube.com/watch?v=", result_df$id)
 
-  for (i in seq_along(details)) {
-    detail <- details[[i]]
-    if (length(detail$items) == 0) {
-      next
+  # Ensure consistent column order
+  final_columns <- c("id", "title", "publication_date", "description",
+                     "channel_id", "channel_title", "view_count", "like_count",
+                     "comment_count", "url")
+
+  # Add missing columns as NA if they don't exist
+  for (col in final_columns) {
+    if (!col %in% names(result_df)) {
+      result_df[[col]] <- NA
     }
-    item <- detail$items[[1]]$snippet
-    detail_df <- data.frame(id = item$id,
-                            title = item$title,
-                            publication_date = if ("videoPublishedAt" %in% names(item)) item$videoPublishedAt else NA,
-                            description = item$description,
-                            channel_id = item$channelId,
-                            channel_title = item$channelTitle,
-                            stringsAsFactors = FALSE)
-    details_df <- rbind(details_df, detail_df)
   }
 
-  res_df$url <- paste0("https://www.youtube.com/watch?v=", res_df$id)
+  # Select final columns in the right order
+  result_df <- result_df[, final_columns, drop = FALSE]
 
-  merged_df <- merge(details_df, res_df, by = "id")
-  return(merged_df)
+  message("Successfully retrieved data for ", nrow(result_df), " videos")
+
+  add_tuber_attributes(
+    result_df,
+    api_calls_made = page_count + ceiling(length(vid_ids) / 50),
+    function_name = "get_all_channel_video_stats",
+    parameters = list(channel_id = channel_id),
+    results_found = nrow(result_df),
+    videos_in_channel = length(vid_ids),
+    response_format = "data.frame"
+  )
 }
-

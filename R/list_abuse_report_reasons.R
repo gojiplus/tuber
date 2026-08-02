@@ -29,9 +29,11 @@
 
 list_abuse_report_reasons <- function(part = "id, snippet", hl = "en-US", ...) {
 
-  if (!is.character(part)) stop("Provide a valid value for part.")
+  # Modern validation using checkmate
+  assert_character(part, len = 1, min.chars = 1, .var.name = "part")
+  assert_character(hl, len = 1, min.chars = 1, .var.name = "hl")
 
-  querylist <- list(part = part)
+  querylist <- list(part = part, hl = hl)
 
   res <- tuber_GET("videoAbuseReportReasons", querylist, ...)
 
@@ -39,16 +41,16 @@ list_abuse_report_reasons <- function(part = "id, snippet", hl = "en-US", ...) {
 
   if (length(res$items) != 0) {
 
-    if (part == "id, snippet" | part == "snippet") {
+    if (part == "id, snippet" || part == "snippet") {
       simple_res  <- lapply(res$items, function(x) c(etag = x$etag, id = x$id,
         label = x$snippet$label,
         secReasons = paste(unlist(x$snippet$secondaryReasons), collapse = ",")))
-      resdf       <- ldply(simple_res, rbind)
+      resdf       <- bind_rows(lapply(simple_res, as.data.frame, stringsAsFactors = FALSE))
     }
 
     if (part == "id") {
       simple_res  <- lapply(res$items, function(x) c(etag = x$etag, id = x$id))
-      resdf       <- ldply(simple_res, rbind)
+      resdf       <- bind_rows(lapply(simple_res, as.data.frame, stringsAsFactors = FALSE))
     }
   }
 

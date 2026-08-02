@@ -1,6 +1,13 @@
 #' Get Related Videos
 #'
-#' Takes a video id and returns related videos
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' Takes a video id and returns related videos.
+#'
+#' **Note:** YouTube deprecated the `relatedToVideoId` parameter in August 2023.
+#' This function will return an error as the API endpoint no longer works.
+#' Consider using \code{\link{yt_search}} with relevant keywords instead.
 #'
 #' @param video_id Character. Required. No default.
 #' @param max_results Maximum number of items that should be returned.
@@ -24,61 +31,14 @@
 #' \dontrun{
 #'
 #' # Set API token via yt_oauth() first
+#' # NOTE: This function no longer works due to YouTube API deprecation
 #'
 #' get_related_videos(video_id = "yJXTXN4xrI8")
 #' }
 
 get_related_videos <- function(video_id = NULL, max_results = 50,
                                 safe_search = "none", ...) {
-
-  if (!is.character(video_id)) stop("Must specify a video ID.")
-  if (max_results <= 0) {
-    stop("max_results must be a positive integer.")
-  }
-
-  querylist <- list(part = "snippet", relatedToVideoId = video_id,
-             type = "video", maxResults = min(max_results, 50), safeSearch = safe_search)
-
-  res <- tuber_GET("search", querylist, ...)
-  items <- res$items
-  next_token <- res$nextPageToken
-
-  while (length(items) < max_results && !is.null(next_token)) {
-    querylist$pageToken <- next_token
-    querylist$maxResults <- min(50, max_results - length(items))
-    a_res <- tuber_GET("search", querylist, ...)
-    items <- c(items, a_res$items)
-    next_token <- a_res$nextPageToken
-  }
-
-  res$items <- items
-
-  resdf <- read.table(text = "",
-               col.names = c("video_id", "rel_video_id", "publishedAt",
-                              "channelId", "title",
-                             "description", "thumbnails.default.url",
-                             "thumbnails.default.width",
-                             "thumbnails.default.height",
-                             "thumbnails.medium.url", "thumbnails.medium.width",
-                             "thumbnails.medium.height", "thumbnails.high.url",
-                             "thumbnails.high.width", "thumbnails.high.height",
-                             "channelTitle", "liveBroadcastContent"))
-
-  if (length(res$items) != 0) {
-
-    rel_video_id <- sapply(res$items, function(x) unlist(x$id$videoId))
-    simple_res   <- lapply(res$items, function(x) unlist(x$snippet))
-    resdf        <- cbind(video_id = video_id,
-                          rel_video_id = rel_video_id,
-                          ldply(simple_res, rbind))
-    resdf        <- as.data.frame(resdf)
-  } else {
-
-    resdf[1, "video_id"] <- video_id
-  }
-
-  # Cat total results
-  cat("Total Results", length(res$items), "\n")
-
-  resdf
+  .Defunct(
+    msg = "get_related_videos() is defunct. YouTube deprecated the relatedToVideoId parameter in August 2023. Use yt_search() with relevant keywords instead."
+  )
 }

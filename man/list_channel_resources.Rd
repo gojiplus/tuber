@@ -10,6 +10,7 @@ list_channel_resources(
   max_results = 50,
   page_token = NULL,
   hl = "en-US",
+  simplify = TRUE,
   ...
 )
 }
@@ -41,11 +42,13 @@ optional}
 \item{hl}{Language used for text values. Optional. The default is \code{en-US}.
 For other allowed language codes, see \code{\link{list_langs}}.}
 
+\item{simplify}{Logical. If TRUE, returns a data frame. If FALSE, returns raw list. Default: TRUE.}
+
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-list. If \code{username} is used in \code{filter},
-  a data frame with columns \code{username} and \code{channel_id} is returned.
+If \code{simplify = TRUE} (default) or \code{username} is used in \code{filter},
+  a data frame. Otherwise returns a list.
 }
 \description{
 Returns List of Requested Channel Resources

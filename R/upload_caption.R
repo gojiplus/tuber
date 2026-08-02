@@ -1,6 +1,7 @@
 #' Upload Video Caption to Youtube
 #'
-#' @param file Filename of the caption, probably `.srt`
+#' @param file Filename of the caption file with timing information (e.g., `.srt`, `.vtt`).
+#'   As of April 12, 2024, timing information is required for all caption uploads.
 #' @param video_id YouTube Video ID.  Try \code{\link{list_my_videos}} for examples.
 #' @param caption_name character vector of the name for the caption.
 #' @param is_draft logical indicating whether the caption track is a draft.
@@ -8,7 +9,7 @@
 #' @param ... Additional arguments to send to \code{\link[httr]{POST}}
 #' @param open_url Should the video be opened using \code{\link{browseURL}}
 #' @param language character string of `BCP47` language type.
-#' See \url{https://www.rfc-editor.org/rfc/bcp/bcp47.txt} for language specification
+#' See \url{https://www.rfc-editor.org/info/bcp47} for language specification
 #'
 #' @note See
 #' \url{https://developers.google.com/youtube/v3/docs/captions#resource} for
@@ -34,6 +35,41 @@ upload_caption <- function(
   ...
 ) {
 
+  # Modern validation using checkmate
+  assert_character(file, len = 1, min.chars = 1, .var.name = "file")
+  assert_character(video_id, len = 1, min.chars = 1, .var.name = "video_id")
+  assert_character(language, len = 1, min.chars = 1, .var.name = "language")
+  assert_character(caption_name, len = 1, min.chars = 1, .var.name = "caption_name")
+  assert_logical(is_draft, len = 1, .var.name = "is_draft")
+  assert_logical(open_url, len = 1, .var.name = "open_url")
+
+  if (!file.exists(file)) {
+    abort("Caption file does not exist",
+          file_path = file,
+          class = "tuber_file_not_found")
+  }
+
+  # As of April 12, 2024, timing information is required for all caption uploads
+  caption_content <- readLines(file, warn = FALSE)
+  has_timing <- any(grepl("-->|\\d+:\\d+:\\d+", caption_content)) ||
+                grepl("\\.(srt|vtt|ttml|dfxp)$", file, ignore.case = TRUE)
+
+  if (!has_timing) {
+    abort("Caption file must contain timing information",
+          file_path = file,
+          help = c("Supported formats: .srt, .vtt, .ttml, .dfxp",
+                   "Plain text captions are no longer supported as of April 12, 2024"),
+          class = "tuber_caption_no_timing")
+  }
+
+  # Validate video ID format
+  if (!grepl("^[A-Za-z0-9_-]{11}$", video_id)) {
+    abort("Invalid YouTube video ID format",
+          video_id = video_id,
+          help = "Video IDs must be 11 characters long and contain only letters, numbers, hyphens, and underscores",
+          class = "tuber_invalid_video_id")
+  }
+
   snippet <- list(
     videoId = as.character(video_id)
   )
@@ -50,7 +86,7 @@ upload_caption <- function(
   query <- as.list(query)
   query$part <- part
 
-  body <- jsonlite::toJSON(body, auto_unbox = TRUE)
+  body <- toJSON(body, auto_unbox = TRUE)
   writeLines(body, metadata)
 
   body <- list(
@@ -66,13 +102,13 @@ upload_caption <- function(
                     config(token = getOption("google_token")),
                     ...)
   if (httr::status_code(req) > 300)  {
-    print(body)
-    print(paste0("File is: ", metadata))
-    cat(readLines(metadata))
-    cat("\n")
-    print(query)
-    print(httr::content(req)$error)
-    stop("Request was bad")
+    error_content <- httr::content(req)$error
+    abort(
+      paste0("Caption upload failed with status ", httr::status_code(req)),
+      class = "tuber_caption_upload_failed",
+      status_code = httr::status_code(req),
+      error_details = error_content
+    )
   }
   tuber_check(req)
   res <- content(req)

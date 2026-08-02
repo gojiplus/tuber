@@ -4,14 +4,16 @@
 \alias{tuber_DELETE}
 \title{DELETE}
 \usage{
-tuber_DELETE(path, query, ...)
+tuber_DELETE(path, query, auth = "token", ...)
 }
 \arguments{
 \item{path}{path to specific API request URL}
 
 \item{query}{query list}
 
-\item{\dots}{Additional arguments passed to \code{\link[httr]{GET}}.}
+\item{auth}{A character vector of the authentication method, either "token" (the default) or "key"}
+
+\item{\dots}{Additional arguments passed to \code{\link[httr]{DELETE}}.}
 }
 \value{
 list

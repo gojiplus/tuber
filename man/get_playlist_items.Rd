@@ -59,5 +59,5 @@ get_playlist_items(filter =
 }
 }
 \references{
-\url{https://developers.google.com/youtube/v3/docs/playlists/list}
+\url{https://developers.google.com/youtube/v3/docs/playlistItems/list}
 }

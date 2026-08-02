@@ -4,12 +4,14 @@
 \alias{change_playlist_title}
 \title{Change the title of a YouTube playlist.}
 \usage{
-change_playlist_title(playlist_id, new_title)
+change_playlist_title(playlist_id, new_title, auth = "token")
 }
 \arguments{
 \item{playlist_id}{A character string specifying the ID of the playlist you want to update.}
 
 \item{new_title}{A character string specifying the new title for the playlist.}
+
+\item{auth}{Authentication method: "token" (OAuth2) or "key" (API key)}
 }
 \value{
 A list containing the server response after the update attempt.

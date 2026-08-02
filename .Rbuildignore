@@ -31,3 +31,10 @@ _pkgdown.yml
 ^CLAUDE\.md$
 ^ISSUE_FIXES\.md$
 ^RELEASE_CHECKLIST\.md$
+^CITATION\.cff$
+^\.claude$
+^\.DS_Store$
+^\.Rhistory$
+^\.Rapp\.history$
+^\.\.Rcheck$
+^tests/testthat/token_file\.rds\.enc$

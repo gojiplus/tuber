@@ -18,9 +18,8 @@
 
 delete_captions <- function(id = NULL, ...) {
 
-  if (missing(id) || !is.character(id)) {
-    stop("Must specify a valid ID.")
-  }
+  # Modern validation using checkmate
+  assert_character(id, len = 1, min.chars = 1, .var.name = "id")
 
   querylist <- list(id = id)
   raw_res <- tuber_DELETE("captions", query = querylist, ...)

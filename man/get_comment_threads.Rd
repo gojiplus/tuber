@@ -25,8 +25,8 @@ potential names of the entry in the vector:
 
 \item{part}{Comment resource requested. Required. Comma separated list
 of one or more of the
-following: \code{id, snippet}. e.g., \code{"id, snippet"},
-\code{"id"}, etc. Default: \code{snippet}.}
+following: \code{id, replies, snippet}. e.g., \code{"id,snippet"},
+\code{"replies"}, etc. Default: \code{snippet}.}
 
 \item{text_format}{Data Type: Character. Default is \code{"html"}.
 Only takes \code{"html"} or \code{"plainText"}. Optional.}
@@ -36,9 +36,9 @@ the function returns a data frame. Else a list with all the
 information returned.}
 
 \item{max_results}{Maximum number of items that should be returned.
- Integer. Optional. Default is 100.
-If the value is greater than 100 then the function fetches all the
-results. The outcome is a simplified \code{data.frame}.}
+ Integer. Optional. Can be 1-2000. Default is 100.
+If the value is greater than 100, multiple API calls are made to fetch all
+results. Each API call is limited to 100 items per the YouTube API.}
 
 \item{page_token}{Specific page in the result set that should be
 returned. Optional.}

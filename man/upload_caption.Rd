@@ -16,12 +16,13 @@ upload_caption(
 )
 }
 \arguments{
-\item{file}{Filename of the caption, probably `.srt`}
+\item{file}{Filename of the caption file with timing information (e.g., `.srt`, `.vtt`).
+As of April 12, 2024, timing information is required for all caption uploads.}
 
 \item{video_id}{YouTube Video ID.  Try \code{\link{list_my_videos}} for examples.}
 
 \item{language}{character string of `BCP47` language type.
-See \url{https://www.rfc-editor.org/rfc/bcp/bcp47.txt} for language specification}
+See \url{https://www.rfc-editor.org/info/bcp47} for language specification}
 
 \item{caption_name}{character vector of the name for the caption.}
 

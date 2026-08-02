@@ -38,15 +38,22 @@ get_subscriptions <- function(filter = NULL, part = "contentDetails",
                                max_results = 50, for_channel_id = NULL,
                                order = NULL, page_token = NULL, ...) {
 
-  if (max_results <= 0) {
-    stop("max_results must be a positive integer.")
-  }
+  # Modern validation using checkmate
+  assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
+  assert_character(filter, len = 1, .var.name = "filter")
+  assert_choice(names(filter), c("channel_id", "subscription_id"),
+                .var.name = "filter names (must be 'channel_id' or 'subscription_id')")
+  assert_character(part, len = 1, min.chars = 1, .var.name = "part")
 
-  if (!(names(filter) %in% c("channel_id", "subscription_id"))) {
-    stop("filter can only take one of values: channel_id, subscription_id.")
+  if (!is.null(for_channel_id)) {
+    assert_character(for_channel_id, min.chars = 1, .var.name = "for_channel_id")
   }
-
-  if (length(filter) != 1) stop("filter must be a vector of length 1.")
+  if (!is.null(order)) {
+    assert_choice(order, c("alphabetical", "relevance", "unread"), .var.name = "order")
+  }
+  if (!is.null(page_token)) {
+    assert_character(page_token, len = 1, min.chars = 1, .var.name = "page_token")
+  }
 
   translate_filter   <- c(channel_id = "channelId", subscription_id = "id")
   yt_filter_name     <- as.vector(translate_filter[match(names(filter),

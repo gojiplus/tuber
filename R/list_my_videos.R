@@ -11,6 +11,7 @@
 #' }
 #'
 list_my_videos <- function(...) {
+  # This function is a simple wrapper - validation done by called functions
   channel_stats <- get_channel_stats(mine = TRUE, ...)
   res <- list_channel_videos(channel_id = channel_stats$id, ...)
   return(res)

@@ -1,0 +1,13 @@
+name: test-coverage
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  coverage:
+    uses: gojiplus/r-canon/.github/workflows/reusable-coverage.yml@v1
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

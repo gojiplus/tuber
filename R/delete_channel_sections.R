@@ -18,9 +18,8 @@
 
 delete_channel_sections <- function(id = NULL, ...) {
 
-  if (missing(id) || !is.character(id) || !nzchar(id)) {
-    stop("Must specify a valid ID.")
-  }
+  # Modern validation using checkmate
+  assert_character(id, len = 1, min.chars = 1, .var.name = "id")
 
   querylist <- list(id = id)
 

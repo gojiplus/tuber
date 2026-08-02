@@ -21,6 +21,11 @@
 
 list_langs <- function(hl = NULL, ...) {
 
+  # Modern validation using checkmate
+  if (!is.null(hl)) {
+    assert_character(hl, len = 1, min.chars = 1, .var.name = "hl")
+  }
+
   querylist <- list(part = "snippet", hl = hl)
 
   res <- tuber_GET("i18nLanguages", querylist)

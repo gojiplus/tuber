@@ -10,7 +10,8 @@ update_video_metadata(
   category_id,
   description,
   privacy_status,
-  made_for_kids
+  made_for_kids,
+  auth = "token"
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ update_video_metadata(
 \item{privacy_status}{A character string specifying the new privacy status for the video ('public', 'private', or 'unlisted').}
 
 \item{made_for_kids}{A boolean specifying whether the video is self-declared as made for kids.}
+
+\item{auth}{Authentication method: "token" (OAuth2) or "key" (API key)}
 }
 \value{
 A list containing the server response after the update attempt.

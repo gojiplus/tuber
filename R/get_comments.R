@@ -53,41 +53,56 @@ get_comments <- function(filter = NULL, part = "snippet", max_results = 100,
                           text_format = "html", page_token = NULL,
                           simplify = TRUE, ...) {
 
-  if (max_results < 20 | max_results > 100) {
-    stop("max_results only takes a value between 20 and 100.")
+  # Modern validation using checkmate
+  assert_integerish(max_results, len = 1, lower = 20, upper = 100, .var.name = "max_results")
+  assert_choice(text_format, c("html", "plainText"), .var.name = "text_format")
+  assert_character(filter, len = 1, .var.name = "filter")
+  assert_choice(names(filter), c("parent_id", "comment_id"),
+                .var.name = "filter names (must be 'comment_id' or 'parent_id')")
+  assert_character(part, len = 1, min.chars = 1, .var.name = "part")
+  assert_logical(simplify, len = 1, .var.name = "simplify")
+  if (!is.null(page_token)) {
+    assert_character(page_token, len = 1, min.chars = 1, .var.name = "page_token")
   }
-
-  if (text_format != "html" & text_format != "plainText") {
-    stop("Provide a legitimate value of textFormat.")
-  }
-
-  if (!(names(filter) %in% c("parent_id", "comment_id"))) {
-    stop("filter can only take one of values: comment_id, parent_id.")
-  }
-
-  if ( length(filter) != 1) stop("filter must be a vector of length 1.")
 
   translate_filter   <- c("parent_id" = "parentId", "comment_id" = "id")
   yt_filter_name     <- as.vector(translate_filter[match(names(filter),
                                                       names(translate_filter))])
   names(filter)      <- yt_filter_name
 
-  querylist <- list(part = part, maxResults = max_results,
-                    textFormat = text_format)
+  querylist <- list(part = part, textFormat = text_format)
+
+  # comments.list documents maxResults and pageToken as unsupported when the
+  # request filters by `id`; sending them there is an invalid combination.
+  if (!identical(unname(yt_filter_name), "id")) {
+    querylist$maxResults <- max_results
+    querylist$pageToken <- page_token
+  }
+
   querylist <- c(querylist, filter)
 
   raw_res <- tuber_GET("comments", querylist, ...)
 
   if (length(raw_res$items) == 0) {
-      warning("No comment information available. Likely cause: Incorrect ID.\n")
+      warn("No comment information available. Likely cause: Incorrect ID.",
+           class = "tuber_empty_result")
       if (simplify == TRUE) return(data.frame())
       return(list())
     }
 
-  if (simplify == TRUE & part == "snippet") {
-    simple_res  <- lapply(raw_res$items, function(x) unlist(x$snippet))
-    simpler_res <- ldply(simple_res, rbind)
-    simpler_res$id <- raw_res$items[[1]]$id
+  if (simplify == TRUE && part == "snippet") {
+    simple_res  <- lapply(raw_res$items, function(x) {
+      as.data.frame(t(unlist(x$snippet)), stringsAsFactors = FALSE)
+    })
+    simpler_res <- bind_rows(simple_res)
+    # One id per row. This took raw_res$items[[1]]$id, a scalar, which R then
+    # recycled over the whole frame -- two comments came back carrying the
+    # first one's id and the second id was lost.
+    simpler_res$id <- vapply(
+      raw_res$items,
+      function(x) if (is.null(x$id)) NA_character_ else as.character(x$id),
+      character(1)
+    )
     return(simpler_res)
   }
 
