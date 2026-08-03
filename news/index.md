@@ -2,6 +2,8 @@
 
 ## version 1.4.1
 
+CRAN release: 2026-08-02
+
 ### Bug fixes
 
 - [`list_videocats()`](https://gojiplus.github.io/tuber/reference/list_videocats.md)
