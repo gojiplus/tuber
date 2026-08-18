@@ -102,8 +102,7 @@ license), \code{'youtube'} (return videos with standard YouTube license).}
 \code{'any'} (return all videos; Default), \code{'true'}
 (return only syndicated videos)}
 
-\item{region_code}{Character. Required. Has to be a ISO 3166-1 alpha-2 code
-(see \url{https://www.iso.org/obp/ui/#search}).}
+\item{region_code}{Character. Optional. An ISO 3166-1 alpha-2 country code.}
 
 \item{relevance_language}{Character. Optional. The relevance_language
 argument instructs the API to return search results that are most relevant to
