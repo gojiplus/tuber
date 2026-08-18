@@ -133,8 +133,7 @@ yt_search(
 
 - region_code:
 
-  Character. Required. Has to be a ISO 3166-1 alpha-2 code (see
-  <https://www.iso.org/obp/ui/#search>).
+  Character. Optional. An ISO 3166-1 alpha-2 country code.
 
 - relevance_language:
 
