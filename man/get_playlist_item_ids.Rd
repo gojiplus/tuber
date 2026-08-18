@@ -2,61 +2,42 @@
 % Please edit documentation in R/get_playlist_item_ids.R
 \name{get_playlist_item_ids}
 \alias{get_playlist_item_ids}
-\title{Get Playlist Item IDs}
+\title{Get Playlist-Item IDs}
 \usage{
 get_playlist_item_ids(
-  filter = NULL,
-  part = "contentDetails",
-  max_results = 50,
+  playlist_id = NULL,
+  playlist_item_ids = NULL,
   video_id = NULL,
+  max_results = 50,
   page_token = NULL,
-  simplify = TRUE,
+  auth = "key",
   ...
 )
 }
 \arguments{
-\item{filter}{string; Required.
-named vector of length 1
-potential names of the entry in the vector:
-\code{item_id}: comma-separated list of one or more unique playlist item IDs.
-\code{playlist_id}: YouTube playlist ID.}
+\item{playlist_id}{Optional playlist ID.}
 
-\item{part}{Required. Comma separated string including one or more of the
-following: \code{contentDetails, id, snippet, status}. Default:
-\code{contentDetails}.}
+\item{playlist_item_ids}{Optional character vector of playlist-item IDs.
+Supply exactly one of `playlist_id` or `playlist_item_ids`.}
 
-\item{max_results}{Maximum number of items that should be returned.
-Integer. Optional. Default is 50. Values over 50 will trigger multiple
-requests and may increase API quota usage.}
+\item{video_id}{Optional video ID used to filter items in `playlist_id`.}
 
-\item{video_id}{Optional. request should return only the playlist
-items that contain the specified video.}
+\item{max_results}{Maximum total number of items to return.}
 
-\item{page_token}{specific page in the result set that should be
-returned, optional}
+\item{page_token}{Optional page token at which to start.}
 
-\item{simplify}{returns a data.frame rather than a list.}
+\item{auth}{Authentication method, `"key"` or `"token"`.}
 
-\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
+\item{...}{Additional arguments passed to [tuber_GET()].}
 }
 \value{
-playlist items
+A character vector of playlist-item IDs.
 }
 \description{
-Get Playlist Item IDs
+Get Playlist-Item IDs
 }
 \examples{
 \dontrun{
-
-# Set API token via yt_oauth() first
-
-get_playlist_items(filter =
-                       c(playlist_id = "PLrEnWoR732-CN09YykVof2lxdI3MLOZda"))
-get_playlist_items(filter =
-                       c(playlist_id = "PL0fOlXVeVW9QMO3GoESky4yDgQfK2SsXN"),
-                       max_results = 51)
+get_playlist_item_ids(playlist_id = "PLrEnWoR732-CN09YykVof2lxdI3MLOZda")
 }
-}
-\references{
-\url{https://developers.google.com/youtube/v3/docs/playlists/list}
 }

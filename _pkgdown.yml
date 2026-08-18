@@ -25,75 +25,71 @@ reference:
     - yt_oauth
     - yt_token
     - yt_authorized
-    - yt_check_token
     - yt_get_key
     - yt_set_key
-    - tuber_check
 
 - title: "Channel Functions"
   desc: "Functions for working with YouTube channels"
   contents:
-    - get_channel_stats
-    - get_subscriptions
-    - list_channel_resources
+    - get_channel_details
+    - list_subscriptions
     - list_channel_sections
-    - delete_channel_sections
+    - delete_channel_section
     - list_channel_activities
     - list_channel_videos
-    - list_my_channel
+    - get_my_channel
     - get_all_channel_video_stats
 
 - title: "Video Functions"
   desc: "Functions for working with YouTube videos"
   contents:
-    - get_stats
+    - get_video_stats
     - get_video_details
-    - get_related_videos
-    - list_videos
+    - list_popular_videos
     - list_my_videos
     - upload_video
     - update_video_metadata
-    - delete_videos
+    - delete_video
 
 - title: "Playlist Functions"
   desc: "Functions for working with playlists"
   contents:
-    - get_playlists
-    - get_playlist_items
+    - list_playlists
+    - list_playlist_items
     - get_playlist_item_ids
-    - get_playlist_item_videoids
+    - get_playlist_video_ids
     - create_playlist
     - add_video_to_playlist
     - change_playlist_title
-    - delete_playlist_items
-    - delete_playlists
+    - delete_playlist_item
+    - delete_playlist
 
 - title: "Caption Functions"
   desc: "Functions for working with captions"
   contents:
-    - get_captions
+    - download_caption
     - list_captions
-    - list_caption_tracks
     - upload_caption
-    - delete_captions
+    - delete_caption
     - read_sbv
 
 - title: "Comment Functions"
   desc: "Functions for working with comments and moderation"
   contents:
-    - get_comment_threads
-    - get_comments
+    - list_comment_threads
+    - list_comments
     - get_all_comments
     - post_comment
     - reply_to_comment
     - set_comment_moderation_status
-    - delete_comments
+    - delete_comment
 
 - title: "Monetization & Engagement"
   desc: "Functions for Super Chats, Memberships, and Live Interaction"
   contents:
-    - get_super_chat_events
-    - get_live_chat_messages
+    - list_super_chat_events
+    - list_live_chat_messages
+    - list_live_broadcasts
     - list_channel_members
 
 - title: "Branding & Media"
@@ -106,15 +102,14 @@ reference:
   desc: "Functions for searching YouTube"
   contents:
     - yt_search
-    - yt_topic_search
+    - search_short_videos
 
 - title: "Additional Resources"
   desc: "Functions for getting YouTube metadata"
   contents:
-    - list_guidecats
-    - list_langs
+    - list_languages
     - list_regions
-    - list_videocats
+    - list_video_categories
     - list_abuse_report_reasons
 
 - title: "Quota Management"
@@ -130,15 +125,13 @@ reference:
   contents:
     - bulk_video_analysis
 
-- title: "Extended Features"
-  desc: "Advanced analysis and specialized functions"
+- title: "Analysis Helpers"
+  desc: "Higher-level analyses built from YouTube resources"
   contents:
     - analyze_channel
     - analyze_trends
     - compare_channels
-    - get_live_streams
-    - get_premiere_info
-    - search_shorts
+    - get_video_broadcast_timing
 
 - title: "Unicode & Emoji Utilities"
   desc: "Functions for handling emojis and Unicode in YouTube text"
@@ -155,12 +148,6 @@ reference:
     - tuber_cache_config
     - tuber_cache_clear
     - tuber_cache_info
-    - tuber_GET_cached
-    - get_channel_info_cached
-    - list_langs_cached
-    - list_regions_cached
-    - list_videocats_cached
-    - get_channel_sections
     - get_video_thumbnails
     - with_retry
 
@@ -169,33 +156,6 @@ reference:
   contents:
     - tuber_info
 
-- title: "Developer & Advanced Functions"
-  desc: "Advanced functions and low-level utilities"
-  contents:
-    - call_api_with_retry
-    - handle_api_error
-    - handle_network_error
-    - is_transient_error
-    - suggest_solution
-    - warn_deprecated
-    - tuber_PUT
-    - print.tuber_result
-    - summary.tuber_result
-    - "[.tuber_result"
-    - validate_video_id
-    - validate_channel_id
-    - validate_playlist_id
-    - validate_rfc3339_date
-    - validate_part_parameter
-    - validate_region_code
-    - validate_language_code
-    - validate_youtube_params
-    - generate_cache_key
-    - get_cached_response
-    - store_cached_response
-    - is_cacheable_endpoint
-    - is_static_query
-
 - title: "Documentation Topics"
   desc: "Package documentation and function groups"  
   contents:
@@ -203,12 +163,3 @@ reference:
     - helper-functions
     - caching
     - error-handling
-
-- title: "Helper Functions" 
-  desc: "Internal helper functions"
-  contents:
-    - tuber_DELETE
-    - tuber_GET
-    - tuber_POST
-    - tuber_POST_json
-    - unicode_utils

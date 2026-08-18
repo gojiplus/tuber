@@ -14,8 +14,8 @@
 #' @importFrom httr upload_file content oauth_endpoints oauth_app oauth2.0_token
 #' @importFrom httr status_code headers
 #' @importFrom httr2 request req_url_path_append req_url_query req_headers
-#' @importFrom httr2 req_user_agent req_perform resp_body_json req_body_json
-#' @importFrom httr2 req_method resp_body_string req_body_raw secret_encrypt secret_decrypt
+#' @importFrom httr2 req_error req_user_agent req_perform resp_body_json resp_body_string
+#' @importFrom httr2 secret_encrypt secret_decrypt
 #' @importFrom httr2 resp_status resp_headers
 #' @importFrom utils read.table modifyList head object.size
 #' @importFrom stats median quantile
@@ -37,7 +37,8 @@ NULL
 #'
 #' @param result The result object to add attributes to
 #' @param api_calls_made Number of API calls made to generate this result
-#' @param quota_used Estimated quota units consumed
+#' @param quota_used Estimated quota units consumed by the operation. If
+#' `NULL`, no quota attribute is added.
 #' @param function_name Name of the calling function
 #' @param parameters List of key parameters used in the function call
 #' @param timestamp When the API call was made
@@ -53,15 +54,11 @@ add_tuber_attributes <- function(result,
                                 timestamp = Sys.time(),
                                 ...) {
 
-  # Get current quota status if not provided
-  if (is.null(quota_used)) {
-    quota_status <- yt_get_quota_usage()
-    quota_used <- quota_status$quota_used
-  }
-
   # Standard attributes
   attr(result, "tuber_api_calls") <- api_calls_made
-  attr(result, "tuber_quota_used") <- quota_used
+  if (!is.null(quota_used)) {
+    attr(result, "tuber_quota_used") <- quota_used
+  }
   attr(result, "tuber_timestamp") <- timestamp
   attr(result, "tuber_function") <- function_name %||% deparse(sys.call(-1)[[1]])
   attr(result, "tuber_parameters") <- parameters
@@ -74,7 +71,7 @@ add_tuber_attributes <- function(result,
 
   # Add class for potential S3 methods
   if (!inherits(result, "tuber_result")) {
-    class(result) <- c("tuber_result", class(result))
+    class(result) <- unique(c("tuber_result", class(result)))
   }
 
   return(result)
@@ -99,6 +96,9 @@ paginate_api_request <- function(initial_response,
                                   max_pages = Inf) {
 
   all_items <- extract_items_fn(initial_response)
+  if (length(all_items) > max_results) {
+    all_items <- all_items[seq_len(max_results)]
+  }
   page_token <- initial_response$nextPageToken
   page_count <- 1
 
@@ -107,6 +107,8 @@ paginate_api_request <- function(initial_response,
 
     next_response <- fetch_next_page_fn(page_token)
     new_items <- extract_items_fn(next_response)
+    page_token <- next_response$nextPageToken
+    page_count <- page_count + 1
 
     if (is.null(new_items) || length(new_items) == 0) {
       break
@@ -118,8 +120,6 @@ paginate_api_request <- function(initial_response,
     }
 
     all_items <- c(all_items, new_items)
-    page_token <- next_response$nextPageToken
-    page_count <- page_count + 1
   }
 
   list(
@@ -146,6 +146,7 @@ build_httr2_request <- function(path, query) {
     req_url_path_append("youtube/v3", path) |>
     req_url_query(!!!query) |>
     req_headers("x-goog-api-key" = suppressMessages(yt_get_key())) |>
+    req_error(is_error = function(response) FALSE) |>
     req_user_agent("tuber (https://github.com/gojiplus/tuber)")
 }
 
@@ -202,6 +203,7 @@ tuber_info <- function(result) {
 #' @param x A tuber_result object
 #' @param ... Additional arguments passed to default print methods
 #' @export
+#' @keywords internal
 print.tuber_result <- function(x, ...) {
   # Print the main content first (removing tuber_result class temporarily)
   content_classes <- class(x)[class(x) != "tuber_result"]
@@ -248,6 +250,7 @@ print.tuber_result <- function(x, ...) {
 #' @param x A tuber_result object
 #' @param ... Arguments passed to the underlying subset method
 #' @export
+#' @keywords internal
 `[.tuber_result` <- function(x, ...) {
   result <- NextMethod("[")
 
@@ -258,7 +261,7 @@ print.tuber_result <- function(x, ...) {
     attr(result, name) <- tuber_attrs[[name]]
   }
 
-  class(result) <- c("tuber_result", class(result))
+  class(result) <- unique(c("tuber_result", class(result)))
   result
 }
 
@@ -269,6 +272,7 @@ print.tuber_result <- function(x, ...) {
 #' @param object A tuber_result object
 #' @param ... Additional arguments (ignored)
 #' @export
+#' @keywords internal
 summary.tuber_result <- function(object, ...) {
   cat("Tuber API Result\n")
   cat("================\n")
@@ -328,19 +332,24 @@ yt_check_token <- function() {
 #' @export yt_get_key yt_set_key
 #'
 #' @description
-#' These functions manage your YouTube API key and package key in \code{.Renviron}.
+#' These functions read and set YouTube keys in the current R process.
 #' @usage
 #' yt_get_key(decrypt = FALSE)
 #' yt_set_key(key, type)
 #'
-#' @param decrypt A boolean vector specifying whether to decrypt the supplied key with `httr2::secret_decrypt()`. Defaults to `FALSE`. If `TRUE`, requires the environment variable `TUBER_KEY` to be set in `.Renviron`.
+#' @param decrypt Whether to decrypt `YOUTUBE_KEY` with
+#' [httr2::secret_decrypt()]. If `TRUE`, `TUBER_KEY` must also be set.
 #' @param key A character vector specifying a YouTube API key.
-#' @param type A character vector specifying the type of API key to set. One of 'api' (the default, stored in `YOUTUBE_KEY`) or 'package'. Package keys are stored in `TUBER_KEY` and are used to decrypt API keys, for use in continuous integration and testing.
+#' @param type Key type: `"api"` sets `YOUTUBE_KEY`; `"package"` sets
+#' `TUBER_KEY`, which can decrypt an encrypted API key in continuous
+#' integration.
 #'
 #' @return
-#' `yt_get_key()` returns a character vector with the YouTube API key stored in `.Renviron`. If this value is not stored in `.Renviron`, the functions return `NULL`.
+#' `yt_get_key()` returns `YOUTUBE_KEY` invisibly, or `NULL` when it is unset.
 #'
-#' When the `type` argument is set to 'api', `yt_set_key()` assigns a YouTube API key to `YOUTUBE_KEY` in `.Renviron` and invisibly returns `NULL`. When the `type` argument is set to 'package', `yt_set_key()` assigns a package key to `TUBER_KEY` in `.Renviron` and invisibly returns `NULL`.
+#' `yt_set_key()` sets the selected environment variable for the current R
+#' process and invisibly returns the key. Put the variable in a user-level
+#' `.Renviron` file yourself if it must persist across sessions.
 #'
 #' @examples
 #' \dontrun{
@@ -401,6 +410,7 @@ yt_get_key <- function(decrypt = FALSE) {
 }
 
 yt_set_key <- function(key = NULL, type = "api") {
+  assert_choice(type, c("api", "package"), .var.name = "type")
   if (type == "api") {
     if (interactive() && is.null(key)) {
       key <- askpass("Please enter your YouTube API key")
@@ -412,7 +422,7 @@ yt_set_key <- function(key = NULL, type = "api") {
     }
     assert_character(key, len = 1, min.chars = 1, .var.name = "key")
     Sys.setenv(YOUTUBE_KEY = key)
-    message("YOUTUBE_KEY was stored in '.Renviron' and was invisibly returned")
+    message("YOUTUBE_KEY was set for the current R process and invisibly returned")
   }
   if (type == "package") {
     if (interactive() && is.null(key)) {
@@ -425,7 +435,7 @@ yt_set_key <- function(key = NULL, type = "api") {
     }
     assert_character(key, len = 1, min.chars = 1, .var.name = "key")
     Sys.setenv(TUBER_KEY = key)
-    message("TUBER_KEY was stored in '.Renviron' and was invisibly returned")
+    message("TUBER_KEY was set for the current R process and invisibly returned")
   }
   invisible(key)
 }
@@ -450,24 +460,42 @@ is_testing <- function() {
 #' @param path path to specific API request URL
 #' @param query query list
 #' @param auth A character vector of the authentication method, either "token" (the default) or "key"
-#' @param use_etag Logical. Whether to use ETag for caching. Default is TRUE.
+#' @param use_cache Logical. Whether eligible responses may be served from and
+#' stored in the tuber cache.
+#' @param cache_ttl Optional cache lifetime in seconds.
+#' @param force_refresh Logical. Ignore a cached response and refresh it.
 #' @param \dots Additional arguments passed to \code{\link[httr]{GET}}.
 #' @return list
+#' @keywords internal
 
-tuber_GET <- function(path, query, auth = "token", use_etag = TRUE, ...) {
+tuber_GET <- function(path, query, auth = "token", use_cache = TRUE,
+                      cache_ttl = NULL, force_refresh = FALSE, ...) {
   # Modern validation using checkmate
   assert_character(path, len = 1, min.chars = 1, .var.name = "path")
   assert_list(query, .var.name = "query")
   assert_choice(auth, c("token", "key"), .var.name = "auth")
-  assert_flag(use_etag, .var.name = "use_etag")
+  assert_flag(use_cache, .var.name = "use_cache")
+  assert_flag(force_refresh, .var.name = "force_refresh")
+  if (!is.null(cache_ttl)) {
+    assert_integerish(cache_ttl, len = 1, lower = 60, .var.name = "cache_ttl")
+  }
 
-  # Track quota usage
-  parts <- query$part %||% NULL
-  track_quota_usage(path, parts)
-
-  # ETag support disabled until caching functions are fully implemented
-  # TODO: Implement tuber_config_get, get_cached_etag, cache_etag_and_response functions
   cache_key <- NULL
+  cache_eligible <- use_cache && auth == "key" && is_cacheable_endpoint(path) &&
+    is_static_query(path, query)
+  if (cache_eligible) {
+    cache_key <- generate_cache_key(path, query, auth)
+    if (!force_refresh) {
+      cached_response <- get_cached_response(cache_key)
+      if (!is.null(cached_response)) {
+        attr(cached_response, "tuber_cache_hit") <- TRUE
+        return(cached_response)
+      }
+    }
+  }
+
+  method <- if (grepl("^captions/", path)) "download" else "list"
+  track_quota_usage(path, method)
 
   if (auth == "token") {
     yt_check_token()
@@ -477,17 +505,23 @@ tuber_GET <- function(path, query, auth = "token", use_etag = TRUE, ...) {
                query = query,
                config(token = getOption("google_token")),
                ...)
-
-    res <- content(req)
   }
 
   if (auth == "key") {
     req <- build_httr2_request(path, query) |> req_perform()
-    res <- req |> resp_body_json()
   }
 
   handle_http_response(req, auth)
   tuber_check(req)
+  res <- if (auth == "token") {
+    if (grepl("^captions/", path)) content(req, as = "raw") else content(req)
+  } else {
+    resp_body_json(req)
+  }
+
+  if (!is.null(cache_key)) {
+    store_cached_response(cache_key, res, ttl = cache_ttl)
+  }
 
   res
 }
@@ -498,34 +532,24 @@ tuber_GET <- function(path, query, auth = "token", use_etag = TRUE, ...) {
 #' @param path path to specific API request URL
 #' @param query query list
 #' @param body passing image through body
-#' @param auth A character vector of the authentication method, either "token" (the default) or "key"
 #' @param \dots Additional arguments passed to \code{\link[httr]{POST}}.
 #'
 #' @return list
+#' @keywords internal
 
-tuber_POST <- function(path, query, body = "", auth = "token", ...) {
-  # Track quota usage
-  parts <- query$part %||% NULL
-  track_quota_usage(path, parts)
+tuber_POST <- function(path, query, body = "", ...) {
+  assert_character(path, len = 1, min.chars = 1, .var.name = "path")
+  assert_list(query, .var.name = "query")
+  yt_check_token()
+  track_quota_usage(path, "insert")
 
-  if (auth == "token") {
-    yt_check_token()
-    req <- POST("https://www.googleapis.com", path = paste0("youtube/v3/", path),
-                body = body, query = query,
-                config(token = getOption("google_token")), ...)
-    res <- content(req)
-  }
+  req <- POST("https://www.googleapis.com", path = paste0("youtube/v3/", path),
+              body = body, query = query,
+              config(token = getOption("google_token")), ...)
 
-  if (auth == "key") {
-    req <- build_httr2_request(path, query) |>
-      req_body_raw(body) |>
-      req_perform()
-    res <- req |> resp_body_json()
-  }
-
-  handle_http_response(req, auth)
+  handle_http_response(req, "token")
   tuber_check(req)
-  res
+  content(req)
 }
 
 #'
@@ -537,20 +561,22 @@ tuber_POST <- function(path, query, body = "", auth = "token", ...) {
 #' @param \dots Additional arguments passed to \code{\link[httr]{GET}}.
 #'
 #' @return list
+#' @keywords internal
 
 tuber_POST_json <- function(path, query, body = "", ...) {
-
+  assert_character(path, len = 1, min.chars = 1, .var.name = "path")
+  assert_list(query, .var.name = "query")
   yt_check_token()
+  track_quota_usage(path, "insert")
 
   req <- httr::POST("https://www.googleapis.com", path = paste0("youtube/v3/", path),
                     body = body, query = query,
                     config(token = getOption("google_token")),
                     encode = "json", ...)
 
+  handle_http_response(req, "token")
   tuber_check(req)
-  res <- content(req)
-
-  res
+  content(req)
 }
 
 #'
@@ -559,34 +585,23 @@ tuber_POST_json <- function(path, query, body = "", ...) {
 #' @param path path to specific API request URL
 #' @param query query list
 #' @param body JSON body content for the PUT request
-#' @param auth A character vector of the authentication method, either "token" (the default) or "key"
 #' @param \dots Additional arguments passed to \code{\link[httr]{PUT}}.
 #' @return list
+#' @keywords internal
 
-tuber_PUT <- function(path, query, body = "", auth = "token", ...) {
-  # Track quota usage
-  parts <- query$part %||% NULL
-  track_quota_usage(path, parts)
+tuber_PUT <- function(path, query, body = "", ...) {
+  assert_character(path, len = 1, min.chars = 1, .var.name = "path")
+  assert_list(query, .var.name = "query")
+  yt_check_token()
+  track_quota_usage(path, "update")
 
-  if (auth == "token") {
-    yt_check_token()
-    req <- PUT("https://www.googleapis.com", path = paste0("youtube/v3/", path),
-               query = query, config(token = getOption("google_token")),
-               body = body, encode = "json", ...)
-    res <- content(req)
-  }
+  req <- PUT("https://www.googleapis.com", path = paste0("youtube/v3/", path),
+             query = query, config(token = getOption("google_token")),
+             body = body, encode = "json", ...)
 
-  if (auth == "key") {
-    req <- build_httr2_request(path, query) |>
-      req_body_json(body) |>
-      req_perform()
-    res <- req |> resp_body_json()
-  }
-
-  handle_http_response(req, auth)
+  handle_http_response(req, "token")
   tuber_check(req)
-
-  res
+  content(req)
 }
 
 #'
@@ -594,32 +609,22 @@ tuber_PUT <- function(path, query, body = "", auth = "token", ...) {
 #'
 #' @param path path to specific API request URL
 #' @param query query list
-#' @param auth A character vector of the authentication method, either "token" (the default) or "key"
 #' @param \dots Additional arguments passed to \code{\link[httr]{DELETE}}.
 #' @return list
+#' @keywords internal
 
-tuber_DELETE <- function(path, query, auth = "token", ...) {
-  # Track quota usage
-  parts <- query$part %||% NULL
-  track_quota_usage(path, parts)
+tuber_DELETE <- function(path, query, ...) {
+  assert_character(path, len = 1, min.chars = 1, .var.name = "path")
+  assert_list(query, .var.name = "query")
+  yt_check_token()
+  track_quota_usage(path, "delete")
 
-  if (auth == "token") {
-    yt_check_token()
-    req <- DELETE("https://www.googleapis.com", path = paste0("youtube/v3/", path),
-                  query = query, config(token = getOption("google_token")), ...)
-    res <- content(req)
-  }
+  req <- DELETE("https://www.googleapis.com", path = paste0("youtube/v3/", path),
+                query = query, config(token = getOption("google_token")), ...)
 
-  if (auth == "key") {
-    req <- build_httr2_request(path, query) |>
-      req_method("DELETE") |>
-      req_perform()
-    res <- req |> resp_body_json()
-  }
-
-  handle_http_response(req, auth)
+  handle_http_response(req, "token")
   tuber_check(req)
-  res
+  invisible(content(req, as = "raw"))
 }
 
 #'
@@ -647,12 +652,9 @@ handle_http_response <- function(req, auth = "token") {
     if (grepl("quotaExceeded|dailyLimitExceeded", error_content)) {
       quota_status <- yt_get_quota_usage()
       abort(
-        paste0("YouTube API quota exhausted. Used: ", quota_status$quota_used, "/", quota_status$quota_limit,
-               ". Quota resets at: ", format(quota_status$reset_time, "%Y-%m-%d %H:%M:%S UTC")),
+        "YouTube API quota exhausted. Check project usage in Google Cloud Console.",
         class = "tuber_quota_exhausted",
-        quota_used = quota_status$quota_used,
-        quota_limit = quota_status$quota_limit,
-        reset_time = quota_status$reset_time
+        quota_status = quota_status
       )
     }
   }
@@ -669,11 +671,13 @@ handle_http_response <- function(req, auth = "token") {
 #'
 #' @param  req request
 #' @return in case of failure, a message
+#' @keywords internal
 
 tuber_check <- function(req) {
-
-  if (req$status_code < 400) return(invisible(NULL))
-  orig_out <-  httr::content(req, as = "text")
+  is_httr2 <- inherits(req, "httr2_response")
+  status <- if (is_httr2) resp_status(req) else req$status_code
+  if (status < 400) return(invisible(NULL))
+  orig_out <- if (is_httr2) resp_body_string(req) else httr::content(req, as = "text")
   out <- try({
     fromJSON(
       orig_out,
@@ -686,7 +690,7 @@ tuber_check <- function(req) {
   }
 
   # Enhanced error handling for common 403 issues
-  if (req$status_code == 403) {
+  if (status == 403) {
     if (grepl("accessNotConfigured|has not been used|is disabled", msg, ignore.case = TRUE)) {
       enhanced_msg <- paste0(
         "YouTube Data API is not enabled for your project.\n\n",
@@ -694,18 +698,18 @@ tuber_check <- function(req) {
         "1. Go to Google Cloud Console: https://console.cloud.google.com/\n",
         "2. Select your project (or create a new one)\n",
         "3. Enable the YouTube Data API v3:\n",
-        "   https://console.cloud.google.com/marketplace/product/google/youtube.googleapis.com\n",
+        "   https://developers.google.com/youtube/v3/getting-started\n",
         "4. Wait 2-5 minutes for the API to be fully activated\n",
         "5. Try your request again\n\n",
         "Original error: ", msg
       )
-      abort(paste0("HTTP failure: ", req$status_code, "\n", enhanced_msg),
+      abort(paste0("HTTP failure: ", status, "\n", enhanced_msg),
             class = "tuber_api_not_enabled",
-            status_code = req$status_code)
+            status_code = status)
     }
   }
 
-  abort(paste0("HTTP failure: ", req$status_code, "\n", msg),
+  abort(paste0("HTTP failure: ", status, "\n", msg),
         class = "tuber_http_error",
-        status_code = req$status_code)
+        status_code = status)
 }

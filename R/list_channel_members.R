@@ -4,10 +4,12 @@
 #' This endpoint requires OAuth 2.0 authentication and the channel must have memberships enabled.
 #'
 #' @param part Parts to retrieve. Valid values are "snippet". Default is "snippet".
-#' @param max_results Maximum number of items to return. Default is 50. Max is 1000.
+#' @param max_results Maximum total number of members to return.
 #' @param page_token Specific page token to retrieve. Optional.
-#' @param mode Filter for members. Valid values: "all_current", "newest". Default is "all_current".
+#' @param mode Member stream, `"all_current"` or `"updates"`.
 #' @param has_access_to_level Filter by a specific membership level ID. Optional.
+#' @param filter_by_member_channel_ids Optional member channel IDs whose
+#' membership status should be checked. YouTube accepts at most 100 per call.
 #' @param simplify Whether to return a simplified data.frame. Default is TRUE.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'
@@ -18,8 +20,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' # Set API token via yt_oauth() first
-#'
+#' yt_oauth("YOUR_CLIENT_ID", "YOUR_CLIENT_SECRET", scope = "channel_memberships")
 #' members <- list_channel_members()
 #' }
 list_channel_members <- function(part = "snippet",
@@ -27,18 +28,19 @@ list_channel_members <- function(part = "snippet",
                                  page_token = NULL,
                                  mode = "all_current",
                                  has_access_to_level = NULL,
+                                 filter_by_member_channel_ids = NULL,
                                  simplify = TRUE,
                                  ...) {
 
   # Validation
-  assert_character(part, min.chars = 1, .var.name = "part")
-  assert_integerish(max_results, lower = 1, upper = 1000, .var.name = "max_results")
-  assert_choice(mode, c("all_current", "newest"), .var.name = "mode")
-  assert_logical(simplify, len = 1, .var.name = "simplify")
+  assert_character(part, min.len = 1, min.chars = 1, .var.name = "part")
+  assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
+  assert_choice(mode, c("all_current", "updates"), .var.name = "mode")
+  assert_flag(simplify, .var.name = "simplify")
 
   query <- list(
-    part = part,
-    maxResults = max_results,
+    part = paste(part, collapse = ","),
+    maxResults = min(max_results, 1000),
     mode = mode
   )
 
@@ -46,6 +48,17 @@ list_channel_members <- function(part = "snippet",
   if (!is.null(has_access_to_level)) {
     assert_character(has_access_to_level, len = 1, .var.name = "has_access_to_level")
     query$hasAccessToLevel <- has_access_to_level
+  }
+  if (!is.null(filter_by_member_channel_ids)) {
+    assert_character(
+      filter_by_member_channel_ids,
+      min.len = 1,
+      max.len = 100,
+      any.missing = FALSE,
+      min.chars = 1,
+      .var.name = "filter_by_member_channel_ids"
+    )
+    query$filterByMemberChannelId <- paste(filter_by_member_channel_ids, collapse = ",")
   }
 
   fetch_page <- function(token = NULL) {
@@ -65,12 +78,6 @@ list_channel_members <- function(part = "snippet",
 
   initial_res <- fetch_page(page_token)
 
-  if (is.null(initial_res$items) || length(initial_res$items) == 0) {
-    if (simplify) return(data.frame())
-    return(initial_res)
-  }
-
-  # Pagination
   paginated_data <- paginate_api_request(
     initial_response = initial_res,
     fetch_next_page_fn = fetch_page,
@@ -79,22 +86,36 @@ list_channel_members <- function(part = "snippet",
 
   if (!simplify) {
     initial_res$items <- paginated_data$items
-    return(initial_res)
+    initial_res$nextPageToken <- paginated_data$final_page_token
+    return(add_tuber_attributes(
+      initial_res,
+      api_calls_made = paginated_data$page_count,
+      function_name = "list_channel_members",
+      results_found = length(paginated_data$items),
+      response_format = "list"
+    ))
   }
 
-  # Simplify to data frame
-  res_df <- map_df(paginated_data$items, function(x) {
+  res_df <- items_to_frame(paginated_data$items, function(x) {
     data.frame(
-      id = x$id %||% NA_character_,
-      creatorChannelId = x$snippet$creatorChannelId %||% NA_character_,
-      memberDetails_channelId = x$snippet$memberDetails$channelId %||% NA_character_,
-      memberDetails_channelUrl = x$snippet$memberDetails$channelUrl %||% NA_character_,
-      memberDetails_displayName = x$snippet$memberDetails$displayName %||% NA_character_,
-      memberDetails_profileImageUrl = x$snippet$memberDetails$profileImageUrl %||% NA_character_,
-      memberSince_snippet_creatorChannelId = x$snippet$memberSince$snippet$creatorChannelId %||% NA_character_,
-      memberSince_snippet_memberDetails_channelId = x$snippet$memberSince$snippet$memberDetails$channelId %||% NA_character_,
-      memberSince_snippet_memberDetails_channelUrl = x$snippet$memberSince$snippet$memberDetails$channelUrl %||% NA_character_,
-      memberSince_snippet_memberDetails_displayName = x$snippet$memberSince$snippet$memberDetails$displayName %||% NA_character_,
+      member_id = x$id %||% NA_character_,
+      creator_channel_id = x$snippet$creatorChannelId %||% NA_character_,
+      member_channel_id = x$snippet$memberDetails$channelId %||% NA_character_,
+      member_channel_url = x$snippet$memberDetails$channelUrl %||% NA_character_,
+      member_name = x$snippet$memberDetails$displayName %||% NA_character_,
+      member_profile_image_url = x$snippet$memberDetails$profileImageUrl %||% NA_character_,
+      highest_accessible_level = x$snippet$membershipsDetails$highestAccessibleLevel %||%
+        NA_character_,
+      highest_accessible_level_name =
+        x$snippet$membershipsDetails$highestAccessibleLevelDisplayName %||% NA_character_,
+      accessible_levels = I(list(
+        x$snippet$membershipsDetails$accessibleLevels %||% character()
+      )),
+      member_since = x$snippet$membershipsDetails$membershipsDuration$memberSince %||%
+        NA_character_,
+      member_total_duration_months = as.integer(
+        x$snippet$membershipsDetails$membershipsDuration$memberTotalDurationMonths %||% NA
+      ),
       stringsAsFactors = FALSE
     )
   })

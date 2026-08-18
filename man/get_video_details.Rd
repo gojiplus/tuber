@@ -10,7 +10,7 @@ get_video_details(
   simplify = TRUE,
   batch_size = 50,
   show_progress = NULL,
-  auth = "token",
+  auth = "key",
   ...
 )
 }
@@ -25,12 +25,15 @@ get_video_details(
 
 \item{show_progress}{Whether to show progress for large batches. Default: TRUE for >10 videos.}
 
-\item{auth}{Authentication method: "token" (OAuth2) or "key" (API key). Default: "token".}
+\item{auth}{Authentication method, `"key"` (the default) or `"token"`.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-When \code{simplify = TRUE} (default): Data frame with video details (not available for owner-only parts).
+When \code{simplify = TRUE} (default): a data frame whose columns mirror the
+requested API parts. Since `part` is user-selectable, these columns retain
+YouTube's field names rather than the fixed snake-case schemas used by
+`list_*()` functions. Owner-only parts cannot be simplified.
 When \code{simplify = FALSE}: List with items containing video details.
 
 The result includes metadata as attributes:
@@ -70,10 +73,9 @@ df <- get_video_details(video_ids, simplify = TRUE)
 # Get specific parts
 stats <- get_video_details(video_ids, part = c("statistics", "contentDetails"))
 
-# Extract specific fields:
-details <- get_video_details("yJXTXN4xrI8")
+# Preserve the nested API resource when that is easier to inspect:
+details <- get_video_details("yJXTXN4xrI8", simplify = FALSE)
 title <- details$items[[1]]$snippet$title
-view_count <- details$items[[1]]$statistics$viewCount
 }
 
 }

@@ -31,17 +31,25 @@ set_video_thumbnail <- function(video_id, file, ...) {
 
   file_size <- file.info(file)$size
   if (file_size > 2 * 1024 * 1024) {
-    warning("Thumbnail file size exceeds 2MB. The upload may fail.")
+    abort(
+      "Thumbnail file exceeds YouTube's 2 MB limit",
+      file_path = file,
+      class = "tuber_file_too_large"
+    )
   }
 
   yt_check_token()
+  track_quota_usage("thumbnails", "set")
 
   url <- "https://www.googleapis.com/upload/youtube/v3/thumbnails/set"
 
   req <- httr::POST(
     url,
-    query = list(videoId = video_id),
-    body = httr::upload_file(file),
+    query = list(videoId = video_id, uploadType = "media"),
+    body = httr::upload_file(
+      file,
+      type = mime::guess_type(file, empty = "application/octet-stream")
+    ),
     config(token = getOption("google_token")),
     ...
   )

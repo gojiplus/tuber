@@ -2,75 +2,53 @@
 % Please edit documentation in R/list_channel_activities.R
 \name{list_channel_activities}
 \alias{list_channel_activities}
-\title{List Channel Activity}
+\title{List Channel Activities}
 \usage{
 list_channel_activities(
-  filter = NULL,
-  part = "snippet",
+  channel_id,
+  part = c("snippet", "contentDetails"),
   max_results = 50,
   page_token = NULL,
   published_after = NULL,
   published_before = NULL,
   region_code = NULL,
   simplify = TRUE,
+  auth = "key",
   ...
 )
 }
 \arguments{
-\item{filter}{string; Required.
-named vector of length 1
-potential names of the entry in the vector:
-\code{channel_id}: ID of the channel. Required. No default.}
+\item{channel_id}{Channel ID.}
 
-\item{part}{specify which part do you want. It can only be one of the three:
-\code{contentDetails, id, snippet}. Default is \code{snippet}.}
+\item{part}{Character vector of activity resource parts.}
 
-\item{max_results}{Maximum number of items that should be returned. Integer.
-Optional. Default is 50. Values over 50 will trigger additional requests and
-may increase API quota usage.}
+\item{max_results}{Maximum total number of activities to return.}
 
-\item{page_token}{specific page in the result set that should be returned,
-optional}
+\item{page_token}{Optional page token at which to start.}
 
-\item{published_after}{Character. Optional. RFC 339 Format. For instance,
-"1970-01-01T00:00:00Z"}
+\item{published_after}{Optional RFC 3339 lower timestamp bound.}
 
-\item{published_before}{Character. Optional. RFC 339 Format. For instance,
-"1970-01-01T00:00:00Z"}
+\item{published_before}{Optional RFC 3339 upper timestamp bound.}
 
-\item{region_code}{ISO 3166-1 alpha-2 country code, optional, see also
-\code{\link{list_regions}}}
+\item{region_code}{Optional ISO 3166-1 alpha-2 content-region code.}
 
-\item{simplify}{Data Type: Boolean. Default is \code{TRUE}. If \code{TRUE}
-and if part requested is \code{contentDetails},
-the function returns a \code{data.frame}. Else a list with all the
- information returned.}
+\item{simplify}{If `TRUE`, return a data frame; otherwise return the raw API
+response with all collected items.}
 
-\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
+\item{auth}{Authentication method, `"key"` or `"token"`.}
+
+\item{...}{Additional arguments passed to [tuber_GET()].}
 }
 \value{
-named list
-If \code{simplify} is \code{TRUE}, a data.frame is returned with 18 columns:
-\code{publishedAt, channelId, title, description, thumbnails.default.url,
-thumbnails.default.width, thumbnails.default.height,
-thumbnails.medium.url, thumbnails.medium.width, thumbnails.medium.height,
-thumbnails.high.url, thumbnails.high.width,
-thumbnails.high.height, thumbnails.standard.url, thumbnails.standard.width,
-thumbnails.standard.height, channelTitle, type}
+A data frame when `simplify = TRUE`; otherwise an activities-list
+response.
 }
 \description{
-Returns a list of channel events that match the request criteria.
+List Channel Activities
 }
 \examples{
 \dontrun{
-
-# Set API token via yt_oauth() first
-
-list_channel_activities(filter = c(channel_id = "UCRw8bIz2wMLmfgAgWm903cA"))
-list_channel_activities(filter = c(channel_id = "UCRw8bIz2wMLmfgAgWm903cA", regionCode="US"))
-list_channel_activities(filter = c(channel_id = "UCMtFAi84ehTSYSE9XoHefig"),
-                        published_before = "2016-02-10T00:00:00Z",
-                        published_after = "2016-01-01T00:00:00Z")
+list_channel_activities("UCRw8bIz2wMLmfgAgWm903cA", max_results = 100)
 }
 }
 \references{

@@ -1,87 +1,101 @@
-#' Get statistics of a Video or Videos
+#' Get Video Statistics
 #'
-#' Gets view count, like count, comment count and other statistics for YouTube video(s).
-#' For unlisted videos, you must use OAuth authentication with the channel owner's credentials.
-#' Automatically uses batch processing when multiple video IDs are provided for efficiency.
+#' Retrieves statistics for one or more videos and always returns one row per
+#' video found.
 #'
-#' @param video_ids Character vector. One or more video IDs. Required.
-#' @param include_content_details Boolean. Include contentDetails (duration, definition, etc.) in response. Default: FALSE.
-#' @param batch_size Integer. Number of videos per API call when batching (max 50). Default: 50.
-#' @param simplify Boolean. Return simplified data frame for multiple videos. Default: TRUE.
-#' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
+#' @param video_ids Character vector of YouTube video IDs.
+#' @param include_content_details Include duration, definition, dimension,
+#' licensed-content, and projection fields.
+#' @param batch_size Number of video IDs per API request, up to 50.
+#' @param auth Authentication method, `"token"` or `"key"`.
+#' @param ... Additional arguments passed to [tuber_GET()].
 #'
-#' @return For single video: list with elements \code{id, viewCount, likeCount,
-#' dislikeCount, favoriteCount, commentCount}. When \code{include_content_details = TRUE},
-#' also includes \code{duration, definition, dimension, licensedContent, projection}.
-#' For multiple videos: data frame with one row per video (if simplify=TRUE) or list of results.
-#'
+#' @return A data frame with snake-case column names and one row per video.
+#' Count columns are numeric and missing statistics are returned as `NA`.
 #' @export
-#'
-#' @references \url{https://developers.google.com/youtube/v3/docs/videos/list#parameters}
-#'
+#' @references \url{https://developers.google.com/youtube/v3/docs/videos/list}
 #' @examples
 #' \dontrun{
-#'
-#' # Set API token via yt_oauth() first
-#'
-#' # Single video
-#' get_stats(video_ids="N708P-A45D0")
-#'
-#' # Multiple videos (automatic batching)
-#' video_ids <- c("N708P-A45D0", "M7FIvfx5J10", "kJQP7kiw5Fk")
-#' stats_df <- get_stats(video_ids)
-#'
-#' # Include video duration and other content details:
-#' get_stats(video_ids="N708P-A45D0", include_content_details = TRUE)
-#'
-#' # For unlisted videos, must authenticate as channel owner:
-#' # yt_oauth("your_client_id", "your_client_secret")
-#' # get_stats(video_ids="your_unlisted_video_id")
+#' get_video_stats("N708P-A45D0")
+#' get_video_stats(c("N708P-A45D0", "M7FIvfx5J10"), auth = "key")
 #' }
-
-get_stats <- function(video_ids = NULL, include_content_details = FALSE, batch_size = 50, simplify = TRUE, ...) {
-
-  # Modern validation
+get_video_stats <- function(video_ids,
+                            include_content_details = FALSE,
+                            batch_size = 50,
+                            auth = "key",
+                            ...) {
   assert_character(video_ids, any.missing = FALSE, min.len = 1, .var.name = "video_ids")
-  assert_logical(include_content_details, len = 1, .var.name = "include_content_details")
+  assert_flag(include_content_details, .var.name = "include_content_details")
   assert_integerish(batch_size, len = 1, lower = 1, upper = 50, .var.name = "batch_size")
-  assert_logical(simplify, len = 1, .var.name = "simplify")
+  assert_choice(auth, c("token", "key"), .var.name = "auth")
 
-  # Determine part parameter
-  part <- if (include_content_details) "statistics,contentDetails" else "statistics"
-
-  # Use get_video_details with appropriate parameters
-  result <- get_video_details(
+  part <- if (include_content_details) {
+    c("statistics", "contentDetails")
+  } else {
+    "statistics"
+  }
+  details <- get_video_details(
     video_ids = video_ids,
     part = part,
-    simplify = simplify,
+    simplify = TRUE,
     batch_size = batch_size,
+    auth = auth,
     ...
   )
 
-  # For single video, extract just the stats/content as before
-  if (length(video_ids) == 1 && !simplify && !is.null(result$items)) {
-    res <- result$items[[1]]
-    stat_res <- res$statistics
-
-    # Include contentDetails if requested
-    if (include_content_details && !is.null(res$contentDetails)) {
-      content_res <- res$contentDetails
-      extracted <- c(id = res$id, stat_res, content_res)
-    } else {
-      extracted <- c(id = res$id, stat_res)
-    }
-
-    # Add standardized attributes
-    result <- add_tuber_attributes(
-      extracted,
-      api_calls_made = 1,
-      function_name = "get_stats",
-      parameters = list(video_ids = video_ids, include_content_details = include_content_details),
-      results_found = 1,
-      content_details_included = include_content_details
+  if (!is.data.frame(details) || nrow(details) == 0) {
+    empty_result <- data.frame(
+      video_id = character(),
+      view_count = numeric(),
+      like_count = numeric(),
+      favorite_count = numeric(),
+      comment_count = numeric(),
+      stringsAsFactors = FALSE
     )
+    if (include_content_details) {
+      empty_result$duration <- character()
+      empty_result$definition <- character()
+      empty_result$dimension <- character()
+      empty_result$licensed_content <- logical()
+      empty_result$projection <- character()
+    }
+    return(add_tuber_attributes(
+      empty_result,
+      api_calls_made = attr(details, "tuber_api_calls") %||% 0,
+      function_name = "get_video_stats",
+      results_found = 0,
+      response_format = "data.frame"
+    ))
   }
 
-  result
+  result <- data.frame(
+    video_id = details$id,
+    view_count = as.numeric(details$statistics_viewCount %||% NA),
+    like_count = as.numeric(details$statistics_likeCount %||% NA),
+    favorite_count = as.numeric(details$statistics_favoriteCount %||% NA),
+    comment_count = as.numeric(details$statistics_commentCount %||% NA),
+    stringsAsFactors = FALSE
+  )
+
+  if (include_content_details) {
+    result$duration <- details$contentDetails_duration %||% NA_character_
+    result$definition <- details$contentDetails_definition %||% NA_character_
+    result$dimension <- details$contentDetails_dimension %||% NA_character_
+    result$licensed_content <- details$contentDetails_licensedContent %||% NA
+    result$projection <- details$contentDetails_projection %||% NA_character_
+  }
+
+  add_tuber_attributes(
+    result,
+    api_calls_made = attr(details, "tuber_api_calls") %||%
+      ceiling(length(unique(video_ids)) / batch_size),
+    function_name = "get_video_stats",
+    parameters = list(
+      video_ids = video_ids,
+      include_content_details = include_content_details,
+      batch_size = batch_size
+    ),
+    results_found = nrow(result),
+    response_format = "data.frame"
+  )
 }

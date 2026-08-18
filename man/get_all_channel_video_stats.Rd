@@ -4,12 +4,20 @@
 \alias{get_all_channel_video_stats}
 \title{Get statistics on all the videos in a Channel}
 \usage{
-get_all_channel_video_stats(channel_id = NULL, mine = FALSE, ...)
+get_all_channel_video_stats(
+  channel_id = NULL,
+  mine = FALSE,
+  auth = if (mine) "token" else "key",
+  ...
+)
 }
 \arguments{
 \item{channel_id}{Character. Id of the channel}
 
 \item{mine}{Boolean. TRUE if you want to fetch stats of your own channel. Default is FALSE.}
+
+\item{auth}{Authentication method, `"key"` or `"token"`. `mine = TRUE`
+requires OAuth.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }

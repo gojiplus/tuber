@@ -10,12 +10,14 @@ yt_search(
   channel_id = NULL,
   channel_type = NULL,
   type = "video",
+  order = "relevance",
   event_type = NULL,
   location = NULL,
   location_radius = NULL,
   published_after = NULL,
   published_before = NULL,
   video_definition = "any",
+  video_duration = "any",
   video_caption = "any",
   video_license = "any",
   video_syndicated = "any",
@@ -26,6 +28,7 @@ yt_search(
   get_all = TRUE,
   page_token = NULL,
   max_pages = Inf,
+  auth = "key",
   ...
 )
 }
@@ -60,6 +63,9 @@ channel; Optional.}
 \item{type}{Character. Optional. Takes one of three values:
 \code{'video', 'channel', 'playlist'}. Default is \code{'video'}.}
 
+\item{order}{Character. Sort order. One of \code{'date', 'rating',
+'relevance', 'title', 'videoCount', 'viewCount'}.}
+
 \item{event_type}{Character. Optional. Takes one of three values:
 \code{'completed', 'live', 'upcoming'}}
 
@@ -78,6 +84,10 @@ For instance, "1970-01-01T00:00:00Z"}
 \item{video_definition}{Character. Optional.
 Takes one of three values: \code{'any'} (return all videos; Default),
 \code{'high', 'standard'}}
+
+\item{video_duration}{Character. Optional. One of \code{'any', 'long',
+'medium', 'short'}. YouTube defines `short` as less than four minutes; it
+does not identify the YouTube Shorts product.}
 
 \item{video_caption}{Character. Optional. Takes one of three values:
 \code{'any'} (return all videos; Default), \code{'closedCaption', 'none'}.
@@ -122,16 +132,13 @@ returned, optional}
 Default is Inf (no page limit). Setting a lower value can reduce API quota
 usage.}
 
+\item{auth}{Authentication method: `"token"` or `"key"`.}
+
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-data.frame with 16 elements: \code{video_id, publishedAt,
-channelId, title, description,
-thumbnails.default.url, thumbnails.default.width, thumbnails.default.height,
-thumbnails.medium.url,
-thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url,
-thumbnails.high.width,
-thumbnails.high.height, channelTitle, liveBroadcastContent}
+When `simplify = TRUE`, a data frame with a resource ID column and
+snake-case metadata columns. Otherwise, a raw search-list response.
 The returned data.frame also has the following attributes:
 \code{total_results}: The total number of results reported by the API
 \code{actual_results}: The actual number of rows returned

@@ -128,14 +128,14 @@ mock_search_response <- function(query) {
 }
 
 # Test playlist pagination logic
-test_that("get_playlist_items handles pagination correctly", {
+test_that("list_playlist_items handles pagination correctly", {
   # Mock the tuber_GET function
   with_mocked_bindings(
     tuber_GET = mock_tuber_GET,
     {
       # Test requesting more than 50 items triggers pagination
-      result <- get_playlist_items(
-        filter = c(playlist_id = "PLtest123"),
+      result <- list_playlist_items(
+        playlist_id = "PLtest123",
         max_results = 55,
         simplify = FALSE
       )
@@ -146,13 +146,13 @@ test_that("get_playlist_items handles pagination correctly", {
   )
 })
 
-test_that("get_playlist_items respects max_results limit", {
+test_that("list_playlist_items respects max_results limit", {
   with_mocked_bindings(
     tuber_GET = mock_tuber_GET,
     {
       # Test that we don't get more than requested
-      result <- get_playlist_items(
-        filter = c(playlist_id = "PLtest123"),
+      result <- list_playlist_items(
+        playlist_id = "PLtest123",
         max_results = 25,
         simplify = FALSE
       )
@@ -165,18 +165,17 @@ test_that("get_playlist_items respects max_results limit", {
 # Test comment pagination logic
 # Skipping complex comment threading test due to API response complexity
 
-test_that("get_comment_threads handles small max_results efficiently", {
+test_that("list_comment_threads handles small max_results efficiently", {
   with_mocked_bindings(
     tuber_GET = mock_tuber_GET,
     {
-      result <- get_comment_threads(
-        filter = c(video_id = "test123"),
+      result <- list_comment_threads(
+        video_id = "test123",
         max_results = 50,
         simplify = TRUE
       )
 
-      # The function returns a matrix when simplified, not a data.frame
-      expect_true(is.matrix(result) || is.data.frame(result))
+      expect_s3_class(result, "data.frame")
       expect_true(nrow(result) <= 50)
     }
   )
@@ -198,11 +197,14 @@ test_that("yt_search handles get_all parameter correctly", {
       expect_true(nrow(result_single) <= 50)
 
       # Test with get_all = TRUE and max_pages limit
-      result_all <- yt_search(
-        term = "test",
-        max_results = 100,
-        get_all = TRUE,
-        max_pages = 3
+      expect_warning(
+        result_all <- yt_search(
+          term = "test",
+          max_results = 100,
+          get_all = TRUE,
+          max_pages = 3
+        ),
+        "Only retrieved 3 pages"
       )
 
       expect_s3_class(result_all, "data.frame")

@@ -4,37 +4,55 @@
 #' @name quota_management
 NULL
 
-# Global environment for quota tracking
+# Session-local quota estimates. Google is the source of truth for project
+# usage; these counters help users understand calls made by this R session.
 .tuber_env <- new.env(parent = emptyenv())
-.tuber_env$quota_used <- 0
-.tuber_env$quota_limit <- 10000  # Default daily limit
-.tuber_env$quota_reset_time <- as.POSIXct(Sys.Date() + 1)  # Midnight UTC
-.tuber_env$request_times <- numeric(0)
+
+next_quota_reset <- function(now = Sys.time()) {
+  quota_tz <- "America/Los_Angeles"
+  today <- as.Date(format(now, tz = quota_tz))
+  as.POSIXct(paste(today + 1, "00:00:00"), tz = quota_tz)
+}
+
+initialize_quota_state <- function() {
+  .tuber_env$quota_used <- c(data = 0L, search = 0L, video_uploads = 0L)
+  .tuber_env$quota_limit <- c(data = 10000L, search = 100L, video_uploads = 100L)
+  .tuber_env$quota_reset_time <- next_quota_reset()
+  .tuber_env$request_times <- numeric()
+}
+
+initialize_quota_state()
 
 #' Get Current Quota Usage
 #'
-#' Returns the current estimated quota usage for the day
+#' Returns session-local estimated quota usage for the current quota day.
+#' Actual project usage is available in the Google Cloud Console.
 #'
-#' @return List with quota_used, quota_limit, quota_remaining, and reset_time
+#' @return A data frame with one row per quota bucket and columns for estimated
+#' usage, configured limits, remaining quota, and reset time.
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #' quota_status <- yt_get_quota_usage()
-#' cat("Used:", quota_status$quota_used, "/", quota_status$quota_limit)
+#' quota_status[quota_status$bucket == "data", ]
 #' }
 yt_get_quota_usage <- function() {
-  # Reset quota if it's a new day
   if (Sys.time() > .tuber_env$quota_reset_time) {
     yt_reset_quota()
   }
 
-  list(
-    quota_used = .tuber_env$quota_used,
-    quota_limit = .tuber_env$quota_limit,
-    quota_remaining = max(0, .tuber_env$quota_limit - .tuber_env$quota_used),
-    reset_time = .tuber_env$quota_reset_time,
-    requests_last_minute = sum(.tuber_env$request_times > (Sys.time() - 60))
+  data.frame(
+    bucket = names(.tuber_env$quota_used),
+    quota_used = unname(.tuber_env$quota_used),
+    quota_limit = unname(.tuber_env$quota_limit),
+    quota_remaining = pmax(0, .tuber_env$quota_limit - .tuber_env$quota_used),
+    reset_time = rep(.tuber_env$quota_reset_time, length(.tuber_env$quota_used)),
+    requests_last_minute = rep(
+      sum(.tuber_env$request_times > as.numeric(Sys.time() - 60)),
+      length(.tuber_env$quota_used)
+    ),
+    row.names = NULL
   )
 }
 
@@ -42,30 +60,32 @@ yt_get_quota_usage <- function() {
 #'
 #' Set the daily quota limit (default is 10,000 units)
 #'
-#' @param limit Integer. Daily quota limit in units
+#' @param limit Integer. Daily quota limit for the selected bucket.
+#' @param bucket Quota bucket: `"data"`, `"search"`, or `"video_uploads"`.
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #' # If you have a higher quota limit
-#' yt_set_quota_limit(50000)
+#' yt_set_quota_limit(50000, bucket = "data")
 #' }
-yt_set_quota_limit <- function(limit) {
-  # Modern validation using checkmate
-  assert_numeric(limit, len = 1, lower = 1, .var.name = "limit")
-  .tuber_env$quota_limit <- as.integer(limit)
-  invisible(.tuber_env$quota_limit)
+yt_set_quota_limit <- function(limit, bucket = "data") {
+  assert_count(limit, positive = TRUE, .var.name = "limit")
+  assert_choice(bucket, names(.tuber_env$quota_limit), .var.name = "bucket")
+  .tuber_env$quota_limit[[bucket]] <- as.integer(limit)
+  invisible(.tuber_env$quota_limit[[bucket]])
 }
 
 #' Reset Quota Counter
 #'
-#' Reset the quota counter (typically done automatically at midnight UTC)
+#' Reset the quota counter (typically done automatically at midnight Pacific
+#' Time, when YouTube's daily quota resets)
 #'
 #' @export
 yt_reset_quota <- function() {
-  .tuber_env$quota_used <- 0
-  .tuber_env$quota_reset_time <- as.POSIXct(Sys.Date() + 1)
-  .tuber_env$request_times <- numeric(0)
+  .tuber_env$quota_used[] <- 0L
+  .tuber_env$quota_reset_time <- next_quota_reset()
+  .tuber_env$request_times <- numeric()
   invisible(NULL)
 }
 
@@ -73,86 +93,93 @@ yt_reset_quota <- function() {
 #'
 #' Internal function to track API usage
 #'
-#' @param endpoint Character. API endpoint name
-#' @param parts Character vector. Parts requested
-#' @param additional_cost Integer. Additional cost for complex operations
+#' @param endpoint Character. API resource name.
+#' @param method Character. API method such as `"list"`, `"insert"`,
+#' `"update"`, `"delete"`, or `"download"`.
 #'
 #' @keywords internal
-track_quota_usage <- function(endpoint, parts = NULL, additional_cost = 0) {
-  # Modern validation using checkmate
-  assert_character(endpoint, len = 1, min.chars = 1, .var.name = "endpoint")
-  if (!is.null(parts)) {
-    assert_character(parts, .var.name = "parts")
-  }
-  assert_integerish(additional_cost, len = 1, lower = 0, .var.name = "additional_cost")
+quota_cost <- function(endpoint, method) {
+  endpoint <- sub("/.*$", "", endpoint)
+  key <- paste(endpoint, method, sep = ".")
 
-  # Reset quota if it's a new day
+  if (identical(key, "search.list")) {
+    return(list(bucket = "search", cost = 1L))
+  }
+  if (identical(key, "videos.insert")) {
+    return(list(bucket = "video_uploads", cost = 1L))
+  }
+
+  costs <- c(
+    "captions.list" = 50L,
+    "captions.download" = 200L,
+    "captions.insert" = 400L,
+    "captions.update" = 450L,
+    "members.list" = 2L,
+    "thumbnails.set" = 50L
+  )
+
+  default_cost <- switch(
+    method,
+    list = 1L,
+    get = 1L,
+    insert = 50L,
+    update = 50L,
+    delete = 50L,
+    set = 50L,
+    1L
+  )
+
+  specific_cost <- unname(costs[key])
+  if (is.na(specific_cost)) specific_cost <- default_cost
+
+  list(bucket = "data", cost = specific_cost)
+}
+
+track_quota_usage <- function(endpoint, method = "list") {
+  assert_character(endpoint, len = 1, min.chars = 1, .var.name = "endpoint")
+  assert_choice(
+    method,
+    c("list", "get", "insert", "update", "delete", "download", "set"),
+    .var.name = "method"
+  )
+
   if (Sys.time() > .tuber_env$quota_reset_time) {
     yt_reset_quota()
   }
 
-  # Calculate cost based on endpoint and parts
-  # Updated December 4, 2025: Video upload quota reduced from ~1600 to 100 units
-  base_costs <- list(
-    search = 100,          # Search operations are expensive
-    videos = 1,            # Video details (read operations)
-    "videos/insert" = 100, # Video uploads (write operations) - updated cost
-    channels = 1,          # Channel details
-    playlists = 1,         # Playlist details
-    playlistItems = 1,     # Playlist items
-    commentThreads = 1,    # Comment threads
-    comments = 1,          # Individual comments
-    captions = 50,         # Caption operations
-    channelSections = 1    # Channel sections
-  )
-
-  # Base cost for the endpoint
-  cost <- base_costs[[endpoint]] %||% 1
-
-  # Add part-based costs (some parts are more expensive)
-  if (!is.null(parts)) {
-    expensive_parts <- c("statistics", "contentDetails", "topicDetails", "recordingDetails")
-    part_list <- strsplit(parts, ",")[[1]]
-    part_list <- trimws(part_list)
-    expensive_count <- sum(part_list %in% expensive_parts)
-    cost <- cost + expensive_count
-  }
-
-  # Add any additional cost
-  cost <- cost + additional_cost
-
-  # Track the usage
-  .tuber_env$quota_used <- .tuber_env$quota_used + cost
+  estimate <- quota_cost(endpoint, method)
+  .tuber_env$quota_used[[estimate$bucket]] <-
+    .tuber_env$quota_used[[estimate$bucket]] + estimate$cost
   .tuber_env$request_times <- c(.tuber_env$request_times, as.numeric(Sys.time()))
 
-  # Keep only last hour of request times for rate limiting
   one_hour_ago <- as.numeric(Sys.time() - 3600)
   .tuber_env$request_times <- .tuber_env$request_times[.tuber_env$request_times > one_hour_ago]
 
-  # Check for quota exhaustion
   quota_status <- yt_get_quota_usage()
+  bucket_status <- quota_status[quota_status$bucket == estimate$bucket, , drop = FALSE]
 
-  if (quota_status$quota_remaining <= 0) {
-    warn("YouTube API quota limit reached",
-         quota_used = .tuber_env$quota_used,
-         quota_limit = .tuber_env$quota_limit,
-         reset_time = format(.tuber_env$quota_reset_time, "%Y-%m-%d %H:%M:%S UTC"),
+  if (bucket_status$quota_remaining <= 0) {
+    warn("Estimated YouTube API quota limit reached for this session",
+         bucket = estimate$bucket,
+         quota_used = bucket_status$quota_used,
+         quota_limit = bucket_status$quota_limit,
+         reset_time = bucket_status$reset_time,
          class = "tuber_quota_exceeded")
-  } else if (quota_status$quota_remaining <= 100) {
-    warn("YouTube API quota nearly exhausted",
-         quota_remaining = quota_status$quota_remaining,
+  } else if (bucket_status$quota_remaining <= max(1, 0.01 * bucket_status$quota_limit)) {
+    warn("Estimated YouTube API quota nearly exhausted for this session",
+         bucket = estimate$bucket,
+         quota_remaining = bucket_status$quota_remaining,
          class = "tuber_quota_warning")
   }
 
-  # Rate limiting check (basic)
-  if (quota_status$requests_last_minute > 50) {
+  if (bucket_status$requests_last_minute > 50) {
     inform("High request rate detected",
-           requests_last_minute = quota_status$requests_last_minute,
+           requests_last_minute = bucket_status$requests_last_minute,
            help = "Consider adding delays between API calls",
            class = "tuber_high_request_rate")
   }
 
-  invisible(cost)
+  invisible(estimate)
 }
 
 #' Add Exponential Backoff

@@ -17,24 +17,27 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Understanding YouTube API Quotas
+## Understanding YouTube API quotas
 
-The YouTube Data API v3 uses a quota system to manage usage. Every project is allocated 10,000 quota units per day by default.
+YouTube now tracks ordinary Data API units, search calls, and video-upload calls
+in separate default buckets. Google Cloud Console remains the source of truth;
+the package counters only estimate requests made by the current R session.
 
 ### Quota Costs by Operation
 
 Different operations have different quota costs:
 
-| Operation | Quota Cost | Example Function |
+| Operation | Default accounting | Example function |
 |-----------|-----------|------------------|
-| Read (list, search) | 1 unit | `get_video_details()`, `yt_search()` |
-| Search | 100 units | `yt_search()` |
-| Write (insert) | 50 units | `create_playlist()`, `upload_video()` |
-| Update | 50 units | `update_video_metadata()` |
-| Delete | 50 units | `delete_videos()`, `delete_comments()` |
-| Upload video | 1,600 units | `upload_video()` |
+| Ordinary list request | 1 Data API unit | `get_video_details()` |
+| Search request | 1 Search Query call | `yt_search()` |
+| Typical write or delete | 50 Data API units | `create_playlist()`, `delete_video()` |
+| Caption list, download, insert, update | 50, 200, 400, 450 Data API units | Caption functions |
+| Video upload | 1 Video Upload call | `upload_video()` |
 
-**Important:** Search operations (`yt_search()`, `yt_topic_search()`) cost 100 units each, so you can only perform 100 searches per day with the default quota!
+Google's default allocations are 10,000 Data API units, 100 Search Query calls,
+and 100 Video Upload calls per day. These defaults can change or be increased
+for a project.
 
 ### Tracking Quota Usage
 
@@ -48,10 +51,8 @@ quota_status <- yt_get_quota_usage()
 print(quota_status)
 
 # View details
-quota_status$quota_used      # Units used today
-quota_status$quota_limit     # Your daily limit (default: 10,000)
-quota_status$quota_remaining # Units remaining
-quota_status$reset_time      # When quota resets (midnight Pacific Time)
+quota_status[, c("bucket", "quota_used", "quota_limit", "quota_remaining")]
+quota_status$reset_time[1] # Midnight Pacific Time
 ```
 
 ### Setting Custom Quota Limits
@@ -60,7 +61,10 @@ If you've requested a quota increase from Google, update your limit:
 
 ```{r set-quota, eval=FALSE}
 # Set a custom quota limit
-yt_set_quota_limit(50000)
+yt_set_quota_limit(50000, bucket = "data")
+
+# Configure a project-specific search-call allocation
+yt_set_quota_limit(200, bucket = "search")
 
 # Reset quota tracking (e.g., after midnight)
 yt_reset_quota()
@@ -88,7 +92,7 @@ video_stats <- get_video_details(
   auth = "key"
 )
 
-channel_stats <- get_channel_stats(
+channel_stats <- get_channel_details(
   channel_ids = "UCuAXFkgsw1L7xaCfnd5JJOw",
   auth = "key"
 )
@@ -192,15 +196,15 @@ tuber automatically handles pagination for large result sets:
 ```{r pagination, eval=FALSE}
 # Request more items than API allows per page (50)
 # tuber automatically makes multiple API calls
-playlist_items <- get_playlist_items(
+playlist_items <- list_playlist_items(
   playlist_id = "PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf",
   max_results = 200,  # Will make 4 API calls
   auth = "key"
 )
 
 # Get many comments with automatic pagination
-comments <- get_comment_threads(
-  filter = c(video_id = "dQw4w9WgXcQ"),
+comments <- list_comment_threads(
+  video_id = "dQw4w9WgXcQ",
   max_results = 500,  # Will paginate automatically
   auth = "key"
 )
@@ -266,9 +270,9 @@ channels$statistics.videoCount
 channels$brandingSettings.channel.description
 
 # Comment extraction
-comments$snippet.topLevelComment.snippet.textDisplay
-comments$snippet.topLevelComment.snippet.authorDisplayName
-comments$snippet.topLevelComment.snippet.likeCount
+comments$text_display
+comments$author_name
+comments$like_count
 ```
 
 ## Error Handling & Retries
@@ -287,10 +291,11 @@ result <- with_retry(
 ### Handling Quota Exhaustion
 
 ```{r quota-handling, eval=FALSE}
-# Check before making requests
+# Check before making data API requests
 quota <- yt_get_quota_usage()
-if (quota$quota_remaining < 100) {
-  warning("Low quota! Consider waiting until reset at: ", quota$reset_time)
+data_quota <- quota[quota$bucket == "data", ]
+if (data_quota$quota_remaining < 100) {
+  warning("Low quota! Consider waiting until reset at: ", data_quota$reset_time)
 }
 
 # Wrap expensive operations
@@ -324,14 +329,13 @@ tuber includes built-in caching for frequently accessed data:
 tuber_cache_config(
   enabled = TRUE,
   max_size = 100,
-  ttl = 3600  # 1 hour TTL
+  default_ttl = 3600
 )
 
-# Cached functions (no API call if recently fetched)
-cats <- list_videocats_cached(auth = "key")
-langs <- list_langs_cached(auth = "key")
-regions <- list_regions_cached(auth = "key")
-channel <- get_channel_info_cached(channel_id = "UCxyz", auth = "key")
+# Eligible GET requests are cached transparently
+cats <- list_video_categories(region_code = "US", auth = "key")
+langs <- list_languages(auth = "key")
+regions <- list_regions(auth = "key")
 
 # Check cache status
 tuber_cache_info()
@@ -384,16 +388,14 @@ cat("Total views:", best_trend$total_views, "\n")
 
 ```{r example-batch, eval=FALSE}
 # Get all videos from a playlist
-playlist_videos <- get_playlist_items(
+playlist_videos <- list_playlist_items(
   playlist_id = "PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf",
   max_results = 100,
   auth = "key"
 )
 
 # Extract video IDs
-video_ids <- sapply(playlist_videos$items, function(x) {
-  x$contentDetails$videoId
-})
+video_ids <- playlist_videos$video_id
 
 # Get detailed stats for all videos in one call
 video_stats <- get_video_details(

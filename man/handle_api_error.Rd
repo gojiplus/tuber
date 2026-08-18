@@ -26,3 +26,4 @@ Stops execution with informative error message
 \description{
 Handle YouTube API errors with context-specific messages
 }
+\keyword{internal}

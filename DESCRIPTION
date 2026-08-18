@@ -1,17 +1,17 @@
 Package: tuber
-Title: Client for the YouTube API
-Version: 1.4.1
-Date: 2026-08-02
+Title: Client for the YouTube Data API
+Version: 2.0.0
+Date: 2026-08-17
 Language: en-US
 Authors@R: c(
     person("Gaurav", "Sood", , "gsood07@gmail.com", role = c("aut", "cre")),
     person("Kate", "Lyons", , "k.lyons7@gmail.com", role = "ctb"),
     person("John", "Muschelli", , "muschellij2@gmail.com", role = "ctb")
   )
-Description: Get comments posted on YouTube videos, information on how
-    many times a video has been liked, search for videos with particular
-    content, and much more. You can also scrape captions from a few
-    videos. To learn more about the YouTube API, see
+Description: Search public YouTube data and retrieve channels, videos,
+    playlists, comments, captions, live broadcasts, and reference data.
+    Authenticated methods support common uploads, playlist changes, comment
+    moderation, and media updates. See the YouTube Data API documentation at
     <https://developers.google.com/youtube/v3/>.
 License: MIT + file LICENSE
 URL: https://gojiplus.github.io/tuber/, https://github.com/gojiplus/tuber

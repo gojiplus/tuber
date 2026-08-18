@@ -17,3 +17,4 @@ Logical indicating if this specific query is cacheable
 \description{
 Check if query parameters indicate static data
 }
+\keyword{internal}

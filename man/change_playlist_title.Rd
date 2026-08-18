@@ -2,26 +2,40 @@
 % Please edit documentation in R/change_playlist_title.R
 \name{change_playlist_title}
 \alias{change_playlist_title}
-\title{Change the title of a YouTube playlist.}
+\title{Change a Playlist Title}
 \usage{
-change_playlist_title(playlist_id, new_title, auth = "token")
+change_playlist_title(
+  playlist_id,
+  new_title,
+  on_behalf_of_content_owner = NULL,
+  ...
+)
 }
 \arguments{
-\item{playlist_id}{A character string specifying the ID of the playlist you want to update.}
+\item{playlist_id}{YouTube playlist ID.}
 
-\item{new_title}{A character string specifying the new title for the playlist.}
+\item{new_title}{New playlist title.}
 
-\item{auth}{Authentication method: "token" (OAuth2) or "key" (API key)}
+\item{on_behalf_of_content_owner}{Optional YouTube content-owner ID. This is
+only available to authorized YouTube content partners.}
+
+\item{...}{Additional arguments passed to [list_playlists()] and
+[tuber_PUT()].}
 }
 \value{
-A list containing the server response after the update attempt.
+The updated playlist resource.
 }
 \description{
-This function updates the title of an existing YouTube playlist using the YouTube Data API.
+Changes a playlist title without deleting the existing description or
+default language. YouTube replaces every mutable property in the `snippet`
+part during an update, so this function retrieves and preserves the other
+snippet properties first.
 }
 \examples{
 \dontrun{
-change_playlist_title(playlist_id = "YourPlaylistID", new_title = "New Playlist Title")
+change_playlist_title("PLAYLIST_ID", "New Playlist Title")
 }
-
+}
+\references{
+<https://developers.google.com/youtube/v3/docs/playlists/update>
 }

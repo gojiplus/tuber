@@ -85,15 +85,8 @@ mock_update_video_response <- function(body) {
     kind = "youtube#video",
     etag = "mock_etag",
     id = body$id,
-    snippet = list(
-      title = body$snippet$title,
-      description = body$snippet$description,
-      categoryId = body$snippet$categoryId
-    ),
-    status = list(
-      privacyStatus = body$status$privacyStatus,
-      selfDeclaredMadeForKids = body$status$selfDeclaredMadeForKids
-    )
+    snippet = body$snippet,
+    status = body$status
   )
 }
 
@@ -102,9 +95,7 @@ mock_update_playlist_response <- function(body) {
     kind = "youtube#playlist",
     etag = "mock_etag",
     id = body$id,
-    snippet = list(
-      title = body$snippet$title
-    )
+    snippet = body$snippet
   )
 }
 
@@ -208,88 +199,88 @@ test_that("add_video_to_playlist respects position parameter", {
 })
 
 # ============================================================================
-# delete_comments Tests
+# delete_comment Tests
 # ============================================================================
 
-test_that("delete_comments validates id parameter", {
-  expect_error(delete_comments(id = NULL), "id")
-  expect_error(delete_comments(id = ""), "id")
-  expect_error(delete_comments(id = 123), "id")
-  expect_error(delete_comments(id = c("a", "b")), "id")
+test_that("delete_comment validates comment_id", {
+  expect_error(delete_comment(comment_id = NULL), "comment_id")
+  expect_error(delete_comment(comment_id = ""), "comment_id")
+  expect_error(delete_comment(comment_id = 123), "comment_id")
+  expect_error(delete_comment(comment_id = c("a", "b")), "comment_id")
 })
 
-test_that("delete_comments calls API correctly", {
+test_that("delete_comment calls API correctly", {
   with_mocked_bindings(
     tuber_DELETE = mock_tuber_DELETE,
     yt_check_token = function() invisible(NULL),
     {
-      result <- delete_comments(id = "comment123")
+      result <- delete_comment(comment_id = "comment123")
       expect_type(result, "list")
     }
   )
 })
 
 # ============================================================================
-# delete_videos Tests
+# delete_video Tests
 # ============================================================================
 
-test_that("delete_videos validates id parameter", {
-  expect_error(delete_videos(id = NULL), "id")
-  expect_error(delete_videos(id = ""), "id")
-  expect_error(delete_videos(id = 123), "id")
-  expect_error(delete_videos(id = c("a", "b")), "id")
+test_that("delete_video validates video_id", {
+  expect_error(delete_video(video_id = NULL), "video_id")
+  expect_error(delete_video(video_id = ""), "video_id")
+  expect_error(delete_video(video_id = 123), "video_id")
+  expect_error(delete_video(video_id = c("a", "b")), "video_id")
 })
 
-test_that("delete_videos calls API correctly", {
+test_that("delete_video calls API correctly", {
   with_mocked_bindings(
     tuber_DELETE = mock_tuber_DELETE,
     yt_check_token = function() invisible(NULL),
     {
-      result <- delete_videos(id = "video123")
+      result <- delete_video(video_id = "video123")
       expect_type(result, "list")
     }
   )
 })
 
 # ============================================================================
-# delete_playlists Tests
+# delete_playlist Tests
 # ============================================================================
 
-test_that("delete_playlists validates id parameter", {
-  expect_error(delete_playlists(id = NULL), "id")
-  expect_error(delete_playlists(id = ""), "id")
-  expect_error(delete_playlists(id = 123), "id")
-  expect_error(delete_playlists(id = c("a", "b")), "id")
+test_that("delete_playlist validates playlist_id", {
+  expect_error(delete_playlist(playlist_id = NULL), "playlist_id")
+  expect_error(delete_playlist(playlist_id = ""), "playlist_id")
+  expect_error(delete_playlist(playlist_id = 123), "playlist_id")
+  expect_error(delete_playlist(playlist_id = c("a", "b")), "playlist_id")
 })
 
-test_that("delete_playlists calls API correctly", {
+test_that("delete_playlist calls API correctly", {
   with_mocked_bindings(
     tuber_DELETE = mock_tuber_DELETE,
     yt_check_token = function() invisible(NULL),
     {
-      result <- delete_playlists(id = "playlist123")
+      result <- delete_playlist(playlist_id = "playlist123")
       expect_type(result, "list")
     }
   )
 })
 
 # ============================================================================
-# delete_playlist_items Tests
+# delete_playlist_item Tests
 # ============================================================================
 
-test_that("delete_playlist_items validates id parameter", {
-  expect_error(delete_playlist_items(id = NULL), "id")
-  expect_error(delete_playlist_items(id = ""), "id")
-  expect_error(delete_playlist_items(id = 123), "id")
-  expect_error(delete_playlist_items(id = c("a", "b")), "id")
+test_that("delete_playlist_item validates playlist_item_id", {
+  expect_error(delete_playlist_item(playlist_item_id = NULL), "playlist_item_id")
+  expect_error(delete_playlist_item(playlist_item_id = ""), "playlist_item_id")
+  expect_error(delete_playlist_item(playlist_item_id = 123), "playlist_item_id")
+  expect_error(delete_playlist_item(playlist_item_id = c("a", "b")), "playlist_item_id")
 })
 
-test_that("delete_playlist_items calls API correctly", {
+test_that("delete_playlist_item calls API correctly", {
   with_mocked_bindings(
     tuber_DELETE = mock_tuber_DELETE,
     yt_check_token = function() invisible(NULL),
     {
-      result <- delete_playlist_items(id = "playlistItem123")
+      result <- delete_playlist_item(playlist_item_id = "playlistItem123")
       expect_type(result, "list")
     }
   )
@@ -316,19 +307,13 @@ test_that("update_video_metadata validates video_id parameter", {
   )
 })
 
-test_that("update_video_metadata validates title parameter", {
+test_that("update_video_metadata requires an update and validates supplied fields", {
   expect_error(
-    update_video_metadata(
-      video_id = "abc", title = NULL, category_id = "24",
-      description = "Test", privacy_status = "public", made_for_kids = FALSE
-    ),
-    "title"
+    update_video_metadata(video_id = "abc"),
+    class = "tuber_missing_update"
   )
   expect_error(
-    update_video_metadata(
-      video_id = "abc", title = "", category_id = "24",
-      description = "Test", privacy_status = "public", made_for_kids = FALSE
-    ),
+    update_video_metadata(video_id = "abc", title = ""),
     "title"
   )
 })
@@ -354,8 +339,26 @@ test_that("update_video_metadata validates made_for_kids parameter", {
 })
 
 test_that("update_video_metadata returns response on success", {
+  current_video <- list(items = list(list(
+    id = "video123",
+    snippet = list(
+      title = "Old Title",
+      description = "Old Description",
+      categoryId = "22",
+      tags = c("keep", "these"),
+      defaultLanguage = "en"
+    ),
+    status = list(
+      privacyStatus = "private",
+      embeddable = TRUE,
+      license = "youtube",
+      publicStatsViewable = TRUE,
+      selfDeclaredMadeForKids = TRUE
+    )
+  )))
   with_mocked_bindings(
     tuber_PUT = mock_tuber_PUT,
+    get_video_details = function(...) current_video,
     yt_check_token = function() invisible(NULL),
     yt_check_key = function() invisible(NULL),
     {
@@ -371,6 +374,10 @@ test_that("update_video_metadata returns response on success", {
       expect_equal(result$snippet$title, "New Title")
       expect_equal(result$snippet$description, "New Description")
       expect_equal(result$status$privacyStatus, "public")
+      expect_equal(result$snippet$tags, c("keep", "these"))
+      expect_equal(result$snippet$defaultLanguage, "en")
+      expect_true(result$status$embeddable)
+      expect_equal(result$status$license, "youtube")
     }
   )
 })
@@ -394,12 +401,21 @@ test_that("change_playlist_title validates new_title parameter", {
 test_that("change_playlist_title returns response on success", {
   with_mocked_bindings(
     tuber_PUT = mock_tuber_PUT,
+    list_playlists = function(...) list(items = list(list(
+      id = "playlist123",
+      snippet = list(
+        title = "Old Title",
+        description = "Keep this description",
+        defaultLanguage = "en"
+      )
+    ))),
     yt_check_token = function() invisible(NULL),
     yt_check_key = function() invisible(NULL),
     {
       result <- change_playlist_title(playlist_id = "playlist123", new_title = "Updated Title")
       expect_equal(result$id, "playlist123")
       expect_equal(result$snippet$title, "Updated Title")
+      expect_equal(result$snippet$description, "Keep this description")
     }
   )
 })
@@ -503,7 +519,7 @@ test_that("write operations handle quota exceeded errors", {
     tuber_DELETE = mock_quota_error,
     yt_check_token = function() invisible(NULL),
     {
-      result <- delete_comments(id = "comment123")
+      result <- delete_comment(comment_id = "comment123")
       expect_true(!is.null(result$error))
       expect_equal(result$error$errors[[1]]$reason, "quotaExceeded")
     }
@@ -527,7 +543,7 @@ test_that("write operations handle not found errors", {
     tuber_DELETE = mock_not_found_error,
     yt_check_token = function() invisible(NULL),
     {
-      result <- delete_videos(id = "nonexistent")
+      result <- delete_video(video_id = "nonexistent")
       expect_true(!is.null(result$error))
       expect_equal(result$error$code, 404)
     }

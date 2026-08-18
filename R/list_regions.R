@@ -1,46 +1,52 @@
-#' List Content Regions That YouTube Currently Supports
+#' List Supported Content Regions
 #'
+#' @param language Optional language code for localized names.
+#' @param auth Authentication method, `"key"` or `"token"`.
+#' @param ... Additional arguments passed to [tuber_GET()].
 #'
-#' @param hl  Language used for text values. Optional. Default is \code{en-US}.
-#' For other allowed language codes, see \code{\link{list_langs}}.
-#' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
-#'
-#' @return data.frame with 3 columns:
-#' \code{gl} (two letter abbreviation), \code{name} (of the region), \code{etag}
-#'
+#' @return A data frame with `region_code`, `name`, and `etag` columns.
 #' @export
-#'
 #' @references \url{https://developers.google.com/youtube/v3/docs/i18nRegions/list}
-#'
 #' @examples
 #' \dontrun{
-#'
-#' # Set API token via yt_oauth() first
-#'
 #' list_regions()
 #' }
+list_regions <- function(language = NULL, auth = "key", ...) {
+  if (!is.null(language)) {
+    assert_string(language, min.chars = 1, .var.name = "language")
+  }
+  assert_choice(auth, c("key", "token"), .var.name = "auth")
 
-list_regions <- function(hl = NULL, ...) {
+  response <- tuber_GET(
+    "i18nRegions",
+    query = list(part = "snippet", hl = language),
+    auth = auth,
+    ...
+  )
+  items <- response$items %||% list()
 
-  # Modern validation using checkmate
-  if (!is.null(hl)) {
-    assert_character(hl, len = 1, min.chars = 1, .var.name = "hl")
+  result <- if (length(items) == 0) {
+    data.frame(
+      region_code = character(),
+      name = character(),
+      etag = character(),
+      stringsAsFactors = FALSE
+    )
+  } else {
+    items_to_frame(items, function(item) {
+      data.frame(
+        region_code = item$snippet$gl %||% NA_character_,
+        name = item$snippet$name %||% NA_character_,
+        etag = item$etag %||% NA_character_,
+        stringsAsFactors = FALSE
+      )
+    })
   }
 
-  querylist <- list(part = "snippet", hl = hl)
-
-  res <- tuber_GET("i18nRegions", querylist, ...)
-
-  resdf <- read.table(text = "", col.names = c("gl", "name", "etag"))
-
-  # Cat total results
-  cat("Total Number of Content Regions:", length(res$items), "\n")
-
-  if (length(res$items) != 0) {
-    simple_res  <- lapply(res$items, function(x) c(unlist(x$snippet),
-                          etag = x$etag))
-    resdf       <- bind_rows(lapply(simple_res, as.data.frame, stringsAsFactors = FALSE))
-  }
-
-  resdf
+  add_tuber_attributes(
+    result,
+    function_name = "list_regions",
+    results_found = nrow(result),
+    response_format = "data.frame"
+  )
 }

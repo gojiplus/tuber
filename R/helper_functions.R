@@ -50,13 +50,12 @@ analyze_channel <- function(channel_id,
 
   # Get basic channel information
   message("Fetching channel statistics...")
-  channel_info <- get_channel_stats(
+  channel_info <- get_channel_details(
     channel_ids = channel_id,
     part = c("snippet", "statistics", "brandingSettings", "contentDetails"),
     simplify = TRUE,
     show_progress = FALSE,
     auth = auth,
-    console_output = FALSE,
     ...
   )
 
@@ -67,9 +66,9 @@ analyze_channel <- function(channel_id,
   }
 
   # Get upload playlist ID
-  upload_playlist_id <- channel_info$contentDetails.relatedPlaylists.uploads[1]
+  upload_playlist_id <- channel_info$uploads_playlist[[1]] %||% NA_character_
 
-  if (is.na(upload_playlist_id)) {
+  if (is.na(upload_playlist_id) || !nzchar(upload_playlist_id)) {
     warn("No uploads playlist found for channel. Analysis will be limited.",
          channel_id = channel_id,
          class = "tuber_no_uploads_playlist")
@@ -77,15 +76,22 @@ analyze_channel <- function(channel_id,
   } else {
     # Get recent videos
     message("Fetching recent videos (", max_videos, ")...")
-    playlist_items <- get_playlist_items(
+    playlist_items <- list_playlist_items(
       playlist_id = upload_playlist_id,
+      part = "snippet",
       max_results = max_videos,
+      simplify = FALSE,
       auth = auth,
       ...
     )
 
     if (length(playlist_items$items) > 0) {
-      video_ids <- sapply(playlist_items$items, function(x) x$snippet$resourceId$videoId)
+      video_ids <- vapply(
+        playlist_items$items,
+        function(x) x$snippet$resourceId$videoId %||% NA_character_,
+        character(1)
+      )
+      video_ids <- video_ids[!is.na(video_ids)]
 
       # Get detailed video information
       message("Fetching video statistics...")
@@ -99,18 +105,17 @@ analyze_channel <- function(channel_id,
       )
 
       if (include_comments && nrow(videos_info) > 0) {
-        message("Fetching comment counts...")
-        videos_info$comment_threads <- sapply(video_ids, function(vid) {
+        message("Fetching comments...")
+        videos_info$comments_retrieved <- vapply(video_ids, function(vid) {
           tryCatch({
-            comments <- get_comment_threads(
-              filter = c(video_id = vid),
-              max_results = 1,
+            comments <- get_all_comments(
+              video_id = vid,
               auth = auth,
               ...
             )
-            length(comments$items)
+            if (is.data.frame(comments)) nrow(comments) else length(comments)
           }, error = function(e) NA_integer_)
-        })
+        }, integer(1))
       }
     } else {
       videos_info <- data.frame()
@@ -123,9 +128,9 @@ analyze_channel <- function(channel_id,
 
   if (nrow(videos_info) > 0) {
     # Convert statistics to numeric for calculations
-    videos_info$view_count_num <- as.numeric(videos_info$viewCount %||% 0)
-    videos_info$like_count_num <- as.numeric(videos_info$likeCount %||% 0)
-    videos_info$comment_count_num <- as.numeric(videos_info$commentCount %||% 0)
+    videos_info$view_count_num <- as.numeric(videos_info$statistics_viewCount %||% 0)
+    videos_info$like_count_num <- as.numeric(videos_info$statistics_likeCount %||% 0)
+    videos_info$comment_count_num <- as.numeric(videos_info$statistics_commentCount %||% 0)
 
     performance_metrics <- list(
       avg_views_per_video = mean(videos_info$view_count_num, na.rm = TRUE),
@@ -136,7 +141,10 @@ analyze_channel <- function(channel_id,
       engagement_rate = mean(videos_info$like_count_num / pmax(videos_info$view_count_num, 1), na.rm = TRUE),
       videos_analyzed = nrow(videos_info),
       top_performing_video = if (nrow(videos_info) > 0) {
-        videos_info[which.max(videos_info$view_count_num), c("title", "view_count_num")]
+        videos_info[
+          which.max(videos_info$view_count_num),
+          c("snippet_title", "view_count_num")
+        ]
       } else NULL
     )
   }
@@ -198,7 +206,7 @@ compare_channels <- function(channel_ids,
   message("Comparing ", length(channel_ids), " channels...")
 
   # Get channel information
-  channels_info <- get_channel_stats(
+  channels_info <- get_channel_details(
     channel_ids = channel_ids,
     part = c("snippet", "statistics", "brandingSettings"),
     simplify = TRUE,
@@ -341,12 +349,13 @@ analyze_trends <- function(search_terms,
       published_after = published_after,
       region_code = region_code,
       auth = auth,
+      simplify = TRUE,
       ...
     )
 
-    if (length(search_results$items) > 0) {
+    if (nrow(search_results) > 0 && "video_id" %in% names(search_results)) {
       # Get video details for statistics
-      video_ids <- sapply(search_results$items, function(x) x$id$videoId)
+      video_ids <- search_results$video_id
       video_ids <- video_ids[!is.na(video_ids)]
 
       if (length(video_ids) > 0) {
@@ -359,17 +368,44 @@ analyze_trends <- function(search_terms,
           ...
         )
 
-        # Combine search results with video details
-        combined_results <- data.frame(
-          search_term = term,
-          video_id = video_ids,
-          title = sapply(search_results$items, function(x) x$snippet$title %||% NA_character_),
-          channel_title = sapply(search_results$items, function(x) x$snippet$channelTitle %||% NA_character_),
-          published_at = sapply(search_results$items, function(x) x$snippet$publishedAt %||% NA_character_),
-          view_count = as.numeric(videos_details$viewCount %||% 0),
-          like_count = as.numeric(videos_details$likeCount %||% 0),
-          comment_count = as.numeric(videos_details$commentCount %||% 0),
+        detail_rows <- nrow(videos_details)
+        details <- data.frame(
+          video_id = if ("id" %in% names(videos_details)) {
+            videos_details$id
+          } else {
+            rep(NA_character_, detail_rows)
+          },
+          view_count = if ("statistics_viewCount" %in% names(videos_details)) {
+            as.numeric(videos_details$statistics_viewCount)
+          } else {
+            rep(NA_real_, detail_rows)
+          },
+          like_count = if ("statistics_likeCount" %in% names(videos_details)) {
+            as.numeric(videos_details$statistics_likeCount)
+          } else {
+            rep(NA_real_, detail_rows)
+          },
+          comment_count = if ("statistics_commentCount" %in% names(videos_details)) {
+            as.numeric(videos_details$statistics_commentCount)
+          } else {
+            rep(NA_real_, detail_rows)
+          },
           stringsAsFactors = FALSE
+        )
+        search_data <- data.frame(
+          search_term = term,
+          video_id = search_results$video_id,
+          title = search_results$title %||% NA_character_,
+          channel_title = search_results$channel_title %||% NA_character_,
+          published_at = search_results$published_at %||% NA_character_,
+          stringsAsFactors = FALSE
+        )
+        combined_results <- merge(
+          search_data,
+          details,
+          by = "video_id",
+          all.x = TRUE,
+          sort = FALSE
         )
 
         all_results[[term]] <- combined_results
@@ -391,10 +427,18 @@ analyze_trends <- function(search_terms,
       group_by(search_term) |>
       summarise(
         total_videos = n(),
-        avg_views = mean(view_count, na.rm = TRUE),
+        avg_views = if (all(is.na(view_count))) NA_real_ else mean(view_count, na.rm = TRUE),
         total_views = sum(view_count, na.rm = TRUE),
-        avg_engagement = mean(like_count / pmax(view_count, 1), na.rm = TRUE),
-        top_video_views = max(view_count, na.rm = TRUE),
+        avg_engagement = if (all(is.na(like_count)) || all(is.na(view_count))) {
+          NA_real_
+        } else {
+          mean(like_count / pmax(view_count, 1), na.rm = TRUE)
+        },
+        top_video_views = if (all(is.na(view_count))) {
+          NA_real_
+        } else {
+          max(view_count, na.rm = TRUE)
+        },
         trending_score = log10(total_views + 1) * avg_engagement * 100,
         .groups = "drop"
       ) |>
@@ -483,9 +527,18 @@ bulk_video_analysis <- function(video_ids,
   }
 
   # Convert to numeric for analysis
-  videos_data$view_count_num <- as.numeric(videos_data$viewCount %||% 0)
-  videos_data$like_count_num <- as.numeric(videos_data$likeCount %||% 0)
-  videos_data$comment_count_num <- as.numeric(videos_data$commentCount %||% 0)
+  videos_data$view_count_num <- as.numeric(videos_data$statistics_viewCount %||% 0)
+  videos_data$like_count_num <- as.numeric(videos_data$statistics_likeCount %||% 0)
+  videos_data$comment_count_num <- as.numeric(videos_data$statistics_commentCount %||% 0)
+
+  if (include_comments) {
+    videos_data$comments_retrieved <- vapply(videos_data$id, function(video_id) {
+      tryCatch({
+        comments <- get_all_comments(video_id = video_id, auth = auth, ...)
+        if (is.data.frame(comments)) nrow(comments) else length(comments)
+      }, error = function(e) NA_integer_)
+    }, integer(1))
+  }
 
   # Calculate engagement metrics
   videos_data$engagement_rate <- videos_data$like_count_num / pmax(videos_data$view_count_num, 1)
@@ -506,8 +559,14 @@ bulk_video_analysis <- function(video_ids,
     avg_views = mean(videos_data$view_count_num, na.rm = TRUE),
     median_views = median(videos_data$view_count_num, na.rm = TRUE),
     avg_engagement_rate = mean(videos_data$engagement_rate, na.rm = TRUE),
-    top_performer = videos_data[which.max(videos_data$view_count_num), c("title", "view_count_num")],
-    low_performer = videos_data[which.min(videos_data$view_count_num), c("title", "view_count_num")]
+    top_performer = videos_data[
+      which.max(videos_data$view_count_num),
+      c("snippet_title", "view_count_num")
+    ],
+    low_performer = videos_data[
+      which.min(videos_data$view_count_num),
+      c("snippet_title", "view_count_num")
+    ]
   )
 
   result <- list(

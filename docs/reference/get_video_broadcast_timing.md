@@ -1,0 +1,45 @@
+# Get video live-broadcast timing
+
+Retrieves scheduling and actual start/end information exposed in a
+video's \`liveStreamingDetails\`. The YouTube Data API does not expose a
+reliable flag that distinguishes premieres from other scheduled
+broadcasts.
+
+## Usage
+
+``` r
+get_video_broadcast_timing(video_ids, simplify = TRUE, auth = "key", ...)
+```
+
+## Arguments
+
+- video_ids:
+
+  Video ID or vector of video IDs.
+
+- simplify:
+
+  Whether to return simplified data frame
+
+- auth:
+
+  Authentication method: "token" (OAuth2) or "key" (API key)
+
+- ...:
+
+  Additional arguments passed to tuber_GET
+
+## Value
+
+A data frame when \`simplify = TRUE\`; otherwise the raw videos-list
+response.
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+timing <- get_video_broadcast_timing("dQw4w9WgXcQ")
+
+timings <- get_video_broadcast_timing(c("video1", "video2", "video3"))
+} # }
+```

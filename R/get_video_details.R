@@ -1,7 +1,7 @@
 # helpers for data frame conversion in `get_video_details()`
 conditional_unnest_wider <- function(data_input, var) {
   if (var %in% names(data_input)) {
-    unnest_wider(data_input, var, names_sep = "_")
+    unnest_wider(data_input, all_of(var), names_sep = "_")
   } else {
     data_input
   }
@@ -62,7 +62,7 @@ json_to_df <- function(res) {
 #' @param simplify Logical. If TRUE, returns a data frame. If FALSE, returns raw list. Default: TRUE.
 #' @param batch_size Number of videos per API call (max 50). Default: 50.
 #' @param show_progress Whether to show progress for large batches. Default: TRUE for >10 videos.
-#' @param auth Authentication method: "token" (OAuth2) or "key" (API key). Default: "token".
+#' @param auth Authentication method, `"key"` (the default) or `"token"`.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'
 #' @details
@@ -79,7 +79,10 @@ json_to_df <- function(res) {
 #' - 100 videos = 2 API calls (batched in groups of 50)
 #'
 #' @return
-#' When \code{simplify = TRUE} (default): Data frame with video details (not available for owner-only parts).
+#' When \code{simplify = TRUE} (default): a data frame whose columns mirror the
+#' requested API parts. Since `part` is user-selectable, these columns retain
+#' YouTube's field names rather than the fixed snake-case schemas used by
+#' `list_*()` functions. Owner-only parts cannot be simplified.
 #' When \code{simplify = FALSE}: List with items containing video details.
 #'
 #' The result includes metadata as attributes:
@@ -107,10 +110,9 @@ json_to_df <- function(res) {
 #' # Get specific parts
 #' stats <- get_video_details(video_ids, part = c("statistics", "contentDetails"))
 #'
-#' # Extract specific fields:
-#' details <- get_video_details("yJXTXN4xrI8")
+#' # Preserve the nested API resource when that is easier to inspect:
+#' details <- get_video_details("yJXTXN4xrI8", simplify = FALSE)
 #' title <- details$items[[1]]$snippet$title
-#' view_count <- details$items[[1]]$statistics$viewCount
 #' }
 #'
 get_video_details <- function(video_ids,
@@ -118,7 +120,7 @@ get_video_details <- function(video_ids,
                              simplify = TRUE,
                              batch_size = 50,
                              show_progress = NULL,
-                             auth = "token",
+                             auth = "key",
                              ...) {
 
   # Modern validation using checkmate
@@ -173,7 +175,11 @@ get_video_details <- function(video_ids,
       suggest_solution("empty_results", "- Check if the video ID is correct\n- Video may be private or deleted")
       warning("No video details found for ID: ", video_ids, call. = FALSE)
 
-      empty_result <- if (simplify) data.frame() else list()
+      empty_result <- if (simplify) {
+        data.frame(id = character(), stringsAsFactors = FALSE)
+      } else {
+        list(items = list())
+      }
       return(add_tuber_attributes(
         empty_result,
         api_calls_made = 1,
@@ -248,7 +254,11 @@ get_video_details <- function(video_ids,
     warn("No video details found for any of the provided IDs",
          class = "tuber_batch_empty_result")
 
-    empty_result <- if (simplify) data.frame() else list()
+    empty_result <- if (simplify) {
+      data.frame(id = character(), stringsAsFactors = FALSE)
+    } else {
+      list(items = list())
+    }
     return(add_tuber_attributes(
       empty_result,
       api_calls_made = api_calls_made,

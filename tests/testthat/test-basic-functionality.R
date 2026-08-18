@@ -3,12 +3,12 @@ test_that("Core functions exist", {
   expect_true(exists("yt_search"))
   expect_true(exists("get_video_details"))
   expect_true(exists("get_all_comments"))
-  expect_true(exists("get_playlist_items"))
+  expect_true(exists("list_playlist_items"))
   expect_true(exists("list_channel_videos"))
 })
 
 test_that("Parameter validation works", {
-  expect_error(get_all_comments(video_id = NULL), "Must be of type 'character'")
+  expect_error(get_all_comments(video_id = NULL), "Must be of type 'string'")
   expect_error(get_all_comments(video_id = c("a", "b")), "Must have length 1")
   expect_error(yt_search(term = NULL), "Must be of type 'string'")
 })
@@ -20,17 +20,19 @@ test_that("Quota management functions work", {
 
   # Test quota usage function
   quota_info <- yt_get_quota_usage()
-  expect_true(is.list(quota_info))
+  expect_s3_class(quota_info, "data.frame")
   expect_true("quota_used" %in% names(quota_info))
   expect_true("quota_limit" %in% names(quota_info))
+  expect_setequal(quota_info$bucket, c("data", "search", "video_uploads"))
 
   # Test quota limit setting
-  original_limit <- quota_info$quota_limit
-  yt_set_quota_limit(15000)
-  expect_equal(yt_get_quota_usage()$quota_limit, 15000)
+  original_limit <- quota_info$quota_limit[quota_info$bucket == "data"]
+  yt_set_quota_limit(15000, bucket = "data")
+  updated <- yt_get_quota_usage()
+  expect_equal(updated$quota_limit[updated$bucket == "data"], 15000)
 
   # Reset to original
-  yt_set_quota_limit(original_limit)
+  yt_set_quota_limit(original_limit, bucket = "data")
 })
 
 test_that("Unicode utilities work", {

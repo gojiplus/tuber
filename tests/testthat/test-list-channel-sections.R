@@ -22,7 +22,7 @@ test_that("list_channel_sections runs successfully", {
 })
 
 
-test_that("list_my_channel runs successfully", {
+test_that("get_my_channel runs successfully", {
 
   skip_on_cran()
 
@@ -35,7 +35,7 @@ test_that("list_my_channel runs successfully", {
     google_token <- readRDS("token_file.rds.enc")$google_token
     options(google_token = google_token)
 
-    get_info <- list_my_channel()
+    get_info <- get_my_channel()
     expect_type(get_info, "list")
 
   }, error = function(e) {

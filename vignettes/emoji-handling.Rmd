@@ -26,10 +26,10 @@ library(tuber)
 comments <- get_all_comments(video_id = "your_video_id")
 
 # Check which comments contain emojis
-comments$has_emoji <- has_emoji(comments$textDisplay)
+comments$has_emoji <- has_emoji(comments$text_display)
 
 # Count emojis per comment
-comments$emoji_count <- count_emojis(comments$textDisplay)
+comments$emoji_count <- count_emojis(comments$text_display)
 
 # Filter to emoji-rich comments
 emoji_comments <- comments[comments$emoji_count > 0, ]
@@ -101,7 +101,7 @@ replace_emojis("Rate: \U0001F600\U0001F600\U0001F600", replacement = "*")
 
 ```{r eval=FALSE}
 comments <- get_all_comments(video_id = "your_video_id")
-comments$emoji_count <- count_emojis(comments$textDisplay)
+comments$emoji_count <- count_emojis(comments$text_display)
 
 # Top 10 most emoji-heavy comments
 top_emoji <- comments[order(-comments$emoji_count), ][1:10, ]
@@ -111,7 +111,7 @@ top_emoji <- comments[order(-comments$emoji_count), ][1:10, ]
 
 ```{r eval=FALSE}
 # Remove emojis for text analysis
-comments$clean_text <- remove_emojis(comments$textDisplay)
+comments$clean_text <- remove_emojis(comments$text_display)
 
 # Now use clean_text for sentiment analysis or word clouds
 ```
@@ -120,7 +120,7 @@ comments$clean_text <- remove_emojis(comments$textDisplay)
 
 ```{r eval=FALSE}
 # Extract all emojis from comments
-all_emojis <- unlist(extract_emojis(comments$textDisplay))
+all_emojis <- unlist(extract_emojis(comments$text_display))
 
 # Count frequency
 emoji_freq <- table(all_emojis)

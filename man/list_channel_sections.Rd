@@ -4,39 +4,47 @@
 \alias{list_channel_sections}
 \title{List Channel Sections}
 \usage{
-list_channel_sections(filter = NULL, part = "snippet", hl = NULL, ...)
+list_channel_sections(
+  channel_id = NULL,
+  section_ids = NULL,
+  mine = FALSE,
+  part = c("snippet", "contentDetails"),
+  simplify = TRUE,
+  auth = if (mine) "token" else "key",
+  ...
+)
 }
 \arguments{
-\item{filter}{string; Required.
-named vector of length 1
-potential names of the entry in the vector:
-\code{channel_id}: Channel ID
-\code{id}: Section ID}
+\item{channel_id}{Channel whose sections should be returned.}
 
-\item{part}{specify which part do you want. It can only be one of the
-following: \code{contentDetails, id, localizations, snippet, targeting}.
-Default is \code{snippet}.}
+\item{section_ids}{One or more channel-section IDs.}
 
-\item{hl}{language that will be used for text values, optional, default
-is en-US. See also \code{\link{list_langs}}}
+\item{mine}{Set to `TRUE` to return sections for the authenticated user's
+channel.}
 
-\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
+\item{part}{Character vector of resource parts to return.}
+
+\item{simplify}{If `TRUE`, return a data frame; otherwise return the raw API
+response.}
+
+\item{auth}{Authentication method, `"token"` or `"key"`. `mine = TRUE`
+requires `"token"`.}
+
+\item{...}{Additional arguments passed to [tuber_GET()].}
 }
 \value{
-captions for the video from one of the first track
+A data frame when `simplify = TRUE`; otherwise a channel-section
+list response.
 }
 \description{
-Returns list of channel sections that channel id belongs to.
+Returns channel sections matching exactly one supported YouTube filter.
 }
 \examples{
-
 \dontrun{
-
-# Set API token via yt_oauth() first
-
-list_channel_sections(c(channel_id = "UCRw8bIz2wMLmfgAgWm903cA"))
+list_channel_sections(channel_id = "UCRw8bIz2wMLmfgAgWm903cA")
+list_channel_sections(mine = TRUE, auth = "token")
 }
 }
 \references{
-\url{https://developers.google.com/youtube/v3/docs/activities/list}
+\url{https://developers.google.com/youtube/v3/docs/channelSections/list}
 }

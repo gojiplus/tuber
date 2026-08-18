@@ -1,0 +1,100 @@
+---
+title: "API conventions and coverage"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{API conventions and coverage}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+`tuber` uses one naming and return-value grammar across its public API.
+
+## Function names
+
+`list_*()` functions correspond to YouTube list endpoints. They retrieve a
+collection and usually support pagination. `get_*()` functions return a
+derived, enriched, or singular result. Write functions use the operation as the
+verb, such as `create_playlist()`, `upload_video()`, `delete_comment()`, and
+`set_video_thumbnail()`.
+
+The resource noun follows the verb. Names use full words where the API concept
+is not already familiar: `list_video_categories()` rather than an abbreviation,
+and `get_video_stats()` rather than a generic `get_stats()`.
+
+## Arguments
+
+Arguments use snake case. Plural ID arguments accept vectors, while singular ID
+arguments accept one value. Functions that expose several YouTube filters
+require exactly one primary filter and report conflicting combinations before
+making a request.
+
+`max_results` always limits the total number of returned items. The function
+may make several requests because YouTube caps individual response pages.
+`page_token` selects the first page when a caller needs to resume a previous
+request.
+
+Public reads use `auth = "key"` by default. Pass `auth = "token"` when the
+resource is private. Functions that always require OAuth, including writes and
+owner-only reads, do not expose an `auth` choice.
+
+## Return values
+
+Collection functions return a data frame by default and a collected API
+response when `simplify = FALSE`. Fixed simplified schemas use snake-case
+columns and preserve their columns even when no rows are returned.
+
+`get_video_details()` is the deliberate exception. Its columns depend on the
+requested `part` values and retain YouTube's field names. Use
+`simplify = FALSE` when you need the nested video resource or an owner-only
+part.
+
+Write functions return the created or updated API resource. Upload functions
+return the final HTTP response, the parsed resource, and the relevant YouTube
+URL. Delete functions return the HTTP response invisibly.
+
+## Endpoint coverage
+
+The table records the public wrappers in this release. It is a support matrix,
+not a claim that `tuber` implements the entire YouTube API.
+
+| Resource | Read and analysis | Write |
+|---|---|---|
+| Channels | `get_channel_details()`, `get_my_channel()`, `list_channel_activities()`, `list_channel_videos()` | `insert_channel_banner()` |
+| Channel sections | `list_channel_sections()` | `delete_channel_section()` |
+| Videos | `get_video_details()`, `get_video_stats()`, `list_popular_videos()`, `list_my_videos()` | `upload_video()`, `update_video_metadata()`, `set_video_thumbnail()`, `delete_video()` |
+| Playlists | `list_playlists()`, `list_playlist_items()`, ID helpers | `create_playlist()`, `change_playlist_title()`, `add_video_to_playlist()`, delete functions |
+| Comments | `list_comment_threads()`, `list_comments()`, `get_all_comments()` | `post_comment()`, `reply_to_comment()`, moderation and delete functions |
+| Captions | `list_captions()`, `download_caption()` | `upload_caption()`, `delete_caption()` |
+| Search | `yt_search()`, `search_short_videos()` | Not applicable |
+| Live and monetization | `list_live_broadcasts()`, `list_live_chat_messages()`, `list_super_chat_events()`, `list_channel_members()` | Not implemented |
+| Subscriptions | `list_subscriptions()` | Not implemented |
+| Reference data | languages, regions, video categories, and abuse-report reasons | Not applicable |
+
+The package does not currently wrap playlist images, watermarks, caption
+updates, subscription mutations, or the write methods for live-streaming
+resources. Google has retired related-video search and guide categories, so
+this release does not expose wrappers for those endpoints.
+
+## Renamed functions in 2.0.0
+
+Version 2.0.0 removes ambiguous abbreviations and applies the `list_*()` rule.
+
+| Before 2.0.0 | 2.0.0 |
+|---|---|
+| `get_comments()` | `list_comments()` |
+| `get_comment_threads()` | `list_comment_threads()` |
+| `get_playlist_items()` | `list_playlist_items()` |
+| `get_playlists()` | `list_playlists()` |
+| `get_subscriptions()` | `list_subscriptions()` |
+| `get_live_chat_messages()` | `list_live_chat_messages()` |
+| `get_super_chat_events()` | `list_super_chat_events()` |
+| `get_stats()` | `get_video_stats()` |
+| `get_channel_stats()` | `get_channel_details()` |
+| `list_videos()` | `list_popular_videos()` |
+| `list_videocats()` | `list_video_categories()` |
+| `list_langs()` | `list_languages()` |
+| `get_captions()` | `download_caption()` |

@@ -1,19 +1,18 @@
 #' Returns List of Requested Channel Videos
 #'
-#' Iterate through the \code{max_results} number of playlists in channel and get
-#' the videos for each of the playlists.
+#' Retrieves items from a channel's uploads playlist.
 #'
 #' @param channel_id String. ID of the channel. Required.
-#' @param max_results Maximum number of videos returned. Integer. Default is 50.
-#' If the number is over 50, all the videos will be returned.
+#' @param max_results Maximum total number of videos returned.
 #' @param page_token  Specific page in the result set that should be returned.
 #' Optional.
-#' @param hl  Language used for text values. Optional. Default is \code{en-US}.
-#' For other allowed language codes, see \code{\link{list_langs}}
+#' @param simplify If `TRUE`, return a data frame; otherwise return the raw
+#' playlist-items response.
+#' @param auth Authentication method, `"key"` or `"token"`.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'
-#' @return list of \code{data.frame} with each list corresponding to a different
-#' playlist
+#' @return A data frame when `simplify = TRUE`; otherwise a playlist-items
+#' response.
 #'
 #' @export
 #'
@@ -29,13 +28,18 @@
 #' list_channel_videos(channel_id = "UCXOKEdfOFxsHO_-Su3K8SHg", max_results = 10)
 #' }
 
-list_channel_videos <- function(channel_id = NULL, max_results = 50,
-                                 page_token = NULL, hl = "en-US", ...) {
+list_channel_videos <- function(channel_id,
+                                max_results = 50,
+                                page_token = NULL,
+                                simplify = TRUE,
+                                auth = "key",
+                                ...) {
 
   # Modern validation using checkmate
   assert_character(channel_id, len = 1, min.chars = 1, .var.name = "channel_id")
   assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
-  assert_character(hl, len = 1, min.chars = 1, .var.name = "hl")
+  assert_flag(simplify, .var.name = "simplify")
+  assert_choice(auth, c("key", "token"), .var.name = "auth")
 
   if (!is.null(page_token)) {
     assert_character(page_token, len = 1, min.chars = 1, .var.name = "page_token")
@@ -55,6 +59,7 @@ list_channel_videos <- function(channel_id = NULL, max_results = 50,
     tryCatch({
       channel_info <- tuber_GET("channels",
                                 list(part = "contentDetails,snippet", id = channel_id),
+                                auth = auth,
                                 ...)
 
       if (length(channel_info$items) == 0) {
@@ -99,10 +104,12 @@ list_channel_videos <- function(channel_id = NULL, max_results = 50,
   }
 
   # Get videos from the uploads playlist
-  videos <- get_playlist_items(filter = c(playlist_id = playlist_id),
+  videos <- list_playlist_items(playlist_id = playlist_id,
                                max_results = max_results,
                                page_token = page_token,
-                               hl = hl, ...)
+                               simplify = simplify,
+                               auth = auth,
+                               ...)
 
   # Add note about unlisted videos
   if (is.list(videos) && !is.null(videos$items) && length(videos$items) > 0) {

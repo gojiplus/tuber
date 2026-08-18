@@ -14,6 +14,7 @@ NULL
 #' @param video_id Video ID if applicable for better error messages
 #' @param channel_id Channel ID if applicable for better error messages
 #' @return Stops execution with informative error message
+#' @keywords internal
 handle_api_error <- function(error_response, context_msg = "", video_id = NULL, channel_id = NULL) {
 
   # Extract error details from response
@@ -68,6 +69,7 @@ handle_api_error <- function(error_response, context_msg = "", video_id = NULL, 
 #' @param error The original error
 #' @param context_msg Additional context for the error
 #' @return Stops execution with informative error message
+#' @keywords internal
 handle_network_error <- function(error, context_msg = "") {
   # Modern validation using checkmate
   assert_character(context_msg, len = 1, .var.name = "context_msg")
@@ -92,6 +94,7 @@ handle_network_error <- function(error, context_msg = "") {
 #' @param old_function Name of deprecated function
 #' @param new_function Name of replacement function
 #' @param version Version when deprecation will become an error
+#' @keywords internal
 warn_deprecated <- function(old_function, new_function, version = "next major version") {
   # Modern validation using checkmate
   assert_character(old_function, len = 1, .var.name = "old_function")
@@ -112,6 +115,7 @@ warn_deprecated <- function(old_function, new_function, version = "next major ve
 #'
 #' @param issue_type Type of issue encountered
 #' @param details Additional details for the suggestion
+#' @keywords internal
 suggest_solution <- function(issue_type, details = "") {
 
   suggestions <- list(
@@ -168,15 +172,15 @@ with_retry <- function(expr,
                        retry_on = function(e) is_transient_error(e),
                        on_retry = NULL) {
 
+  expr <- substitute(expr)
+  eval_env <- parent.frame()
   attempt <- 1
-  last_error <- NULL
 
   repeat {
     result <- tryCatch({
       # Execute the expression
-      eval(expr, envir = parent.frame())
+      eval(expr, envir = eval_env)
     }, error = function(e) {
-      last_error <<- e
       e  # Return the error
     })
 
@@ -187,16 +191,8 @@ with_retry <- function(expr,
 
     # If we've reached max retries or error is not transient, give up
     if (attempt > max_retries || !retry_on(result)) {
-      # Call the original error with context
-      if (attempt > 1) {
-        abort("Failed after multiple retry attempts",
-              retry_attempts = attempt - 1,
-              last_error = result$message,
-              class = "tuber_max_retries_failed")
-      } else {
-        abort(result$message,
-              class = "tuber_api_call_failed")
-      }
+      result$retry_attempts <- attempt - 1L
+      stop(result)
     }
 
     # Calculate delay with exponential backoff and optional jitter
@@ -224,6 +220,17 @@ with_retry <- function(expr,
 #' @return Logical indicating if error is transient
 #' @keywords internal
 is_transient_error <- function(error) {
+  status <- error$status_code %||%
+    error$response$status_code %||%
+    attr(error, "status_code", exact = TRUE)
+  if (!is.null(status) && length(status) == 1 && !is.na(status)) {
+    return(status %in% c(408L, 429L) || (status >= 500L && status <= 599L))
+  }
+
+  if (inherits(error, "httr2_failure")) {
+    return(TRUE)
+  }
+
   error_msg <- tolower(error$message)
 
   # Network/connection errors
@@ -357,6 +364,7 @@ validate_filter <- function(filter, valid_names, name = "filter") {
 #' @param video_id Video ID to validate
 #' @param name Parameter name for error messages
 #' @return Invisible NULL if valid, stops execution if invalid
+#' @keywords internal
 validate_video_id <- function(video_id, name = "video_id") {
   assert_character(video_id, len = 1, min.chars = 1, .var.name = name)
 
@@ -387,6 +395,7 @@ validate_video_id <- function(video_id, name = "video_id") {
 #' @param channel_id Channel ID to validate
 #' @param name Parameter name for error messages
 #' @return Invisible NULL if valid, stops execution if invalid
+#' @keywords internal
 validate_channel_id <- function(channel_id, name = "channel_id") {
   assert_character(channel_id, len = 1, min.chars = 1, .var.name = name)
 
@@ -407,6 +416,7 @@ validate_channel_id <- function(channel_id, name = "channel_id") {
 #' @param playlist_id Playlist ID to validate
 #' @param name Parameter name for error messages
 #' @return Invisible NULL if valid, stops execution if invalid
+#' @keywords internal
 validate_playlist_id <- function(playlist_id, name = "playlist_id") {
   assert_character(playlist_id, len = 1, min.chars = 1, .var.name = name)
 
@@ -427,6 +437,7 @@ validate_playlist_id <- function(playlist_id, name = "playlist_id") {
 #' @param date_string Date string to validate
 #' @param name Parameter name for error messages
 #' @return Invisible NULL if valid, stops execution if invalid
+#' @keywords internal
 validate_rfc3339_date <- function(date_string, name) {
   assert_character(date_string, len = 1, min.chars = 1, .var.name = name)
 
@@ -462,6 +473,7 @@ validate_rfc3339_date <- function(date_string, name) {
 #' @param endpoint API endpoint name for context-specific validation
 #' @param name Parameter name for error messages
 #' @return Invisible NULL if valid, stops execution if invalid
+#' @keywords internal
 validate_part_parameter <- function(part, endpoint, name = "part") {
   assert_character(part, len = 1, min.chars = 1, .var.name = name)
 
@@ -510,6 +522,7 @@ validate_part_parameter <- function(part, endpoint, name = "part") {
 #' @param region_code Region code to validate (ISO 3166-1 alpha-2)
 #' @param name Parameter name for error messages
 #' @return Invisible NULL if valid, stops execution if invalid
+#' @keywords internal
 validate_region_code <- function(region_code, name = "region_code") {
   assert_character(region_code, len = 1, min.chars = 1, .var.name = name)
 
@@ -531,6 +544,7 @@ validate_region_code <- function(region_code, name = "region_code") {
 #' @param language_code Language code to validate (ISO 639-1 or BCP-47)
 #' @param name Parameter name for error messages
 #' @return Invisible NULL if valid, stops execution if invalid
+#' @keywords internal
 validate_language_code <- function(language_code, name = "language_code") {
   assert_character(language_code, len = 1, min.chars = 1, .var.name = name)
 

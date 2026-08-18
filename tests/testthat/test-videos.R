@@ -11,7 +11,7 @@ test_that("get_video_details runs successfully", {
     google_token <- readRDS("token_file.rds.enc")$google_token
     options(google_token = google_token)
 
-    get_info <- get_video_details(video_id = "N708P-A45D0")
+    get_info <- get_video_details(video_ids = "N708P-A45D0")
     expect_true(is.list(get_info))
 
   }, error = function(e) {

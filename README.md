@@ -1,105 +1,107 @@
+# tuber
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
-## 🍠 tuber: Access YouTube API via R
 [![R-CMD-check](https://github.com/gojiplus/tuber/actions/workflows/R-CMD-check.yml/badge.svg)](https://github.com/gojiplus/tuber/actions/workflows/R-CMD-check.yml)
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/tuber)](https://cran.r-project.org/package=tuber)
-![](http://cranlogs.r-pkg.org/badges/grand-total/tuber)
+[![CRAN status](https://www.r-pkg.org/badges/version/tuber)](https://cran.r-project.org/package=tuber)
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/tuber)](https://cran.r-project.org/package=tuber)
 [![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg)](https://gojiplus.github.io/tuber/)
 
+`tuber` is an R client for the YouTube Data API and selected YouTube Live
+Streaming API endpoints. It searches public YouTube data, retrieves channels,
+videos, playlists, comments, and captions, and supports common authenticated
+operations such as uploads, comment moderation, and playlist changes.
 
-Access YouTube API via R. Get comments posted on YouTube videos, get
-information on how many times a video has been liked, search for videos
-with particular content, and much more. You can also get closed captions
-of videos you own. To learn more about the YouTube API, see
-<https://developers.google.com/youtube/v3/>.
+The package does not wrap every YouTube endpoint. Run
+`vignette("api-conventions", package = "tuber")` for the supported resources
+and known omissions.
 
-### Installation
+## Installation
 
-To get the current development version from GitHub:
+Install the CRAN release:
 
-``` r
-# install.packages("devtools")
-devtools::install_github("soodoku/tuber", build_vignettes = TRUE)
+```r
+install.packages("tuber")
 ```
 
-To get a quick overview of some important functions in tuber, check out
-[this article](https://gojiplus.github.io/tuber/articles/tuber-ex.html).
+Install the development version from GitHub:
 
-### Using tuber
-
-To get going, get the application id and password from the Google
-Developer Console (see
-<https://developers.google.com/youtube/v3/getting-started>). Enable all
-the YouTube APIs. Then set the application id and password via the
-`yt_oauth` function. For more information about YouTube OAuth, see
-[YouTube OAuth
-Guide](https://developers.google.com/youtube/v3/guides/authentication).
-
-``` r
-yt_oauth("app_id", "app_password")
+```r
+# install.packages("pak")
+pak::pak("gojiplus/tuber")
 ```
 
-If your session cannot open a browser window for authentication, pass
-`use_oob = TRUE` to `yt_oauth()` so that authentication can be completed
-via an out-of-band code.
+## Authentication
 
-To force re-authentication at any time, delete the `.httr-oauth` file in
-your working directory.
+Public read functions use an API key by default. Create a key in Google Cloud,
+enable the YouTube Data API v3 for that project, and set the key for the current
+R session:
 
-**Note:** If you are on ubuntu, you may have to run the following before
-doing anything:
-
-    httr::set_config(httr::config( ssl_verifypeer = 0L ) )
-
-**Get Statistics of a Video**
-
-``` r
-get_stats(video_id = "N708P-A45D0")
+```r
+yt_set_key("YOUR_YOUTUBE_API_KEY")
 ```
 
-**Get Information About a Video**
+OAuth is required for private account data and every operation that changes
+YouTube data. Create a desktop OAuth client in Google Cloud, then authenticate
+in the system browser:
 
-``` r
-get_video_details(video_id = "N708P-A45D0")
+```r
+yt_oauth("YOUR_CLIENT_ID", "YOUR_CLIENT_SECRET")
 ```
 
-**Get Captions of a Video**
+`yt_oauth()` stores its token in the user's R cache directory by default. Pass
+an explicit `token` path if you need a different location.
 
-``` r
-get_captions(video_id = "yJXTXN4xrI8")
+## Examples
+
+Search for videos:
+
+```r
+videos <- yt_search("Barack Obama", max_results = 25)
 ```
 
-**Note**: It was previously possible to get captions for all videos that
-had “Community contributions” enabled. However, since [*YouTube* removed
-that option in September
-2020](https://support.google.com/youtube/answer/2734796?hl=en&visit_id=638791335311528098-9183701&rd=1), the
-`get_captions` function now only works for videos created with the same
-account as the API credentials you use. An alternative for collecting
-*YouTube* video captions is the [*youtubecaption*
-package](https://github.com/jooyoungseo/youtubecaption).
+Retrieve fixed, snake-case video statistics:
 
-**Search Videos**
-
-``` r
-yt_search("Barack Obama")
+```r
+stats <- get_video_stats("N708P-A45D0")
 ```
 
-**Get All the Comments Including Replies**
+List a channel's playlists and the videos in one playlist:
 
-``` r
-get_all_comments(video_id = "a-UQz7fqR3w")
+```r
+playlists <- list_playlists(channel_id = "UCMtFAi84ehTSYSE9XoHefig")
+items <- list_playlist_items(
+  playlist_id = playlists$playlist_id[[1]],
+  max_results = 100
+)
 ```
 
-### License
+Collect top-level comments and all replies:
 
-Scripts are released under the [MIT
-License](https://opensource.org/licenses/MIT).
+```r
+comments <- get_all_comments("a-UQz7fqR3w", max_results = 500)
+```
 
-### Contributor Code of Conduct
+List and download caption tracks for a video owned by the authenticated
+account:
 
-The project welcomes contributions from everyone! In fact, it depends on
-it. To maintain this welcoming atmosphere, and to collaborate in a fun
-and productive way, we expect contributors to the project to abide by
-the [Contributor Code of
-Conduct](https://www.contributor-covenant.org/version/1/0/0/).
+```r
+tracks <- list_captions("yJXTXN4xrI8")
+caption <- download_caption(tracks$caption_id[[1]], as_raw = FALSE)
+```
+
+## API conventions
+
+- `list_*()` functions mirror YouTube list endpoints and return a data frame by
+  default. Use `simplify = FALSE` to keep the collected API response.
+- `get_*()` functions return a derived, enriched, or singular result.
+- Plural ID arguments accept vectors. Singular ID arguments accept one value.
+- `max_results` is the total result limit, even when the function makes several
+  paginated requests.
+- Fixed simplified schemas use snake-case column names. The columns returned by
+  `get_video_details()` depend on `part` and retain YouTube's field names.
+- Public reads default to `auth = "key"`. Functions that can use either form of
+  authentication accept `auth = "key"` or `auth = "token"`. OAuth-only
+  functions do not expose an `auth` argument.
+
+## License
+
+`tuber` is released under the [MIT License](LICENSE).

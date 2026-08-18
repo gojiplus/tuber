@@ -3,9 +3,9 @@
 \docType{package}
 \name{tuber-package}
 \alias{tuber-package}
-\title{tuber: Client for the YouTube API}
+\title{tuber: Client for the YouTube Data API}
 \description{
-Get comments posted on YouTube videos, information on how many times a video has been liked, search for videos with particular content, and much more. You can also scrape captions from a few videos. To learn more about the YouTube API, see \url{https://developers.google.com/youtube/v3/}.
+Search public YouTube data and retrieve channels, videos, playlists, comments, captions, live broadcasts, and reference data. Authenticated methods support common uploads, playlist changes, comment moderation, and media updates. See the YouTube Data API documentation at \url{https://developers.google.com/youtube/v3/}.
 }
 \seealso{
 Useful links:

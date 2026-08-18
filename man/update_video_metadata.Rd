@@ -2,46 +2,78 @@
 % Please edit documentation in R/update_video_metadata.R
 \name{update_video_metadata}
 \alias{update_video_metadata}
-\title{Update a YouTube Video's Metadata}
+\title{Update Video Metadata}
 \usage{
 update_video_metadata(
   video_id,
-  title,
-  category_id,
-  description,
-  privacy_status,
-  made_for_kids,
-  auth = "token"
+  title = NULL,
+  category_id = NULL,
+  description = NULL,
+  tags = NULL,
+  default_language = NULL,
+  privacy_status = NULL,
+  made_for_kids = NULL,
+  contains_synthetic_media = NULL,
+  embeddable = NULL,
+  license = NULL,
+  public_stats_viewable = NULL,
+  publish_at = NULL,
+  on_behalf_of_content_owner = NULL,
+  ...
 )
 }
 \arguments{
-\item{video_id}{A character string specifying the ID of the video you want to update.}
+\item{video_id}{YouTube video ID.}
 
-\item{title}{A character string specifying the new title for the video.}
+\item{title}{Optional title.}
 
-\item{category_id}{A character string specifying the new category ID for the video.}
+\item{category_id}{Optional video-category ID.}
 
-\item{description}{A character string specifying the new description for the video.}
+\item{description}{Optional description. Use `""` to clear it.}
 
-\item{privacy_status}{A character string specifying the new privacy status for the video ('public', 'private', or 'unlisted').}
+\item{tags}{Optional character vector of tags. Use `character()` to clear
+existing tags.}
 
-\item{made_for_kids}{A boolean specifying whether the video is self-declared as made for kids.}
+\item{default_language}{Optional default language.}
 
-\item{auth}{Authentication method: "token" (OAuth2) or "key" (API key)}
+\item{privacy_status}{Optional privacy status: `"private"`, `"public"`, or
+`"unlisted"`.}
+
+\item{made_for_kids}{Optional self-declared made-for-kids setting.}
+
+\item{contains_synthetic_media}{Optional synthetic-media disclosure.}
+
+\item{embeddable}{Optional embeddable setting.}
+
+\item{license}{Optional license, `"creativeCommon"` or `"youtube"`.}
+
+\item{public_stats_viewable}{Optional public-statistics setting.}
+
+\item{publish_at}{Optional RFC 3339 publication time. YouTube requires a
+private video that has never been published.}
+
+\item{on_behalf_of_content_owner}{Optional YouTube content-owner ID. This is
+only available to authorized YouTube content partners.}
+
+\item{...}{Additional arguments passed to [get_video_details()] and
+[tuber_PUT()].}
 }
 \value{
-A list containing the server response after the update attempt.
+The updated video resource.
 }
 \description{
-This function updates the metadata of an existing YouTube video using the YouTube Data API.
+Updates selected mutable video fields while preserving the other fields in
+each requested YouTube resource part. At least one field must be supplied.
 }
 \examples{
 \dontrun{
-update_video_metadata(video_id = "YourVideoID",
-                      title = "New Video Title",
-                      category_id = "24",
-                      description = "New Description",
-                      privacy_status = "public",
-                      made_for_kids = FALSE)
+update_video_metadata(
+  video_id = "VIDEO_ID",
+  title = "New Video Title",
+  privacy_status = "unlisted"
+)
 }
+}
+\references{
+<https://developers.google.com/youtube/v3/docs/videos/update>
 }

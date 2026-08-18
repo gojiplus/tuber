@@ -1,61 +1,61 @@
-#' List reasons that can be used to report abusive videos
+#' List Video-Abuse Report Reasons
 #'
-#' @param part  Caption resource requested. Required. Comma separated list of
-#' one or more of the
-#' following: \code{id, snippet}. e.g., \code{"id, snippet"}, \code{"id"}, etc.
-#'  Default: \code{snippet}.
-#' @param hl  Language used for text values. Optional. Default is \code{en-US}.
-#'  For other allowed language codes, see \code{\link{list_langs}}.
-#' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
+#' @param part Character vector of resource parts.
+#' @param language Language code for localized labels.
+#' @param auth Authentication method, `"key"` or `"token"`.
+#' @param ... Additional arguments passed to [tuber_GET()].
 #'
-#' @return
-#'
-#' If no results, empty data.frame returned
-#' If part requested = "id, snippet" or "snippet",
-#' \code{data.frame} with 4 columns: \code{etag, id, label, secReasons}
-#' If part requested = "id", data.frame with 2 columns: \code{etag, id}
-#'
+#' @return A data frame with one row per primary report reason.
 #' @export
 #' @references \url{https://developers.google.com/youtube/v3/docs/videoAbuseReportReasons/list}
 #' @examples
 #' \dontrun{
-#'
-#' # Set API token via yt_oauth() first
-#'
 #' list_abuse_report_reasons()
-#' list_abuse_report_reasons(part="id")
-#' list_abuse_report_reasons(part="snippet")
 #' }
+list_abuse_report_reasons <- function(part = c("id", "snippet"),
+                                      language = "en-US",
+                                      auth = "key",
+                                      ...) {
+  assert_character(part, min.len = 1, any.missing = FALSE, .var.name = "part")
+  assert_string(language, min.chars = 1, .var.name = "language")
+  assert_choice(auth, c("key", "token"), .var.name = "auth")
 
-list_abuse_report_reasons <- function(part = "id, snippet", hl = "en-US", ...) {
+  response <- tuber_GET(
+    "videoAbuseReportReasons",
+    query = list(part = paste(part, collapse = ","), hl = language),
+    auth = auth,
+    ...
+  )
+  items <- response$items %||% list()
 
-  # Modern validation using checkmate
-  assert_character(part, len = 1, min.chars = 1, .var.name = "part")
-  assert_character(hl, len = 1, min.chars = 1, .var.name = "hl")
-
-  querylist <- list(part = part, hl = hl)
-
-  res <- tuber_GET("videoAbuseReportReasons", querylist, ...)
-
-  resdf <- data.frame()
-
-  if (length(res$items) != 0) {
-
-    if (part == "id, snippet" || part == "snippet") {
-      simple_res  <- lapply(res$items, function(x) c(etag = x$etag, id = x$id,
-        label = x$snippet$label,
-        secReasons = paste(unlist(x$snippet$secondaryReasons), collapse = ",")))
-      resdf       <- bind_rows(lapply(simple_res, as.data.frame, stringsAsFactors = FALSE))
-    }
-
-    if (part == "id") {
-      simple_res  <- lapply(res$items, function(x) c(etag = x$etag, id = x$id))
-      resdf       <- bind_rows(lapply(simple_res, as.data.frame, stringsAsFactors = FALSE))
-    }
+  result <- if (length(items) == 0) {
+    data.frame(
+      reason_id = character(),
+      label = character(),
+      secondary_reason_ids = character(),
+      etag = character(),
+      stringsAsFactors = FALSE
+    )
+  } else {
+    items_to_frame(items, function(item) {
+      secondary <- item$snippet$secondaryReasons %||% list()
+      data.frame(
+        reason_id = item$id %||% NA_character_,
+        label = item$snippet$label %||% NA_character_,
+        secondary_reason_ids = paste(
+          vapply(secondary, function(reason) reason$id %||% NA_character_, character(1)),
+          collapse = ","
+        ),
+        etag = item$etag %||% NA_character_,
+        stringsAsFactors = FALSE
+      )
+    })
   }
 
-  # Cat total results
-  cat("Total Number of Reasons:", length(res$items), "\n")
-
-  resdf
+  add_tuber_attributes(
+    result,
+    function_name = "list_abuse_report_reasons",
+    results_found = nrow(result),
+    response_format = "data.frame"
+  )
 }

@@ -12,27 +12,26 @@ skip_if_no_api_key <- function() {
 # Channel Functions
 # ==============================================================================
 
-test_that("get_channel_stats works", {
+test_that("get_channel_details works", {
   skip_on_cran()
   skip_if_no_api_key()
 
-  result <- get_channel_stats(channel_id = "UC_x5XG1OV2P6uZZ5FSM9Ttw", auth = "key")
+  result <- get_channel_details(channel_ids = "UC_x5XG1OV2P6uZZ5FSM9Ttw", auth = "key")
 
   expect_true(!is.null(result))
 })
 
-test_that("list_channel_resources works", {
+test_that("get_channel_details resolves legacy usernames", {
   skip_on_cran()
   skip_if_no_api_key()
 
-  result <- list_channel_resources(
-    filter = c(channel_id = "UC_x5XG1OV2P6uZZ5FSM9Ttw"),
-    part = "snippet",
-    simplify = FALSE,
+  result <- get_channel_details(
+    usernames = "GoogleDevelopers",
+    part = "id",
     auth = "key"
   )
 
-  expect_true(length(result$items) > 0)
+  expect_true(nrow(result) > 0)
 })
 
 test_that("list_channel_videos works", {
@@ -72,7 +71,7 @@ test_that("get_video_details (single) works", {
   skip_on_cran()
   skip_if_no_api_key()
 
-  result <- get_video_details(video_id = "dQw4w9WgXcQ", auth = "key")
+  result <- get_video_details(video_ids = "dQw4w9WgXcQ", auth = "key")
 
   expect_true(is.list(result))
   expect_true(length(result$items) > 0)
@@ -106,22 +105,28 @@ test_that("get_video_details (batch) works", {
   expect_true(nrow(result) == 2)
 })
 
-test_that("get_stats works with simplify=FALSE", {
+test_that("get_video_stats returns a data frame", {
   skip_on_cran()
   skip_if_no_api_key()
 
-  result <- get_stats(video_ids = "dQw4w9WgXcQ", simplify = FALSE, auth = "key")
-
-  expect_true(!is.null(result$viewCount))
-})
-
-test_that("get_stats works with simplify=TRUE", {
-  skip_on_cran()
-  skip_if_no_api_key()
-
-  result <- get_stats(video_ids = "dQw4w9WgXcQ", simplify = TRUE, auth = "key")
+  result <- get_video_stats(video_ids = "dQw4w9WgXcQ", auth = "key")
 
   expect_s3_class(result, "data.frame")
+  expect_true("view_count" %in% names(result))
+})
+
+test_that("get_video_stats includes content details", {
+  skip_on_cran()
+  skip_if_no_api_key()
+
+  result <- get_video_stats(
+    video_ids = "dQw4w9WgXcQ",
+    include_content_details = TRUE,
+    auth = "key"
+  )
+
+  expect_s3_class(result, "data.frame")
+  expect_true("duration" %in% names(result))
 })
 
 # ==============================================================================
@@ -143,12 +148,12 @@ test_that("yt_search works", {
 # Playlist Functions
 # ==============================================================================
 
-test_that("get_playlist_items works", {
+test_that("list_playlist_items works", {
   skip_on_cran()
   skip_if_no_api_key()
 
-  result <- get_playlist_items(
-    filter = c(playlist_id = "PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf"),
+  result <- list_playlist_items(
+    playlist_id = "PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf",
     max_results = 5,
     auth = "key"
   )
@@ -156,12 +161,12 @@ test_that("get_playlist_items works", {
   expect_true(!is.null(result))
 })
 
-test_that("get_playlists works", {
+test_that("list_playlists works", {
   skip_on_cran()
   skip_if_no_api_key()
 
-  result <- get_playlists(
-    filter = c(channel_id = "UC_x5XG1OV2P6uZZ5FSM9Ttw"),
+  result <- list_playlists(
+    channel_id = "UC_x5XG1OV2P6uZZ5FSM9Ttw",
     max_results = 3,
     auth = "key"
   )
@@ -173,12 +178,12 @@ test_that("get_playlists works", {
 # Comment Functions
 # ==============================================================================
 
-test_that("get_comment_threads works", {
+test_that("list_comment_threads works", {
   skip_on_cran()
   skip_if_no_api_key()
 
-  result <- get_comment_threads(
-    filter = c(video_id = "dQw4w9WgXcQ"),
+  result <- list_comment_threads(
+    video_id = "dQw4w9WgXcQ",
     max_results = 5,
     auth = "key"
   )
@@ -209,7 +214,7 @@ test_that("list_channel_activities works", {
   skip_if_no_api_key()
 
   result <- list_channel_activities(
-    filter = c(channel_id = "UC_x5XG1OV2P6uZZ5FSM9Ttw"),
+    channel_id = "UC_x5XG1OV2P6uZZ5FSM9Ttw",
     max_results = 3,
     auth = "key"
   )
@@ -221,11 +226,14 @@ test_that("list_channel_activities works", {
 # Caption Functions
 # ==============================================================================
 
-test_that("list_caption_tracks works", {
+test_that("list_captions works", {
   skip_on_cran()
-  skip_if_no_api_key()
+  token <- yt_token()
+  if (is.null(token) || !is.function(token$sign)) {
+    skip("No usable YouTube OAuth token available")
+  }
 
-  result <- list_caption_tracks(video_id = "dQw4w9WgXcQ", auth = "key")
+  result <- list_captions(video_id = "dQw4w9WgXcQ")
 
   expect_s3_class(result, "data.frame")
 })
@@ -244,15 +252,4 @@ test_that("list_channel_sections works", {
   )
 
   expect_true(!is.null(result))
-})
-
-# ==============================================================================
-# Deprecated Functions
-# ==============================================================================
-
-test_that("get_related_videos is defunct", {
-  expect_error(
-    get_related_videos(video_id = "dQw4w9WgXcQ"),
-    "defunct"
-  )
 })

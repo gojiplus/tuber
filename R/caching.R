@@ -10,6 +10,34 @@ NULL
 
 # Global environment for cache storage
 .tuber_cache <- new.env(parent = emptyenv())
+.tuber_cache$config <- list(
+  enabled = TRUE,
+  default_ttl = 3600L,
+  max_size = 1000L,
+  cache_dir = NULL,
+  created_at = Sys.time()
+)
+
+cache_file_path <- function(cache_key) {
+  cache_dir <- .tuber_cache$config$cache_dir %||% NULL
+  if (is.null(cache_dir)) return(NULL)
+  file.path(cache_dir, paste0(cache_key, ".rds"))
+}
+
+auth_fingerprint <- function(auth) {
+  credential <- if (auth == "key") {
+    suppressMessages(yt_get_key()) %||% "missing-key"
+  } else {
+    token <- yt_token()
+    if (is.null(token)) {
+      "missing-token"
+    } else {
+      tryCatch(token$credentials$access_token, error = function(e) NULL) %||%
+        digest(token)
+    }
+  }
+  digest(credential, algo = "sha256")
+}
 
 #' Configure caching settings
 #'
@@ -54,10 +82,21 @@ tuber_cache_config <- function(enabled = TRUE,
 #' @return List with cache configuration
 #' @export
 tuber_cache_info <- function() {
-  config <- .tuber_cache$config %||% list(enabled = FALSE)
+  config <- .tuber_cache$config
 
   # Add runtime stats
-  config$items_cached <- length(ls(.tuber_cache, pattern = "^cache_"))
+  memory_keys <- ls(.tuber_cache, pattern = "^cache_")
+  disk_files <- if (is.null(config$cache_dir)) {
+    character()
+  } else {
+    list.files(config$cache_dir, pattern = "^cache_.*\\.rds$", full.names = TRUE)
+  }
+  config$items_cached <- length(unique(c(
+    memory_keys,
+    sub("\\.rds$", "", basename(disk_files))
+  )))
+  config$items_in_memory <- length(memory_keys)
+  config$items_on_disk <- length(disk_files)
   config$memory_usage <- format(object.size(.tuber_cache), units = "MB")
 
   return(config)
@@ -79,7 +118,15 @@ tuber_cache_clear <- function(pattern = NULL, older_than = NULL) {
     assert_integerish(older_than, len = 1, lower = 0, .var.name = "older_than")
   }
 
-  cache_keys <- ls(.tuber_cache, pattern = "^cache_")
+  memory_keys <- ls(.tuber_cache, pattern = "^cache_")
+  cache_dir <- .tuber_cache$config$cache_dir %||% NULL
+  disk_files <- if (is.null(cache_dir)) {
+    character()
+  } else {
+    list.files(cache_dir, pattern = "^cache_.*\\.rds$", full.names = TRUE)
+  }
+  disk_keys <- sub("\\.rds$", "", basename(disk_files))
+  cache_keys <- unique(c(memory_keys, disk_keys))
 
   if (!is.null(pattern)) {
     cache_keys <- cache_keys[grepl(pattern, cache_keys)]
@@ -91,13 +138,22 @@ tuber_cache_clear <- function(pattern = NULL, older_than = NULL) {
     should_clear <- TRUE
 
     if (!is.null(older_than)) {
-      cache_entry <- get(key, envir = .tuber_cache)
-      age <- as.numeric(difftime(Sys.time(), cache_entry$created_at, units = "secs"))
-      should_clear <- age > older_than
+      cache_entry <- if (exists(key, envir = .tuber_cache, inherits = FALSE)) {
+        get(key, envir = .tuber_cache, inherits = FALSE)
+      } else {
+        cache_file <- cache_file_path(key)
+        tryCatch(readRDS(cache_file), error = function(e) NULL)
+      }
+      should_clear <- is.null(cache_entry) ||
+        as.numeric(difftime(Sys.time(), cache_entry$created_at, units = "secs")) > older_than
     }
 
     if (should_clear) {
-      rm(list = key, envir = .tuber_cache)
+      if (exists(key, envir = .tuber_cache, inherits = FALSE)) {
+        rm(list = key, envir = .tuber_cache)
+      }
+      cache_file <- cache_file_path(key)
+      if (!is.null(cache_file) && file.exists(cache_file)) unlink(cache_file)
       cleared_count <- cleared_count + 1
     }
   }
@@ -118,7 +174,7 @@ generate_cache_key <- function(endpoint, query, auth) {
   query_sorted <- query[sort(names(query))]
   query_str <- paste(names(query_sorted), query_sorted, sep = "=", collapse = "&")
 
-  key_parts <- c(endpoint, auth, query_str)
+  key_parts <- c(endpoint, auth, auth_fingerprint(auth), query_str)
   cache_key <- paste0("cache_", digest(key_parts, algo = "md5"))
 
   return(cache_key)
@@ -128,20 +184,9 @@ generate_cache_key <- function(endpoint, query, auth) {
 #'
 #' @param endpoint API endpoint name
 #' @return Logical indicating if endpoint is cacheable
+#' @keywords internal
 is_cacheable_endpoint <- function(endpoint) {
-  # Static data endpoints that change infrequently
-  static_endpoints <- c(
-    "videoCategories",
-    "i18nLanguages",
-    "i18nRegions",
-    "guidecategories",
-    # Channel info (changes rarely)
-    "channels",
-    # Video details for specific fields that don't change
-    "videos"  # Only for certain parts like snippet, recordingDetails
-  )
-
-  return(endpoint %in% static_endpoints)
+  endpoint %in% c("videoCategories", "i18nLanguages", "i18nRegions")
 }
 
 #' Check if query parameters indicate static data
@@ -149,6 +194,7 @@ is_cacheable_endpoint <- function(endpoint) {
 #' @param endpoint API endpoint
 #' @param query Query parameters
 #' @return Logical indicating if this specific query is cacheable
+#' @keywords internal
 is_static_query <- function(endpoint, query) {
 
   # Video categories - always static
@@ -157,25 +203,6 @@ is_static_query <- function(endpoint, query) {
   # Languages and regions - always static
   if (endpoint %in% c("i18nLanguages", "i18nRegions")) return(TRUE)
 
-  # Guide categories - always static
-  if (endpoint == "guidecategories") return(TRUE)
-
-  # Channels - cache basic info but not analytics
-  if (endpoint == "channels") {
-    parts <- strsplit(query$part %||% "", ",")[[1]]
-    # Cache basic info, not analytics or dynamic content
-    static_parts <- c("snippet", "brandingSettings", "contentDetails", "topicDetails")
-    return(all(parts %in% static_parts))
-  }
-
-  # Videos - only cache certain parts
-  if (endpoint == "videos") {
-    parts <- strsplit(query$part %||% "", ",")[[1]]
-    # Cache immutable video metadata, not view counts or comments
-    static_parts <- c("snippet", "recordingDetails", "topicDetails", "contentDetails")
-    return(all(parts %in% static_parts))
-  }
-
   return(FALSE)
 }
 
@@ -183,22 +210,33 @@ is_static_query <- function(endpoint, query) {
 #'
 #' @param cache_key Cache key
 #' @return Cached response or NULL if not available/expired
+#' @keywords internal
 get_cached_response <- function(cache_key) {
 
-  config <- .tuber_cache$config %||% list(enabled = FALSE)
+  config <- .tuber_cache$config
   if (!config$enabled) return(NULL)
 
-  if (!exists(cache_key, envir = .tuber_cache)) return(NULL)
-
-  cache_entry <- get(cache_key, envir = .tuber_cache)
+  cache_entry <- if (exists(cache_key, envir = .tuber_cache)) {
+    get(cache_key, envir = .tuber_cache)
+  } else {
+    cache_file <- cache_file_path(cache_key)
+    if (is.null(cache_file) || !file.exists(cache_file)) return(NULL)
+    tryCatch(readRDS(cache_file), error = function(e) NULL)
+  }
+  if (is.null(cache_entry)) return(NULL)
 
   # Check if expired
   age <- as.numeric(difftime(Sys.time(), cache_entry$created_at, units = "secs"))
   if (age > cache_entry$ttl) {
-    rm(list = cache_key, envir = .tuber_cache)
+    if (exists(cache_key, envir = .tuber_cache)) {
+      rm(list = cache_key, envir = .tuber_cache)
+    }
+    cache_file <- cache_file_path(cache_key)
+    if (!is.null(cache_file) && file.exists(cache_file)) unlink(cache_file)
     return(NULL)
   }
 
+  assign(cache_key, cache_entry, envir = .tuber_cache)
   return(cache_entry$data)
 }
 
@@ -207,9 +245,10 @@ get_cached_response <- function(cache_key) {
 #' @param cache_key Cache key
 #' @param data Response data to cache
 #' @param ttl Time-to-live in seconds (NULL for default)
+#' @keywords internal
 store_cached_response <- function(cache_key, data, ttl = NULL) {
 
-  config <- .tuber_cache$config %||% list(enabled = FALSE)
+  config <- .tuber_cache$config
   if (!config$enabled) return(invisible(NULL))
 
   # Use default TTL if not specified
@@ -217,15 +256,39 @@ store_cached_response <- function(cache_key, data, ttl = NULL) {
     ttl <- config$default_ttl %||% 3600
   }
 
-  # Check cache size limits
-  current_size <- length(ls(.tuber_cache, pattern = "^cache_"))
+  # Check cache size limits across memory and persistent storage.
+  memory_keys <- ls(.tuber_cache, pattern = "^cache_")
+  disk_files <- if (is.null(config$cache_dir)) {
+    character()
+  } else {
+    list.files(config$cache_dir, pattern = "^cache_.*\\.rds$", full.names = TRUE)
+  }
+  cache_keys <- unique(c(memory_keys, sub("\\.rds$", "", basename(disk_files))))
+  current_size <- length(cache_keys)
   max_size <- config$max_size %||% 1000
 
   if (current_size >= max_size) {
-    # Remove oldest entries
-    cache_keys <- ls(.tuber_cache, pattern = "^cache_")
-    oldest_keys <- head(cache_keys, current_size - max_size + 1)
-    rm(list = oldest_keys, envir = .tuber_cache)
+    created_at <- vapply(cache_keys, function(key) {
+      entry <- if (exists(key, envir = .tuber_cache, inherits = FALSE)) {
+        get(key, envir = .tuber_cache, inherits = FALSE)
+      } else {
+        tryCatch(readRDS(cache_file_path(key)), error = function(e) NULL)
+      }
+      if (is.null(entry)) Inf else as.numeric(entry$created_at)
+    }, numeric(1))
+    oldest_keys <- cache_keys[order(created_at)][seq_len(current_size - max_size + 1)]
+    memory_oldest <- oldest_keys[vapply(
+      oldest_keys,
+      exists,
+      logical(1),
+      envir = .tuber_cache,
+      inherits = FALSE
+    )]
+    if (length(memory_oldest) > 0) rm(list = memory_oldest, envir = .tuber_cache)
+    for (key in oldest_keys) {
+      cache_file <- cache_file_path(key)
+      if (!is.null(cache_file) && file.exists(cache_file)) unlink(cache_file)
+    }
   }
 
   # Store cache entry
@@ -236,145 +299,7 @@ store_cached_response <- function(cache_key, data, ttl = NULL) {
   )
 
   assign(cache_key, cache_entry, envir = .tuber_cache)
+  cache_file <- cache_file_path(cache_key)
+  if (!is.null(cache_file)) saveRDS(cache_entry, cache_file)
   invisible(NULL)
-}
-
-#' Cached version of tuber_GET with automatic caching
-#'
-#' @param path API endpoint path
-#' @param query Query parameters
-#' @param auth Authentication method
-#' @param cache_ttl Override default TTL for this call
-#' @param force_refresh Skip cache and force fresh API call
-#' @param ... Additional arguments passed to tuber_GET
-#' @return API response (from cache or fresh call)
-#' @export
-tuber_GET_cached <- function(path, query, auth = "token",
-                            cache_ttl = NULL, force_refresh = FALSE, ...) {
-
-  # Modern validation using checkmate
-  assert_character(path, len = 1, min.chars = 1, .var.name = "path")
-  assert_list(query, .var.name = "query")
-  assert_choice(auth, c("token", "key"), .var.name = "auth")
-  assert_flag(force_refresh, .var.name = "force_refresh")
-
-  if (!is.null(cache_ttl)) {
-    assert_integerish(cache_ttl, len = 1, lower = 60, .var.name = "cache_ttl")
-  }
-
-  # Check if this endpoint/query should be cached
-  if (!force_refresh && is_cacheable_endpoint(path) && is_static_query(path, query)) {
-
-    cache_key <- generate_cache_key(path, query, auth)
-
-    # Try to get from cache first
-    cached_response <- get_cached_response(cache_key)
-    if (!is.null(cached_response)) {
-      return(cached_response)
-    }
-
-    # Cache miss - make API call
-    response <- tuber_GET(path, query, auth, ...)
-
-    # Store in cache for future use
-    store_cached_response(cache_key, response, cache_ttl)
-
-    return(response)
-
-  } else {
-    # Not cacheable or force refresh - make direct API call
-    return(tuber_GET(path, query, auth, ...))
-  }
-}
-
-#' Enhanced versions of static data functions with caching
-#'
-#' These functions automatically cache responses to reduce API quota usage
-#' for data that changes infrequently.
-
-#' List video categories with caching
-#'
-#' @param region_code Region code for categories
-#' @param auth Authentication method
-#' @param cache_ttl Cache time-to-live (default: 24 hours for categories)
-#' @param ... Additional arguments
-#' @return Video categories data
-#' @export
-list_videocats_cached <- function(region_code = "US", auth = "key", cache_ttl = 86400, ...) {
-
-  # Modern validation using checkmate
-  assert_character(region_code, len = 1, pattern = "^[A-Z]{2}$", .var.name = "region_code")
-  assert_choice(auth, c("token", "key"), .var.name = "auth")
-  assert_integerish(cache_ttl, len = 1, lower = 60, .var.name = "cache_ttl")
-
-  query <- list(part = "snippet", regionCode = region_code)
-
-  result <- tuber_GET_cached("videoCategories", query, auth, cache_ttl = cache_ttl, ...)
-
-  return(result)
-}
-
-#' List supported languages with caching
-#'
-#' @param auth Authentication method
-#' @param cache_ttl Cache time-to-live (default: 24 hours)
-#' @param ... Additional arguments
-#' @return Languages data
-#' @export
-list_langs_cached <- function(auth = "key", cache_ttl = 86400, ...) {
-
-  # Modern validation using checkmate
-  assert_choice(auth, c("token", "key"), .var.name = "auth")
-  assert_integerish(cache_ttl, len = 1, lower = 60, .var.name = "cache_ttl")
-
-  query <- list(part = "snippet")
-
-  result <- tuber_GET_cached("i18nLanguages", query, auth, cache_ttl = cache_ttl, ...)
-
-  return(result)
-}
-
-#' List supported regions with caching
-#'
-#' @param auth Authentication method
-#' @param cache_ttl Cache time-to-live (default: 24 hours)
-#' @param ... Additional arguments
-#' @return Regions data
-#' @export
-list_regions_cached <- function(auth = "key", cache_ttl = 86400, ...) {
-
-  # Modern validation using checkmate
-  assert_choice(auth, c("token", "key"), .var.name = "auth")
-  assert_integerish(cache_ttl, len = 1, lower = 60, .var.name = "cache_ttl")
-
-  query <- list(part = "snippet")
-
-  result <- tuber_GET_cached("i18nRegions", query, auth, cache_ttl = cache_ttl, ...)
-
-  return(result)
-}
-
-#' Get channel information with caching (for static parts)
-#'
-#' @param channel_id Channel ID
-#' @param part Parts to retrieve (only static parts will be cached)
-#' @param auth Authentication method
-#' @param cache_ttl Cache time-to-live (default: 1 hour for channel info)
-#' @param ... Additional arguments
-#' @return Channel information
-#' @export
-get_channel_info_cached <- function(channel_id, part = "snippet,brandingSettings",
-                                   auth = "key", cache_ttl = 3600, ...) {
-
-  # Modern validation using checkmate
-  assert_character(channel_id, len = 1, min.chars = 1, .var.name = "channel_id")
-  assert_character(part, len = 1, min.chars = 1, .var.name = "part")
-  assert_choice(auth, c("token", "key"), .var.name = "auth")
-  assert_integerish(cache_ttl, len = 1, lower = 60, .var.name = "cache_ttl")
-
-  query <- list(part = part, id = channel_id)
-
-  result <- tuber_GET_cached("channels", query, auth, cache_ttl = cache_ttl, ...)
-
-  return(result)
 }

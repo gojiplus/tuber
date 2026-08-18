@@ -1,31 +1,22 @@
 #' Set up Authorization
 #'
-#' The function looks for \code{.httr-oauth} in the working directory. If it
-#' doesn't find it, it expects an application ID and a secret.
-#' If you want to remove the existing \code{.httr-oauth}, set remove_old_oauth
-#' to TRUE. By default, it is set to FALSE.
-#' The function launches a browser to allow you to authorize the application
-#'
-#' If a browser cannot be opened, pass \code{use_oob = TRUE} to
-#' \code{yt_oauth()} so authentication can be completed using an
-#' out-of-band code.
-#' Delete the \code{.httr-oauth} file in the working directory to force
-#' re-authentication.
+#' The function reads a cached token when one exists. Otherwise, it opens the
+#' system browser and asks Google to authorize the application. By default,
+#' tokens are stored in the user's R cache directory rather than the project
+#' directory.
 #' @param app_id client id; required; no default
 #' @param app_secret client secret; required; no default
 #' @param scope Character. \code{ssl}, \code{basic},
 #' \code{own_account_readonly}, \code{upload_and_manage_own_videos},
-#' \code{partner}, and \code{partner_audit}.
+#' \code{channel_memberships}, \code{partner}, and \code{partner_audit}.
 #' Required. \code{ssl} and \code{basic} are basically interchangeable.
 #' Default is \code{ssl}.
-#' @param token path to file containing the token. If a path is given,
-#' the function will first try to read from it.
-#' Default is \code{.httr-oauth} in the local directory.
-#' So if there is such a file, the function will first try to read from it.
+#' @param token Path to the token cache. The default is
+#' `file.path(tools::R_user_dir("tuber", "cache"), "oauth-token.rds")`.
 #' @param \dots Additional arguments passed to \code{\link[httr]{oauth2.0_token}}
 #'
-#' @return sets the google_token option and also saves \code{.httr_oauth}
-#' in the working directory (find out the working directory via \code{getwd()})
+#' @return The OAuth token, invisibly. The function also sets the
+#' `google_token` option and saves the token at `token`.
 #'
 #' @export
 #'
@@ -40,7 +31,13 @@
 #'          "MbOSt6cQhhFkwETXKur-L9rN")
 #' }
 
-yt_oauth <- function(app_id = NULL, app_secret = NULL, scope = "ssl", token = ".httr-oauth", ...) {
+yt_oauth <- function(
+  app_id = NULL,
+  app_secret = NULL,
+  scope = "ssl",
+  token = file.path(tools::R_user_dir("tuber", "cache"), "oauth-token.rds"),
+  ...
+) {
 
   # Modern validation using checkmate
   if (!is.null(app_id)) {
@@ -52,7 +49,8 @@ yt_oauth <- function(app_id = NULL, app_secret = NULL, scope = "ssl", token = ".
   }
 
   assert_choice(scope, c("ssl", "basic", "own_account_readonly",
-                         "upload_and_manage_own_videos", "partner", "partner_audit"),
+                         "upload_and_manage_own_videos", "channel_memberships",
+                         "partner", "partner_audit"),
                 .var.name = "scope")
   assert_character(token, len = 1, min.chars = 1, .var.name = "token")
 
@@ -90,13 +88,16 @@ yt_oauth <- function(app_id = NULL, app_secret = NULL, scope = "ssl", token = ".
     myapp <- oauth_app("google", key = app_id, secret = app_secret)
     scope <- match.arg(scope, c(
       "ssl", "basic", "own_account_readonly",
-      "upload_and_manage_own_videos", "partner_audit", "partner"
+      "upload_and_manage_own_videos", "channel_memberships",
+      "partner_audit", "partner"
     ))
     scope_url <- switch(scope,
       ssl = "https://www.googleapis.com/auth/youtube.force-ssl",
       basic = "https://www.googleapis.com/auth/youtube",
       own_account_readonly = "https://www.googleapis.com/auth/youtube.readonly",
       upload_and_manage_own_videos = "https://www.googleapis.com/auth/youtube.upload",
+      channel_memberships =
+        "https://www.googleapis.com/auth/youtube.channel-memberships.creator",
       partner_audit = "https://www.googleapis.com/auth/youtubepartner-channel-audit",
       partner = "https://www.googleapis.com/auth/youtubepartner"
     )
@@ -105,6 +106,7 @@ yt_oauth <- function(app_id = NULL, app_secret = NULL, scope = "ssl", token = ".
 
     # Try to save the token for future use
     tryCatch({
+      dir.create(dirname(token), recursive = TRUE, showWarnings = FALSE)
       saveRDS(google_token, file = token)
     }, error = function(e) {
       warn("Could not save OAuth token to file",

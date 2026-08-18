@@ -4,10 +4,16 @@
 \alias{get_video_thumbnails}
 \title{Get video thumbnails information}
 \usage{
-get_video_thumbnails(video_id, size = NULL, simplify = TRUE, auth = "key", ...)
+get_video_thumbnails(
+  video_ids,
+  size = NULL,
+  simplify = TRUE,
+  auth = "key",
+  ...
+)
 }
 \arguments{
-\item{video_id}{Video ID or vector of video IDs}
+\item{video_ids}{Video ID or vector of video IDs.}
 
 \item{size}{Thumbnail size: "default", "medium", "high", "standard", "maxres"}
 
@@ -18,7 +24,8 @@ get_video_thumbnails(video_id, size = NULL, simplify = TRUE, auth = "key", ...)
 \item{...}{Additional arguments passed to tuber_GET}
 }
 \value{
-List or data frame with thumbnail information
+A tidy data frame with one row per video and thumbnail size when
+`simplify = TRUE`; otherwise the raw videos-list response.
 }
 \description{
 Retrieves thumbnail URLs and metadata for videos.
