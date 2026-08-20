@@ -1,6 +1,6 @@
 Package: tuber
 Title: Client for the YouTube Data API
-Version: 2.1.0
+Version: 2.0.0.9000
 Date: 2026-08-20
 Language: en-US
 Authors@R: c(
