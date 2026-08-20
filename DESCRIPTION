@@ -1,7 +1,7 @@
 Package: tuber
 Title: Client for the YouTube Data API
-Version: 2.0.0
-Date: 2026-08-17
+Version: 2.1.0
+Date: 2026-08-20
 Language: en-US
 Authors@R: c(
     person("Gaurav", "Sood", , "gsood07@gmail.com", role = c("aut", "cre")),
@@ -23,7 +23,6 @@ Imports:
     checkmate,
     digest,
     dplyr,
-    httr,
     httr2,
     jsonlite,
     magrittr,
@@ -45,6 +44,7 @@ Suggests:
     promises,
     rmarkdown,
     testthat (>= 3.1.7),
+    withr,
     xml2
 VignetteBuilder: 
     knitr

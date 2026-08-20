@@ -1,3 +1,32 @@
+# tuber 2.1.0
+
+## httr2
+
+* tuber now talks to YouTube entirely through httr2. httr is no longer a
+  dependency.
+* **Saved OAuth tokens must be recreated.** Tokens written by tuber 2.0.0 and
+  earlier are httr `Token2.0` objects, which httr2 cannot use. `yt_oauth()`
+  says so and authenticates again; the new token replaces the old file.
+* `options(google_token)` now holds an httr2 token. Code reading
+  `token$credentials$access_token` should read `token$access_token`.
+* `yt_oauth()` refuses to write into a file named `.httr-oauth`. That name is
+  httr's *shared* cache, read by every httr-based package in the same working
+  directory, and an httr2 token there would break them. tuber's own default
+  lives in `tools::R_user_dir("tuber", "cache")`.
+* An expired access token is refreshed automatically when the OAuth client is
+  still available, instead of failing the request.
+* Credentials travel in redacted headers, so a printed request or an error
+  dump no longer shows the bearer token or API key.
+* The `...` argument of the internal HTTP functions no longer reaches httr's
+  configuration. The argument is still accepted and ignored.
+
+## Fixes
+
+* `set_comment_moderation_status()` and other endpoints returning HTTP 204 no
+  longer attempt to parse an absent response body.
+* Uploads that fail to start now report YouTube's own error message rather
+  than a bare status code.
+
 # tuber 2.0.0
 
 Released 2026-08-17.

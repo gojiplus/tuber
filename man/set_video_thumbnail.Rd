@@ -11,7 +11,7 @@ set_video_thumbnail(video_id, file, ...)
 
 \item{file}{Character. Path to the thumbnail image file (JPG or PNG, max 2MB).}
 
-\item{\dots}{Additional arguments passed to \code{\link[httr]{POST}}.}
+\item{\dots}{Ignored; retained for backward compatibility.}
 }
 \value{
 A list containing the response from the API.

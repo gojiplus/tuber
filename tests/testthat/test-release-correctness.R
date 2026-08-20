@@ -19,37 +19,35 @@ test_that("quota estimates are method-aware and bucket-aware", {
 })
 
 test_that("upload_video follows the resumable upload protocol", {
-  video_file <- tempfile(fileext = ".mp4")
+  video_file <- withr::local_tempfile(fileext = ".mp4")
   writeBin(as.raw(1:10), video_file)
-  on.exit(unlink(video_file), add = TRUE)
 
-  calls <- new.env(parent = emptyenv())
-  calls$post <- NULL
-  calls$put <- NULL
-  calls$quota <- NULL
-
-  mock_post <- function(url, query, body, encode, ...) {
-    calls$post <- list(url = url, query = query, body = body, encode = encode)
-    list(status_code = 200L, headers = list(location = "https://upload.example/session"))
-  }
-  mock_put <- function(url, body, ...) {
-    calls$put <- list(url = url, body = body)
-    list(status_code = 201L, content = list(id = "abcdefghijk"))
-  }
+  seen <- new.env(parent = emptyenv())
 
   local_mocked_bindings(
-    POST = mock_post,
-    PUT = mock_put,
-    status_code = function(response) response$status_code,
-    headers = function(response) response$headers,
-    content = function(response) response$content,
     yt_check_token = function() invisible(NULL),
+    yt_access_token = function() "fake-token",
     track_quota_usage = function(endpoint, method) {
-      calls$quota <- c(endpoint, method)
+      seen$quota <- c(endpoint, method)
       invisible(NULL)
     },
     .package = "tuber"
   )
+
+  # Mocking at the HTTP layer rather than at httr2's function bindings means
+  # the real URL, header and body assembly is what gets asserted on.
+  httr2::local_mocked_responses(function(req) {
+    if (identical(req$method, "POST")) {
+      seen$post <- req
+      httr2::response(
+        status_code = 200L,
+        headers = list(location = "https://upload.example/session")
+      )
+    } else {
+      seen$put <- req
+      httr2::response_json(status_code = 201L, body = list(id = "abcdefghijk"))
+    }
+  })
 
   result <- upload_video(
     file = video_file,
@@ -57,29 +55,45 @@ test_that("upload_video follows the resumable upload protocol", {
     status = list(privacyStatus = "private")
   )
 
-  expect_equal(calls$post$url, "https://www.googleapis.com/upload/youtube/v3/videos")
-  expect_equal(calls$post$query$uploadType, "resumable")
-  expect_equal(calls$post$query$part, "snippet,status")
-  expect_equal(jsonlite::fromJSON(calls$post$body)$snippet$title, "A title")
-  expect_equal(calls$put$url, "https://upload.example/session")
-  expect_s3_class(calls$put$body, "form_file")
-  expect_equal(calls$quota, c("videos", "insert"))
+  post_url <- httr2::url_parse(seen$post$url)
+  expect_equal(post_url$path, "/upload/youtube/v3/videos")
+  expect_equal(post_url$query$uploadType, "resumable")
+  expect_equal(post_url$query$part, "snippet,status")
+  expect_equal(
+    jsonlite::fromJSON(as.character(seen$post$body$data))$snippet$title,
+    "A title"
+  )
+  expect_equal(seen$post$headers$`X-Upload-Content-Length`, "10")
+
+  expect_equal(seen$put$url, "https://upload.example/session")
+  expect_equal(seen$put$method, "PUT")
+  expect_equal(seen$put$body$data, video_file)
+  # The bearer token is stored redacted, so it cannot leak through a printed
+  # request or an error dump; "reveal" is the only way to see it.
+  expect_equal(
+    httr2::req_get_headers(seen$put, "reveal")$Authorization,
+    "Bearer fake-token"
+  )
+  expect_equal(
+    httr2::req_get_headers(seen$put, "redact")$Authorization,
+    "<REDACTED>"
+  )
+
+  expect_equal(seen$quota, c("videos", "insert"))
   expect_equal(result$url, "https://www.youtube.com/watch?v=abcdefghijk")
 })
 
 test_that("upload_video requires the Location response header", {
-  video_file <- tempfile(fileext = ".mp4")
+  video_file <- withr::local_tempfile(fileext = ".mp4")
   writeBin(as.raw(1:10), video_file)
-  on.exit(unlink(video_file), add = TRUE)
 
   local_mocked_bindings(
-    POST = function(...) list(status_code = 200L, headers = list()),
-    status_code = function(response) response$status_code,
-    headers = function(response) response$headers,
     yt_check_token = function() invisible(NULL),
+    yt_access_token = function() "fake-token",
     track_quota_usage = function(...) invisible(NULL),
     .package = "tuber"
   )
+  httr2::local_mocked_responses(list(httr2::response(status_code = 200L)))
 
   expect_error(
     upload_video(file = video_file, snippet = list(title = "A title")),
@@ -88,38 +102,33 @@ test_that("upload_video requires the Location response header", {
 })
 
 test_that("upload_caption follows the resumable upload protocol", {
-  caption_file <- tempfile(fileext = ".vtt")
+  caption_file <- withr::local_tempfile(fileext = ".vtt")
   writeLines(c("WEBVTT", "", "00:00:00.000 --> 00:00:01.000", "Hello"), caption_file)
-  on.exit(unlink(caption_file), add = TRUE)
 
-  calls <- new.env(parent = emptyenv())
-  calls$post <- NULL
-  calls$put <- NULL
-  calls$quota <- NULL
-
-  mock_post <- function(url, query, body, encode, ...) {
-    calls$post <- list(url = url, query = query, body = body, encode = encode)
-    list(status_code = 200L, headers = list(location = "https://upload.example/caption"))
-  }
-  mock_put <- function(url, body, ...) {
-    calls$put <- list(url = url, body = body)
-    list(status_code = 201L, content = list(id = "caption-id"))
-  }
+  seen <- new.env(parent = emptyenv())
 
   local_mocked_bindings(
-    POST = mock_post,
-    PUT = mock_put,
-    status_code = function(response) response$status_code,
-    headers = function(response) response$headers,
-    content = function(response) response$content,
-    tuber_check = function(...) invisible(NULL),
     yt_check_token = function() invisible(NULL),
+    yt_access_token = function() "fake-token",
     track_quota_usage = function(endpoint, method) {
-      calls$quota <- c(endpoint, method)
+      seen$quota <- c(endpoint, method)
       invisible(NULL)
     },
     .package = "tuber"
   )
+
+  httr2::local_mocked_responses(function(req) {
+    if (identical(req$method, "POST")) {
+      seen$post <- req
+      httr2::response(
+        status_code = 200L,
+        headers = list(location = "https://upload.example/caption")
+      )
+    } else {
+      seen$put <- req
+      httr2::response_json(status_code = 201L, body = list(id = "caption-id"))
+    }
+  })
 
   result <- upload_caption(
     file = caption_file,
@@ -128,16 +137,19 @@ test_that("upload_caption follows the resumable upload protocol", {
     on_behalf_of_content_owner = "owner-1"
   )
 
-  expect_equal(calls$post$url, "https://www.googleapis.com/upload/youtube/v3/captions")
-  expect_equal(calls$post$query$uploadType, "resumable")
-  expect_equal(calls$post$query$part, "snippet")
-  expect_equal(calls$post$query$onBehalfOfContentOwner, "owner-1")
-  metadata <- jsonlite::fromJSON(calls$post$body)
+  post_url <- httr2::url_parse(seen$post$url)
+  expect_equal(post_url$path, "/upload/youtube/v3/captions")
+  expect_equal(post_url$query$uploadType, "resumable")
+  expect_equal(post_url$query$part, "snippet")
+  expect_equal(post_url$query$onBehalfOfContentOwner, "owner-1")
+
+  metadata <- jsonlite::fromJSON(as.character(seen$post$body$data))
   expect_equal(metadata$snippet$videoId, "abcdefghijk")
   expect_equal(metadata$snippet$name, "English")
-  expect_equal(calls$put$url, "https://upload.example/caption")
-  expect_s3_class(calls$put$body, "form_file")
-  expect_equal(calls$quota, c("captions", "insert"))
+
+  expect_equal(seen$put$url, "https://upload.example/caption")
+  expect_equal(seen$put$body$data, caption_file)
+  expect_equal(seen$quota, c("captions", "insert"))
   expect_equal(result$content$id, "caption-id")
 })
 
@@ -149,9 +161,8 @@ test_that("upload APIs expose supported query options explicitly", {
     "on_behalf_of_content_owner",
     "content_owner_channel_id"
   ) %in% names(formals(upload_video))))
-  video_file <- tempfile(fileext = ".mp4")
+  video_file <- withr::local_tempfile(fileext = ".mp4")
   writeBin(as.raw(1:10), video_file)
-  on.exit(unlink(video_file), add = TRUE)
   expect_error(
     upload_video(file = video_file, on_behalf_of_content_owner = "owner"),
     class = "tuber_conflicting_parameters"
@@ -262,19 +273,11 @@ test_that("ordinary GET wrappers use the transparent cache", {
   Sys.setenv(YOUTUBE_KEY = "cache-key")
 
   calls <- 0L
-  mock_perform <- function(...) {
+  local_mocked_bindings(track_quota_usage = function(...) invisible(NULL), .package = "tuber")
+  httr2::local_mocked_responses(function(req) {
     calls <<- calls + 1L
-    list(status_code = 200L, payload = list(items = list(list(id = "en"))))
-  }
-  local_mocked_bindings(
-    build_httr2_request = function(...) list(),
-    req_perform = mock_perform,
-    resp_body_json = function(response) response$payload,
-    handle_http_response = function(...) invisible(NULL),
-    tuber_check = function(...) invisible(NULL),
-    track_quota_usage = function(...) invisible(NULL),
-    .package = "tuber"
-  )
+    httr2::response_json(status_code = 200L, body = list(items = list(list(id = "en"))))
+  })
 
   first <- tuber:::tuber_GET("i18nLanguages", list(part = "snippet"), auth = "key")
   second <- tuber:::tuber_GET("i18nLanguages", list(part = "snippet"), auth = "key")
@@ -563,4 +566,59 @@ test_that("empty fetched pages advance pagination metadata", {
   expect_equal(pages$page_count, 2L)
   expect_equal(pages$final_page_token, "page-3")
   expect_true(pages$has_more)
+})
+
+test_that("OAuth reads carry a redacted bearer token", {
+  seen <- new.env(parent = emptyenv())
+
+  local_mocked_bindings(
+    yt_check_token = function() invisible(NULL),
+    yt_access_token = function() "fake-token",
+    track_quota_usage = function(...) invisible(NULL),
+    .package = "tuber"
+  )
+  httr2::local_mocked_responses(function(req) {
+    seen$req <- req
+    httr2::response_json(status_code = 200L, body = list(items = list()))
+  })
+
+  tuber:::tuber_GET("subscriptions", list(part = "snippet", mine = "true"))
+
+  url <- httr2::url_parse(seen$req$url)
+  expect_equal(url$path, "/youtube/v3/subscriptions")
+  expect_equal(url$query$mine, "true")
+  expect_equal(httr2::req_get_headers(seen$req, "reveal")$Authorization, "Bearer fake-token")
+  expect_equal(httr2::req_get_headers(seen$req, "redact")$Authorization, "<REDACTED>")
+  expect_null(httr2::req_get_headers(seen$req, "reveal")$`x-goog-api-key`)
+})
+
+test_that("caption downloads come back as raw bytes, not parsed JSON", {
+  local_mocked_bindings(
+    yt_check_token = function() invisible(NULL),
+    yt_access_token = function() "fake-token",
+    track_quota_usage = function(...) invisible(NULL),
+    .package = "tuber"
+  )
+  httr2::local_mocked_responses(list(httr2::response(
+    status_code = 200L,
+    headers = list("content-type" = "text/vtt"),
+    body = charToRaw("WEBVTT\n")
+  )))
+
+  res <- tuber:::tuber_GET("captions/abc123", list(tfmt = "vtt"))
+  expect_type(res, "raw")
+  expect_equal(rawToChar(res), "WEBVTT\n")
+})
+
+test_that("a DELETE that returns 204 does not try to parse a body", {
+  local_mocked_bindings(
+    yt_check_token = function() invisible(NULL),
+    yt_access_token = function() "fake-token",
+    track_quota_usage = function(...) invisible(NULL),
+    .package = "tuber"
+  )
+  httr2::local_mocked_responses(list(httr2::response(status_code = 204L)))
+
+  expect_silent(res <- tuber:::tuber_DELETE("videos", list(id = "abc")))
+  expect_equal(res, raw(0))
 })

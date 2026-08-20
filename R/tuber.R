@@ -10,12 +10,13 @@
 #' @importFrom checkmate assert_flag assert_count assert_directory assert_file assert
 #' @importFrom checkmate check_character check_list check_null
 #' @importFrom rlang abort warn inform is_missing %||%
-#' @importFrom httr GET POST PUT DELETE authenticate config stop_for_status
-#' @importFrom httr upload_file content oauth_endpoints oauth_app oauth2.0_token
-#' @importFrom httr status_code headers
 #' @importFrom httr2 request req_url_path_append req_url_query req_headers
+#' @importFrom httr2 req_headers_redacted req_body_json req_body_raw req_body_file
+#' @importFrom httr2 req_method req_progress
 #' @importFrom httr2 req_error req_user_agent req_perform resp_body_json resp_body_string
+#' @importFrom httr2 resp_body_raw resp_has_body resp_header
 #' @importFrom httr2 secret_encrypt secret_decrypt
+#' @importFrom httr2 oauth_client oauth_flow_auth_code oauth_flow_refresh
 #' @importFrom httr2 resp_status resp_headers
 #' @importFrom utils read.table modifyList head object.size
 #' @importFrom stats median quantile
@@ -128,24 +129,66 @@ paginate_api_request <- function(initial_response,
   )
 }
 
-#' Build httr2 request for YouTube API
+#' Build a request against the YouTube Data API
 #'
-#' Internal helper to construct httr2 requests with consistent authentication
-#' and headers. Consolidates duplicated code across HTTP functions.
+#' One place where the base URL, credentials, user agent and error policy are
+#' set, so every verb below differs only in method and body.
 #'
 #' @param path API endpoint path (e.g., "videos", "channels")
 #' @param query Named list of query parameters
+#' @param auth Either \code{"token"} for OAuth or \code{"key"} for an API key
+#' @param prefix Path prefix. Media uploads live under \code{upload/youtube/v3}
+#'   rather than \code{youtube/v3}.
 #' @return An httr2 request object ready for method-specific modifications
 #' @keywords internal
-build_httr2_request <- function(path, query) {
-  yt_check_key()
+tuber_request <- function(path, query = list(), auth = "token",
+                          prefix = "youtube/v3") {
+  req <- request("https://www.googleapis.com") |>
+    req_url_path_append(prefix, path)
 
-  request("https://www.googleapis.com") |>
-    req_url_path_append("youtube/v3", path) |>
-    req_url_query(!!!query) |>
-    req_headers("x-goog-api-key" = suppressMessages(yt_get_key())) |>
+  if (length(query) > 0) {
+    req <- req_url_query(req, !!!query)
+  }
+
+  req <- if (auth == "token") {
+    req_headers_redacted(req, Authorization = paste("Bearer", yt_access_token()))
+  } else {
+    yt_check_key()
+    req_headers_redacted(req, "x-goog-api-key" = suppressMessages(yt_get_key()))
+  }
+
+  # YouTube puts the useful part of a failure in the response body, and
+  # tuber_check() translates it. httr2's own abort would discard it.
+  req |>
     req_error(is_error = function(response) FALSE) |>
     req_user_agent("tuber (https://github.com/gojiplus/tuber)")
+}
+
+#' Perform a request and check the response
+#'
+#' @param req An httr2 request
+#' @return An httr2 response
+#' @keywords internal
+tuber_perform <- function(req) {
+  resp <- req_perform(req)
+  handle_http_response(resp)
+  tuber_check(resp)
+  resp
+}
+
+#' Parse a JSON response body, tolerating an empty one
+#'
+#' A 204 carries no body, and resp_body_json() errors rather than returning
+#' nothing.
+#'
+#' @param resp An httr2 response
+#' @return A list, or NULL when the response has no body
+#' @keywords internal
+tuber_json <- function(resp) {
+  if (!resp_has_body(resp)) {
+    return(NULL)
+  }
+  resp_body_json(resp)
 }
 
 #' Display tuber function metadata
@@ -302,7 +345,7 @@ summary.tuber_result <- function(object, ...) {
 }
 
 #' Check if authentication token is in options
-#' @return A Token2.0 class
+#' @return An httr2 token
 #' @export
 yt_token <- function() {
   getOption("google_token")
@@ -463,7 +506,8 @@ is_testing <- function() {
 #' stored in the tuber cache.
 #' @param cache_ttl Optional cache lifetime in seconds.
 #' @param force_refresh Logical. Ignore a cached response and refresh it.
-#' @param \dots Additional arguments passed to \code{\link[httr]{GET}}.
+#' @param \dots Ignored; retained so callers that forwarded httr configuration
+#'   keep working.
 #' @return list
 #' @keywords internal
 
@@ -496,27 +540,12 @@ tuber_GET <- function(path, query, auth = "token", use_cache = TRUE, # nolint: o
   method <- if (grepl("^captions/", path)) "download" else "list"
   track_quota_usage(path, method)
 
-  if (auth == "token") {
-    yt_check_token()
+  resp <- tuber_perform(tuber_request(path, query, auth))
 
-    req <- GET("https://www.googleapis.com",
-      path = paste0("youtube/v3/", path),
-      query = query,
-      config(token = getOption("google_token")),
-      ...
-    )
-  }
-
-  if (auth == "key") {
-    req <- build_httr2_request(path, query) |> req_perform()
-  }
-
-  handle_http_response(req, auth)
-  tuber_check(req)
-  res <- if (auth == "token") {
-    if (grepl("^captions/", path)) content(req, as = "raw") else content(req)
+  res <- if (grepl("^captions/", path)) {
+    if (resp_has_body(resp)) resp_body_raw(resp) else raw(0)
   } else {
-    resp_body_json(req)
+    tuber_json(resp)
   }
 
   if (!is.null(cache_key)) {
@@ -526,32 +555,92 @@ tuber_GET <- function(path, query, auth = "token", use_cache = TRUE, # nolint: o
   res
 }
 
+#' Open a resumable media upload session
 #'
-#' POST
+#' YouTube's resumable protocol is two requests: a metadata POST that returns a
+#' session URL in the Location header, then a PUT of the bytes to that URL.
+#' This is the first half.
+#'
+#' @param path API endpoint path under \code{upload/youtube/v3}
+#' @param query query list
+#' @param metadata list serialized as the JSON metadata body
+#' @param file path to the file that will be uploaded
+#' @param type MIME type of \code{file}
+#' @return The session URL as a string
+#' @keywords internal
+tuber_upload_session <- function(path, query, metadata, file, type) {
+  resp <- tuber_request(path, query = query, prefix = "upload/youtube/v3") |>
+    req_method("POST") |>
+    req_headers(
+      "X-Upload-Content-Length" = as.character(file.size(file)),
+      "X-Upload-Content-Type" = type
+    ) |>
+    req_body_raw(
+      toJSON(metadata, auto_unbox = TRUE, null = "null"),
+      type = "application/json; charset=UTF-8"
+    ) |>
+    req_perform()
+
+  if (resp_status(resp) < 200 || resp_status(resp) >= 300) {
+    tuber_check(resp)
+    abort(
+      "Failed to initiate resumable upload",
+      status_code = resp_status(resp),
+      class = "tuber_upload_init_failed"
+    )
+  }
+
+  upload_url <- resp_header(resp, "location")
+  if (is.null(upload_url) || !nzchar(upload_url)) {
+    abort(
+      "YouTube did not return a resumable upload URL.",
+      class = "tuber_upload_location_missing"
+    )
+  }
+  upload_url
+}
+
+#' Send the file to a resumable upload session
+#'
+#' The second half of [tuber_upload_session()]. The session URL is a full URL
+#' YouTube chose, so this cannot go through [tuber_request()].
+#'
+#' @param upload_url Session URL from [tuber_upload_session()]
+#' @param file path to the file to upload
+#' @param type MIME type of \code{file}
+#' @return An httr2 response
+#' @keywords internal
+tuber_upload_body <- function(upload_url, file, type) {
+  request(upload_url) |>
+    req_headers_redacted(Authorization = paste("Bearer", yt_access_token())) |>
+    req_error(is_error = function(response) FALSE) |>
+    req_method("PUT") |>
+    req_body_file(file, type = type) |>
+    req_perform()
+}
+
+#'
+#' Write request with a JSON body
 #'
 #' @param path path to specific API request URL
+#' @param method HTTP method, one of "POST", "PUT" or "DELETE"
 #' @param query query list
-#' @param body passing image through body
-#' @param \dots Additional arguments passed to \code{\link[httr]{POST}}.
-#'
-#' @return list
+#' @param body list serialized as the JSON request body
+#' @param quota_method quota category recorded for this call
+#' @return An httr2 response
 #' @keywords internal
 
-tuber_POST <- function(path, query, body = "", ...) { # nolint: object_name_linter.
+tuber_write <- function(path, method, query, body = NULL, quota_method) {
   assert_character(path, len = 1, min.chars = 1, .var.name = "path")
   assert_list(query, .var.name = "query")
   yt_check_token()
-  track_quota_usage(path, "insert")
+  track_quota_usage(path, quota_method)
 
-  req <- POST("https://www.googleapis.com",
-    path = paste0("youtube/v3/", path),
-    body = body, query = query,
-    config(token = getOption("google_token")), ...
-  )
-
-  handle_http_response(req, "token")
-  tuber_check(req)
-  content(req)
+  req <- req_method(tuber_request(path, query, auth = "token"), method)
+  if (!is.null(body) && !identical(body, "")) {
+    req <- req_body_json(req, body)
+  }
+  tuber_perform(req)
 }
 
 #'
@@ -559,28 +648,15 @@ tuber_POST <- function(path, query, body = "", ...) { # nolint: object_name_lint
 #'
 #' @param path path to specific API request URL
 #' @param query query list
-#' @param body passing image through body
-#' @param \dots Additional arguments passed to \code{\link[httr]{GET}}.
+#' @param body list serialized as the JSON request body
+#' @param \dots Ignored; retained so callers that forwarded httr configuration
+#'   keep working.
 #'
 #' @return list
 #' @keywords internal
 
 tuber_POST_json <- function(path, query, body = "", ...) { # nolint: object_name_linter.
-  assert_character(path, len = 1, min.chars = 1, .var.name = "path")
-  assert_list(query, .var.name = "query")
-  yt_check_token()
-  track_quota_usage(path, "insert")
-
-  req <- httr::POST("https://www.googleapis.com",
-    path = paste0("youtube/v3/", path),
-    body = body, query = query,
-    config(token = getOption("google_token")),
-    encode = "json", ...
-  )
-
-  handle_http_response(req, "token")
-  tuber_check(req)
-  content(req)
+  tuber_json(tuber_write(path, "POST", query, body, "insert"))
 }
 
 #'
@@ -588,26 +664,13 @@ tuber_POST_json <- function(path, query, body = "", ...) { # nolint: object_name
 #'
 #' @param path path to specific API request URL
 #' @param query query list
-#' @param body JSON body content for the PUT request
-#' @param \dots Additional arguments passed to \code{\link[httr]{PUT}}.
+#' @param body list serialized as the JSON request body
+#' @param \dots Ignored; see [tuber_POST_json()].
 #' @return list
 #' @keywords internal
 
 tuber_PUT <- function(path, query, body = "", ...) { # nolint: object_name_linter.
-  assert_character(path, len = 1, min.chars = 1, .var.name = "path")
-  assert_list(query, .var.name = "query")
-  yt_check_token()
-  track_quota_usage(path, "update")
-
-  req <- PUT("https://www.googleapis.com",
-    path = paste0("youtube/v3/", path),
-    query = query, config(token = getOption("google_token")),
-    body = body, encode = "json", ...
-  )
-
-  handle_http_response(req, "token")
-  tuber_check(req)
-  content(req)
+  tuber_json(tuber_write(path, "PUT", query, body, "update"))
 }
 
 #'
@@ -615,24 +678,13 @@ tuber_PUT <- function(path, query, body = "", ...) { # nolint: object_name_linte
 #'
 #' @param path path to specific API request URL
 #' @param query query list
-#' @param \dots Additional arguments passed to \code{\link[httr]{DELETE}}.
+#' @param \dots Ignored; see [tuber_POST_json()].
 #' @return list
 #' @keywords internal
 
 tuber_DELETE <- function(path, query, ...) { # nolint: object_name_linter.
-  assert_character(path, len = 1, min.chars = 1, .var.name = "path")
-  assert_list(query, .var.name = "query")
-  yt_check_token()
-  track_quota_usage(path, "delete")
-
-  req <- DELETE("https://www.googleapis.com",
-    path = paste0("youtube/v3/", path),
-    query = query, config(token = getOption("google_token")), ...
-  )
-
-  handle_http_response(req, "token")
-  tuber_check(req)
-  invisible(content(req, as = "raw"))
+  resp <- tuber_write(path, "DELETE", query, NULL, "delete")
+  invisible(if (resp_has_body(resp)) resp_body_raw(resp) else raw(0))
 }
 
 #'
@@ -641,24 +693,18 @@ tuber_DELETE <- function(path, query, ...) { # nolint: object_name_linter.
 #' Centralized error handling for all tuber HTTP functions.
 #' Checks for quota exceeded (403) and rate limiting (429) errors.
 #'
-#' @param req The HTTP request/response object
-#' @param auth Authentication method ("token" or "key")
+#' @param req The HTTP response object
 #' @return NULL invisibly if no errors, otherwise stops with informative message
 #' @keywords internal
-handle_http_response <- function(req, auth = "token") {
-  status <- if (auth == "token") req$status_code else resp_status(req)
+handle_http_response <- function(req) {
+  status <- resp_status(req)
 
   if (is.null(status) || status < 400) {
     return(invisible(NULL))
   }
 
   if (status == 403) {
-    error_content <- tryCatch(
-      {
-        if (auth == "token") content(req, as = "text") else resp_body_string(req)
-      },
-      error = function(e) ""
-    )
+    error_content <- tryCatch(resp_body_string(req), error = function(e) "")
 
     if (grepl("quotaExceeded|dailyLimitExceeded", error_content)) {
       quota_status <- yt_get_quota_usage()
@@ -686,10 +732,9 @@ handle_http_response <- function(req, auth = "token") {
 #' @keywords internal
 
 tuber_check <- function(req) {
-  is_httr2 <- inherits(req, "httr2_response")
-  status <- if (is_httr2) resp_status(req) else req$status_code
+  status <- resp_status(req)
   if (status < 400) return(invisible(NULL))
-  orig_out <- if (is_httr2) resp_body_string(req) else httr::content(req, as = "text")
+  orig_out <- tryCatch(resp_body_string(req), error = function(e) "")
   out <- try(
     {
       fromJSON(

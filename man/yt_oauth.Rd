@@ -26,7 +26,8 @@ Default is \code{ssl}.}
 \item{token}{Path to the token cache. The default is
 `file.path(tools::R_user_dir("tuber", "cache"), "oauth-token.rds")`.}
 
-\item{\dots}{Additional arguments passed to \code{\link[httr]{oauth2.0_token}}}
+\item{\dots}{Additional arguments passed to
+\code{\link[httr2]{oauth_flow_auth_code}}}
 }
 \value{
 The OAuth token, invisibly. The function also sets the

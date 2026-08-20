@@ -29,7 +29,8 @@ stored in the tuber cache.}
 
 \item{force_refresh}{Logical. Ignore a cached response and refresh it.}
 
-\item{\dots}{Additional arguments passed to \code{\link[httr]{GET}}.}
+\item{\dots}{Ignored; retained so callers that forwarded httr configuration
+keep working.}
 }
 \value{
 list

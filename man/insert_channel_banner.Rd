@@ -12,7 +12,7 @@ insert_channel_banner(file, on_behalf_of_content_owner = NULL, ...)
 \item{on_behalf_of_content_owner}{Optional YouTube content-owner ID. This is
 only available to authorized YouTube content partners.}
 
-\item{\dots}{Additional arguments passed to \code{\link[httr]{POST}}.}
+\item{\dots}{Ignored; retained for backward compatibility.}
 }
 \value{
 A list containing the response from the API, including the `url` for the banner.

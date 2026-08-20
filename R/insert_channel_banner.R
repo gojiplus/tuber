@@ -8,7 +8,7 @@
 #' @param file Character. Path to the banner image file.
 #' @param on_behalf_of_content_owner Optional YouTube content-owner ID. This is
 #'   only available to authorized YouTube content partners.
-#' @param \dots Additional arguments passed to \code{\link[httr]{POST}}.
+#' @param \dots Ignored; retained for backward compatibility.
 #'
 #' @return A list containing the response from the API, including the `url` for the banner.
 #' @export
@@ -53,26 +53,19 @@ insert_channel_banner <- function(file, on_behalf_of_content_owner = NULL, ...) 
   yt_check_token()
   track_quota_usage("channelBanners", "insert")
 
-  url <- "https://www.googleapis.com/upload/youtube/v3/channelBanners/insert"
-
   query <- list(uploadType = "media")
   if (!is.null(on_behalf_of_content_owner)) {
     query$onBehalfOfContentOwner <- on_behalf_of_content_owner
   }
 
-  req <- httr::POST(
-    url,
+  req <- tuber_request(
+    "channelBanners/insert",
     query = query,
-    body = httr::upload_file(
-      file,
-      type = mime::guess_type(file, empty = "application/octet-stream")
-    ),
-    config(token = getOption("google_token")),
-    ...
-  )
+    prefix = "upload/youtube/v3"
+  ) |>
+    req_method("POST") |>
+    req_body_file(file, type = guess_type(file, empty = "application/octet-stream"))
 
-  tuber_check(req)
-
-  res <- content(req)
-  list(request = req, content = res)
+  resp <- tuber_perform(req)
+  list(request = resp, content = tuber_json(resp))
 }
