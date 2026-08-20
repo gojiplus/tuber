@@ -23,10 +23,9 @@
 #'
 #' # Set API token via yt_oauth() first
 #'
-#' get_all_channel_video_stats(channel_id="UCxOhDvtaoXDAB336AolWs3A")
-#' get_all_channel_video_stats(channel_id="UCMtFAi84ehTSYSE9Xo") # Incorrect channel ID
+#' get_all_channel_video_stats(channel_id = "UCxOhDvtaoXDAB336AolWs3A")
+#' get_all_channel_video_stats(channel_id = "UCMtFAi84ehTSYSE9Xo") # Incorrect channel ID
 #' }
-
 get_all_channel_video_stats <- function(channel_id = NULL,
                                         mine = FALSE,
                                         auth = if (mine) "token" else "key",
@@ -42,44 +41,51 @@ get_all_channel_video_stats <- function(channel_id = NULL,
   }
 
   # Get channel resources with proper error handling
-  channel_resources <- tryCatch({
-    get_channel_details(
-      channel_ids = if (mine) NULL else channel_id,
-      mine = mine,
-      part = "contentDetails",
-      simplify = FALSE,
-      auth = auth,
-      ...
-    )
-  }, error = function(e) {
-    abort("Failed to get channel information",
-          channel_id = channel_id,
-          original_error = e$message,
-          class = "tuber_channel_info_error")
-  })
+  channel_resources <- tryCatch(
+    {
+      get_channel_details(
+        channel_ids = if (mine) NULL else channel_id,
+        mine = mine,
+        part = "contentDetails",
+        simplify = FALSE,
+        auth = auth,
+        ...
+      )
+    },
+    error = function(e) {
+      abort("Failed to get channel information",
+        channel_id = channel_id,
+        original_error = e$message,
+        class = "tuber_channel_info_error"
+      )
+    }
+  )
 
   # Safely extract playlist ID
   if (is.null(channel_resources$items) || length(channel_resources$items) == 0) {
     abort("No channel data found",
-          channel_id = channel_id,
-          help = "Channel may not exist or may be private",
-          class = "tuber_channel_not_found")
+      channel_id = channel_id,
+      help = "Channel may not exist or may be private",
+      class = "tuber_channel_not_found"
+    )
   }
 
   content_details <- channel_resources$items[[1]]$contentDetails
   if (is.null(content_details) || is.null(content_details$relatedPlaylists)) {
     abort("No content details available for channel",
-          channel_id = channel_id,
-          help = "Channel may not have uploaded videos",
-          class = "tuber_no_content_details")
+      channel_id = channel_id,
+      help = "Channel may not have uploaded videos",
+      class = "tuber_no_content_details"
+    )
   }
 
   playlist_id <- content_details$relatedPlaylists$uploads
   if (is.null(playlist_id)) {
     abort("No uploads playlist found for channel",
-          channel_id = channel_id,
-          help = "Channel may not have any videos or may be private",
-          class = "tuber_no_uploads_playlist")
+      channel_id = channel_id,
+      help = "Channel may not have any videos or may be private",
+      class = "tuber_no_uploads_playlist"
+    )
   }
 
   # Collect all video IDs from the uploads playlist
@@ -143,7 +149,8 @@ get_all_channel_video_stats <- function(channel_id = NULL,
   result_df <- video_data
 
   # Map column names from get_video_details output to expected names
-  # Note: json_to_df prefixes nested fields with parent name (e.g., snippet_title, statistics_viewCount)
+  # Note: json_to_df prefixes nested fields with parent name (e.g., snippet_title,
+  # statistics_viewCount)
   column_mapping <- c(
     "title" = "snippet_title",
     "publication_date" = "snippet_publishedAt",
@@ -168,9 +175,11 @@ get_all_channel_video_stats <- function(channel_id = NULL,
   result_df$url <- paste0("https://www.youtube.com/watch?v=", result_df$video_id)
 
   # Ensure consistent column order
-  final_columns <- c("video_id", "title", "publication_date", "description",
-                     "channel_id", "channel_title", "view_count", "like_count",
-                     "comment_count", "url")
+  final_columns <- c(
+    "video_id", "title", "publication_date", "description",
+    "channel_id", "channel_title", "view_count", "like_count",
+    "comment_count", "url"
+  )
 
   # Add missing columns as NA if they don't exist
   for (col in final_columns) {

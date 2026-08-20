@@ -19,7 +19,8 @@ tuber_GET(
 
 \item{query}{query list}
 
-\item{auth}{A character vector of the authentication method, either "token" (the default) or "key"}
+\item{auth}{A character vector of the authentication method, either "token" (the default) or
+"key"}
 
 \item{use_cache}{Logical. Whether eligible responses may be served from and
 stored in the tuber cache.}

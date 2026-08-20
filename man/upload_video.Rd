@@ -62,9 +62,9 @@ See \url{https://developers.google.com/youtube/v3/docs/videos/insert#usage}
 \examples{
 \dontrun{
 snippet = list(
-title = "Test Video",
-description = "This is just a random test.",
-tags = c("r language", "r programming", "data analysis")
+  title = "Test Video",
+  description = "This is just a random test.",
+  tags = c("r language", "r programming", "data analysis")
 )
 status = list(privacyStatus = "private")
 }

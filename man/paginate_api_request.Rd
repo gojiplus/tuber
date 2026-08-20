@@ -17,7 +17,8 @@ paginate_api_request(
 
 \item{fetch_next_page_fn}{Function that takes a page token and returns the next page}
 
-\item{extract_items_fn}{Function to extract items from a response. Default: function(res) res$items}
+\item{extract_items_fn}{Function to extract items from a response. Default: function(res)
+res$items}
 
 \item{max_results}{Maximum number of items to collect. Default: Inf}
 

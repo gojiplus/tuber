@@ -11,7 +11,8 @@ create_playlist(title, description = "", status = "public", ...)
 
 \item{description}{string; Optional. The description of the playlist.}
 
-\item{status}{string; Optional. Default: 'public'. Can be one of: 'private', 'public', or 'unlisted'.}
+\item{status}{string; Optional. Default: 'public'. Can be one of: 'private', 'public', or
+'unlisted'.}
 
 \item{...}{Additional arguments passed to \code{\link{tuber_POST}}.}
 }

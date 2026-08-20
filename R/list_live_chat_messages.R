@@ -4,7 +4,8 @@
 #' Note that live chat messages can only be retrieved for active live broadcasts.
 #'
 #' @param live_chat_id Character. The id of the live chat.
-#' @param part Character. Parts to retrieve. Valid values are "snippet", "authorDetails". Default is "snippet,authorDetails".
+#' @param part Character. Parts to retrieve. Valid values are "snippet", "authorDetails". Default is
+#' "snippet,authorDetails".
 #' @param language Optional language code for localized text.
 #' @param max_results Maximum total number of messages to return.
 #' @param page_token Character. Specific page token to retrieve. Optional.
@@ -24,14 +25,13 @@
 #' messages <- list_live_chat_messages(live_chat_id = "Cg0KC...")
 #' }
 list_live_chat_messages <- function(live_chat_id,
-                                   part = "snippet,authorDetails",
-                                   language = NULL,
-                                   max_results = 500,
-                                   page_token = NULL,
-                                   profile_image_size = NULL,
-                                   simplify = TRUE,
-                                   ...) {
-
+                                    part = "snippet,authorDetails",
+                                    language = NULL,
+                                    max_results = 500,
+                                    page_token = NULL,
+                                    profile_image_size = NULL,
+                                    simplify = TRUE,
+                                    ...) {
   # Validation
   assert_character(live_chat_id, len = 1, min.chars = 1, .var.name = "live_chat_id")
   assert_character(part, min.len = 1, min.chars = 1, .var.name = "part")

@@ -31,7 +31,6 @@ list_channel_members <- function(part = "snippet",
                                  filter_by_member_channel_ids = NULL,
                                  simplify = TRUE,
                                  ...) {
-
   # Validation
   assert_character(part, min.len = 1, min.chars = 1, .var.name = "part")
   assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
@@ -64,16 +63,24 @@ list_channel_members <- function(part = "snippet",
   fetch_page <- function(token = NULL) {
     q <- query
     if (!is.null(token)) q$pageToken <- token
-    tryCatch({
-      tuber_GET("members", query = q, auth = "token", ...)
-    }, error = function(e) {
-      if (grepl("forbidden", tolower(e$message))) {
-        abort("Forbidden: Ensure the authenticated channel has Memberships enabled and you are using OAuth2.",
-              class = "tuber_members_forbidden")
-      } else {
-        stop(e)
+    tryCatch(
+      {
+        tuber_GET("members", query = q, auth = "token", ...)
+      },
+      error = function(e) {
+        if (grepl("forbidden", tolower(e$message))) {
+          abort(
+            paste(
+              "Forbidden: Ensure the authenticated channel has Memberships",
+              "enabled and you are using OAuth2."
+            ),
+            class = "tuber_members_forbidden"
+          )
+        } else {
+          stop(e)
+        }
       }
-    })
+    )
   }
 
   initial_res <- fetch_page(page_token)
@@ -112,7 +119,7 @@ list_channel_members <- function(part = "snippet",
         x$snippet$membershipsDetails$accessibleLevels %||% character()
       )),
       member_since = x$snippet$membershipsDetails$membershipsDuration$memberSince %||%
-        NA_character_,
+      NA_character_,
       member_total_duration_months = as.integer(
         x$snippet$membershipsDetails$membershipsDuration$memberTotalDurationMonths %||% NA
       ),

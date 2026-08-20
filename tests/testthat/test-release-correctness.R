@@ -253,9 +253,12 @@ test_that("ordinary GET wrappers use the transparent cache", {
   tuber_cache_config(enabled = TRUE, cache_dir = NULL)
   tuber_cache_clear()
   old_key <- Sys.getenv("YOUTUBE_KEY", unset = NA_character_)
-  on.exit({
-    if (is.na(old_key)) Sys.unsetenv("YOUTUBE_KEY") else Sys.setenv(YOUTUBE_KEY = old_key)
-  }, add = TRUE)
+  on.exit(
+    {
+      if (is.na(old_key)) Sys.unsetenv("YOUTUBE_KEY") else Sys.setenv(YOUTUBE_KEY = old_key)
+    },
+    add = TRUE
+  )
   Sys.setenv(YOUTUBE_KEY = "cache-key")
 
   calls <- 0L
@@ -312,11 +315,16 @@ test_that("httr2 failures become tuber HTTP errors", {
 
 test_that("with_retry re-evaluates transient failures without promise warnings", {
   attempts <- 0L
-  result <- expect_no_warning(suppressMessages(with_retry({
-    attempts <- attempts + 1L
-    if (attempts == 1L) stop("temporary network timeout")
-    "ok"
-  }, max_retries = 2, base_delay = 0, jitter = FALSE)))
+  result <- expect_no_warning(suppressMessages(with_retry(
+    {
+      attempts <- attempts + 1L
+      if (attempts == 1L) stop("temporary network timeout")
+      "ok"
+    },
+    max_retries = 2,
+    base_delay = 0,
+    jitter = FALSE
+  )))
 
   expect_equal(result, "ok")
   expect_equal(attempts, 2L)
@@ -331,10 +339,15 @@ test_that("with_retry uses HTTP status and preserves the original condition", {
   )
 
   error <- tryCatch(
-    suppressMessages(with_retry({
-      attempts <- attempts + 1L
-      tuber:::tuber_check(response)
-    }, max_retries = 1L, base_delay = 0, jitter = FALSE)),
+    suppressMessages(with_retry(
+      {
+        attempts <- attempts + 1L
+        tuber:::tuber_check(response)
+      },
+      max_retries = 1L,
+      base_delay = 0,
+      jitter = FALSE
+    )),
     error = identity
   )
 
@@ -395,7 +408,12 @@ test_that("high-level analyses consume current simplified return contracts", {
   expect_equal(trend_result$detailed_results$view_count, 100)
 
   local_mocked_bindings(
-    get_video_details = function(...) rbind(videos, transform(videos, id = "video000002", statistics_viewCount = "200")),
+    get_video_details = function(...) {
+      rbind(videos, transform(
+        videos,
+        id = "video000002", statistics_viewCount = "200"
+      ))
+    },
     get_all_comments = function(...) data.frame(id = c("c1", "c2")),
     .package = "tuber"
   )

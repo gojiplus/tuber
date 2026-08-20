@@ -1,6 +1,6 @@
 # Mock tests for pagination logic (no API calls required)
 # Mock tuber_GET function for testing
-mock_tuber_GET <- function(path, query, ...) {
+mock_tuber_GET <- function(path, query, ...) { # nolint: object_name_linter.
   # Simulate different response types based on path and query
   if (path == "playlistItems") {
     mock_playlist_response(query)
@@ -34,7 +34,7 @@ mock_playlist_response <- function(query) {
   # Add nextPageToken if more results exist
   next_token <- NULL
   current_page <- if (!is.null(page_token)) as.numeric(page_token) else 0
-  if (current_page < 5) {  # Simulate 6 pages total (60 items)
+  if (current_page < 5) { # Simulate 6 pages total (60 items)
     next_token <- as.character(current_page + 1)
   }
 
@@ -63,7 +63,7 @@ mock_comment_threads_response <- function(query) {
           snippet = list(
             textDisplay = paste("Comment", offset + i),
             authorDisplayName = paste("Author", offset + i),
-            likeCount = as.character(i),  # Convert to character as API returns
+            likeCount = as.character(i), # Convert to character as API returns
             publishedAt = "2023-01-01T00:00:00Z"
           ),
           id = paste0("comment_", offset + i)
@@ -75,7 +75,7 @@ mock_comment_threads_response <- function(query) {
   # Add nextPageToken if more results exist
   next_token <- NULL
   current_page <- if (!is.null(page_token)) as.numeric(page_token) else 0
-  if (current_page < 2) {  # Simulate 3 pages total
+  if (current_page < 2) { # Simulate 3 pages total
     next_token <- as.character(current_page + 1)
   }
 
@@ -113,7 +113,7 @@ mock_search_response <- function(query) {
   # Add nextPageToken if more results exist
   next_token <- NULL
   current_page <- if (!is.null(page_token)) as.numeric(page_token) else 0
-  if (current_page < 4) {  # Simulate 5 pages total
+  if (current_page < 4) { # Simulate 5 pages total
     next_token <- as.character(current_page + 1)
   }
 
@@ -141,7 +141,7 @@ test_that("list_playlist_items handles pagination correctly", {
       )
 
       expect_equal(length(result$items), 55)
-      expect_null(result$nextPageToken)  # Should be NULL when we've got all requested items
+      expect_null(result$nextPageToken) # Should be NULL when we've got all requested items
     }
   )
 })
@@ -208,7 +208,7 @@ test_that("yt_search handles get_all parameter correctly", {
       )
 
       expect_s3_class(result_all, "data.frame")
-      expect_true(nrow(result_all) >= 75)  # Should have multiple pages
+      expect_true(nrow(result_all) >= 75) # Should have multiple pages
       expect_true("video_id" %in% colnames(result_all))
     }
   )

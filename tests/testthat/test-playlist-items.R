@@ -6,17 +6,19 @@ test_that("list_playlist_items returns >50 results when requested", {
     skip("No token file available for API testing")
   }
 
-  tryCatch({
-    google_token <- readRDS("token_file.rds.enc")$google_token
-    options(google_token = google_token)
+  tryCatch(
+    {
+      google_token <- readRDS("token_file.rds.enc")$google_token
+      options(google_token = google_token)
 
-    res <- list_playlist_items(
-      playlist_id = "PLrEnWoR732-CN09YykVof2lxdI3MLOZda",
-      max_results = 55
-    )
-    expect_gte(nrow(res), 55)
-
-  }, error = function(e) {
-    skip(paste("API test failed:", e$message))
-  })
+      res <- list_playlist_items(
+        playlist_id = "PLrEnWoR732-CN09YykVof2lxdI3MLOZda",
+        max_results = 55
+      )
+      expect_gte(nrow(res), 55)
+    },
+    error = function(e) {
+      skip(paste("API test failed:", e$message))
+    }
+  )
 })

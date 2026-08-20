@@ -118,8 +118,7 @@ quota_cost <- function(endpoint, method) {
     "thumbnails.set" = 50L
   )
 
-  default_cost <- switch(
-    method,
+  default_cost <- switch(method,
     list = 1L,
     get = 1L,
     insert = 50L,
@@ -160,23 +159,26 @@ track_quota_usage <- function(endpoint, method = "list") {
 
   if (bucket_status$quota_remaining <= 0) {
     warn("Estimated YouTube API quota limit reached for this session",
-         bucket = estimate$bucket,
-         quota_used = bucket_status$quota_used,
-         quota_limit = bucket_status$quota_limit,
-         reset_time = bucket_status$reset_time,
-         class = "tuber_quota_exceeded")
+      bucket = estimate$bucket,
+      quota_used = bucket_status$quota_used,
+      quota_limit = bucket_status$quota_limit,
+      reset_time = bucket_status$reset_time,
+      class = "tuber_quota_exceeded"
+    )
   } else if (bucket_status$quota_remaining <= max(1, 0.01 * bucket_status$quota_limit)) {
     warn("Estimated YouTube API quota nearly exhausted for this session",
-         bucket = estimate$bucket,
-         quota_remaining = bucket_status$quota_remaining,
-         class = "tuber_quota_warning")
+      bucket = estimate$bucket,
+      quota_remaining = bucket_status$quota_remaining,
+      class = "tuber_quota_warning"
+    )
   }
 
   if (bucket_status$requests_last_minute > 50) {
     inform("High request rate detected",
-           requests_last_minute = bucket_status$requests_last_minute,
-           help = "Consider adding delays between API calls",
-           class = "tuber_high_request_rate")
+      requests_last_minute = bucket_status$requests_last_minute,
+      help = "Consider adding delays between API calls",
+      class = "tuber_high_request_rate"
+    )
   }
 
   invisible(estimate)
@@ -200,13 +202,14 @@ exponential_backoff <- function(attempt_number, max_attempts = 5, base_delay = 1
 
   if (attempt_number > max_attempts) {
     abort("Maximum retry attempts exceeded",
-          attempt_number = attempt_number,
-          max_attempts = max_attempts,
-          class = "tuber_max_retries_exceeded")
+      attempt_number = attempt_number,
+      max_attempts = max_attempts,
+      class = "tuber_max_retries_exceeded"
+    )
   }
 
   if (attempt_number > 1) {
-    delay <- base_delay * (2 ^ (attempt_number - 2))  # 1, 2, 4, 8 seconds...
+    delay <- base_delay * (2^(attempt_number - 2)) # 1, 2, 4, 8 seconds...
     delay <- delay + runif(1, 0, 0.5)
     message("Rate limited. Waiting ", round(delay, 2), " seconds before retry...")
     Sys.sleep(delay)

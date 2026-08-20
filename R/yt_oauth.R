@@ -62,7 +62,9 @@ yt_oauth <- function(
       saved_token <- suppressWarnings(readRDS(token))
       # httr saves tokens in a list with hash as key - extract the actual token
       # Check if it's a list but not a Token object itself (Token2.0 inherits from Token)
-      if (is.list(saved_token) && !inherits(saved_token, "Token2.0") && !inherits(saved_token, "Token")) {
+      is_token <- inherits(saved_token, "Token2.0") ||
+        inherits(saved_token, "Token")
+      if (is.list(saved_token) && !is_token) {
         saved_token <- saved_token[[1]]
       }
       saved_token

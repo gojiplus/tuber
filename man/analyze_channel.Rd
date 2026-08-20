@@ -37,7 +37,8 @@ analysis <- analyze_channel("UCuAXFkgsw1L7xaCfnd5JJOw")
 
 # Detailed analysis with comments
 detailed <- analyze_channel("UCuAXFkgsw1L7xaCfnd5JJOw",
-                           max_videos = 100,
-                           include_comments = TRUE)
+  max_videos = 100,
+  include_comments = TRUE
+)
 }
 }

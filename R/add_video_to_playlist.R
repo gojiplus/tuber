@@ -18,9 +18,7 @@
 #'
 #' add_video_to_playlist(playlist_id = "YourPlaylistID", video_id = "2_gLD1jarfU")
 #' }
-
 add_video_to_playlist <- function(playlist_id, video_id, position = NULL, ...) {
-
   # Modern validation using checkmate
   assert_character(playlist_id, len = 1, min.chars = 1, .var.name = "playlist_id")
   assert_character(video_id, len = 1, min.chars = 1, .var.name = "video_id")
@@ -54,8 +52,10 @@ add_video_to_playlist <- function(playlist_id, video_id, position = NULL, ...) {
   }
 
   # Make the POST request using tuber_POST_json
-  raw_res <- tuber_POST_json(path = "playlistItems", query = list(part = "snippet"), body = body, ...)
+  raw_res <- tuber_POST_json(
+    path = "playlistItems", query = list(part = "snippet"), body = body, ...
+  )
 
   # Return the response
-  return(raw_res)
+  raw_res
 }

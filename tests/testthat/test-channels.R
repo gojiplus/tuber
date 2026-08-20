@@ -195,7 +195,6 @@ test_that("get_all_channel_video_stats handles video details correctly", {
         )
       }
     },
-
     {
       # Test the function
       result <- get_all_channel_video_stats(channel_id = "UCad-_hTvV-yBPcpy9jwQWeA")
@@ -205,9 +204,11 @@ test_that("get_all_channel_video_stats handles video details correctly", {
       expect_equal(nrow(result), 2)
 
       # Check column names (note: dislike_count may be present but NA)
-      expected_cols <- c("video_id", "title", "publication_date", "description",
-                        "channel_id", "channel_title", "view_count",
-                        "like_count", "comment_count", "url")
+      expected_cols <- c(
+        "video_id", "title", "publication_date", "description",
+        "channel_id", "channel_title", "view_count",
+        "like_count", "comment_count", "url"
+      )
       expect_true(all(expected_cols %in% names(result)))
       # dislike_count column may exist but should be NA (private since Dec 2021)
       if ("dislike_count" %in% names(result)) {
@@ -259,7 +260,6 @@ test_that("get_all_channel_video_stats handles missing publishedAt field", {
         )
       )
     },
-
     list_playlist_items = function(...) {
       list(
         kind = "youtube#playlistItemListResponse",
@@ -281,7 +281,6 @@ test_that("get_all_channel_video_stats handles missing publishedAt field", {
         nextPageToken = NULL
       )
     },
-
     tuber_GET = function(path, query, ...) {
       # Handle combined snippet,statistics call (what get_video_details does)
       if (grepl("statistics", query$part) && grepl("snippet", query$part)) {
@@ -360,7 +359,6 @@ test_that("get_all_channel_video_stats handles missing publishedAt field", {
         )
       }
     },
-
     {
       result <- get_all_channel_video_stats(channel_id = "UCtest")
 

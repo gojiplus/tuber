@@ -22,12 +22,11 @@
 #' super_chats <- list_super_chat_events()
 #' }
 list_super_chat_events <- function(part = "snippet",
-                                  language = NULL,
-                                  max_results = 50,
-                                  page_token = NULL,
-                                  simplify = TRUE,
-                                  ...) {
-
+                                   language = NULL,
+                                   max_results = 50,
+                                   page_token = NULL,
+                                   simplify = TRUE,
+                                   ...) {
   # Validation
   assert_character(part, min.len = 1, min.chars = 1, .var.name = "part")
   assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
@@ -47,16 +46,24 @@ list_super_chat_events <- function(part = "snippet",
   fetch_page <- function(token = NULL) {
     q <- query
     if (!is.null(token)) q$pageToken <- token
-    tryCatch({
-      tuber_GET("superChatEvents", query = q, auth = "token", ...)
-    }, error = function(e) {
-      if (grepl("forbidden", tolower(e$message))) {
-        abort("Forbidden: Ensure the authenticated channel has Super Chat enabled and you are using OAuth2.",
-              class = "tuber_super_chat_forbidden")
-      } else {
-        stop(e)
+    tryCatch(
+      {
+        tuber_GET("superChatEvents", query = q, auth = "token", ...)
+      },
+      error = function(e) {
+        if (grepl("forbidden", tolower(e$message))) {
+          abort(
+            paste(
+              "Forbidden: Ensure the authenticated channel has Super Chat",
+              "enabled and you are using OAuth2."
+            ),
+            class = "tuber_super_chat_forbidden"
+          )
+        } else {
+          stop(e)
+        }
       }
-    })
+    )
   }
 
   initial_res <- fetch_page(page_token)

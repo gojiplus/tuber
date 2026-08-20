@@ -1,7 +1,6 @@
 skip_on_cran()
 
 test_that("list_channel_sections runs successfully", {
-
   skip_on_cran()
 
   # Skip if no token file exists
@@ -9,21 +8,22 @@ test_that("list_channel_sections runs successfully", {
     skip("No token file available for API testing")
   }
 
-  tryCatch({
-    google_token <- readRDS("token_file.rds.enc")$google_token
-    options(google_token = google_token)
+  tryCatch(
+    {
+      google_token <- readRDS("token_file.rds.enc")$google_token
+      options(google_token = google_token)
 
-    get_info <- list_channel_sections(c(channel_id = "UCRw8bIz2wMLmfgAgWm903cA"))
-    expect_type(get_info, "list")
-
-  }, error = function(e) {
-    skip(paste("API test failed:", e$message))
-  })
+      get_info <- list_channel_sections(c(channel_id = "UCRw8bIz2wMLmfgAgWm903cA"))
+      expect_type(get_info, "list")
+    },
+    error = function(e) {
+      skip(paste("API test failed:", e$message))
+    }
+  )
 })
 
 
 test_that("get_my_channel runs successfully", {
-
   skip_on_cran()
 
   # Skip if no token file exists
@@ -31,14 +31,16 @@ test_that("get_my_channel runs successfully", {
     skip("No token file available for API testing")
   }
 
-  tryCatch({
-    google_token <- readRDS("token_file.rds.enc")$google_token
-    options(google_token = google_token)
+  tryCatch(
+    {
+      google_token <- readRDS("token_file.rds.enc")$google_token
+      options(google_token = google_token)
 
-    get_info <- get_my_channel()
-    expect_type(get_info, "list")
-
-  }, error = function(e) {
-    skip(paste("API test failed:", e$message))
-  })
+      get_info <- get_my_channel()
+      expect_type(get_info, "list")
+    },
+    error = function(e) {
+      skip(paste("API test failed:", e$message))
+    }
+  )
 })

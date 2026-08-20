@@ -25,16 +25,16 @@
 #' list_comment_threads(video_id = "N708P-A45D0", max_results = 200)
 #' }
 list_comment_threads <- function(video_id = NULL,
-                                channel_id = NULL,
-                                thread_ids = NULL,
-                                all_threads_for_channel_id = NULL,
-                                part = c("id", "snippet"),
-                                text_format = "html",
-                                max_results = 100,
-                                page_token = NULL,
-                                simplify = TRUE,
-                                auth = "key",
-                                ...) {
+                                 channel_id = NULL,
+                                 thread_ids = NULL,
+                                 all_threads_for_channel_id = NULL,
+                                 part = c("id", "snippet"),
+                                 text_format = "html",
+                                 max_results = 100,
+                                 page_token = NULL,
+                                 simplify = TRUE,
+                                 auth = "key",
+                                 ...) {
   scalar_filters <- list(
     video_id = video_id,
     channel_id = channel_id,

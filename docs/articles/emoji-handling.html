@@ -99,13 +99,13 @@ manipulating emojis without external dependencies.</p>
 </h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/has_emoji.html">has_emoji</a></span><span class="op">(</span><span class="st">"Hello world"</span><span class="op">)</span></span>
-<span><span class="co"># FALSE</span></span>
+<span><span class="co">#&gt; FALSE</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/has_emoji.html">has_emoji</a></span><span class="op">(</span><span class="st">"Great video! \U0001F44D"</span><span class="op">)</span></span>
-<span><span class="co"># TRUE</span></span>
+<span><span class="co">#&gt; TRUE</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/has_emoji.html">has_emoji</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"No emoji"</span>, <span class="st">"Has emoji \U0001F600"</span>, <span class="st">"Also none"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co"># c(FALSE, TRUE, FALSE)</span></span></code></pre></div>
+<span><span class="co">#&gt; c(FALSE, TRUE, FALSE)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="count_emojis---count-emojis-in-text">
@@ -113,13 +113,13 @@ manipulating emojis without external dependencies.</p>
 </h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/count_emojis.html">count_emojis</a></span><span class="op">(</span><span class="st">"Hello world"</span><span class="op">)</span></span>
-<span><span class="co"># 0</span></span>
+<span><span class="co">#&gt; 0</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/count_emojis.html">count_emojis</a></span><span class="op">(</span><span class="st">"Rating: \U0001F600\U0001F600\U0001F600"</span><span class="op">)</span></span>
-<span><span class="co"># 3</span></span>
+<span><span class="co">#&gt; 3</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/count_emojis.html">count_emojis</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"None"</span>, <span class="st">"\U0001F44D"</span>, <span class="st">"\U0001F600\U0001F601"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co"># c(0, 1, 2)</span></span></code></pre></div>
+<span><span class="co">#&gt; c(0, 1, 2)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="extract_emojis---get-emojis-from-text">
@@ -127,10 +127,10 @@ manipulating emojis without external dependencies.</p>
 </h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/extract_emojis.html">extract_emojis</a></span><span class="op">(</span><span class="st">"Hello \U0001F44B World \U0001F30D!"</span><span class="op">)</span></span>
-<span><span class="co"># list(c("\U0001F44B", "\U0001F30D"))</span></span>
+<span><span class="co">#&gt; list(c("\U0001F44B", "\U0001F30D"))</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/extract_emojis.html">extract_emojis</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"No emoji"</span>, <span class="st">"\U0001F600\U0001F601"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co"># list(character(0), c("\U0001F600", "\U0001F601"))</span></span></code></pre></div>
+<span><span class="co">#&gt; list(character(0), c("\U0001F600", "\U0001F601"))</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="remove_emojis---strip-emojis-from-text">
@@ -138,10 +138,10 @@ manipulating emojis without external dependencies.</p>
 </h3>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/remove_emojis.html">remove_emojis</a></span><span class="op">(</span><span class="st">"Hello \U0001F44B World!"</span><span class="op">)</span></span>
-<span><span class="co"># "Hello  World!"</span></span>
+<span><span class="co">#&gt; "Hello  World!"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/remove_emojis.html">remove_emojis</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"No emoji"</span>, <span class="st">"Has \U0001F600 emoji"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co"># c("No emoji", "Has  emoji")</span></span></code></pre></div>
+<span><span class="co">#&gt; c("No emoji", "Has  emoji")</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="replace_emojis---substitute-emojis">
@@ -149,10 +149,10 @@ manipulating emojis without external dependencies.</p>
 </h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/replace_emojis.html">replace_emojis</a></span><span class="op">(</span><span class="st">"Hello \U0001F44B World!"</span>, replacement <span class="op">=</span> <span class="st">"[emoji]"</span><span class="op">)</span></span>
-<span><span class="co"># "Hello [emoji] World!"</span></span>
+<span><span class="co">#&gt; "Hello [emoji] World!"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/replace_emojis.html">replace_emojis</a></span><span class="op">(</span><span class="st">"Rate: \U0001F600\U0001F600\U0001F600"</span>, replacement <span class="op">=</span> <span class="st">"*"</span><span class="op">)</span></span>
-<span><span class="co"># "Rate: ***"</span></span></code></pre></div>
+<span><span class="co">#&gt; "Rate: ***"</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -210,7 +210,7 @@ text<a class="anchor" aria-label="anchor" href="#clean_youtube_text---clean-html
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">raw_text</span> <span class="op">&lt;-</span> <span class="st">"Great video! &amp;lt;3 &amp;amp; more..."</span></span>
 <span><span class="va">clean_text</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/clean_youtube_text.html">clean_youtube_text</a></span><span class="op">(</span><span class="va">raw_text</span><span class="op">)</span></span>
-<span><span class="co"># "Great video! &lt;3 &amp; more..."</span></span></code></pre></div>
+<span><span class="co">#&gt; "Great video! &lt;3 &amp; more..."</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">

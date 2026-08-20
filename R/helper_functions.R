@@ -7,8 +7,10 @@
 NULL
 
 # Suppress R CMD check warnings for dplyr variables
-utils::globalVariables(c("search_term", "view_count", "like_count", "total_views",
-                         "avg_engagement", "trending_score", "comment_count"))
+utils::globalVariables(c(
+  "search_term", "view_count", "like_count", "total_views",
+  "avg_engagement", "trending_score", "comment_count"
+))
 
 #' Comprehensive channel analysis
 #'
@@ -31,15 +33,15 @@ utils::globalVariables(c("search_term", "view_count", "like_count", "total_views
 #'
 #' # Detailed analysis with comments
 #' detailed <- analyze_channel("UCuAXFkgsw1L7xaCfnd5JJOw",
-#'                            max_videos = 100,
-#'                            include_comments = TRUE)
+#'   max_videos = 100,
+#'   include_comments = TRUE
+#' )
 #' }
 analyze_channel <- function(channel_id,
-                           max_videos = 50,
-                           auth = "key",
-                           include_comments = FALSE,
-                           ...) {
-
+                            max_videos = 50,
+                            auth = "key",
+                            include_comments = FALSE,
+                            ...) {
   # Modern validation using checkmate
   assert_character(channel_id, len = 1, min.chars = 1, .var.name = "channel_id")
   assert_integerish(max_videos, len = 1, lower = 1, upper = 500, .var.name = "max_videos")
@@ -61,8 +63,9 @@ analyze_channel <- function(channel_id,
 
   if (nrow(channel_info) == 0) {
     abort("Channel not found or inaccessible",
-          channel_id = channel_id,
-          class = "tuber_channel_not_found")
+      channel_id = channel_id,
+      class = "tuber_channel_not_found"
+    )
   }
 
   # Get upload playlist ID
@@ -70,8 +73,9 @@ analyze_channel <- function(channel_id,
 
   if (is.na(upload_playlist_id) || !nzchar(upload_playlist_id)) {
     warn("No uploads playlist found for channel. Analysis will be limited.",
-         channel_id = channel_id,
-         class = "tuber_no_uploads_playlist")
+      channel_id = channel_id,
+      class = "tuber_no_uploads_playlist"
+    )
     videos_info <- data.frame()
   } else {
     # Get recent videos
@@ -107,14 +111,17 @@ analyze_channel <- function(channel_id,
       if (include_comments && nrow(videos_info) > 0) {
         message("Fetching comments...")
         videos_info$comments_retrieved <- vapply(video_ids, function(vid) {
-          tryCatch({
-            comments <- get_all_comments(
-              video_id = vid,
-              auth = auth,
-              ...
-            )
-            if (is.data.frame(comments)) nrow(comments) else length(comments)
-          }, error = function(e) NA_integer_)
+          tryCatch(
+            {
+              comments <- get_all_comments(
+                video_id = vid,
+                auth = auth,
+                ...
+              )
+              if (is.data.frame(comments)) nrow(comments) else length(comments)
+            },
+            error = function(e) NA_integer_
+          )
         }, integer(1))
       }
     } else {
@@ -138,14 +145,19 @@ analyze_channel <- function(channel_id,
       avg_likes_per_video = mean(videos_info$like_count_num, na.rm = TRUE),
       avg_comments_per_video = mean(videos_info$comment_count_num, na.rm = TRUE),
       total_recent_views = sum(videos_info$view_count_num, na.rm = TRUE),
-      engagement_rate = mean(videos_info$like_count_num / pmax(videos_info$view_count_num, 1), na.rm = TRUE),
+      engagement_rate = mean(
+        videos_info$like_count_num / pmax(videos_info$view_count_num, 1),
+        na.rm = TRUE
+      ),
       videos_analyzed = nrow(videos_info),
       top_performing_video = if (nrow(videos_info) > 0) {
         videos_info[
           which.max(videos_info$view_count_num),
           c("snippet_title", "view_count_num")
         ]
-      } else NULL
+      } else {
+        NULL
+      }
     )
   }
 
@@ -165,7 +177,7 @@ analyze_channel <- function(channel_id,
   class(analysis_result) <- c("tuber_channel_analysis", "list")
 
   message("Channel analysis complete!")
-  return(analysis_result)
+  analysis_result
 }
 
 #' Compare multiple channels
@@ -189,14 +201,14 @@ analyze_channel <- function(channel_id,
 #'
 #' # Custom metrics comparison
 #' comparison <- compare_channels(channels,
-#'                               metrics = c("subscriber_count", "video_count", "view_count"))
+#'   metrics = c("subscriber_count", "video_count", "view_count")
+#' )
 #' }
 compare_channels <- function(channel_ids,
-                            metrics = c("subscriber_count", "video_count", "view_count"),
-                            auth = "key",
-                            simplify = TRUE,
-                            ...) {
-
+                             metrics = c("subscriber_count", "video_count", "view_count"),
+                             auth = "key",
+                             simplify = TRUE,
+                             ...) {
   # Modern validation using checkmate
   assert_character(channel_ids, min.len = 2, .var.name = "channel_ids")
   assert_character(metrics, min.len = 1, .var.name = "metrics")
@@ -217,24 +229,28 @@ compare_channels <- function(channel_ids,
 
   if (nrow(channels_info) == 0) {
     abort("No channel information could be retrieved",
-          channel_ids = channel_ids,
-          help = "Check that channel IDs are valid and accessible",
-          class = "tuber_no_channel_data")
+      channel_ids = channel_ids,
+      help = "Check that channel IDs are valid and accessible",
+      class = "tuber_no_channel_data"
+    )
   }
 
   if (nrow(channels_info) < length(channel_ids)) {
     missing_count <- length(channel_ids) - nrow(channels_info)
     warn("Some channels could not be found or are inaccessible",
-         missing_count = missing_count,
-         total_requested = length(channel_ids),
-         found = nrow(channels_info),
-         class = "tuber_partial_channel_data")
+      missing_count = missing_count,
+      total_requested = length(channel_ids),
+      found = nrow(channels_info),
+      class = "tuber_partial_channel_data"
+    )
   }
 
   # Calculate additional metrics
   comparison_data <- channels_info
-  comparison_data$engagement_ratio <- comparison_data$view_count / pmax(comparison_data$subscriber_count, 1)
-  comparison_data$videos_per_subscriber <- comparison_data$video_count / pmax(comparison_data$subscriber_count, 1)
+  comparison_data$engagement_ratio <-
+    comparison_data$view_count / pmax(comparison_data$subscriber_count, 1)
+  comparison_data$videos_per_subscriber <-
+    comparison_data$video_count / pmax(comparison_data$subscriber_count, 1)
 
   if (simplify) {
     # Create simplified comparison table
@@ -244,7 +260,10 @@ compare_channels <- function(channel_ids,
     for (metric in metrics) {
       if (metric %in% names(comparison_table)) {
         rank_col <- paste0(metric, "_rank")
-        comparison_table[[rank_col]] <- rank(-as.numeric(comparison_table[[metric]]), na.last = "keep")
+        comparison_table[[rank_col]] <- rank(
+          -as.numeric(comparison_table[[metric]]),
+          na.last = "keep"
+        )
       }
     }
 
@@ -275,7 +294,7 @@ compare_channels <- function(channel_ids,
   class(result) <- c("tuber_channel_comparison", "list")
 
   message("Channel comparison complete!")
-  return(result)
+  result
 }
 
 #' Trending analysis for search terms
@@ -308,7 +327,6 @@ analyze_trends <- function(search_terms,
                            region_code = NULL,
                            auth = "key",
                            ...) {
-
   # Modern validation using checkmate
   assert_character(search_terms, min.len = 1, .var.name = "search_terms")
   assert_choice(time_period, c("week", "month", "year", "all"), .var.name = "time_period")
@@ -470,7 +488,7 @@ analyze_trends <- function(search_terms,
   class(result) <- c("tuber_trend_analysis", "list")
 
   message("Trend analysis complete!")
-  return(result)
+  result
 }
 
 #' Bulk video performance analysis
@@ -500,7 +518,6 @@ bulk_video_analysis <- function(video_ids,
                                 benchmark_percentiles = c(0.25, 0.5, 0.75, 0.9),
                                 auth = "key",
                                 ...) {
-
   # Modern validation using checkmate
   assert_character(video_ids, min.len = 1, .var.name = "video_ids")
   assert_flag(include_comments, .var.name = "include_comments")
@@ -521,9 +538,10 @@ bulk_video_analysis <- function(video_ids,
 
   if (nrow(videos_data) == 0) {
     abort("No video data could be retrieved",
-          video_ids = video_ids,
-          help = "Check that video IDs are valid and accessible",
-          class = "tuber_no_video_data")
+      video_ids = video_ids,
+      help = "Check that video IDs are valid and accessible",
+      class = "tuber_no_video_data"
+    )
   }
 
   # Convert to numeric for analysis
@@ -533,10 +551,13 @@ bulk_video_analysis <- function(video_ids,
 
   if (include_comments) {
     videos_data$comments_retrieved <- vapply(videos_data$id, function(video_id) {
-      tryCatch({
-        comments <- get_all_comments(video_id = video_id, auth = auth, ...)
-        if (is.data.frame(comments)) nrow(comments) else length(comments)
-      }, error = function(e) NA_integer_)
+      tryCatch(
+        {
+          comments <- get_all_comments(video_id = video_id, auth = auth, ...)
+          if (is.data.frame(comments)) nrow(comments) else length(comments)
+        },
+        error = function(e) NA_integer_
+      )
     }, integer(1))
   }
 
@@ -579,5 +600,5 @@ bulk_video_analysis <- function(video_ids,
   class(result) <- c("tuber_bulk_analysis", "list")
 
   message("Bulk video analysis complete!")
-  return(result)
+  result
 }

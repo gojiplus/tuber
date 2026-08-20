@@ -32,18 +32,23 @@
 #' list_subscriptions(mine = TRUE)
 #' }
 list_subscriptions <- function(channel_id = NULL,
-                              subscription_ids = NULL,
-                              mine = FALSE,
-                              my_recent_subscribers = FALSE,
-                              my_subscribers = FALSE,
-                              for_channel_ids = NULL,
-                              part = c("snippet", "contentDetails"),
-                              order = "relevance",
-                              max_results = 50,
-                              page_token = NULL,
-                              simplify = TRUE,
-                              auth = if (mine || my_recent_subscribers || my_subscribers) "token" else "key",
-                              ...) {
+                               subscription_ids = NULL,
+                               mine = FALSE,
+                               my_recent_subscribers = FALSE,
+                               my_subscribers = FALSE,
+                               for_channel_ids = NULL,
+                               part = c("snippet", "contentDetails"),
+                               order = "relevance",
+                               max_results = 50,
+                               page_token = NULL,
+                               simplify = TRUE,
+                               auth = if (mine || my_recent_subscribers ||
+                                            my_subscribers) {
+                                 "token"
+                               } else {
+                                 "key"
+                               },
+                               ...) {
   if (!is.null(channel_id)) {
     assert_string(channel_id, min.chars = 1, .var.name = "channel_id")
   }
