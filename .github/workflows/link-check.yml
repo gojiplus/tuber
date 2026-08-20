@@ -29,6 +29,7 @@ jobs:
       # part of the URL. The message prints correctly; only the extractor is
       # confused, so the code is left alone.
       exclude: |
+        ^https://oauth2\.googleapis\.com/token$
         ^https://www\.googleapis\.com/$
         ^https://www\.googleapis\.com/upload/youtube/v3/
         ^https://www\.googleapis\.com/youtube/v3/comments/setModerationStatus$
