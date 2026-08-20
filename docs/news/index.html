@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tuber</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,7 +40,29 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="2.0.0" id="tuber-200">tuber 2.0.0<a class="anchor" aria-label="anchor" href="#tuber-200"></a></h2>
+<h2 class="pkg-version" data-toc-text="2.0.0.9000" id="tuber-2009000-development-version">tuber 2.0.0.9000 (development version)<a class="anchor" aria-label="anchor" href="#tuber-2009000-development-version"></a></h2>
+<div class="section level3">
+<h3 id="httr2-2-0-0-9000">httr2<a class="anchor" aria-label="anchor" href="#httr2-2-0-0-9000"></a></h3>
+<ul><li>tuber now talks to YouTube entirely through httr2. httr is no longer a dependency.</li>
+<li>
+<strong>Saved OAuth tokens must be recreated.</strong> Tokens written by tuber 2.0.0 and earlier are httr <code>Token2.0</code> objects, which httr2 cannot use. <code><a href="../reference/yt_oauth.html">yt_oauth()</a></code> says so and authenticates again; the new token replaces the old file.</li>
+<li>
+<code>options(google_token)</code> now holds an httr2 token. Code reading <code>token$credentials$access_token</code> should read <code>token$access_token</code>.</li>
+<li>
+<code><a href="../reference/yt_oauth.html">yt_oauth()</a></code> refuses to write into a file named <code>.httr-oauth</code>. That name is httr’s <em>shared</em> cache, read by every httr-based package in the same working directory, and an httr2 token there would break them. tuber’s own default lives in <code>tools::R_user_dir("tuber", "cache")</code>.</li>
+<li>An expired access token is refreshed automatically when the OAuth client is still available, instead of failing the request.</li>
+<li>Credentials travel in redacted headers, so a printed request or an error dump no longer shows the bearer token or API key.</li>
+<li>The <code>...</code> argument of the internal HTTP functions no longer reaches httr’s configuration. The argument is still accepted and ignored.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="fixes-2-0-0-9000">Fixes<a class="anchor" aria-label="anchor" href="#fixes-2-0-0-9000"></a></h3>
+<ul><li>
+<code><a href="../reference/set_comment_moderation_status.html">set_comment_moderation_status()</a></code> and other endpoints returning HTTP 204 no longer attempt to parse an absent response body.</li>
+<li>Uploads that fail to start now report YouTube’s own error message rather than a bare status code.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="2.0.0" id="tuber-200">tuber 2.0.0<a class="anchor" aria-label="anchor" href="#tuber-200"></a></h2><p class="text-muted">CRAN release: 2026-08-20</p>
 <p>Released 2026-08-17.</p>
 <div class="section level3">
 <h3 id="breaking-api-cleanup-2-0-0">Breaking API cleanup<a class="anchor" aria-label="anchor" href="#breaking-api-cleanup-2-0-0"></a></h3>
@@ -53,7 +75,7 @@
 </div>
 <div class="section level3">
 <h3 id="correctness-2-0-0">Correctness<a class="anchor" aria-label="anchor" href="#correctness-2-0-0"></a></h3>
-<ul><li>Video and caption uploads now use Google’s resumable upload protocol. Thumbnail and channel-banner uploads use explicit media uploads and enforce YouTube’s file-size limits.</li>
+<ul><li>Video and caption uploads now use Google’s resumable upload protocol, and actually resume (<a href="https://github.com/gojiplus/tuber/issues/81" class="external-link">#81</a>). The file goes up in <code>Content-Range</code>-tagged chunks; if a chunk dies in flight or draws a 5xx, tuber asks YouTube how many bytes it kept and continues from there instead of restarting at byte zero. Tune with the new <code>chunk_size</code> (default 8 MB) and <code>max_tries</code> (default 5) arguments to <code><a href="../reference/upload_video.html">upload_video()</a></code> and <code><a href="../reference/upload_caption.html">upload_caption()</a></code>. An expired session URL raises <code>tuber_upload_session_expired</code>; exhausting the retries raises <code>tuber_upload_interrupted</code>, whose condition carries the byte count reached. Thumbnail and channel-banner uploads use explicit media uploads and enforce YouTube’s file-size limits.</li>
 <li>Comment collection fetches every reply page instead of relying on the reply preview embedded in a comment thread.</li>
 <li>Channel, playlist, subscription, comment, live-broadcast, and search wrappers now enforce the filter combinations documented by YouTube.</li>
 <li>Pagination treats <code>max_results</code> as a total limit and trims the first page as well as later pages.</li>

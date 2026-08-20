@@ -13,6 +13,8 @@ upload_video(
   on_behalf_of_content_owner = NULL,
   content_owner_channel_id = NULL,
   open_url = FALSE,
+  chunk_size = 8 * 1024^2,
+  max_tries = 5,
   ...
 )
 ```
@@ -56,17 +58,23 @@ upload_video(
   Should the video be opened using
   [`browseURL`](https://rdrr.io/r/utils/browseURL.html)
 
+- chunk_size:
+
+  Bytes sent per request. Must be a multiple of 256 KB. Uploads resume
+  from the last byte YouTube confirms, so a smaller chunk loses less
+  work when a connection drops.
+
+- max_tries:
+
+  Consecutive failed attempts to tolerate before giving up.
+
 - ...:
 
-  Additional arguments to send to
-  [`tuber_POST`](https://gojiplus.github.io/tuber/reference/tuber_POST.md)
-  and therefore [`POST`](https://httr.r-lib.org/reference/POST.html)
+  Ignored; retained for backward compatibility.
 
 ## Value
 
-A list of the response object from the
-[`POST`](https://httr.r-lib.org/reference/POST.html), content, and the
-URL of the uploaded
+A list of the response object, content, and the URL of the uploaded
 
 ## Note
 

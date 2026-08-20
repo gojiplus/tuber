@@ -12,6 +12,8 @@ upload_caption(
   is_draft = FALSE,
   on_behalf_of_content_owner = NULL,
   open_url = FALSE,
+  chunk_size = 8 * 1024^2,
+  max_tries = 5,
   ...
 )
 }
@@ -32,6 +34,12 @@ only available to authorized YouTube content partners.}
 
 \item{open_url}{Whether to open the video's YouTube URL after a successful
 upload.}
+
+\item{chunk_size}{Bytes sent per request. Must be a multiple of 256 KB.
+Uploads resume from the last byte YouTube confirms, so a smaller chunk
+loses less work when a connection drops.}
+
+\item{max_tries}{Consecutive failed attempts to tolerate before giving up.}
 
 \item{...}{Ignored; retained for backward compatibility.}
 }

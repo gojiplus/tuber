@@ -53,7 +53,14 @@ table and endpoint support matrix.
 
 ## Correctness
 
-* Video and caption uploads now use Google's resumable upload protocol.
+* Video and caption uploads now use Google's resumable upload protocol, and
+  actually resume (#81). The file goes up in `Content-Range`-tagged chunks; if
+  a chunk dies in flight or draws a 5xx, tuber asks YouTube how many bytes it
+  kept and continues from there instead of restarting at byte zero. Tune with
+  the new `chunk_size` (default 8 MB) and `max_tries` (default 5) arguments to
+  `upload_video()` and `upload_caption()`. An expired session URL raises
+  `tuber_upload_session_expired`; exhausting the retries raises
+  `tuber_upload_interrupted`, whose condition carries the byte count reached.
   Thumbnail and channel-banner uploads use explicit media uploads and enforce
   YouTube's file-size limits.
 * Comment collection fetches every reply page instead of relying on the reply

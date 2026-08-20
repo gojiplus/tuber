@@ -14,4 +14,4 @@ yt_check_token()
 
 ## Value
 
-A Token2.0 class
+An httr2 token

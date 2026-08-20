@@ -20,8 +20,7 @@ tuber_DELETE(path, query, ...)
 
 - ...:
 
-  Additional arguments passed to
-  [`DELETE`](https://httr.r-lib.org/reference/DELETE.html).
+  Ignored; see \[tuber_POST_json()\].
 
 ## Value
 

@@ -42,7 +42,7 @@ yt_oauth(
 - ...:
 
   Additional arguments passed to
-  [`oauth2.0_token`](https://httr.r-lib.org/reference/oauth2.0_token.html)
+  [`oauth_flow_auth_code`](https://httr2.r-lib.org/reference/req_oauth_auth_code.html)
 
 ## Value
 

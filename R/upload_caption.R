@@ -13,6 +13,10 @@
 #'   only available to authorized YouTube content partners.
 #' @param open_url Whether to open the video's YouTube URL after a successful
 #'   upload.
+#' @param chunk_size Bytes sent per request. Must be a multiple of 256 KB.
+#'   Uploads resume from the last byte YouTube confirms, so a smaller chunk
+#'   loses less work when a connection drops.
+#' @param max_tries Consecutive failed attempts to tolerate before giving up.
 #' @param ... Ignored; retained for backward compatibility.
 #'
 #' @return A list containing the final HTTP response, parsed caption resource,
@@ -38,6 +42,8 @@ upload_caption <- function(
   is_draft = FALSE,
   on_behalf_of_content_owner = NULL,
   open_url = FALSE,
+  chunk_size = 8 * 1024^2,
+  max_tries = 5,
   ...
 ) {
   assert_character(file, len = 1, min.chars = 1, .var.name = "file")
@@ -106,7 +112,13 @@ upload_caption <- function(
     type = caption_type
   )
 
-  upload_req <- tuber_upload_body(upload_url, file, caption_type)
+  upload_req <- tuber_upload_file(
+    upload_url,
+    file,
+    caption_type,
+    chunk_size = chunk_size,
+    max_tries = max_tries
+  )
   tuber_check(upload_req)
   if (resp_status(upload_req) < 200 || resp_status(upload_req) >= 300) {
     abort(

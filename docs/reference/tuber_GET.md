@@ -46,8 +46,8 @@ tuber_GET(
 
 - ...:
 
-  Additional arguments passed to
-  [`GET`](https://httr.r-lib.org/reference/GET.html).
+  Ignored; retained so callers that forwarded httr configuration keep
+  working.
 
 ## Value
 

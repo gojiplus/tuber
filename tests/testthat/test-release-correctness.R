@@ -67,7 +67,11 @@ test_that("upload_video follows the resumable upload protocol", {
 
   expect_equal(seen$put$url, "https://upload.example/session")
   expect_equal(seen$put$method, "PUT")
-  expect_equal(seen$put$body$data, video_file)
+  expect_equal(seen$put$body$data, readBin(video_file, "raw", n = 10))
+  expect_equal(
+    httr2::req_get_headers(seen$put, "reveal")$`Content-Range`,
+    "bytes 0-9/10"
+  )
   # The bearer token is stored redacted, so it cannot leak through a printed
   # request or an error dump; "reveal" is the only way to see it.
   expect_equal(
@@ -148,7 +152,10 @@ test_that("upload_caption follows the resumable upload protocol", {
   expect_equal(metadata$snippet$name, "English")
 
   expect_equal(seen$put$url, "https://upload.example/caption")
-  expect_equal(seen$put$body$data, caption_file)
+  expect_equal(
+    seen$put$body$data,
+    readBin(caption_file, "raw", n = file.size(caption_file))
+  )
   expect_equal(seen$quota, c("captions", "insert"))
   expect_equal(result$content$id, "caption-id")
 })

@@ -600,25 +600,6 @@ tuber_upload_session <- function(path, query, metadata, file, type) {
   upload_url
 }
 
-#' Send the file to a resumable upload session
-#'
-#' The second half of [tuber_upload_session()]. The session URL is a full URL
-#' YouTube chose, so this cannot go through [tuber_request()].
-#'
-#' @param upload_url Session URL from [tuber_upload_session()]
-#' @param file path to the file to upload
-#' @param type MIME type of \code{file}
-#' @return An httr2 response
-#' @keywords internal
-tuber_upload_body <- function(upload_url, file, type) {
-  request(upload_url) |>
-    req_headers_redacted(Authorization = paste("Bearer", yt_access_token())) |>
-    req_error(is_error = function(response) FALSE) |>
-    req_method("PUT") |>
-    req_body_file(file, type = type) |>
-    req_perform()
-}
-
 #'
 #' Write request with a JSON body
 #'

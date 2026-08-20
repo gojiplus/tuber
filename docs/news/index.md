@@ -1,6 +1,40 @@
 # Changelog
 
+## tuber 2.0.0.9000 (development version)
+
+### httr2
+
+- tuber now talks to YouTube entirely through httr2. httr is no longer a
+  dependency.
+- **Saved OAuth tokens must be recreated.** Tokens written by tuber
+  2.0.0 and earlier are httr `Token2.0` objects, which httr2 cannot use.
+  [`yt_oauth()`](https://gojiplus.github.io/tuber/reference/yt_oauth.md)
+  says so and authenticates again; the new token replaces the old file.
+- `options(google_token)` now holds an httr2 token. Code reading
+  `token$credentials$access_token` should read `token$access_token`.
+- [`yt_oauth()`](https://gojiplus.github.io/tuber/reference/yt_oauth.md)
+  refuses to write into a file named `.httr-oauth`. That name is httr’s
+  *shared* cache, read by every httr-based package in the same working
+  directory, and an httr2 token there would break them. tuber’s own
+  default lives in `tools::R_user_dir("tuber", "cache")`.
+- An expired access token is refreshed automatically when the OAuth
+  client is still available, instead of failing the request.
+- Credentials travel in redacted headers, so a printed request or an
+  error dump no longer shows the bearer token or API key.
+- The `...` argument of the internal HTTP functions no longer reaches
+  httr’s configuration. The argument is still accepted and ignored.
+
+### Fixes
+
+- [`set_comment_moderation_status()`](https://gojiplus.github.io/tuber/reference/set_comment_moderation_status.md)
+  and other endpoints returning HTTP 204 no longer attempt to parse an
+  absent response body.
+- Uploads that fail to start now report YouTube’s own error message
+  rather than a bare status code.
+
 ## tuber 2.0.0
+
+CRAN release: 2026-08-20
 
 Released 2026-08-17.
 
@@ -41,9 +75,21 @@ for the full migration table and endpoint support matrix.
 
 ### Correctness
 
-- Video and caption uploads now use Google’s resumable upload protocol.
-  Thumbnail and channel-banner uploads use explicit media uploads and
-  enforce YouTube’s file-size limits.
+- Video and caption uploads now use Google’s resumable upload protocol,
+  and actually resume
+  ([\#81](https://github.com/gojiplus/tuber/issues/81)). The file goes
+  up in `Content-Range`-tagged chunks; if a chunk dies in flight or
+  draws a 5xx, tuber asks YouTube how many bytes it kept and continues
+  from there instead of restarting at byte zero. Tune with the new
+  `chunk_size` (default 8 MB) and `max_tries` (default 5) arguments to
+  [`upload_video()`](https://gojiplus.github.io/tuber/reference/upload_video.md)
+  and
+  [`upload_caption()`](https://gojiplus.github.io/tuber/reference/upload_caption.md).
+  An expired session URL raises `tuber_upload_session_expired`;
+  exhausting the retries raises `tuber_upload_interrupted`, whose
+  condition carries the byte count reached. Thumbnail and channel-banner
+  uploads use explicit media uploads and enforce YouTube’s file-size
+  limits.
 - Comment collection fetches every reply page instead of relying on the
   reply preview embedded in a comment thread.
 - Channel, playlist, subscription, comment, live-broadcast, and search

@@ -21,8 +21,7 @@ set_video_thumbnail(video_id, file, ...)
 
 - ...:
 
-  Additional arguments passed to
-  [`POST`](https://httr.r-lib.org/reference/POST.html).
+  Ignored; retained for backward compatibility.
 
 ## Value
 

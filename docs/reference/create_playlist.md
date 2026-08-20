@@ -25,8 +25,7 @@ create_playlist(title, description = "", status = "public", ...)
 
 - ...:
 
-  Additional arguments passed to
-  [`tuber_POST`](https://gojiplus.github.io/tuber/reference/tuber_POST.md).
+  Ignored; retained for backward compatibility.
 
 ## Value
 

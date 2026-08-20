@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tuber</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,6 +54,8 @@
 <span>  on_behalf_of_content_owner <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  content_owner_channel_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  open_url <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  chunk_size <span class="op">=</span> <span class="fl">8</span> <span class="op">*</span> <span class="fl">1024</span><span class="op">^</span><span class="fl">2</span>,</span>
+<span>  max_tries <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -99,14 +101,23 @@ partner upload. This must be supplied with `on_behalf_of_content_owner`.</p></dd
 <dd><p>Should the video be opened using <code><a href="https://rdrr.io/r/utils/browseURL.html" class="external-link">browseURL</a></code></p></dd>
 
 
+<dt id="arg-chunk-size">chunk_size<a class="anchor" aria-label="anchor" href="#arg-chunk-size"></a></dt>
+<dd><p>Bytes sent per request. Must be a multiple of 256 KB.
+Uploads resume from the last byte YouTube confirms, so a smaller chunk
+loses less work when a connection drops.</p></dd>
+
+
+<dt id="arg-max-tries">max_tries<a class="anchor" aria-label="anchor" href="#arg-max-tries"></a></dt>
+<dd><p>Consecutive failed attempts to tolerate before giving up.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional arguments to send to <code><a href="tuber_POST.html">tuber_POST</a></code> and
-therefore <code><a href="https://httr.r-lib.org/reference/POST.html" class="external-link">POST</a></code></p></dd>
+<dd><p>Ignored; retained for backward compatibility.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list of the response object from the <code><a href="https://httr.r-lib.org/reference/POST.html" class="external-link">POST</a></code>, content,
+    <p>A list of the response object, content,
 and the URL of the uploaded</p>
     </div>
     <div class="section level2">

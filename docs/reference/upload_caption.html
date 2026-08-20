@@ -9,7 +9,7 @@ protocol. The request requires OAuth 2.0 authorization."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">tuber</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,6 +57,8 @@ protocol. The request requires OAuth 2.0 authorization.</p>
 <span>  is_draft <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  on_behalf_of_content_owner <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  open_url <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  chunk_size <span class="op">=</span> <span class="fl">8</span> <span class="op">*</span> <span class="fl">1024</span><span class="op">^</span><span class="fl">2</span>,</span>
+<span>  max_tries <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -96,8 +98,18 @@ only available to authorized YouTube content partners.</p></dd>
 upload.</p></dd>
 
 
+<dt id="arg-chunk-size">chunk_size<a class="anchor" aria-label="anchor" href="#arg-chunk-size"></a></dt>
+<dd><p>Bytes sent per request. Must be a multiple of 256 KB.
+Uploads resume from the last byte YouTube confirms, so a smaller chunk
+loses less work when a connection drops.</p></dd>
+
+
+<dt id="arg-max-tries">max_tries<a class="anchor" aria-label="anchor" href="#arg-max-tries"></a></dt>
+<dd><p>Consecutive failed attempts to tolerate before giving up.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional arguments passed to [httr::POST()] and [httr::PUT()].</p></dd>
+<dd><p>Ignored; retained for backward compatibility.</p></dd>
 
 </dl></div>
     <div class="section level2">

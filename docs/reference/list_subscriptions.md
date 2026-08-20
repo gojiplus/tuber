@@ -17,7 +17,12 @@ list_subscriptions(
   max_results = 50,
   page_token = NULL,
   simplify = TRUE,
-  auth = if (mine || my_recent_subscribers || my_subscribers) "token" else "key",
+  auth = if (mine || my_recent_subscribers || my_subscribers) {
+     "token"
+ } else {
+  
+      "key"
+ },
   ...
 )
 ```

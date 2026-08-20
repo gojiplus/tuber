@@ -12,6 +12,8 @@ upload_video(
   on_behalf_of_content_owner = NULL,
   content_owner_channel_id = NULL,
   open_url = FALSE,
+  chunk_size = 8 * 1024^2,
+  max_tries = 5,
   ...
 )
 }
@@ -38,6 +40,12 @@ only available to authorized YouTube content partners.}
 partner upload. This must be supplied with `on_behalf_of_content_owner`.}
 
 \item{open_url}{Should the video be opened using \code{\link{browseURL}}}
+
+\item{chunk_size}{Bytes sent per request. Must be a multiple of 256 KB.
+Uploads resume from the last byte YouTube confirms, so a smaller chunk
+loses less work when a connection drops.}
+
+\item{max_tries}{Consecutive failed attempts to tolerate before giving up.}
 
 \item{...}{Ignored; retained for backward compatibility.}
 }

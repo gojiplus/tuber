@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tuber</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +58,12 @@
 <span>  max_results <span class="op">=</span> <span class="fl">50</span>,</span>
 <span>  page_token <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  simplify <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  auth <span class="op">=</span> <span class="kw">if</span> <span class="op">(</span><span class="va">mine</span> <span class="op">||</span> <span class="va">my_recent_subscribers</span> <span class="op">||</span> <span class="va">my_subscribers</span><span class="op">)</span> <span class="st">"token"</span> <span class="kw">else</span> <span class="st">"key"</span>,</span>
+<span>  auth <span class="op">=</span> <span class="kw">if</span> <span class="op">(</span><span class="va">mine</span> <span class="op">||</span> <span class="va">my_recent_subscribers</span> <span class="op">||</span> <span class="va">my_subscribers</span><span class="op">)</span> <span class="op">{</span></span>
+<span>     <span class="st">"token"</span></span>
+<span> <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  </span>
+<span>      <span class="st">"key"</span></span>
+<span> <span class="op">}</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>

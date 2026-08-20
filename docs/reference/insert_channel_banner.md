@@ -24,8 +24,7 @@ insert_channel_banner(file, on_behalf_of_content_owner = NULL, ...)
 
 - ...:
 
-  Additional arguments passed to
-  [`POST`](https://httr.r-lib.org/reference/POST.html).
+  Ignored; retained for backward compatibility.
 
 ## Value
 

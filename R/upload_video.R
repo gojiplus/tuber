@@ -15,6 +15,10 @@
 #'   only available to authorized YouTube content partners.
 #' @param content_owner_channel_id Optional channel ID for a content
 #'   partner upload. This must be supplied with `on_behalf_of_content_owner`.
+#' @param chunk_size Bytes sent per request. Must be a multiple of 256 KB.
+#'   Uploads resume from the last byte YouTube confirms, so a smaller chunk
+#'   loses less work when a connection drops.
+#' @param max_tries Consecutive failed attempts to tolerate before giving up.
 #' @param ... Ignored; retained for backward compatibility.
 #' @param open_url Should the video be opened using \code{\link{browseURL}}
 #'
@@ -49,6 +53,8 @@ upload_video <- function(
   on_behalf_of_content_owner = NULL,
   content_owner_channel_id = NULL,
   open_url = FALSE,
+  chunk_size = 8 * 1024^2,
+  max_tries = 5,
   ...
 ) {
   # Modern validation using checkmate
@@ -156,7 +162,13 @@ upload_video <- function(
     type = video_type
   )
 
-  upload_req <- tuber_upload_body(upload_url, file, video_type)
+  upload_req <- tuber_upload_file(
+    upload_url,
+    file,
+    video_type,
+    chunk_size = chunk_size,
+    max_tries = max_tries
+  )
 
   if (resp_status(upload_req) < 200 || resp_status(upload_req) >= 300) {
     tuber_check(upload_req)

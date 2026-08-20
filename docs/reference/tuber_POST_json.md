@@ -20,12 +20,12 @@ tuber_POST_json(path, query, body = "", ...)
 
 - body:
 
-  passing image through body
+  list serialized as the JSON request body
 
 - ...:
 
-  Additional arguments passed to
-  [`GET`](https://httr.r-lib.org/reference/GET.html).
+  Ignored; retained so callers that forwarded httr configuration keep
+  working.
 
 ## Value
 

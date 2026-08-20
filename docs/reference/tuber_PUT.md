@@ -20,12 +20,11 @@ tuber_PUT(path, query, body = "", ...)
 
 - body:
 
-  JSON body content for the PUT request
+  list serialized as the JSON request body
 
 - ...:
 
-  Additional arguments passed to
-  [`PUT`](https://httr.r-lib.org/reference/PUT.html).
+  Ignored; see \[tuber_POST_json()\].
 
 ## Value
 

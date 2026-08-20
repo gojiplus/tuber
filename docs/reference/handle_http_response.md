@@ -6,18 +6,14 @@ quota exceeded (403) and rate limiting (429) errors.
 ## Usage
 
 ``` r
-handle_http_response(req, auth = "token")
+handle_http_response(req)
 ```
 
 ## Arguments
 
 - req:
 
-  The HTTP request/response object
-
-- auth:
-
-  Authentication method ("token" or "key")
+  The HTTP response object
 
 ## Value
 
