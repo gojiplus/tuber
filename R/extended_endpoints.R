@@ -185,11 +185,10 @@ list_live_broadcasts <- function(broadcast_ids = NULL,
 #' thumbs_batch <- get_video_thumbnails(c("dQw4w9WgXcQ", "M7FIvfx5J10"))
 #' }
 get_video_thumbnails <- function(video_ids,
-                                size = NULL,
-                                simplify = TRUE,
-                                auth = "key",
-                                ...) {
-
+                                 size = NULL,
+                                 simplify = TRUE,
+                                 auth = "key",
+                                 ...) {
   # Modern validation using checkmate
   assert_character(video_ids, min.len = 1, .var.name = "video_ids")
   assert_flag(simplify, .var.name = "simplify")
@@ -286,7 +285,6 @@ search_short_videos <- function(term,
                                 simplify = TRUE,
                                 auth = "key",
                                 ...) {
-
   result <- yt_search(
     term = term,
     max_results = max_results,
@@ -333,7 +331,6 @@ get_video_broadcast_timing <- function(video_ids,
                                        simplify = TRUE,
                                        auth = "key",
                                        ...) {
-
   # Modern validation using checkmate
   assert_character(video_ids, min.len = 1, .var.name = "video_ids")
   assert_flag(simplify, .var.name = "simplify")
@@ -370,7 +367,7 @@ get_video_broadcast_timing <- function(video_ids,
       title = item$snippet$title %||% NA_character_,
       has_scheduled_start = !is.null(live_details$scheduledStartTime),
       is_live = !is.null(live_details$actualStartTime) &&
-                is.null(live_details$actualEndTime),
+        is.null(live_details$actualEndTime),
       scheduled_start_time = live_details$scheduledStartTime %||% NA_character_,
       actual_start_time = live_details$actualStartTime %||% NA_character_,
       actual_end_time = live_details$actualEndTime %||% NA_character_,

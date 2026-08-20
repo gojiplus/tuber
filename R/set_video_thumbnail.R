@@ -25,8 +25,9 @@ set_video_thumbnail <- function(video_id, file, ...) {
 
   if (!file.exists(file)) {
     abort("File does not exist",
-          file_path = file,
-          class = "tuber_file_not_found")
+      file_path = file,
+      class = "tuber_file_not_found"
+    )
   }
 
   file_size <- file.info(file)$size

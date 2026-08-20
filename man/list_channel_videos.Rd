@@ -36,7 +36,6 @@ response.
 Retrieves items from a channel's uploads playlist.
 }
 \examples{
-
 \dontrun{
 
 # Set API token via yt_oauth() first

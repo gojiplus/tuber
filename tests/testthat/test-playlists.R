@@ -6,18 +6,20 @@ test_that("list_playlists returns >50 results when requested", {
     skip("No token file available for API testing")
   }
 
-  tryCatch({
-    google_token <- readRDS("token_file.rds.enc")$google_token
-    options(google_token = google_token)
+  tryCatch(
+    {
+      google_token <- readRDS("token_file.rds.enc")$google_token
+      options(google_token = google_token)
 
-    res <- list_playlists(
-      channel_id = "UCBR8-60-B28hp2BmDPdntcQ",
-      max_results = 55,
-      simplify = FALSE
-    )
-    expect_true(length(res$items) >= 55)
-
-  }, error = function(e) {
-    skip(paste("API test failed:", e$message))
-  })
+      res <- list_playlists(
+        channel_id = "UCBR8-60-B28hp2BmDPdntcQ",
+        max_results = 55,
+        simplify = FALSE
+      )
+      expect_true(length(res$items) >= 55)
+    },
+    error = function(e) {
+      skip(paste("API test failed:", e$message))
+    }
+  )
 })

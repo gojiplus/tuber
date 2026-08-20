@@ -41,7 +41,6 @@ test_that("list_live_chat_messages handles data correctly", {
         )
       }
     },
-
     {
       result <- list_live_chat_messages(live_chat_id = "chat-id")
 

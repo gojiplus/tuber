@@ -47,13 +47,12 @@ NULL
 #' @return The result object with standardized attributes added
 #' @keywords internal
 add_tuber_attributes <- function(result,
-                                api_calls_made = 1,
-                                quota_used = NULL,
-                                function_name = NULL,
-                                parameters = list(),
-                                timestamp = Sys.time(),
-                                ...) {
-
+                                 api_calls_made = 1,
+                                 quota_used = NULL,
+                                 function_name = NULL,
+                                 parameters = list(),
+                                 timestamp = Sys.time(),
+                                 ...) {
   # Standard attributes
   attr(result, "tuber_api_calls") <- api_calls_made
   if (!is.null(quota_used)) {
@@ -74,7 +73,7 @@ add_tuber_attributes <- function(result,
     class(result) <- unique(c("tuber_result", class(result)))
   }
 
-  return(result)
+  result
 }
 
 #' Paginate API requests with standardized pattern
@@ -84,17 +83,17 @@ add_tuber_attributes <- function(result,
 #'
 #' @param initial_response The response from the initial API call
 #' @param fetch_next_page_fn Function that takes a page token and returns the next page
-#' @param extract_items_fn Function to extract items from a response. Default: function(res) res$items
+#' @param extract_items_fn Function to extract items from a response. Default: function(res)
+#' res$items
 #' @param max_results Maximum number of items to collect. Default: Inf
 #' @param max_pages Maximum number of pages to retrieve. Default: Inf
 #' @return List with items (all collected items) and metadata
 #' @keywords internal
 paginate_api_request <- function(initial_response,
-                                  fetch_next_page_fn,
-                                  extract_items_fn = function(res) res$items,
-                                  max_results = Inf,
-                                  max_pages = Inf) {
-
+                                 fetch_next_page_fn,
+                                 extract_items_fn = function(res) res$items,
+                                 max_results = Inf,
+                                 max_pages = Inf) {
   all_items <- extract_items_fn(initial_response)
   if (length(all_items) > max_results) {
     all_items <- all_items[seq_len(max_results)]
@@ -103,8 +102,7 @@ paginate_api_request <- function(initial_response,
   page_count <- 1
 
   while (!is.null(page_token) && is.character(page_token) &&
-         length(all_items) < max_results && page_count < max_pages) {
-
+           length(all_items) < max_results && page_count < max_pages) {
     next_response <- fetch_next_page_fn(page_token)
     new_items <- extract_items_fn(next_response)
     page_token <- next_response$nextPageToken
@@ -318,11 +316,9 @@ yt_authorized <- function() {
 
 #' @rdname yt_token
 yt_check_token <- function() {
-
   if (!yt_authorized()) {
     abort("Please get a token using yt_oauth().", class = "tuber_auth_required")
   }
-
 }
 
 #' Manage YouTube API key
@@ -376,7 +372,6 @@ yt_check_token <- function() {
 #'   auth = "key"
 #' )
 #' }
-
 yt_get_key <- function(decrypt = FALSE) {
   api_key <- Sys.getenv("YOUTUBE_KEY")
   pkg_key <- Sys.getenv("TUBER_KEY")
@@ -401,7 +396,10 @@ yt_get_key <- function(decrypt = FALSE) {
     }
     if (decrypt && identical(pkg_key, "")) {
       abort(
-        "Decryption requires a package key. Please set a package key using `yt_set_key(type = 'package')`.",
+        paste(
+          "Decryption requires a package key.",
+          "Please set a package key using `yt_set_key(type = 'package')`."
+        ),
         class = "tuber_package_key_required"
       )
     }
@@ -459,7 +457,8 @@ is_testing <- function() {
 #'
 #' @param path path to specific API request URL
 #' @param query query list
-#' @param auth A character vector of the authentication method, either "token" (the default) or "key"
+#' @param auth A character vector of the authentication method, either "token" (the default) or
+#' "key"
 #' @param use_cache Logical. Whether eligible responses may be served from and
 #' stored in the tuber cache.
 #' @param cache_ttl Optional cache lifetime in seconds.
@@ -468,7 +467,7 @@ is_testing <- function() {
 #' @return list
 #' @keywords internal
 
-tuber_GET <- function(path, query, auth = "token", use_cache = TRUE,
+tuber_GET <- function(path, query, auth = "token", use_cache = TRUE, # nolint: object_name_linter.
                       cache_ttl = NULL, force_refresh = FALSE, ...) {
   # Modern validation using checkmate
   assert_character(path, len = 1, min.chars = 1, .var.name = "path")
@@ -501,10 +500,11 @@ tuber_GET <- function(path, query, auth = "token", use_cache = TRUE,
     yt_check_token()
 
     req <- GET("https://www.googleapis.com",
-               path = paste0("youtube/v3/", path),
-               query = query,
-               config(token = getOption("google_token")),
-               ...)
+      path = paste0("youtube/v3/", path),
+      query = query,
+      config(token = getOption("google_token")),
+      ...
+    )
   }
 
   if (auth == "key") {
@@ -537,15 +537,17 @@ tuber_GET <- function(path, query, auth = "token", use_cache = TRUE,
 #' @return list
 #' @keywords internal
 
-tuber_POST <- function(path, query, body = "", ...) {
+tuber_POST <- function(path, query, body = "", ...) { # nolint: object_name_linter.
   assert_character(path, len = 1, min.chars = 1, .var.name = "path")
   assert_list(query, .var.name = "query")
   yt_check_token()
   track_quota_usage(path, "insert")
 
-  req <- POST("https://www.googleapis.com", path = paste0("youtube/v3/", path),
-              body = body, query = query,
-              config(token = getOption("google_token")), ...)
+  req <- POST("https://www.googleapis.com",
+    path = paste0("youtube/v3/", path),
+    body = body, query = query,
+    config(token = getOption("google_token")), ...
+  )
 
   handle_http_response(req, "token")
   tuber_check(req)
@@ -563,16 +565,18 @@ tuber_POST <- function(path, query, body = "", ...) {
 #' @return list
 #' @keywords internal
 
-tuber_POST_json <- function(path, query, body = "", ...) {
+tuber_POST_json <- function(path, query, body = "", ...) { # nolint: object_name_linter.
   assert_character(path, len = 1, min.chars = 1, .var.name = "path")
   assert_list(query, .var.name = "query")
   yt_check_token()
   track_quota_usage(path, "insert")
 
-  req <- httr::POST("https://www.googleapis.com", path = paste0("youtube/v3/", path),
-                    body = body, query = query,
-                    config(token = getOption("google_token")),
-                    encode = "json", ...)
+  req <- httr::POST("https://www.googleapis.com",
+    path = paste0("youtube/v3/", path),
+    body = body, query = query,
+    config(token = getOption("google_token")),
+    encode = "json", ...
+  )
 
   handle_http_response(req, "token")
   tuber_check(req)
@@ -589,15 +593,17 @@ tuber_POST_json <- function(path, query, body = "", ...) {
 #' @return list
 #' @keywords internal
 
-tuber_PUT <- function(path, query, body = "", ...) {
+tuber_PUT <- function(path, query, body = "", ...) { # nolint: object_name_linter.
   assert_character(path, len = 1, min.chars = 1, .var.name = "path")
   assert_list(query, .var.name = "query")
   yt_check_token()
   track_quota_usage(path, "update")
 
-  req <- PUT("https://www.googleapis.com", path = paste0("youtube/v3/", path),
-             query = query, config(token = getOption("google_token")),
-             body = body, encode = "json", ...)
+  req <- PUT("https://www.googleapis.com",
+    path = paste0("youtube/v3/", path),
+    query = query, config(token = getOption("google_token")),
+    body = body, encode = "json", ...
+  )
 
   handle_http_response(req, "token")
   tuber_check(req)
@@ -613,14 +619,16 @@ tuber_PUT <- function(path, query, body = "", ...) {
 #' @return list
 #' @keywords internal
 
-tuber_DELETE <- function(path, query, ...) {
+tuber_DELETE <- function(path, query, ...) { # nolint: object_name_linter.
   assert_character(path, len = 1, min.chars = 1, .var.name = "path")
   assert_list(query, .var.name = "query")
   yt_check_token()
   track_quota_usage(path, "delete")
 
-  req <- DELETE("https://www.googleapis.com", path = paste0("youtube/v3/", path),
-                query = query, config(token = getOption("google_token")), ...)
+  req <- DELETE("https://www.googleapis.com",
+    path = paste0("youtube/v3/", path),
+    query = query, config(token = getOption("google_token")), ...
+  )
 
   handle_http_response(req, "token")
   tuber_check(req)
@@ -645,9 +653,12 @@ handle_http_response <- function(req, auth = "token") {
   }
 
   if (status == 403) {
-    error_content <- tryCatch({
-      if (auth == "token") content(req, as = "text") else resp_body_string(req)
-    }, error = function(e) "")
+    error_content <- tryCatch(
+      {
+        if (auth == "token") content(req, as = "text") else resp_body_string(req)
+      },
+      error = function(e) ""
+    )
 
     if (grepl("quotaExceeded|dailyLimitExceeded", error_content)) {
       quota_status <- yt_get_quota_usage()
@@ -661,7 +672,8 @@ handle_http_response <- function(req, auth = "token") {
 
   if (status == 429) {
     warn("Rate limited by YouTube API. Consider adding delays between requests.",
-         class = "tuber_rate_limited")
+      class = "tuber_rate_limited"
+    )
   }
 
   invisible(NULL)
@@ -678,11 +690,15 @@ tuber_check <- function(req) {
   status <- if (is_httr2) resp_status(req) else req$status_code
   if (status < 400) return(invisible(NULL))
   orig_out <- if (is_httr2) resp_body_string(req) else httr::content(req, as = "text")
-  out <- try({
-    fromJSON(
-      orig_out,
-      flatten = TRUE)
-  }, silent = TRUE)
+  out <- try(
+    {
+      fromJSON(
+        orig_out,
+        flatten = TRUE
+      )
+    },
+    silent = TRUE
+  )
   if (inherits(out, "try-error")) {
     msg <- orig_out
   } else {
@@ -704,12 +720,14 @@ tuber_check <- function(req) {
         "Original error: ", msg
       )
       abort(paste0("HTTP failure: ", status, "\n", enhanced_msg),
-            class = "tuber_api_not_enabled",
-            status_code = status)
+        class = "tuber_api_not_enabled",
+        status_code = status
+      )
     }
   }
 
   abort(paste0("HTTP failure: ", status, "\n", msg),
-        class = "tuber_http_error",
-        status_code = status)
+    class = "tuber_http_error",
+    status_code = status
+  )
 }

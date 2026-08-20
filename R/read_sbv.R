@@ -4,20 +4,19 @@
 #'
 #' @return A \code{data.frame} with start/stop times and the text
 #' @export
-#' @importFrom hms as_hms
 #'
 #' @examples
 #' if (yt_authorized()) {
-#' vids <- list_my_videos()
-#' res <- list_captions(video_id = vids$video_id[[1]])
-#' cap <- download_caption(res$caption_id[[1]], as_raw = FALSE)
-#' tfile <- tempfile(fileext = ".sbv")
-#' writeLines(cap, tfile)
-#' x <- read_sbv(tfile)
-#' if (requireNamespace("hms", quietly = TRUE)) {
-#'   x$start <- hms::as_hms(x$start)
-#'   x$stop <- hms::as_hms(x$stop)
-#' }
+#'   vids <- list_my_videos()
+#'   res <- list_captions(video_id = vids$video_id[[1]])
+#'   cap <- download_caption(res$caption_id[[1]], as_raw = FALSE)
+#'   tfile <- tempfile(fileext = ".sbv")
+#'   writeLines(cap, tfile)
+#'   x <- read_sbv(tfile)
+#'   if (requireNamespace("hms", quietly = TRUE)) {
+#'     x$start <- hms::as_hms(x$start)
+#'     x$stop <- hms::as_hms(x$stop)
+#'   }
 #' }
 read_sbv <- function(file) {
   # Modern validation using checkmate
@@ -25,8 +24,9 @@ read_sbv <- function(file) {
 
   if (!file.exists(file)) {
     abort("SBV file does not exist",
-          file_path = file,
-          class = "tuber_file_not_found")
+      file_path = file,
+      class = "tuber_file_not_found"
+    )
   }
 
   x <- readLines(file)
@@ -35,8 +35,9 @@ read_sbv <- function(file) {
   x <- as.data.frame(x, stringsAsFactors = FALSE)
   if (!all(x$empty %in% "")) {
     warn("Something seems off - results may be wrong",
-         file_path = file,
-         class = "tuber_sbv_parse_warning")
+      file_path = file,
+      class = "tuber_sbv_parse_warning"
+    )
   }
   x$empty <- NULL
   times <- do.call(rbind, lapply(strsplit(x$time, ","), c))
@@ -45,7 +46,5 @@ read_sbv <- function(file) {
   times$time <- x$time
   x <- merge(x, times, all.x = TRUE, by = "time")
   x$time <- NULL
-  # x$start <- hms::as_hms(x$start)
-  # x$stop <- hms::as_hms(x$stop)
-  return(x)
+  x
 }

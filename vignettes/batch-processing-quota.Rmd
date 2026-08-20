@@ -170,9 +170,9 @@ analysis <- bulk_video_analysis(
 )
 
 # Access results
-analysis$video_data    # Detailed video information
-analysis$benchmarks    # Performance percentiles
-analysis$summary       # Overall statistics
+analysis$video_data # Detailed video information
+analysis$benchmarks # Performance percentiles
+analysis$summary # Overall statistics
 
 # Channel analysis
 channel_analysis <- analyze_channel(
@@ -198,14 +198,14 @@ tuber automatically handles pagination for large result sets:
 # tuber automatically makes multiple API calls
 playlist_items <- list_playlist_items(
   playlist_id = "PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf",
-  max_results = 200,  # Will make 4 API calls
+  max_results = 200, # Will make 4 API calls
   auth = "key"
 )
 
 # Get many comments with automatic pagination
 comments <- list_comment_threads(
   video_id = "dQw4w9WgXcQ",
-  max_results = 500,  # Will paginate automatically
+  max_results = 500, # Will paginate automatically
   auth = "key"
 )
 ```
@@ -257,14 +257,14 @@ video$contentDetails$duration
 
 ```{r field-patterns, eval=FALSE}
 # Video details
-videos$snippet.title          # Title
-videos$snippet.description    # Description
-videos$statistics.viewCount   # View count
-videos$statistics.likeCount   # Like count
+videos$snippet.title # Title
+videos$snippet.description # Description
+videos$statistics.viewCount # View count
+videos$statistics.likeCount # Like count
 videos$contentDetails.duration # Duration (ISO 8601)
 
 # Channel details
-channels$snippet.title           # Channel name
+channels$snippet.title # Channel name
 channels$statistics.subscriberCount
 channels$statistics.videoCount
 channels$brandingSettings.channel.description
@@ -299,13 +299,16 @@ if (data_quota$quota_remaining < 100) {
 }
 
 # Wrap expensive operations
-tryCatch({
-  results <- yt_search(term = "R programming", max_results = 50)
-}, error = function(e) {
-  if (grepl("quota", e$message, ignore.case = TRUE)) {
-    message("Quota exceeded. Try again after: ", yt_get_quota_usage()$reset_time)
+tryCatch(
+  {
+    results <- yt_search(term = "R programming", max_results = 50)
+  },
+  error = function(e) {
+    if (grepl("quota", e$message, ignore.case = TRUE)) {
+      message("Quota exceeded. Try again after: ", yt_get_quota_usage()$reset_time)
+    }
   }
-})
+)
 ```
 
 ### Rate Limiting Best Practices
@@ -315,7 +318,7 @@ tryCatch({
 video_ids <- c("id1", "id2", "id3", "id4", "id5")
 
 results <- lapply(video_ids, function(vid) {
-  Sys.sleep(0.5)  # 500ms delay between requests
+  Sys.sleep(0.5) # 500ms delay between requests
   get_video_details(video_ids = vid, auth = "key")
 })
 ```

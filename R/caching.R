@@ -47,10 +47,9 @@ auth_fingerprint <- function(auth) {
 #' @param cache_dir Directory for persistent cache (NULL for memory only)
 #' @export
 tuber_cache_config <- function(enabled = TRUE,
-                              default_ttl = 3600,  # 1 hour
-                              max_size = 1000,
-                              cache_dir = NULL) {
-
+                               default_ttl = 3600, # 1 hour
+                               max_size = 1000,
+                               cache_dir = NULL) {
   # Modern validation using checkmate
   assert_flag(enabled, .var.name = "enabled")
   assert_integerish(default_ttl, len = 1, lower = 60, upper = 86400, .var.name = "default_ttl")
@@ -99,7 +98,7 @@ tuber_cache_info <- function() {
   config$items_on_disk <- length(disk_files)
   config$memory_usage <- format(object.size(.tuber_cache), units = "MB")
 
-  return(config)
+  config
 }
 
 #' Clear cache entries
@@ -108,7 +107,6 @@ tuber_cache_info <- function() {
 #' @param older_than Clear entries older than this many seconds
 #' @export
 tuber_cache_clear <- function(pattern = NULL, older_than = NULL) {
-
   # Modern validation using checkmate
   if (!is.null(pattern)) {
     assert_character(pattern, len = 1, .var.name = "pattern")
@@ -177,7 +175,7 @@ generate_cache_key <- function(endpoint, query, auth) {
   key_parts <- c(endpoint, auth, auth_fingerprint(auth), query_str)
   cache_key <- paste0("cache_", digest(key_parts, algo = "md5"))
 
-  return(cache_key)
+  cache_key
 }
 
 #' Check if endpoint should be cached
@@ -196,14 +194,13 @@ is_cacheable_endpoint <- function(endpoint) {
 #' @return Logical indicating if this specific query is cacheable
 #' @keywords internal
 is_static_query <- function(endpoint, query) {
-
   # Video categories - always static
   if (endpoint == "videoCategories") return(TRUE)
 
   # Languages and regions - always static
   if (endpoint %in% c("i18nLanguages", "i18nRegions")) return(TRUE)
 
-  return(FALSE)
+  FALSE
 }
 
 #' Get cached response if available and valid
@@ -212,7 +209,6 @@ is_static_query <- function(endpoint, query) {
 #' @return Cached response or NULL if not available/expired
 #' @keywords internal
 get_cached_response <- function(cache_key) {
-
   config <- .tuber_cache$config
   if (!config$enabled) return(NULL)
 
@@ -237,7 +233,7 @@ get_cached_response <- function(cache_key) {
   }
 
   assign(cache_key, cache_entry, envir = .tuber_cache)
-  return(cache_entry$data)
+  cache_entry$data
 }
 
 #' Store response in cache
@@ -247,7 +243,6 @@ get_cached_response <- function(cache_key) {
 #' @param ttl Time-to-live in seconds (NULL for default)
 #' @keywords internal
 store_cached_response <- function(cache_key, data, ttl = NULL) {
-
   config <- .tuber_cache$config
   if (!config$enabled) return(invisible(NULL))
 

@@ -1,0 +1,14 @@
+name: lint
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    uses: gojiplus/r-canon/.github/workflows/reusable-lint.yml@v1

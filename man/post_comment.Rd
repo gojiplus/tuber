@@ -7,7 +7,8 @@
 post_comment(video_id = NULL, channel_id = NULL, text, ...)
 }
 \arguments{
-\item{video_id}{Character. ID of the video to comment on. Either `video_id` or `channel_id` must be provided.}
+\item{video_id}{Character. ID of the video to comment on. Either `video_id` or `channel_id` must
+be provided.}
 
 \item{channel_id}{Character. ID of the channel to comment on.}
 

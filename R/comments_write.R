@@ -3,7 +3,8 @@
 #' Posts a new top-level comment on a YouTube video or channel.
 #' Requires OAuth 2.0 authentication.
 #'
-#' @param video_id Character. ID of the video to comment on. Either `video_id` or `channel_id` must be provided.
+#' @param video_id Character. ID of the video to comment on. Either `video_id` or `channel_id` must
+#' be provided.
 #' @param channel_id Character. ID of the channel to comment on.
 #' @param text Character. The text of the comment.
 #' @param \dots Additional arguments passed to \code{\link{tuber_POST_json}}.
@@ -118,7 +119,10 @@ set_comment_moderation_status <- function(comment_id,
                                           ban_author = FALSE,
                                           ...) {
   assert_character(comment_id, min.chars = 1, .var.name = "comment_id")
-  assert_choice(moderation_status, c("heldForReview", "published", "rejected"), .var.name = "moderation_status")
+  assert_choice(
+    moderation_status, c("heldForReview", "published", "rejected"),
+    .var.name = "moderation_status"
+  )
   assert_logical(ban_author, len = 1, .var.name = "ban_author")
 
   query <- list(

@@ -33,13 +33,13 @@ The package provides five main functions for working with emojis:
 ``` r
 
 has_emoji("Hello world")
-# FALSE
+#> FALSE
 
 has_emoji("Great video! \U0001F44D")
-# TRUE
+#> TRUE
 
 has_emoji(c("No emoji", "Has emoji \U0001F600", "Also none"))
-# c(FALSE, TRUE, FALSE)
+#> c(FALSE, TRUE, FALSE)
 ```
 
 ### `count_emojis()` - Count emojis in text
@@ -47,13 +47,13 @@ has_emoji(c("No emoji", "Has emoji \U0001F600", "Also none"))
 ``` r
 
 count_emojis("Hello world")
-# 0
+#> 0
 
 count_emojis("Rating: \U0001F600\U0001F600\U0001F600")
-# 3
+#> 3
 
 count_emojis(c("None", "\U0001F44D", "\U0001F600\U0001F601"))
-# c(0, 1, 2)
+#> c(0, 1, 2)
 ```
 
 ### `extract_emojis()` - Get emojis from text
@@ -61,10 +61,10 @@ count_emojis(c("None", "\U0001F44D", "\U0001F600\U0001F601"))
 ``` r
 
 extract_emojis("Hello \U0001F44B World \U0001F30D!")
-# list(c("\U0001F44B", "\U0001F30D"))
+#> list(c("\U0001F44B", "\U0001F30D"))
 
 extract_emojis(c("No emoji", "\U0001F600\U0001F601"))
-# list(character(0), c("\U0001F600", "\U0001F601"))
+#> list(character(0), c("\U0001F600", "\U0001F601"))
 ```
 
 ### `remove_emojis()` - Strip emojis from text
@@ -72,10 +72,10 @@ extract_emojis(c("No emoji", "\U0001F600\U0001F601"))
 ``` r
 
 remove_emojis("Hello \U0001F44B World!")
-# "Hello  World!"
+#> "Hello  World!"
 
 remove_emojis(c("No emoji", "Has \U0001F600 emoji"))
-# c("No emoji", "Has  emoji")
+#> c("No emoji", "Has  emoji")
 ```
 
 ### `replace_emojis()` - Substitute emojis
@@ -83,10 +83,10 @@ remove_emojis(c("No emoji", "Has \U0001F600 emoji"))
 ``` r
 
 replace_emojis("Hello \U0001F44B World!", replacement = "[emoji]")
-# "Hello [emoji] World!"
+#> "Hello [emoji] World!"
 
 replace_emojis("Rate: \U0001F600\U0001F600\U0001F600", replacement = "*")
-# "Rate: ***"
+#> "Rate: ***"
 ```
 
 ## Common Use Cases
@@ -142,7 +142,7 @@ safe_text <- safe_utf8(problematic_text)
 
 raw_text <- "Great video! &lt;3 &amp; more..."
 clean_text <- clean_youtube_text(raw_text)
-# "Great video! <3 & more..."
+#> "Great video! <3 & more..."
 ```
 
 ## Troubleshooting

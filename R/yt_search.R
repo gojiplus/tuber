@@ -93,7 +93,6 @@
 #' @references \url{https://developers.google.com/youtube/v3/docs/search/list}
 #'
 #' @examples
-#'
 #' \dontrun{
 #'
 #' # Set API token via yt_oauth() first
@@ -101,18 +100,21 @@
 #' yt_search(term = "Barack Obama")
 #' yt_search(term = "Barack Obama", published_after = "2016-10-01T00:00:00Z")
 #' yt_search(term = "Barack Obama", published_before = "2016-09-01T00:00:00Z")
-#' yt_search(term = "Barack Obama", published_before = "2016-03-01T00:00:00Z",
-#'                                published_after = "2016-02-01T00:00:00Z")
-#' yt_search(term = "Barack Obama", published_before = "2016-02-10T00:00:00Z",
-#'                                published_after = "2016-01-01T00:00:00Z")
+#' yt_search(
+#'   term = "Barack Obama", published_before = "2016-03-01T00:00:00Z",
+#'   published_after = "2016-02-01T00:00:00Z"
+#' )
+#' yt_search(
+#'   term = "Barack Obama", published_before = "2016-02-10T00:00:00Z",
+#'   published_after = "2016-01-01T00:00:00Z"
+#' )
 #'
 #' # To check how many results were found vs. how many were returned:
 #' results <- yt_search(term = "drone videos")
-#' attr(results, "total_results")  # Total number reported by YouTube
+#' attr(results, "total_results") # Total number reported by YouTube
 #' attr(results, "actual_results") # Number actually returned
 #' attr(results, "api_limit_reached") # Whether API limit was reached
 #' }
-
 yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
                       channel_type = NULL, type = "video", order = "relevance",
                       event_type = NULL,
@@ -124,7 +126,6 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
                       region_code = NULL, relevance_language = "en",
                       video_type = "any", simplify = TRUE, get_all = TRUE,
                       page_token = NULL, max_pages = Inf, auth = "key", ...) {
-
   # Modern validation using checkmate
   assert_string(term, min.chars = 1, .var.name = "term")
   assert_integerish(max_results, len = 1, lower = 1, upper = 500, .var.name = "max_results")
@@ -156,13 +157,14 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
   # Modern RFC 3339 date validation using rlang
   validate_rfc339_date <- function(date_str, param_name) {
     if (is.character(date_str) &&
-        is.na(as.POSIXct(date_str, format = "%Y-%m-%dT%H:%M:%SZ"))) {
+          is.na(as.POSIXct(date_str, format = "%Y-%m-%dT%H:%M:%SZ"))) {
       abort("Invalid RFC 3339 date format",
-            parameter = param_name,
-            date_string = date_str,
-            expected_format = "YYYY-MM-DDTHH:MM:SSZ",
-            example = "2023-01-01T00:00:00Z",
-            class = "tuber_invalid_date_format")
+        parameter = param_name,
+        date_string = date_str,
+        expected_format = "YYYY-MM-DDTHH:MM:SSZ",
+        example = "2023-01-01T00:00:00Z",
+        class = "tuber_invalid_date_format"
+      )
     }
   }
 
@@ -172,9 +174,10 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
   # Validate location and location_radius together
   if (!is.null(location) && is.null(location_radius)) {
     abort("Location radius required when location is specified",
-          location = location,
-          help = "Provide location_radius parameter (e.g., '10km')",
-          class = "tuber_missing_location_radius")
+      location = location,
+      help = "Provide location_radius parameter (e.g., '10km')",
+      class = "tuber_missing_location_radius"
+    )
   }
 
   # Build the query list
@@ -225,8 +228,7 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
     }
 
     bind_rows(lapply(res_items, function(item) {
-      resource_id <- switch(
-        item_type,
+      resource_id <- switch(item_type,
         video = item$id$videoId,
         channel = item$id$channelId,
         playlist = item$id$playlistId
@@ -277,7 +279,7 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
   response$nextPageToken <- pages$final_page_token
 
   if (get_all && pages$has_more && pages$page_count >= max_pages &&
-      length(pages$items) < max_results) {
+        length(pages$items) < max_results) {
     warning(sprintf(
       paste0(
         "Only retrieved %d pages of results (got %d/%d items). ",

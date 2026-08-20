@@ -16,7 +16,6 @@ NULL
 #' @return Stops execution with informative error message
 #' @keywords internal
 handle_api_error <- function(error_response, context_msg = "", video_id = NULL, channel_id = NULL) {
-
   # Extract error details from response
   if (is.list(error_response) && !is.null(error_response$error)) {
     error_info <- error_response$error
@@ -35,7 +34,10 @@ handle_api_error <- function(error_response, context_msg = "", video_id = NULL, 
         "It may be private, deleted, or the ID is incorrect."
       ),
       "quotaExceeded" = paste0(
-        "YouTube API quota exceeded. Try again later or check your quota usage with yt_get_quota_usage()."
+        paste(
+          "YouTube API quota exceeded. Try again later or check your quota",
+          "usage with yt_get_quota_usage()."
+        )
       ),
       "commentsDisabled" = paste0(
         "Comments are disabled for this video."
@@ -49,18 +51,19 @@ handle_api_error <- function(error_response, context_msg = "", video_id = NULL, 
 
     context_part <- if (nchar(context_msg) > 0) paste0(context_msg, ": ") else ""
     abort(paste0(context_part, guidance),
-          api_error_code = error_code,
-          error_reason = error_reason,
-          video_id = video_id,
-          channel_id = channel_id,
-          class = c(paste0("tuber_api_", error_reason), "tuber_api_error"))
-
+      api_error_code = error_code,
+      error_reason = error_reason,
+      video_id = video_id,
+      channel_id = channel_id,
+      class = c(paste0("tuber_api_", error_reason), "tuber_api_error")
+    )
   } else {
     # Fallback for non-standard error responses
     context_part <- if (nchar(context_msg) > 0) paste0(context_msg, ": ") else ""
     abort(paste0(context_part, "Unexpected API response format"),
-          error_response = error_response,
-          class = "tuber_unexpected_response")
+      error_response = error_response,
+      class = "tuber_unexpected_response"
+    )
   }
 }
 
@@ -78,14 +81,18 @@ handle_network_error <- function(error, context_msg = "") {
 
   if (grepl("timeout|connection|network", error$message, ignore.case = TRUE)) {
     abort(paste0(context_part, "Network connection failed"),
-          original_error = error$message,
-          help = c("Check your internet connection and try again",
-                   "For intermittent failures, consider implementing retry logic"),
-          class = "tuber_network_error")
+      original_error = error$message,
+      help = c(
+        "Check your internet connection and try again",
+        "For intermittent failures, consider implementing retry logic"
+      ),
+      class = "tuber_network_error"
+    )
   } else {
     abort(paste0(context_part, error$message),
-          original_error = error$message,
-          class = "tuber_general_error")
+      original_error = error$message,
+      class = "tuber_general_error"
+    )
   }
 }
 
@@ -102,13 +109,14 @@ warn_deprecated <- function(old_function, new_function, version = "next major ve
   assert_character(version, len = 1, .var.name = "version")
 
   warn("Function is deprecated and will be removed",
-       old_function = old_function,
-       new_function = new_function,
-       removal_version = version,
-       help = paste("Please use", new_function, "instead"),
-       class = "tuber_deprecated_function",
-       .frequency = "once",
-       .frequency_id = old_function)
+    old_function = old_function,
+    new_function = new_function,
+    removal_version = version,
+    help = paste("Please use", new_function, "instead"),
+    class = "tuber_deprecated_function",
+    .frequency = "once",
+    .frequency_id = old_function
+  )
 }
 
 #' Provide helpful suggestions for common user errors
@@ -117,7 +125,6 @@ warn_deprecated <- function(old_function, new_function, version = "next major ve
 #' @param details Additional details for the suggestion
 #' @keywords internal
 suggest_solution <- function(issue_type, details = "") {
-
   suggestions <- list(
     auth_token = paste0(
       "Authentication required. Run yt_oauth() to set up OAuth2 authentication, ",
@@ -171,18 +178,20 @@ with_retry <- function(expr,
                        jitter = TRUE,
                        retry_on = function(e) is_transient_error(e),
                        on_retry = NULL) {
-
   expr <- substitute(expr)
   eval_env <- parent.frame()
   attempt <- 1
 
   repeat {
-    result <- tryCatch({
-      # Execute the expression
-      eval(expr, envir = eval_env)
-    }, error = function(e) {
-      e  # Return the error
-    })
+    result <- tryCatch(
+      {
+        # Execute the expression
+        eval(expr, envir = eval_env)
+      },
+      error = function(e) {
+        e # Return the error
+      }
+    )
 
     # If successful, return result
     if (!inherits(result, "error")) {
@@ -196,7 +205,7 @@ with_retry <- function(expr,
     }
 
     # Calculate delay with exponential backoff and optional jitter
-    delay <- min(base_delay * (backoff_factor ^ (attempt - 1)), max_delay)
+    delay <- min(base_delay * (backoff_factor^(attempt - 1)), max_delay)
     if (jitter) {
       delay <- delay * (0.5 + 0.5 * runif(1))
     }
@@ -258,7 +267,7 @@ is_transient_error <- function(error) {
     return(TRUE)
   }
 
-  return(FALSE)
+  FALSE
 }
 
 #' Wrapper for tuber API calls with built-in retry logic
@@ -269,7 +278,6 @@ is_transient_error <- function(error) {
 #' @return Result of API function call
 #' @keywords internal
 call_api_with_retry <- function(api_function, ..., retry_config = list()) {
-
   # Default retry configuration
   default_config <- list(
     max_retries = 3,
@@ -289,7 +297,10 @@ call_api_with_retry <- function(api_function, ..., retry_config = list()) {
     } else if (grepl("quota", tolower(error$message))) {
       message("Quota issues detected. Retrying attempt ", attempt, "...")
     } else {
-      message("Transient error detected. Retrying attempt ", attempt, "/", config$max_retries, "...")
+      message(
+        "Transient error detected. Retrying attempt ",
+        attempt, "/", config$max_retries, "..."
+      )
     }
   }
 
@@ -319,9 +330,13 @@ validate_max_results <- function(max_results, api_max = 50, name = "max_results"
   assert_integerish(max_results, len = 1, lower = 1, .var.name = name)
 
   if (max_results > api_max) {
-    inform(paste0("max_results (", max_results, ") exceeds API limit (", api_max,
-                  "). Multiple requests will be made."),
-           class = "tuber_max_results_info")
+    inform(
+      paste0(
+        "max_results (", max_results, ") exceeds API limit (", api_max,
+        "). Multiple requests will be made."
+      ),
+      class = "tuber_max_results_info"
+    )
   }
 
   invisible(NULL)
@@ -337,23 +352,26 @@ validate_max_results <- function(max_results, api_max = 50, name = "max_results"
 validate_filter <- function(filter, valid_names, name = "filter") {
   if (is.null(filter)) {
     abort("filter parameter is required",
-          class = "tuber_missing_filter")
+      class = "tuber_missing_filter"
+    )
   }
 
   assert_character(filter, min.len = 1, .var.name = name)
 
   if (is.null(names(filter)) || any(names(filter) == "")) {
     abort("filter must be a named vector",
-          filter = filter,
-          class = "tuber_unnamed_filter")
+      filter = filter,
+      class = "tuber_unnamed_filter"
+    )
   }
 
   filter_name <- names(filter)[1]
   if (!filter_name %in% valid_names) {
     abort("Invalid filter name",
-          filter_name = filter_name,
-          valid_names = valid_names,
-          class = "tuber_invalid_filter_name")
+      filter_name = filter_name,
+      valid_names = valid_names,
+      class = "tuber_invalid_filter_name"
+    )
   }
 
   invisible(NULL)
@@ -371,20 +389,22 @@ validate_video_id <- function(video_id, name = "video_id") {
   # YouTube video IDs are typically 11 characters long
   if (any(nchar(video_id) != 11)) {
     abort("Invalid YouTube video ID length",
-          parameter = name,
-          video_id = video_id,
-          expected_length = 11,
-          actual_length = nchar(video_id),
-          class = "tuber_invalid_video_id_length")
+      parameter = name,
+      video_id = video_id,
+      expected_length = 11,
+      actual_length = nchar(video_id),
+      class = "tuber_invalid_video_id_length"
+    )
   }
 
   # Basic pattern check (alphanumeric, hyphens, underscores)
   if (any(!grepl("^[A-Za-z0-9_-]+$", video_id))) {
     abort("Invalid characters in YouTube video ID",
-          parameter = name,
-          video_id = video_id,
-          help = "Video IDs must contain only alphanumeric characters, hyphens, and underscores",
-          class = "tuber_invalid_video_id_format")
+      parameter = name,
+      video_id = video_id,
+      help = "Video IDs must contain only alphanumeric characters, hyphens, and underscores",
+      class = "tuber_invalid_video_id_format"
+    )
   }
 
   invisible(NULL)
@@ -402,10 +422,11 @@ validate_channel_id <- function(channel_id, name = "channel_id") {
   # YouTube channel IDs start with "UC" and are 24 characters total
   if (any(!grepl("^UC[A-Za-z0-9_-]{22}$", channel_id))) {
     abort("Invalid YouTube channel ID format",
-          parameter = name,
-          channel_id = channel_id,
-          help = "Channel IDs must start with 'UC' and be 24 characters total",
-          class = "tuber_invalid_channel_id")
+      parameter = name,
+      channel_id = channel_id,
+      help = "Channel IDs must start with 'UC' and be 24 characters total",
+      class = "tuber_invalid_channel_id"
+    )
   }
 
   invisible(NULL)
@@ -423,10 +444,11 @@ validate_playlist_id <- function(playlist_id, name = "playlist_id") {
   # YouTube playlist IDs typically start with "PL" or "UU" and are 34 characters total
   if (any(!grepl("^(PL|UU|FL|LL)[A-Za-z0-9_-]{32}$", playlist_id))) {
     abort("Invalid YouTube playlist ID format",
-          parameter = name,
-          playlist_id = playlist_id,
-          help = "Playlist IDs must start with 'PL', 'UU', 'FL', or 'LL' and be 34 characters total",
-          class = "tuber_invalid_playlist_id")
+      parameter = name,
+      playlist_id = playlist_id,
+      help = "Playlist IDs must start with 'PL', 'UU', 'FL', or 'LL' and be 34 characters total",
+      class = "tuber_invalid_playlist_id"
+    )
   }
 
   invisible(NULL)
@@ -446,23 +468,28 @@ validate_rfc3339_date <- function(date_string, name) {
 
   if (any(!grepl(rfc3339_pattern, date_string))) {
     abort("Invalid RFC 3339 date format",
-          parameter = name,
-          date_string = date_string,
-          expected_format = "YYYY-MM-DDTHH:MM:SSZ or YYYY-MM-DDTHH:MM:SS+HH:MM",
-          example = "2023-01-01T00:00:00Z",
-          class = "tuber_invalid_date_format")
+      parameter = name,
+      date_string = date_string,
+      expected_format = "YYYY-MM-DDTHH:MM:SSZ or YYYY-MM-DDTHH:MM:SS+HH:MM",
+      example = "2023-01-01T00:00:00Z",
+      class = "tuber_invalid_date_format"
+    )
   }
 
   # Try to parse the date to ensure it's valid
-  tryCatch({
-    as.POSIXct(date_string, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC")
-  }, error = function(e) {
-    abort("Unable to parse date string",
-          parameter = name,
-          date_string = date_string,
-          parse_error = e$message,
-          class = "tuber_date_parse_error")
-  })
+  tryCatch(
+    {
+      as.POSIXct(date_string, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC")
+    },
+    error = function(e) {
+      abort("Unable to parse date string",
+        parameter = name,
+        date_string = date_string,
+        parse_error = e$message,
+        class = "tuber_date_parse_error"
+      )
+    }
+  )
 
   invisible(NULL)
 }
@@ -479,11 +506,16 @@ validate_part_parameter <- function(part, endpoint, name = "part") {
 
   # Define valid parts for each endpoint
   valid_parts <- list(
-    videos = c("contentDetails", "fileDetails", "id", "liveStreamingDetails",
-               "localizations", "paidProductPlacementDetails", "player", "processingDetails", "recordingDetails",
-               "snippet", "statistics", "status", "suggestions", "topicDetails"),
-    channels = c("auditDetails", "brandingSettings", "contentDetails", "contentOwnerDetails",
-                 "id", "localizations", "snippet", "statistics", "status", "topicDetails"),
+    videos = c(
+      "contentDetails", "fileDetails", "id", "liveStreamingDetails",
+      "localizations", "paidProductPlacementDetails", "player",
+      "processingDetails", "recordingDetails",
+      "snippet", "statistics", "status", "suggestions", "topicDetails"
+    ),
+    channels = c(
+      "auditDetails", "brandingSettings", "contentDetails", "contentOwnerDetails",
+      "id", "localizations", "snippet", "statistics", "status", "topicDetails"
+    ),
     playlists = c("contentDetails", "id", "localizations", "player", "snippet", "status"),
     playlistItems = c("contentDetails", "id", "snippet", "status"),
     search = c("snippet"),
@@ -506,11 +538,12 @@ validate_part_parameter <- function(part, endpoint, name = "part") {
 
     if (length(invalid_parts) > 0) {
       abort("Invalid API parts for endpoint",
-            parameter = name,
-            endpoint = endpoint,
-            invalid_parts = invalid_parts,
-            valid_parts = valid_parts[[endpoint]],
-            class = "tuber_invalid_api_parts")
+        parameter = name,
+        endpoint = endpoint,
+        invalid_parts = invalid_parts,
+        valid_parts = valid_parts[[endpoint]],
+        class = "tuber_invalid_api_parts"
+      )
     }
   }
 
@@ -529,11 +562,12 @@ validate_region_code <- function(region_code, name = "region_code") {
   # ISO 3166-1 alpha-2 codes are exactly 2 uppercase letters
   if (any(nchar(region_code) != 2 || !grepl("^[A-Z]{2}$", region_code))) {
     abort("Invalid region code format",
-          parameter = name,
-          region_code = region_code,
-          expected_format = "ISO 3166-1 alpha-2 (2 uppercase letters)",
-          examples = c("US", "GB", "CA", "AU"),
-          class = "tuber_invalid_region_code")
+      parameter = name,
+      region_code = region_code,
+      expected_format = "ISO 3166-1 alpha-2 (2 uppercase letters)",
+      examples = c("US", "GB", "CA", "AU"),
+      class = "tuber_invalid_region_code"
+    )
   }
 
   invisible(NULL)
@@ -551,11 +585,12 @@ validate_language_code <- function(language_code, name = "language_code") {
   # Accept ISO 639-1 (2 letters) or BCP-47 format (e.g., en-US)
   if (any(!grepl("^[a-z]{2}(-[A-Z]{2})?$", language_code))) {
     abort("Invalid language code format",
-          parameter = name,
-          language_code = language_code,
-          expected_formats = c("ISO 639-1 (2 letters)", "BCP-47 (language-region)"),
-          examples = c("en", "en-US", "es", "es-ES"),
-          class = "tuber_invalid_language_code")
+      parameter = name,
+      language_code = language_code,
+      expected_formats = c("ISO 639-1 (2 letters)", "BCP-47 (language-region)"),
+      examples = c("en", "en-US", "es", "es-ES"),
+      class = "tuber_invalid_language_code"
+    )
   }
 
   invisible(NULL)
@@ -568,11 +603,10 @@ validate_language_code <- function(language_code, name = "language_code") {
 #' @return Invisible NULL if all valid, stops execution if any invalid
 #' @keywords internal
 validate_youtube_params <- function(params, endpoint = NULL) {
-
   for (param_name in names(params)) {
     param_value <- params[[param_name]]
 
-    if (is.null(param_value)) next  # Skip NULL parameters
+    if (is.null(param_value)) next # Skip NULL parameters
 
     # Apply appropriate validation based on parameter name
     switch(param_name,
@@ -590,10 +624,18 @@ validate_youtube_params <- function(params, endpoint = NULL) {
       publishedAfter = validate_rfc3339_date(param_value, "published_after"),
       published_before = validate_rfc3339_date(param_value, param_name),
       publishedBefore = validate_rfc3339_date(param_value, "published_before"),
-      max_results = assert_integerish(param_value, len = 1, lower = 1, upper = 50, .var.name = param_name),
-      maxResults = assert_integerish(param_value, len = 1, lower = 1, upper = 50, .var.name = "max_results"),
+      max_results = assert_integerish(
+        param_value, len = 1, lower = 1, upper = 50, .var.name = param_name
+      ),
+      maxResults = assert_integerish(
+        param_value, len = 1, lower = 1, upper = 50, .var.name = "max_results"
+      ),
       # Default: basic validation for other parameters
-      if (is.character(param_value)) assert_character(param_value, len = 1, min.chars = 1, .var.name = param_name)
+      if (is.character(param_value)) {
+        assert_character(
+          param_value, len = 1, min.chars = 1, .var.name = param_name
+        )
+      }
     )
   }
 

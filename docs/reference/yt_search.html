@@ -250,22 +250,25 @@ The returned data.frame also has the following attributes:
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Set API token via yt_oauth() first</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">yt_search</span><span class="op">(</span>term <span class="op">=</span> <span class="st">"Barack Obama"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">yt_search</span><span class="op">(</span>term <span class="op">=</span> <span class="st">"Barack Obama"</span>, published_after <span class="op">=</span> <span class="st">"2016-10-01T00:00:00Z"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">yt_search</span><span class="op">(</span>term <span class="op">=</span> <span class="st">"Barack Obama"</span>, published_before <span class="op">=</span> <span class="st">"2016-09-01T00:00:00Z"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">yt_search</span><span class="op">(</span>term <span class="op">=</span> <span class="st">"Barack Obama"</span>, published_before <span class="op">=</span> <span class="st">"2016-03-01T00:00:00Z"</span>,</span></span>
-<span class="r-in"><span>                               published_after <span class="op">=</span> <span class="st">"2016-02-01T00:00:00Z"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">yt_search</span><span class="op">(</span>term <span class="op">=</span> <span class="st">"Barack Obama"</span>, published_before <span class="op">=</span> <span class="st">"2016-02-10T00:00:00Z"</span>,</span></span>
-<span class="r-in"><span>                               published_after <span class="op">=</span> <span class="st">"2016-01-01T00:00:00Z"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">yt_search</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  term <span class="op">=</span> <span class="st">"Barack Obama"</span>, published_before <span class="op">=</span> <span class="st">"2016-03-01T00:00:00Z"</span>,</span></span>
+<span class="r-in"><span>  published_after <span class="op">=</span> <span class="st">"2016-02-01T00:00:00Z"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">yt_search</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  term <span class="op">=</span> <span class="st">"Barack Obama"</span>, published_before <span class="op">=</span> <span class="st">"2016-02-10T00:00:00Z"</span>,</span></span>
+<span class="r-in"><span>  published_after <span class="op">=</span> <span class="st">"2016-01-01T00:00:00Z"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># To check how many results were found vs. how many were returned:</span></span></span>
 <span class="r-in"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">yt_search</span><span class="op">(</span>term <span class="op">=</span> <span class="st">"drone videos"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">results</span>, <span class="st">"total_results"</span><span class="op">)</span>  <span class="co"># Total number reported by YouTube</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">results</span>, <span class="st">"total_results"</span><span class="op">)</span> <span class="co"># Total number reported by YouTube</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">results</span>, <span class="st">"actual_results"</span><span class="op">)</span> <span class="co"># Number actually returned</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">results</span>, <span class="st">"api_limit_reached"</span><span class="op">)</span> <span class="co"># Whether API limit was reached</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
