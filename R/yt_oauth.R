@@ -13,7 +13,8 @@
 #' Default is \code{ssl}.
 #' @param token Path to the token cache. The default is
 #' `file.path(tools::R_user_dir("tuber", "cache"), "oauth-token.rds")`.
-#' @param \dots Additional arguments passed to \code{\link[httr]{oauth2.0_token}}
+#' @param \dots Additional arguments passed to
+#'   \code{\link[httr2]{oauth_flow_auth_code}}
 #'
 #' @return The OAuth token, invisibly. The function also sets the
 #' `google_token` option and saves the token at `token`.
@@ -58,24 +59,7 @@ yt_oauth <- function(
   # Try to read existing token first
   google_token <- NULL
   if (file.exists(token)) {
-    google_token <- tryCatch({
-      saved_token <- suppressWarnings(readRDS(token))
-      # httr saves tokens in a list with hash as key - extract the actual token
-      # Check if it's a list but not a Token object itself (Token2.0 inherits from Token)
-      is_token <- inherits(saved_token, "Token2.0") ||
-        inherits(saved_token, "Token")
-      if (is.list(saved_token) && !is_token) {
-        saved_token <- saved_token[[1]]
-      }
-      saved_token
-    }, error = function(e) {
-      warn("Unable to read existing OAuth token",
-           token_file = token,
-           error = e$message,
-           help = "You may need to re-authenticate",
-           class = "tuber_token_read_error")
-      NULL
-    })
+    google_token <- .read_token_file(token)
   }
 
   # Create new token if none exists or reading failed
@@ -88,7 +72,7 @@ yt_oauth <- function(
             class = "tuber_oauth_credentials_required")
     }
 
-    myapp <- oauth_app("google", key = app_id, secret = app_secret)
+    client <- .oauth_client(app_id, app_secret)
     scope <- match.arg(scope, c(
       "ssl", "basic", "own_account_readonly",
       "upload_and_manage_own_videos", "channel_memberships",
@@ -105,19 +89,32 @@ yt_oauth <- function(
       partner = "https://www.googleapis.com/auth/youtubepartner"
     )
 
-    google_token <- oauth2.0_token(oauth_endpoints("google"), myapp, scope = scope_url, ...)
+    google_token <- oauth_flow_auth_code(
+      client,
+      auth_url = .oauth_auth_url,
+      scope = scope_url,
+      ...
+    )
+    options(tuber.oauth_client = client)
 
-    # Try to save the token for future use
-    tryCatch({
-      dir.create(dirname(token), recursive = TRUE, showWarnings = FALSE)
-      saveRDS(google_token, file = token)
-    }, error = function(e) {
+    # A failed save is survivable -- the token still works for this session --
+    # but refusing to clobber httr's cache is deliberate and must propagate.
+    # (tryCatch() matches its *last* listed handler first, so an `error =`
+    # arm would swallow the specific condition; hence the explicit test.)
+    saved <- tryCatch(.save_token_file(google_token, token), error = function(e) e)
+    if (inherits(saved, "error")) {
+      if (inherits(saved, "tuber_token_would_clobber")) {
+        stop(saved)
+      }
       warn("Could not save OAuth token to file",
            token_file = token,
-           error = e$message,
+           error = conditionMessage(saved),
            help = "Check file permissions in working directory",
            class = "tuber_token_save_error")
-    })
+    }
+  } else if (!is.null(app_id) && !is.null(app_secret)) {
+    # Keep the client around so an expired token can be refreshed.
+    options(tuber.oauth_client = .oauth_client(app_id, app_secret))
   }
 
   options(google_token = google_token)

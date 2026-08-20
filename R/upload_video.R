@@ -15,8 +15,7 @@
 #'   only available to authorized YouTube content partners.
 #' @param content_owner_channel_id Optional channel ID for a content
 #'   partner upload. This must be supplied with `on_behalf_of_content_owner`.
-#' @param ... Additional arguments to send to \code{\link{tuber_POST}} and
-#' therefore \code{\link[httr]{POST}}
+#' @param ... Ignored; retained for backward compatibility.
 #' @param open_url Should the video be opened using \code{\link{browseURL}}
 #'
 #' @note The information for `status` and `snippet` are at
@@ -27,12 +26,11 @@
 #' It identifies the properties that the write operation will set, this will be
 #' automatically detected by the names of `body`.
 #' See \url{https://developers.google.com/youtube/v3/docs/videos/insert#usage}
-#' @return A list of the response object from the \code{\link[httr]{POST}}, content,
+#' @return A list of the response object, content,
 #' and the URL of the uploaded
 #' @export
 #'
 #' @importFrom utils browseURL
-#' @importFrom httr upload_file
 #' @importFrom mime guess_type
 #' @examples
 #' \dontrun{
@@ -145,59 +143,30 @@ upload_video <- function(
     query$onBehalfOfContentOwner <- on_behalf_of_content_owner
     query$onBehalfOfContentOwnerChannel <- content_owner_channel_id
   }
-  metadata_json <- toJSON(metadata, auto_unbox = TRUE, null = "null")
-  video_type <- mime::guess_type(file, empty = "application/octet-stream")
+  video_type <- guess_type(file, empty = "application/octet-stream")
 
   yt_check_token()
   track_quota_usage("videos", "insert")
 
-  resumable_upload_req <- POST(
-    "https://www.googleapis.com/upload/youtube/v3/videos",
+  upload_url <- tuber_upload_session(
+    "videos",
     query = query,
-    body = metadata_json,
-    encode = "raw",
-    config(token = getOption("google_token")),
-    httr::add_headers(
-      "Content-Type" = "application/json; charset=UTF-8",
-      "X-Upload-Content-Length" = file.size(file),
-      "X-Upload-Content-Type" = video_type
-    ),
-    ...
+    metadata = metadata,
+    file = file,
+    type = video_type
   )
 
-  if (status_code(resumable_upload_req) < 200 ||
-        status_code(resumable_upload_req) >= 300) {
-    abort("Failed to initiate resumable upload",
-      status_code = status_code(resumable_upload_req),
-      class = "tuber_upload_init_failed"
-    )
-  }
+  upload_req <- tuber_upload_body(upload_url, file, video_type)
 
-  upload_url <- headers(resumable_upload_req)[["location"]]
-  if (is.null(upload_url) || !nzchar(upload_url)) {
-    abort(
-      "YouTube did not return a resumable upload URL.",
-      class = "tuber_upload_location_missing"
-    )
-  }
-
-  upload_req <- PUT(
-    upload_url,
-    body = upload_file(file, type = video_type),
-    config(token = getOption("google_token")),
-    ...
-  )
-
-  if (status_code(upload_req) < 200 || status_code(upload_req) >= 300) {
+  if (resp_status(upload_req) < 200 || resp_status(upload_req) >= 300) {
+    tuber_check(upload_req)
     abort("Failed to upload video",
-      status_code = status_code(upload_req),
+      status_code = resp_status(upload_req),
       class = "tuber_video_upload_failed"
     )
   }
 
-  tuber_check(upload_req)
-
-  res <- content(upload_req)
+  res <- tuber_json(upload_req)
   url <- paste0("https://www.youtube.com/watch?v=", res$id)
 
   if (open_url) {

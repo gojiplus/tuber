@@ -4,7 +4,7 @@
 #' @param description string; Optional. The description of the playlist.
 #' @param status string; Optional. Default: 'public'. Can be one of: 'private', 'public', or
 #' 'unlisted'.
-#' @param ... Additional arguments passed to \code{\link{tuber_POST}}.
+#' @param ... Ignored; retained for backward compatibility.
 #'
 #' @return The created playlist's details.
 #'

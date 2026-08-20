@@ -4,12 +4,10 @@
 \alias{handle_http_response}
 \title{Handle HTTP response for quota and rate limiting errors}
 \usage{
-handle_http_response(req, auth = "token")
+handle_http_response(req)
 }
 \arguments{
-\item{req}{The HTTP request/response object}
-
-\item{auth}{Authentication method ("token" or "key")}
+\item{req}{The HTTP response object}
 }
 \value{
 NULL invisibly if no errors, otherwise stops with informative message

@@ -33,7 +33,7 @@ only available to authorized YouTube content partners.}
 \item{open_url}{Whether to open the video's YouTube URL after a successful
 upload.}
 
-\item{...}{Additional arguments passed to [httr::POST()] and [httr::PUT()].}
+\item{...}{Ignored; retained for backward compatibility.}
 }
 \value{
 A list containing the final HTTP response, parsed caption resource,

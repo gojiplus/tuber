@@ -134,14 +134,5 @@ set_comment_moderation_status <- function(comment_id,
     query$banAuthor <- "true"
   }
 
-  req <- httr::POST(
-    "https://www.googleapis.com/youtube/v3/comments/setModerationStatus",
-    query = query,
-    config(token = getOption("google_token")),
-    ...
-  )
-
-  tuber_check(req)
-
-  content(req)
+  tuber_POST_json("comments/setModerationStatus", query = query)
 }

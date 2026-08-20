@@ -34,31 +34,31 @@ test_that("reply_to_comment formulates correct payload", {
 })
 
 test_that("set_comment_moderation_status formulates correct request", {
+  seen <- new.env(parent = emptyenv())
+
   with_mocked_bindings(
     yt_check_token = function() TRUE,
-    tuber_check = function(req) invisible(TRUE),
-    content = function(req) list(),
+    yt_access_token = function() "fake-token",
+    track_quota_usage = function(...) invisible(NULL),
     {
-      with_mocked_bindings(
-        POST = function(url, query, ...) {
-          expect_true(grepl("setModerationStatus", url))
-          expect_equal(query$id, "comm1")
-          expect_equal(query$moderationStatus, "rejected")
-          expect_equal(query$banAuthor, "true")
+      httr2::local_mocked_responses(function(req) {
+        seen$req <- req
+        httr2::response(status_code = 204L)
+      })
 
-          res <- list(status_code = 204, request = list(), url = "https://example.com/mock")
-          class(res) <- "response"
-          res
-        },
-        .package = "httr",
-        {
-          res <- set_comment_moderation_status(
-            comment_id = "comm1", moderation_status = "rejected",
-            ban_author = TRUE
-          )
-          expect_true(is.list(res))
-        }
+      res <- set_comment_moderation_status(
+        comment_id = "comm1", moderation_status = "rejected",
+        ban_author = TRUE
       )
+
+      url <- httr2::url_parse(seen$req$url)
+      expect_equal(url$path, "/youtube/v3/comments/setModerationStatus")
+      expect_equal(url$query$id, "comm1")
+      expect_equal(url$query$moderationStatus, "rejected")
+      expect_equal(url$query$banAuthor, "true")
+      expect_equal(seen$req$method, "POST")
+      # A 204 carries no body; the function must not try to parse one.
+      expect_null(res)
     }
   )
 })

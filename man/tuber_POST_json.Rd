@@ -11,9 +11,10 @@ tuber_POST_json(path, query, body = "", ...)
 
 \item{query}{query list}
 
-\item{body}{passing image through body}
+\item{body}{list serialized as the JSON request body}
 
-\item{\dots}{Additional arguments passed to \code{\link[httr]{GET}}.}
+\item{\dots}{Ignored; retained so callers that forwarded httr configuration
+keep working.}
 }
 \value{
 list

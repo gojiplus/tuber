@@ -11,9 +11,9 @@ tuber_PUT(path, query, body = "", ...)
 
 \item{query}{query list}
 
-\item{body}{JSON body content for the PUT request}
+\item{body}{list serialized as the JSON request body}
 
-\item{\dots}{Additional arguments passed to \code{\link[httr]{PUT}}.}
+\item{\dots}{Ignored; see [tuber_POST_json()].}
 }
 \value{
 list

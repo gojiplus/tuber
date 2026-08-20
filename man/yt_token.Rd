@@ -13,7 +13,7 @@ yt_authorized()
 yt_check_token()
 }
 \value{
-A Token2.0 class
+An httr2 token
 }
 \description{
 Check if authentication token is in options

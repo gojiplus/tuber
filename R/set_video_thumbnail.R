@@ -5,7 +5,7 @@
 #'
 #' @param video_id Character. ID of the video to set the thumbnail for.
 #' @param file Character. Path to the thumbnail image file (JPG or PNG, max 2MB).
-#' @param \dots Additional arguments passed to \code{\link[httr]{POST}}.
+#' @param \dots Ignored; retained for backward compatibility.
 #'
 #' @return A list containing the response from the API.
 #' @export
@@ -42,21 +42,14 @@ set_video_thumbnail <- function(video_id, file, ...) {
   yt_check_token()
   track_quota_usage("thumbnails", "set")
 
-  url <- "https://www.googleapis.com/upload/youtube/v3/thumbnails/set"
-
-  req <- httr::POST(
-    url,
+  req <- tuber_request(
+    "thumbnails/set",
     query = list(videoId = video_id, uploadType = "media"),
-    body = httr::upload_file(
-      file,
-      type = mime::guess_type(file, empty = "application/octet-stream")
-    ),
-    config(token = getOption("google_token")),
-    ...
-  )
+    prefix = "upload/youtube/v3"
+  ) |>
+    req_method("POST") |>
+    req_body_file(file, type = guess_type(file, empty = "application/octet-stream"))
 
-  tuber_check(req)
-
-  res <- content(req)
-  list(request = req, content = res)
+  resp <- tuber_perform(req)
+  list(request = resp, content = tuber_json(resp))
 }

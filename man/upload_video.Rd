@@ -39,11 +39,10 @@ partner upload. This must be supplied with `on_behalf_of_content_owner`.}
 
 \item{open_url}{Should the video be opened using \code{\link{browseURL}}}
 
-\item{...}{Additional arguments to send to \code{\link{tuber_POST}} and
-therefore \code{\link[httr]{POST}}}
+\item{...}{Ignored; retained for backward compatibility.}
 }
 \value{
-A list of the response object from the \code{\link[httr]{POST}}, content,
+A list of the response object, content,
 and the URL of the uploaded
 }
 \description{
