@@ -1,0 +1,37 @@
+name: link-check
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  # External links rot without a commit to trigger a rerun, so a dormant repo
+  # would otherwise never find out.
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+# The reusable workflow restricts itself to this as well, but a called workflow
+# can only ever narrow what the caller holds -- so the caller is where the
+# ceiling is actually set.
+permissions:
+  contents: read
+
+jobs:
+  links:
+    uses: gojiplus/r-canon/.github/workflows/reusable-link-check.yml@v1
+    with:
+      # API endpoints that appear in source as string constants. They answer
+      # 404 or 405 to an unauthenticated GET by design -- the upload ones are
+      # POST-only, and the watch URL is a prefix a video id gets appended to.
+      #
+      # The last two are lychee reading a trailing "\n" in a message string as
+      # part of the URL. The message prints correctly; only the extractor is
+      # confused, so the code is left alone.
+      exclude: |
+        ^https://www\.googleapis\.com/$
+        ^https://www\.googleapis\.com/upload/youtube/v3/
+        ^https://www\.googleapis\.com/youtube/v3/comments/setModerationStatus$
+        ^https://www\.youtube\.com/watch\?v=$
+        ^https://console\.cloud\.google\.com//n$
+        ^https://developers\.google\.com/youtube/v3/getting-started/n$

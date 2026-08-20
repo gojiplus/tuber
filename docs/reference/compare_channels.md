@@ -51,6 +51,7 @@ comparison <- compare_channels(channels)
 
 # Custom metrics comparison
 comparison <- compare_channels(channels,
-                              metrics = c("subscriber_count", "video_count", "view_count"))
+  metrics = c("subscriber_count", "video_count", "view_count")
+)
 } # }
 ```

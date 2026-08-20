@@ -17,10 +17,14 @@ new_capture <- function(response) {
 # A videoCategories/guideCategories style response with `n` items.
 cat_items <- function(n) {
   list(items = lapply(seq_len(n), function(i) {
-    list(etag = "etag1", id = as.character(i),
-         snippet = list(channelId = "UCchannel",
-                        title = paste("Category", i),
-                        assignable = TRUE))
+    list(
+      etag = "etag1", id = as.character(i),
+      snippet = list(
+        channelId = "UCchannel",
+        title = paste("Category", i),
+        assignable = TRUE
+      )
+    )
   }))
 }
 
@@ -32,7 +36,8 @@ test_that("every query component tuber builds is named", {
       nms <- names(r$query)
       expect_false(is.null(nms))
       expect_true(all(nzchar(nms)),
-                  info = paste("unnamed query component for path", r$path))
+        info = paste("unnamed query component for path", r$path)
+      )
     }
   }
 

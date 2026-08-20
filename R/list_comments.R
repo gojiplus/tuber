@@ -25,14 +25,14 @@
 #' list_comments(parent_id = "PARENT_COMMENT_ID", max_results = 200)
 #' }
 list_comments <- function(comment_ids = NULL,
-                         parent_id = NULL,
-                         part = c("id", "snippet"),
-                         max_results = 100,
-                         text_format = "html",
-                         page_token = NULL,
-                         simplify = TRUE,
-                         auth = "key",
-                         ...) {
+                          parent_id = NULL,
+                          part = c("id", "snippet"),
+                          max_results = 100,
+                          text_format = "html",
+                          page_token = NULL,
+                          simplify = TRUE,
+                          auth = "key",
+                          ...) {
   if (!is.null(comment_ids)) {
     assert_character(
       comment_ids,

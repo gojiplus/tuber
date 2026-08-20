@@ -20,7 +20,10 @@ list_my_videos <- function(max_results = 50,
                            ...) {
   channel <- get_my_channel(part = "id", simplify = TRUE)
   if (nrow(channel) == 0) {
-    abort("No channel is associated with the authenticated account.", class = "tuber_my_channel_empty")
+    abort(
+      "No channel is associated with the authenticated account.",
+      class = "tuber_my_channel_empty"
+    )
   }
   list_channel_videos(
     channel_id = channel$channel_id[[1]],

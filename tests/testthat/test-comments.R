@@ -6,30 +6,33 @@ test_that("get_all_comments runs successfully with real API", {
     skip("No token file available for API testing")
   }
 
-  tryCatch({
-    google_token <- readRDS("token_file.rds.enc")$google_token
-    options(google_token = google_token)
+  tryCatch(
+    {
+      google_token <- readRDS("token_file.rds.enc")$google_token
+      options(google_token = google_token)
 
-    # Use a well-known video with comments (Rick Astley - Never Gonna Give You Up)
-    result <- get_all_comments(video_id = "dQw4w9WgXcQ")
+      # Use a well-known video with comments (Rick Astley - Never Gonna Give You Up)
+      result <- get_all_comments(video_id = "dQw4w9WgXcQ")
 
-    expect_s3_class(result, "data.frame")
-    expect_true(nrow(result) > 0)
+      expect_s3_class(result, "data.frame")
+      expect_true(nrow(result) > 0)
 
-    # Check for expected columns
-    expected_cols <- c("author_name", "text_display", "published_at", "comment_id")
-    missing_cols <- setdiff(expected_cols, colnames(result))
-    expect_true(length(missing_cols) == 0,
-                info = paste("Missing columns:", paste(missing_cols, collapse = ", ")))
-
-  }, error = function(e) {
-    skip(paste("API test failed:", e$message))
-  })
+      # Check for expected columns
+      expected_cols <- c("author_name", "text_display", "published_at", "comment_id")
+      missing_cols <- setdiff(expected_cols, colnames(result))
+      expect_true(length(missing_cols) == 0,
+        info = paste("Missing columns:", paste(missing_cols, collapse = ", "))
+      )
+    },
+    error = function(e) {
+      skip(paste("API test failed:", e$message))
+    }
+  )
 })
 
 test_that("get_all_comments handles pagination correctly", {
   # Create a mock that simulates paginated responses
-  mock_tuber_GET_paginated <- function(endpoint, query, ...) {
+  mock_tuber_GET_paginated <- function(endpoint, query, ...) { # nolint: object_name_linter.
     page_token <- query$pageToken
     current_page <- if (is.null(page_token)) 1 else as.numeric(page_token)
 
@@ -66,7 +69,7 @@ test_that("get_all_comments handles pagination correctly", {
       result <- get_all_comments(video_id = "test123")
 
       expect_s3_class(result, "data.frame")
-      expect_equal(nrow(result), 15)  # 3 pages * 5 comments each
+      expect_equal(nrow(result), 15) # 3 pages * 5 comments each
       expect_true(all(c("text_display", "author_name") %in% colnames(result)))
 
       # Check that we got comments from all pages

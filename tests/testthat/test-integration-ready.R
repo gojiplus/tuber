@@ -4,7 +4,7 @@
 skip_if_no_api_key <- function() {
   api_key <- suppressMessages(yt_get_key())
   if (is.null(api_key)) {
-    skip("No YouTube API key found. Set one with yt_set_key('your_key')")
+    testthat::skip("No YouTube API key found. Set one with yt_set_key()")
   }
 }
 

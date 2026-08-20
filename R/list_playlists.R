@@ -26,15 +26,15 @@
 #' list_playlists(mine = TRUE)
 #' }
 list_playlists <- function(channel_id = NULL,
-                          playlist_ids = NULL,
-                          mine = FALSE,
-                          part = c("snippet", "contentDetails", "status"),
-                          max_results = 50,
-                          language = NULL,
-                          page_token = NULL,
-                          simplify = TRUE,
-                          auth = if (mine) "token" else "key",
-                          ...) {
+                           playlist_ids = NULL,
+                           mine = FALSE,
+                           part = c("snippet", "contentDetails", "status"),
+                           max_results = 50,
+                           language = NULL,
+                           page_token = NULL,
+                           simplify = TRUE,
+                           auth = if (mine) "token" else "key",
+                           ...) {
   if (!is.null(channel_id)) {
     assert_string(channel_id, min.chars = 1, .var.name = "channel_id")
   }

@@ -84,9 +84,9 @@ automatically detected by the names of \`body\`. See
 ``` r
 if (FALSE) { # \dontrun{
 snippet = list(
-title = "Test Video",
-description = "This is just a random test.",
-tags = c("r language", "r programming", "data analysis")
+  title = "Test Video",
+  description = "This is just a random test.",
+  tags = c("r language", "r programming", "data analysis")
 )
 status = list(privacyStatus = "private")
 } # }

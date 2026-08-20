@@ -19,7 +19,8 @@ get_video_details(
 
 \item{part}{Character vector of parts to retrieve. See \code{Details} for options.}
 
-\item{simplify}{Logical. If TRUE, returns a data frame. If FALSE, returns raw list. Default: TRUE.}
+\item{simplify}{Logical. If TRUE, returns a data frame. If FALSE, returns raw list. Default:
+TRUE.}
 
 \item{batch_size}{Number of videos per API call (max 50). Default: 50.}
 

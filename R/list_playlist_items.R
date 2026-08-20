@@ -27,14 +27,14 @@
 #' )
 #' }
 list_playlist_items <- function(playlist_id = NULL,
-                               playlist_item_ids = NULL,
-                               video_id = NULL,
-                               part = c("contentDetails", "snippet", "status"),
-                               max_results = 50,
-                               page_token = NULL,
-                               simplify = TRUE,
-                               auth = "key",
-                               ...) {
+                                playlist_item_ids = NULL,
+                                video_id = NULL,
+                                part = c("contentDetails", "snippet", "status"),
+                                max_results = 50,
+                                page_token = NULL,
+                                simplify = TRUE,
+                                auth = "key",
+                                ...) {
   assert_character(part, min.len = 1, any.missing = FALSE, .var.name = "part")
   assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
   assert_flag(simplify, .var.name = "simplify")

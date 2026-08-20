@@ -37,13 +37,12 @@
 #' @examples
 #' \dontrun{
 #' snippet = list(
-#' title = "Test Video",
-#' description = "This is just a random test.",
-#' tags = c("r language", "r programming", "data analysis")
+#'   title = "Test Video",
+#'   description = "This is just a random test.",
+#'   tags = c("r language", "r programming", "data analysis")
 #' )
 #' status = list(privacyStatus = "private")
 #' }
-
 upload_video <- function(
   file,
   snippet = NULL,
@@ -61,8 +60,9 @@ upload_video <- function(
 
   if (!file.exists(file)) {
     abort("File does not exist",
-          file_path = file,
-          class = "tuber_file_not_found")
+      file_path = file,
+      class = "tuber_file_not_found"
+    )
   }
 
   # Validate optional parameters
@@ -166,10 +166,11 @@ upload_video <- function(
   )
 
   if (status_code(resumable_upload_req) < 200 ||
-      status_code(resumable_upload_req) >= 300) {
+        status_code(resumable_upload_req) >= 300) {
     abort("Failed to initiate resumable upload",
-          status_code = status_code(resumable_upload_req),
-          class = "tuber_upload_init_failed")
+      status_code = status_code(resumable_upload_req),
+      class = "tuber_upload_init_failed"
+    )
   }
 
   upload_url <- headers(resumable_upload_req)[["location"]]
@@ -189,8 +190,9 @@ upload_video <- function(
 
   if (status_code(upload_req) < 200 || status_code(upload_req) >= 300) {
     abort("Failed to upload video",
-          status_code = status_code(upload_req),
-          class = "tuber_video_upload_failed")
+      status_code = status_code(upload_req),
+      class = "tuber_video_upload_failed"
+    )
   }
 
   tuber_check(upload_req)
@@ -202,6 +204,8 @@ upload_video <- function(
     browseURL(url)
   }
 
-  list(request = upload_req, content = res,
-       url = url)
+  list(
+    request = upload_req, content = res,
+    url = url
+  )
 }

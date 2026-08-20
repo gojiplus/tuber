@@ -50,7 +50,7 @@ json_to_df <- function(res) {
     conditional_unnest_wider(var = "thumbnails_high") |>
     conditional_unnest_wider(var = "thumbnails_maxres")
 
-  return(intermediate_2)
+  intermediate_2
 }
 
 #' Get Video Details
@@ -59,7 +59,8 @@ json_to_df <- function(res) {
 #'
 #' @param video_ids Character vector of video IDs to retrieve
 #' @param part Character vector of parts to retrieve. See \code{Details} for options.
-#' @param simplify Logical. If TRUE, returns a data frame. If FALSE, returns raw list. Default: TRUE.
+#' @param simplify Logical. If TRUE, returns a data frame. If FALSE, returns raw list. Default:
+#' TRUE.
 #' @param batch_size Number of videos per API call (max 50). Default: 50.
 #' @param show_progress Whether to show progress for large batches. Default: TRUE for >10 videos.
 #' @param auth Authentication method, `"key"` (the default) or `"token"`.
@@ -116,13 +117,12 @@ json_to_df <- function(res) {
 #' }
 #'
 get_video_details <- function(video_ids,
-                             part = "snippet",
-                             simplify = TRUE,
-                             batch_size = 50,
-                             show_progress = NULL,
-                             auth = "key",
-                             ...) {
-
+                              part = "snippet",
+                              simplify = TRUE,
+                              batch_size = 50,
+                              show_progress = NULL,
+                              auth = "key",
+                              ...) {
   # Modern validation using checkmate
   assert_character(video_ids, any.missing = FALSE, min.len = 1, .var.name = "video_ids")
   assert_character(part, min.len = 1, .var.name = "part")
@@ -145,10 +145,11 @@ get_video_details <- function(video_ids,
   parts_only_for_video_owners <- c("fileDetails", "suggestions", "processingDetails")
   if (simplify && any(strsplit(part, ",")[[1]] %in% parts_only_for_video_owners)) {
     abort("Data frame conversion not supported with owner-only parts",
-          owner_only_parts = parts_only_for_video_owners,
-          requested_parts = part,
-          help = "Use simplify = FALSE for owner-only parts",
-          class = "tuber_incompatible_dataframe_parts")
+      owner_only_parts = parts_only_for_video_owners,
+      requested_parts = part,
+      help = "Use simplify = FALSE for owner-only parts",
+      class = "tuber_incompatible_dataframe_parts"
+    )
   }
 
   # Remove duplicates and empty IDs
@@ -156,7 +157,8 @@ get_video_details <- function(video_ids,
 
   if (length(video_ids) == 0) {
     abort("No valid video IDs provided",
-          class = "tuber_no_valid_ids")
+      class = "tuber_no_valid_ids"
+    )
   }
 
   # For single video, keep simple behavior
@@ -172,7 +174,10 @@ get_video_details <- function(video_ids,
     )
 
     if (length(raw_res$items) == 0) {
-      suggest_solution("empty_results", "- Check if the video ID is correct\n- Video may be private or deleted")
+      suggest_solution(
+        "empty_results",
+        "- Check if the video ID is correct\n- Video may be private or deleted"
+      )
       warning("No video details found for ID: ", video_ids, call. = FALSE)
 
       empty_result <- if (simplify) {
@@ -190,15 +195,18 @@ get_video_details <- function(video_ids,
     }
 
     if (simplify) {
-      raw_res <- tryCatch({
-        json_to_df(raw_res)
-      }, error = function(e) {
-        warn(
-          paste("Failed to convert to data frame:", e$message, "- Returning list format"),
-          class = "tuber_conversion_failed"
-        )
-        raw_res
-      })
+      raw_res <- tryCatch(
+        {
+          json_to_df(raw_res)
+        },
+        error = function(e) {
+          warn(
+            paste("Failed to convert to data frame:", e$message, "- Returning list format"),
+            class = "tuber_conversion_failed"
+          )
+          raw_res
+        }
+      )
     }
 
     return(add_tuber_attributes(
@@ -250,9 +258,13 @@ get_video_details <- function(video_ids,
   }
 
   if (length(all_items) == 0) {
-    suggest_solution("empty_results", "- Check if video IDs are correct\n- Videos may be private or deleted")
+    suggest_solution(
+      "empty_results",
+      "- Check if video IDs are correct\n- Videos may be private or deleted"
+    )
     warn("No video details found for any of the provided IDs",
-         class = "tuber_batch_empty_result")
+      class = "tuber_batch_empty_result"
+    )
 
     empty_result <- if (simplify) {
       data.frame(id = character(), stringsAsFactors = FALSE)
@@ -278,15 +290,18 @@ get_video_details <- function(video_ids,
   )
 
   if (simplify) {
-    result <- tryCatch({
-      json_to_df(result)
-    }, error = function(e) {
-      warn(
-        paste("Failed to convert to data frame:", e$message, "- Returning list format"),
-        class = "tuber_batch_conversion_failed"
-      )
-      result
-    })
+    result <- tryCatch(
+      {
+        json_to_df(result)
+      },
+      error = function(e) {
+        warn(
+          paste("Failed to convert to data frame:", e$message, "- Returning list format"),
+          class = "tuber_batch_conversion_failed"
+        )
+        result
+      }
+    )
   }
 
   # Add standardized attributes
@@ -301,5 +316,5 @@ get_video_details <- function(video_ids,
     response_format = if (simplify) "data.frame" else "list"
   )
 
-  return(result)
+  result
 }

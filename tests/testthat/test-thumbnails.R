@@ -25,7 +25,6 @@ test_that("set_video_thumbnail functions correctly", {
           res
         },
         .package = "httr",
-
         {
           tmp <- tempfile(fileext = ".jpg")
           writeBin(as.raw(1:10), tmp)
@@ -68,7 +67,6 @@ test_that("insert_channel_banner functions correctly", {
           res
         },
         .package = "httr",
-
         {
           tmp <- tempfile(fileext = ".jpg")
           writeBin(as.raw(1:10), tmp)

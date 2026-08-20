@@ -34,7 +34,6 @@ test_that("list_super_chat_events handles data correctly", {
         )
       }
     },
-
     {
       result <- list_super_chat_events()
 
@@ -52,7 +51,6 @@ test_that("list_super_chat_events handles forbidden error gracefully", {
     tuber_GET = function(path, query, ...) {
       stop("forbidden: The request is not authorized.")
     },
-
     {
       expect_error(list_super_chat_events(), class = "tuber_super_chat_forbidden")
     }

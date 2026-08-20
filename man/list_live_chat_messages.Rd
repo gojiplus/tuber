@@ -18,7 +18,8 @@ list_live_chat_messages(
 \arguments{
 \item{live_chat_id}{Character. The id of the live chat.}
 
-\item{part}{Character. Parts to retrieve. Valid values are "snippet", "authorDetails". Default is "snippet,authorDetails".}
+\item{part}{Character. Parts to retrieve. Valid values are "snippet", "authorDetails". Default is
+"snippet,authorDetails".}
 
 \item{language}{Optional language code for localized text.}
 

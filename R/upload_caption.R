@@ -113,7 +113,7 @@ upload_caption <- function(
   )
 
   if (status_code(resumable_upload_req) < 200 ||
-      status_code(resumable_upload_req) >= 300) {
+        status_code(resumable_upload_req) >= 300) {
     tuber_check(resumable_upload_req)
     abort(
       "Failed to initiate caption upload",

@@ -9,38 +9,10 @@ on:
     types: [published]
   workflow_dispatch:
 
-concurrency:
-  group: github-pages
-  cancel-in-progress: false
-
 jobs:
   pkgdown:
+    # A called workflow cannot grant itself more than the caller has, and the
+    # default token here is read-only. The deploy to gh-pages needs write.
     permissions:
       contents: write
     uses: gojiplus/r-canon/.github/workflows/reusable-pkgdown.yml@v1
-
-  deploy:
-    if: github.event_name != 'pull_request'
-    needs: pkgdown
-    runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      contents: read
-      id-token: write
-      pages: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Check out generated site
-        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
-        with:
-          ref: gh-pages
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
-        with:
-          include-hidden-files: true
-          path: .
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5

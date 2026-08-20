@@ -29,7 +29,6 @@ test_that("list_channel_members handles data correctly", {
         )
       }
     },
-
     {
       result <- list_channel_members()
 
@@ -46,7 +45,6 @@ test_that("list_channel_members handles forbidden error gracefully", {
     tuber_GET = function(path, query, ...) {
       stop("forbidden: The request is not authorized.")
     },
-
     {
       expect_error(list_channel_members(), class = "tuber_members_forbidden")
     }

@@ -21,36 +21,36 @@ NULL
 #'
 #' @keywords internal
 EMOJI_PATTERN <- paste0(
-"[",
-"\U0001F600-\U0001F64F",
-"\U0001F300-\U0001F5FF",
-"\U0001F680-\U0001F6FF",
-"\U0001F1E0-\U0001F1FF",
-"\U00002702-\U000027B0",
-"\U0001F900-\U0001F9FF",
-"\U0001FA00-\U0001FA6F",
-"\U0001FA70-\U0001FAFF",
-"\U00002600-\U000026FF",
-"\U0000231A-\U0000231B",
-"\U00002328",
-"\U000023CF",
-"\U000023E9-\U000023F3",
-"\U000023F8-\U000023FA",
-"\U00002934-\U00002935",
-"\U000025AA-\U000025AB",
-"\U000025B6",
-"\U000025C0",
-"\U000025FB-\U000025FE",
-"\U00002B05-\U00002B07",
-"\U00002B1B-\U00002B1C",
-"\U00002B50",
-"\U00002B55",
-"\U00003030",
-"\U0000303D",
-"\U00003297",
-"\U00003299",
-"\U0000FE0F",
-"]"
+  "[",
+  "\U0001F600-\U0001F64F",
+  "\U0001F300-\U0001F5FF",
+  "\U0001F680-\U0001F6FF",
+  "\U0001F1E0-\U0001F1FF",
+  "\U00002702-\U000027B0",
+  "\U0001F900-\U0001F9FF",
+  "\U0001FA00-\U0001FA6F",
+  "\U0001FA70-\U0001FAFF",
+  "\U00002600-\U000026FF",
+  "\U0000231A-\U0000231B",
+  "\U00002328",
+  "\U000023CF",
+  "\U000023E9-\U000023F3",
+  "\U000023F8-\U000023FA",
+  "\U00002934-\U00002935",
+  "\U000025AA-\U000025AB",
+  "\U000025B6",
+  "\U000025C0",
+  "\U000025FB-\U000025FE",
+  "\U00002B05-\U00002B07",
+  "\U00002B1B-\U00002B1C",
+  "\U00002B50",
+  "\U00002B55",
+  "\U00003030",
+  "\U0000303D",
+  "\U00003297",
+  "\U00003299",
+  "\U0000FE0F",
+  "]"
 )
 
 #' Detect emojis in text
@@ -168,11 +168,11 @@ replace_emojis <- function(text, replacement = "") {
 #' @return Character vector with UTF-8 encoding
 #' @keywords internal
 safe_utf8 <- function(text, fallback_encoding = "latin1") {
-
   # Modern validation using checkmate
   if (!is.null(text)) {
     assert(check_character(text), check_list(text), check_null(text),
-           .var.name = "text")
+      .var.name = "text"
+    )
   }
   assert_character(fallback_encoding, len = 1, .var.name = "fallback_encoding")
 
@@ -200,29 +200,33 @@ safe_utf8 <- function(text, fallback_encoding = "latin1") {
   }
 
   # Convert to UTF-8, handling different encodings gracefully
-  tryCatch({
-    # Try enc2utf8 first (fastest for already UTF-8 text)
-    result <- enc2utf8(text)
+  tryCatch(
+    {
+      # Try enc2utf8 first (fastest for already UTF-8 text)
+      result <- enc2utf8(text)
 
-    # Check for replacement characters that indicate encoding issues
-    if (any(grepl("\uFFFD", result, fixed = TRUE))) {
-      # Try with iconv for better encoding detection
-      result <- iconv(text, from = fallback_encoding, to = "UTF-8", sub = "")
+      # Check for replacement characters that indicate encoding issues
+      if (any(grepl("\uFFFD", result, fixed = TRUE))) {
+        # Try with iconv for better encoding detection
+        result <- iconv(text, from = fallback_encoding, to = "UTF-8", sub = "")
 
-      # If still problematic, use byte-level approach
-      if (any(is.na(result))) {
-        result <- iconv(text, from = "UTF-8", to = "UTF-8", sub = "?")
+        # If still problematic, use byte-level approach
+        if (any(is.na(result))) {
+          result <- iconv(text, from = "UTF-8", to = "UTF-8", sub = "?")
+        }
       }
-    }
 
-    return(result)
-  }, error = function(e) {
-    warn("Unicode conversion failed for some text",
-         error = e$message,
-         fallback_encoding = fallback_encoding,
-         class = "tuber_unicode_conversion_error")
-    return(as.character(text))
-  })
+      return(result)
+    },
+    error = function(e) {
+      warn("Unicode conversion failed for some text",
+        error = e$message,
+        fallback_encoding = fallback_encoding,
+        class = "tuber_unicode_conversion_error"
+      )
+      as.character(text)
+    }
+  )
 }
 
 #' Clean and Normalize YouTube Text Data
@@ -235,8 +239,9 @@ safe_utf8 <- function(text, fallback_encoding = "latin1") {
 #' @param max_length Integer. Maximum length (NULL for no limit). Default: NULL
 #' @return Cleaned character vector
 #' @keywords internal
-clean_youtube_text <- function(text, remove_html = TRUE, normalize_whitespace = TRUE, max_length = NULL) {
-
+clean_youtube_text <- function(text, remove_html = TRUE,
+                               normalize_whitespace = TRUE,
+                               max_length = NULL) {
   # Modern validation using checkmate
   if (!is.null(text)) {
     assert_character(text, .var.name = "text")
@@ -286,7 +291,7 @@ clean_youtube_text <- function(text, remove_html = TRUE, normalize_whitespace = 
     }
   }
 
-  return(text)
+  text
 }
 
 #' Apply Unicode Handling to YouTube API Response
@@ -299,9 +304,10 @@ clean_youtube_text <- function(text, remove_html = TRUE, normalize_whitespace = 
 #' @return Processed response with proper Unicode handling
 #' @keywords internal
 process_youtube_text <- function(response,
-                                text_fields = c("title", "description", "textDisplay", "textOriginal",
-                                               "channelTitle", "authorDisplayName", "categoryId")) {
-
+                                 text_fields = c(
+                                   "title", "description", "textDisplay", "textOriginal",
+                                   "channelTitle", "authorDisplayName", "categoryId"
+                                 )) {
   # Modern validation using checkmate
   assert_character(text_fields, min.len = 1, .var.name = "text_fields")
 
@@ -331,5 +337,5 @@ process_youtube_text <- function(response,
     }, how = "replace")
   }
 
-  return(response)
+  response
 }

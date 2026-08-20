@@ -5,7 +5,7 @@
 # Mock Functions for POST/PUT/DELETE Operations
 # ============================================================================
 
-mock_tuber_POST_json <- function(path, query, body, ...) {
+mock_tuber_POST_json <- function(path, query, body, ...) { # nolint: object_name_linter.
   if (path == "playlists") {
     mock_create_playlist_response(body)
   } else if (path == "playlistItems") {
@@ -15,7 +15,7 @@ mock_tuber_POST_json <- function(path, query, body, ...) {
   }
 }
 
-mock_tuber_DELETE <- function(path, query, ...) {
+mock_tuber_DELETE <- function(path, query, ...) { # nolint: object_name_linter.
   id <- query$id
   if (is.null(id) || nchar(id) == 0) {
     list(error = list(code = 400, message = "Missing required parameter: id"))
@@ -32,7 +32,7 @@ mock_tuber_DELETE <- function(path, query, ...) {
   }
 }
 
-mock_tuber_PUT <- function(path, query, body, ...) {
+mock_tuber_PUT <- function(path, query, body, ...) { # nolint: object_name_linter.
   if (path == "videos") {
     mock_update_video_response(body)
   } else if (path == "playlists") {
@@ -192,7 +192,9 @@ test_that("add_video_to_playlist respects position parameter", {
     tuber_POST_json = mock_tuber_POST_json,
     yt_check_token = function() invisible(NULL),
     {
-      result <- add_video_to_playlist(playlist_id = "PLtest123", video_id = "dQw4w9WgXcQ", position = 5)
+      result <- add_video_to_playlist(
+        playlist_id = "PLtest123", video_id = "dQw4w9WgXcQ", position = 5
+      )
       expect_equal(result$snippet$position, 5)
     }
   )
@@ -401,14 +403,16 @@ test_that("change_playlist_title validates new_title parameter", {
 test_that("change_playlist_title returns response on success", {
   with_mocked_bindings(
     tuber_PUT = mock_tuber_PUT,
-    list_playlists = function(...) list(items = list(list(
-      id = "playlist123",
-      snippet = list(
-        title = "Old Title",
-        description = "Keep this description",
-        defaultLanguage = "en"
-      )
-    ))),
+    list_playlists = function(...) {
+      list(items = list(list(
+        id = "playlist123",
+        snippet = list(
+          title = "Old Title",
+          description = "Keep this description",
+          defaultLanguage = "en"
+        )
+      )))
+    },
     yt_check_token = function() invisible(NULL),
     yt_check_key = function() invisible(NULL),
     {
@@ -479,7 +483,7 @@ test_that("upload_video validates status parameter", {
 # ============================================================================
 
 test_that("write operations handle API errors gracefully", {
-  mock_error_POST <- function(path, query, body, ...) {
+  mock_error_POST <- function(path, query, body, ...) { # nolint: object_name_linter.
     list(
       error = list(
         code = 403,
