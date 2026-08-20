@@ -21,5 +21,7 @@ tuber*.tgz
 # Generated vignette figures
 vignettes/figure/
 figure/
-/docs/deps
-/docs/deps
+
+# pkgdown output. Disposable local build product; CI builds and publishes the
+# definitive site. See R Packages (2e), ch. 19.
+/docs/

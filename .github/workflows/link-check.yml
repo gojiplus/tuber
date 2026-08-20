@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   links:
-    uses: gojiplus/r-canon/.github/workflows/reusable-link-check.yml@v1
+    uses: gojiplus/r-canon/.github/workflows/reusable-link-check.yml@v2
     with:
       # API endpoints that appear in source as string constants. They answer
       # 404 or 405 to an unauthenticated GET by design -- the upload ones are

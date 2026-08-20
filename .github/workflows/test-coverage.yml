@@ -8,6 +8,6 @@ on:
 
 jobs:
   coverage:
-    uses: gojiplus/r-canon/.github/workflows/reusable-coverage.yml@v1
+    uses: gojiplus/r-canon/.github/workflows/reusable-coverage.yml@v2
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
