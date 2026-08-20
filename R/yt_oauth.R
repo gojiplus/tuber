@@ -26,9 +26,10 @@
 #'
 #' @examples
 #'  \dontrun{
-#' yt_oauth(paste0("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn",
-#'                 ".apps.googleusercontent.com"),
-#'          "MbOSt6cQhhFkwETXKur-L9rN")
+#' yt_oauth(
+#'   "YOUR-CLIENT-ID.apps.googleusercontent.com",
+#'   "YOUR-CLIENT-SECRET"
+#' )
 #' }
 
 yt_oauth <- function(
