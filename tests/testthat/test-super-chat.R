@@ -1,4 +1,4 @@
-test_that("get_super_chat_events handles data correctly", {
+test_that("list_super_chat_events handles data correctly", {
   with_mocked_bindings(
     tuber_GET = function(path, query, ...) {
       if (path == "superChatEvents") {
@@ -36,25 +36,25 @@ test_that("get_super_chat_events handles data correctly", {
     },
 
     {
-      result <- get_super_chat_events()
+      result <- list_super_chat_events()
 
       expect_true(is.data.frame(result))
       expect_equal(nrow(result), 1)
-      expect_equal(result$id[1], "test-id")
+      expect_equal(result$event_id[1], "test-id")
       expect_equal(result$currency[1], "USD")
-      expect_equal(result$supporterDetails_displayName[1], "Test Supporter")
+      expect_equal(result$supporter_name[1], "Test Supporter")
     }
   )
 })
 
-test_that("get_super_chat_events handles forbidden error gracefully", {
+test_that("list_super_chat_events handles forbidden error gracefully", {
   with_mocked_bindings(
     tuber_GET = function(path, query, ...) {
       stop("forbidden: The request is not authorized.")
     },
 
     {
-      expect_error(get_super_chat_events(), class = "tuber_super_chat_forbidden")
+      expect_error(list_super_chat_events(), class = "tuber_super_chat_forbidden")
     }
   )
 })

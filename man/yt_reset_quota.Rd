@@ -7,5 +7,6 @@
 yt_reset_quota()
 }
 \description{
-Reset the quota counter (typically done automatically at midnight UTC)
+Reset the quota counter (typically done automatically at midnight Pacific
+Time, when YouTube's daily quota resets)
 }

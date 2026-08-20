@@ -4,10 +4,12 @@
 \alias{yt_set_quota_limit}
 \title{Set Quota Limit}
 \usage{
-yt_set_quota_limit(limit)
+yt_set_quota_limit(limit, bucket = "data")
 }
 \arguments{
-\item{limit}{Integer. Daily quota limit in units}
+\item{limit}{Integer. Daily quota limit for the selected bucket.}
+
+\item{bucket}{Quota bucket: `"data"`, `"search"`, or `"video_uploads"`.}
 }
 \description{
 Set the daily quota limit (default is 10,000 units)
@@ -15,6 +17,6 @@ Set the daily quota limit (default is 10,000 units)
 \examples{
 \dontrun{
 # If you have a higher quota limit
-yt_set_quota_limit(50000)
+yt_set_quota_limit(50000, bucket = "data")
 }
 }

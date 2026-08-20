@@ -6,18 +6,21 @@
 #' @name extended-endpoints
 NULL
 
-#' Get live stream information
+#' List live broadcasts
 #'
-#' Retrieves information about live streams and premieres.
+#' Retrieves YouTube `liveBroadcast` resources owned by the authenticated user.
 #'
-#' @param stream_id Live stream ID (optional if using other filters)
-#' @param channel_id Deprecated. liveBroadcasts.list has no channelId
-#'   parameter; supplying it is an error. Use \code{status} or \code{mine}.
+#' @param broadcast_ids Broadcast IDs. Supply exactly one of `broadcast_ids`,
+#' `status`, or `mine = TRUE`.
 #' @param part Parts to retrieve
 #' @param mine Logical. List the authenticated user's own broadcasts.
-#' @param status Filter by status: "active", "upcoming", "completed"
+#' @param status Filter by status: `"active"`, `"all"`, `"upcoming"`, or
+#' `"completed"`.
+#' @param broadcast_type Optional broadcast type: `"all"`, `"event"`, or
+#' `"persistent"`.
+#' @param max_results Maximum number of broadcasts to return.
+#' @param page_token Page token at which to start.
 #' @param simplify Whether to return a simplified data frame
-#' @param auth Authentication method: "token" (OAuth2) or "key" (API key)
 #' @param ... Additional arguments passed to tuber_GET
 #'
 #' @return List or data frame with live stream information
@@ -25,56 +28,51 @@ NULL
 #'
 #' @examples
 #' \dontrun{
-#' # Get live streams for a channel
-#' streams <- get_live_streams(status = "active")
+#' broadcasts <- list_live_broadcasts(status = "active")
 #'
-#' # Get specific live stream details
-#' stream <- get_live_streams(stream_id = "abc123", part = c("snippet", "status"))
+#' broadcast <- list_live_broadcasts(
+#'   broadcast_ids = "abc123",
+#'   part = c("snippet", "status")
+#' )
 #' }
-get_live_streams <- function(stream_id = NULL,
-                            channel_id = NULL,
-                            part = "snippet,status",
-                            status = NULL,
-                            mine = FALSE,
-                            simplify = TRUE,
-                            auth = "token",
-                            ...) {
-
-  # liveBroadcasts.list accepts EXACTLY ONE of broadcastStatus, id or mine, and
-  # has no channelId parameter at all. Requiring stream_id or channel_id made a
-  # status-only query impossible and sent an unsupported channelId; supplying
-  # both stream_id and status sent two filters at once.
-  if (!is.null(channel_id)) {
-    abort(paste0(
-      "liveBroadcasts.list has no channelId parameter. It filters on exactly ",
-      "one of broadcastStatus, id, or mine. Pass `status` to list a channel's ",
-      "own broadcasts by state, or `stream_id` for a specific broadcast."
-    ), class = "tuber_unsupported_parameter")
-  }
-
-  n_filters <- sum(!is.null(stream_id), !is.null(status), isTRUE(mine))
+list_live_broadcasts <- function(broadcast_ids = NULL,
+                                 part = "snippet,status",
+                                 status = NULL,
+                                 mine = FALSE,
+                                 broadcast_type = NULL,
+                                 max_results = 50,
+                                 page_token = NULL,
+                                 simplify = TRUE,
+                                 ...) {
+  n_filters <- sum(!is.null(broadcast_ids), !is.null(status), isTRUE(mine))
   if (n_filters == 0) {
     abort(paste0(
-      "Provide exactly one filter: `stream_id`, `status`, or `mine = TRUE`."
+      "Provide exactly one filter: `broadcast_ids`, `status`, or `mine = TRUE`."
     ), class = "tuber_missing_required_parameter")
   }
   if (n_filters > 1) {
     abort(paste0(
-      "liveBroadcasts.list accepts exactly one of `stream_id`, `status` or ",
+      "liveBroadcasts.list accepts exactly one of `broadcast_ids`, `status` or ",
       "`mine`; ", n_filters, " were supplied."
     ), class = "tuber_conflicting_parameters")
   }
 
-  if (!is.null(stream_id)) {
-    assert_character(stream_id, len = 1, min.chars = 1, .var.name = "stream_id")
+  if (!is.null(broadcast_ids)) {
+    assert_character(broadcast_ids, min.len = 1, min.chars = 1, .var.name = "broadcast_ids")
   }
 
   assert_character(part, min.len = 1, .var.name = "part")
   assert_flag(simplify, .var.name = "simplify")
-  assert_choice(auth, c("token", "key"), .var.name = "auth")
+  assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
 
   if (!is.null(status)) {
-    assert_choice(status, c("active", "upcoming", "completed"), .var.name = "status")
+    assert_choice(status, c("active", "all", "upcoming", "completed"), .var.name = "status")
+  }
+  if (!is.null(broadcast_type)) {
+    assert_choice(broadcast_type, c("all", "event", "persistent"), .var.name = "broadcast_type")
+  }
+  if (!is.null(page_token)) {
+    assert_string(page_token, min.chars = 1, .var.name = "page_token")
   }
 
   if (length(part) > 1) {
@@ -82,10 +80,15 @@ get_live_streams <- function(stream_id = NULL,
   }
 
   # Build query
-  query <- list(part = part)
+  query <- list(
+    part = part,
+    maxResults = min(max_results, 50),
+    pageToken = page_token,
+    broadcastType = broadcast_type
+  )
 
-  if (!is.null(stream_id)) {
-    query$id <- stream_id
+  if (!is.null(broadcast_ids)) {
+    query$id <- paste(broadcast_ids, collapse = ",")
   }
 
   if (!is.null(status)) {
@@ -98,43 +101,76 @@ get_live_streams <- function(stream_id = NULL,
     query$mine <- "true"
   }
 
-  # Make API call
-  result <- call_api_with_retry(
-    tuber_GET,
-    path = "liveBroadcasts",
-    query = query,
-    auth = auth,
-    ...
+  fetch_page <- function(token = NULL) {
+    page_query <- query
+    page_query$pageToken <- token
+    call_api_with_retry(
+      tuber_GET,
+      path = "liveBroadcasts",
+      query = page_query,
+      auth = "token",
+      ...
+    )
+  }
+
+  result <- fetch_page(page_token)
+
+  pages <- paginate_api_request(
+    initial_response = result,
+    fetch_next_page_fn = fetch_page,
+    max_results = max_results
   )
+  result$items <- pages$items
+  result$nextPageToken <- pages$final_page_token
 
-  if (length(result$items) == 0) {
-    suggest_solution("empty_results", "- Check if channel has live streams\n- Live streams may be private or restricted")
-    return(if (simplify) data.frame() else list())
+  if (!simplify) {
+    return(add_tuber_attributes(
+      result,
+      api_calls_made = pages$page_count,
+      function_name = "list_live_broadcasts",
+      results_found = length(pages$items),
+      response_format = "list"
+    ))
   }
 
-  if (simplify) {
-    result <- tryCatch({
-      map_df(result$items, ~ flatten(.x))
-    }, error = function(e) {
-      warning("Failed to convert to data frame: ", e$message, ". Returning list format.", call. = FALSE)
-      result
-    })
-  }
-
-  return(result)
+  simplified <- items_to_frame(pages$items, function(item) {
+    data.frame(
+      broadcast_id = item$id %||% NA_character_,
+      title = item$snippet$title %||% NA_character_,
+      description = item$snippet$description %||% NA_character_,
+      published_at = item$snippet$publishedAt %||% NA_character_,
+      scheduled_start_time = item$snippet$scheduledStartTime %||% NA_character_,
+      scheduled_end_time = item$snippet$scheduledEndTime %||% NA_character_,
+      actual_start_time = item$snippet$actualStartTime %||% NA_character_,
+      actual_end_time = item$snippet$actualEndTime %||% NA_character_,
+      life_cycle_status = item$status$lifeCycleStatus %||% NA_character_,
+      privacy_status = item$status$privacyStatus %||% NA_character_,
+      recording_status = item$status$recordingStatus %||% NA_character_,
+      live_chat_id = item$snippet$liveChatId %||% NA_character_,
+      stringsAsFactors = FALSE
+    )
+  })
+  add_tuber_attributes(
+    simplified,
+    api_calls_made = pages$page_count,
+    function_name = "list_live_broadcasts",
+    results_found = nrow(simplified),
+    response_format = "data.frame"
+  )
 }
 
 #' Get video thumbnails information
 #'
 #' Retrieves thumbnail URLs and metadata for videos.
 #'
-#' @param video_id Video ID or vector of video IDs
+#' @param video_ids Video ID or vector of video IDs.
 #' @param size Thumbnail size: "default", "medium", "high", "standard", "maxres"
 #' @param simplify Whether to return a simplified data frame
 #' @param auth Authentication method: "token" (OAuth2) or "key" (API key)
 #' @param ... Additional arguments passed to tuber_GET
 #'
-#' @return List or data frame with thumbnail information
+#' @return A tidy data frame with one row per video and thumbnail size when
+#' `simplify = TRUE`; otherwise the raw videos-list response.
 #' @export
 #'
 #' @examples
@@ -148,14 +184,14 @@ get_live_streams <- function(stream_id = NULL,
 #' # Get thumbnails for multiple videos
 #' thumbs_batch <- get_video_thumbnails(c("dQw4w9WgXcQ", "M7FIvfx5J10"))
 #' }
-get_video_thumbnails <- function(video_id,
+get_video_thumbnails <- function(video_ids,
                                 size = NULL,
                                 simplify = TRUE,
                                 auth = "key",
                                 ...) {
 
   # Modern validation using checkmate
-  assert_character(video_id, min.len = 1, .var.name = "video_id")
+  assert_character(video_ids, min.len = 1, .var.name = "video_ids")
   assert_flag(simplify, .var.name = "simplify")
   assert_choice(auth, c("token", "key"), .var.name = "auth")
 
@@ -163,330 +199,176 @@ get_video_thumbnails <- function(video_id,
     assert_choice(size, c("default", "medium", "high", "standard", "maxres"), .var.name = "size")
   }
 
-  if (length(video_id) > 1) {
-    video_id <- paste0(video_id, collapse = ",")
-  }
-
-  # Get video details with snippet part to access thumbnails
-  query <- list(part = "snippet", id = video_id)
-
-  result <- call_api_with_retry(
-    tuber_GET,
-    path = "videos",
-    query = query,
+  result <- get_video_details(
+    video_ids = video_ids,
+    part = "snippet",
+    simplify = FALSE,
     auth = auth,
     ...
   )
+  items <- result$items %||% list()
 
-  if (length(result$items) == 0) {
-    suggest_solution("empty_results", "- Check if video IDs are correct\n- Videos may be private or deleted")
-    return(if (simplify) data.frame() else list())
-  }
+  if (!simplify) return(result)
 
-  # Extract and format thumbnail information
-  thumbnail_data <- lapply(result$items, function(item) {
+  empty_thumbnails <- data.frame(
+    video_id = character(),
+    title = character(),
+    size = character(),
+    url = character(),
+    width = integer(),
+    height = integer(),
+    stringsAsFactors = FALSE
+  )
+  thumbnail_data <- lapply(items, function(item) {
     thumbs <- item$snippet$thumbnails
-    video_info <- list(
-      video_id = item$id,
-      title = item$snippet$title %||% NA_character_
-    )
-
-    if (!is.null(size)) {
-      # Return only requested size
-      if (!is.null(thumbs[[size]])) {
-        video_info[[paste0(size, "_url")]] <- thumbs[[size]]$url
-        video_info[[paste0(size, "_width")]] <- thumbs[[size]]$width
-        video_info[[paste0(size, "_height")]] <- thumbs[[size]]$height
-      }
-    } else {
-      # Return all available sizes
-      for (thumb_size in names(thumbs)) {
-        video_info[[paste0(thumb_size, "_url")]] <- thumbs[[thumb_size]]$url
-        video_info[[paste0(thumb_size, "_width")]] <- thumbs[[thumb_size]]$width
-        video_info[[paste0(thumb_size, "_height")]] <- thumbs[[thumb_size]]$height
-      }
-    }
-
-    return(video_info)
+    sizes <- if (is.null(size)) names(thumbs) else intersect(size, names(thumbs))
+    bind_rows(lapply(sizes, function(thumbnail_size) {
+      data.frame(
+        video_id = item$id,
+        title = item$snippet$title %||% NA_character_,
+        size = thumbnail_size,
+        url = thumbs[[thumbnail_size]]$url %||% NA_character_,
+        width = thumbs[[thumbnail_size]]$width %||% NA_integer_,
+        height = thumbs[[thumbnail_size]]$height %||% NA_integer_,
+        stringsAsFactors = FALSE
+      )
+    }))
   })
 
-  if (simplify) {
-    result <- tryCatch({
-      bind_rows(thumbnail_data)
-    }, error = function(e) {
-      warning("Failed to convert to data frame: ", e$message, ". Returning list format.", call. = FALSE)
-      thumbnail_data
-    })
-  } else {
-    result <- thumbnail_data
-  }
-
-  return(result)
-}
-
-#' Get channel sections
-#'
-#' Retrieves channel sections (featured channels, playlists, etc.).
-#'
-#' @param channel_id Channel ID
-#' @param section_id Specific section ID (optional)
-#' @param part Parts to retrieve
-#' @param simplify Whether to return a simplified data frame
-#' @param auth Authentication method: "token" (OAuth2) or "key" (API key)
-#' @param ... Additional arguments passed to tuber_GET
-#'
-#' @return List or data frame with channel section information
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' # Get all sections for a channel
-#' sections <- get_channel_sections(channel_id = "UCuAXFkgsw1L7xaCfnd5JJOw")
-#'
-#' # Get specific section
-#' section <- get_channel_sections(section_id = "UC_x5XG1OV2P6uZZ5FSM9Ttw.e-Fk7vMeOn4")
-#' }
-get_channel_sections <- function(channel_id = NULL,
-                                section_id = NULL,
-                                part = "snippet,contentDetails",
-                                simplify = TRUE,
-                                auth = "key",
-                                ...) {
-
-  # Modern validation using checkmate
-  if (is.null(channel_id) && is.null(section_id)) {
-    abort("Either channel_id or section_id must be provided",
-          class = "tuber_missing_required_parameter")
-  }
-
-  if (!is.null(channel_id)) {
-    assert_character(channel_id, len = 1, min.chars = 1, .var.name = "channel_id")
-  }
-
-  if (!is.null(section_id)) {
-    assert_character(section_id, len = 1, min.chars = 1, .var.name = "section_id")
-  }
-
-  assert_character(part, len = 1, min.chars = 1, .var.name = "part")
-  assert_flag(simplify, .var.name = "simplify")
-  assert_choice(auth, c("token", "key"), .var.name = "auth")
-
-  if (length(part) > 1) {
-    part <- paste0(part, collapse = ",")
-  }
-
-  # Build query
-  query <- list(part = part)
-
-  if (!is.null(channel_id)) {
-    query$channelId <- channel_id
-  }
-
-  if (!is.null(section_id)) {
-    query$id <- section_id
-  }
-
-  # Make API call
-  result <- call_api_with_retry(
-    tuber_GET,
-    path = "channelSections",
-    query = query,
-    auth = auth,
-    ...
+  thumbnail_data <- bind_rows(thumbnail_data)
+  if (nrow(thumbnail_data) == 0) thumbnail_data <- empty_thumbnails
+  add_tuber_attributes(
+    thumbnail_data,
+    api_calls_made = attr(result, "tuber_api_calls") %||% 0,
+    function_name = "get_video_thumbnails",
+    results_found = nrow(thumbnail_data),
+    response_format = "data.frame"
   )
-
-  if (length(result$items) == 0) {
-    suggest_solution("empty_results", "- Channel may not have custom sections\n- Check if channel ID is correct")
-    return(if (simplify) data.frame() else list())
-  }
-
-  if (simplify) {
-    result <- tryCatch({
-      map_df(result$items, ~ flatten(.x))
-    }, error = function(e) {
-      warning("Failed to convert to data frame: ", e$message, ". Returning list format.", call. = FALSE)
-      result
-    })
-  }
-
-  return(result)
 }
 
-#' Search for shorts (YouTube Shorts)
+#' Search for videos shorter than four minutes
 #'
-#' Search specifically for YouTube Shorts videos.
+#' Uses YouTube's `videoDuration = "short"` filter. This filter includes every
+#' video shorter than four minutes and does not identify the YouTube Shorts
+#' product.
 #'
-#' @param query Search query
-#' @param max_results Maximum number of results (1-50)
+#' @param term Search term.
+#' @param max_results Maximum total number of results.
 #' @param order Sort order: "date", "rating", "relevance", "title", "viewCount"
 #' @param region_code Region code for search
 #' @param published_after RFC 3339 formatted date-time (e.g., "2023-01-01T00:00:00Z")
 #' @param published_before RFC 3339 formatted date-time
 #' @param simplify Whether to return simplified data frame
 #' @param auth Authentication method: "token" (OAuth2) or "key" (API key)
-#' @param ... Additional arguments passed to tuber_GET
+#' @param ... Additional arguments passed to [yt_search()].
 #'
-#' @return List or data frame with search results for shorts
+#' @return List or data frame with search results for videos under four minutes
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #' # Search for recent shorts about cats
-#' shorts <- search_shorts("cats", max_results = 25, order = "date")
+#' short_videos <- search_short_videos("cats", max_results = 25, order = "date")
 #'
-#' # Search for popular shorts in a specific region
-#' shorts_us <- search_shorts("music", region_code = "US", order = "viewCount")
+#' # Search for popular short-duration videos in a specific region
+#' short_videos_us <- search_short_videos(
+#'   "music",
+#'   region_code = "US",
+#'   order = "viewCount"
+#' )
 #' }
-search_shorts <- function(query,
-                         max_results = 25,
-                         order = "relevance",
-                         region_code = NULL,
-                         published_after = NULL,
-                         published_before = NULL,
-                         simplify = TRUE,
-                         auth = "key",
-                         ...) {
+search_short_videos <- function(term,
+                                max_results = 25,
+                                order = "relevance",
+                                region_code = NULL,
+                                published_after = NULL,
+                                published_before = NULL,
+                                simplify = TRUE,
+                                auth = "key",
+                                ...) {
 
-  # Modern validation using checkmate
-  assert_character(query, len = 1, min.chars = 1, .var.name = "query")
-  assert_integerish(max_results, len = 1, lower = 1, upper = 50, .var.name = "max_results")
-  assert_choice(order, c("date", "rating", "relevance", "title", "viewCount"), .var.name = "order")
-  assert_flag(simplify, .var.name = "simplify")
-  assert_choice(auth, c("token", "key"), .var.name = "auth")
-
-  # Build search query
-  search_query <- list(
-    part = "snippet",
-    q = query,
+  result <- yt_search(
+    term = term,
+    max_results = max_results,
     type = "video",
-    maxResults = max_results,
     order = order,
-    # Filter for shorts by duration (less than 60 seconds)
-    videoDuration = "short"
-  )
-
-  if (!is.null(region_code)) {
-    assert_character(region_code, len = 1, pattern = "^[A-Z]{2}$", .var.name = "region_code")
-    search_query$regionCode <- region_code
-  }
-
-  if (!is.null(published_after)) {
-    assert_character(published_after, len = 1, .var.name = "published_after")
-    search_query$publishedAfter <- published_after
-  }
-
-  if (!is.null(published_before)) {
-    assert_character(published_before, len = 1, .var.name = "published_before")
-    search_query$publishedBefore <- published_before
-  }
-
-  # Make API call
-  result <- call_api_with_retry(
-    tuber_GET,
-    path = "search",
-    query = search_query,
+    region_code = region_code,
+    published_after = published_after,
+    published_before = published_before,
+    video_duration = "short",
+    simplify = simplify,
+    get_all = TRUE,
     auth = auth,
     ...
   )
 
-  if (length(result$items) == 0) {
-    suggest_solution("empty_results", "- Try broader search terms\n- Check region and date filters")
-    return(if (simplify) data.frame() else list())
-  }
-
   if (simplify) {
-    result <- tryCatch({
-      # Convert to data frame with shorts-specific fields
-      shorts_df <- map_df(result$items, function(item) {
-        data.frame(
-          video_id = item$id$videoId %||% NA_character_,
-          title = item$snippet$title %||% NA_character_,
-          description = item$snippet$description %||% NA_character_,
-          channel_id = item$snippet$channelId %||% NA_character_,
-          channel_title = item$snippet$channelTitle %||% NA_character_,
-          published_at = item$snippet$publishedAt %||% NA_character_,
-          thumbnail_url = item$snippet$thumbnails$medium$url %||%
-                         item$snippet$thumbnails$default$url %||% NA_character_,
-          is_short = TRUE,  # Mark as shorts
-          stringsAsFactors = FALSE
-        )
-      })
-
-      # Add metadata
-      attr(shorts_df, "total_results") <- result$pageInfo$totalResults %||% nrow(shorts_df)
-      attr(shorts_df, "results_per_page") <- result$pageInfo$resultsPerPage %||% nrow(shorts_df)
-
-      shorts_df
-    }, error = function(e) {
-      warning("Failed to convert to data frame: ", e$message, ". Returning list format.", call. = FALSE)
-      result
-    })
+    result$duration_filter <- rep("under_four_minutes", nrow(result))
   }
-
-  return(result)
+  result
 }
 
-#' Get video premiere information
+#' Get video live-broadcast timing
 #'
-#' Checks if videos are premieres and gets premiere scheduling information.
+#' Retrieves scheduling and actual start/end information exposed in a video's
+#' `liveStreamingDetails`. The YouTube Data API does not expose a reliable flag
+#' that distinguishes premieres from other scheduled broadcasts.
 #'
-#' @param video_id Video ID or vector of video IDs
+#' @param video_ids Video ID or vector of video IDs.
 #' @param simplify Whether to return simplified data frame
 #' @param auth Authentication method: "token" (OAuth2) or "key" (API key)
 #' @param ... Additional arguments passed to tuber_GET
 #'
-#' @return List or data frame with premiere information
+#' @return A data frame when `simplify = TRUE`; otherwise the raw videos-list
+#' response.
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' # Check if video is a premiere
-#' premiere_info <- get_premiere_info("dQw4w9WgXcQ")
+#' timing <- get_video_broadcast_timing("dQw4w9WgXcQ")
 #'
-#' # Check multiple videos for premiere status
-#' premieres <- get_premiere_info(c("video1", "video2", "video3"))
+#' timings <- get_video_broadcast_timing(c("video1", "video2", "video3"))
 #' }
-get_premiere_info <- function(video_id,
-                             simplify = TRUE,
-                             auth = "key",
-                             ...) {
+get_video_broadcast_timing <- function(video_ids,
+                                       simplify = TRUE,
+                                       auth = "key",
+                                       ...) {
 
   # Modern validation using checkmate
-  assert_character(video_id, min.len = 1, .var.name = "video_id")
+  assert_character(video_ids, min.len = 1, .var.name = "video_ids")
   assert_flag(simplify, .var.name = "simplify")
   assert_choice(auth, c("token", "key"), .var.name = "auth")
 
-  if (length(video_id) > 1) {
-    video_id <- paste0(video_id, collapse = ",")
-  }
-
-  # Get video details with liveStreamingDetails to check for premieres
-  query <- list(
-    part = "snippet,liveStreamingDetails,status",
-    id = video_id
-  )
-
-  result <- call_api_with_retry(
-    tuber_GET,
-    path = "videos",
-    query = query,
+  result <- get_video_details(
+    video_ids = video_ids,
+    part = c("snippet", "liveStreamingDetails", "status"),
+    simplify = FALSE,
     auth = auth,
     ...
   )
+  items <- result$items %||% list()
 
-  if (length(result$items) == 0) {
-    suggest_solution("empty_results", "- Check if video IDs are correct\n- Videos may be private or deleted")
-    return(if (simplify) data.frame() else list())
-  }
+  if (!simplify) return(result)
 
-  # Process premiere information
-  premiere_data <- lapply(result$items, function(item) {
+  empty_timing <- data.frame(
+    video_id = character(),
+    title = character(),
+    has_scheduled_start = logical(),
+    is_live = logical(),
+    scheduled_start_time = character(),
+    actual_start_time = character(),
+    actual_end_time = character(),
+    concurrent_viewers = character(),
+    privacy_status = character(),
+    stringsAsFactors = FALSE
+  )
+  timing_data <- lapply(items, function(item) {
     live_details <- item$liveStreamingDetails
 
-    premiere_info <- list(
+    timing_info <- list(
       video_id = item$id,
       title = item$snippet$title %||% NA_character_,
-      is_premiere = !is.null(live_details$scheduledStartTime),
+      has_scheduled_start = !is.null(live_details$scheduledStartTime),
       is_live = !is.null(live_details$actualStartTime) &&
                 is.null(live_details$actualEndTime),
       scheduled_start_time = live_details$scheduledStartTime %||% NA_character_,
@@ -496,19 +378,16 @@ get_premiere_info <- function(video_id,
       privacy_status = item$status$privacyStatus %||% NA_character_
     )
 
-    return(premiere_info)
+    timing_info
   })
 
-  if (simplify) {
-    result <- tryCatch({
-      bind_rows(premiere_data)
-    }, error = function(e) {
-      warning("Failed to convert to data frame: ", e$message, ". Returning list format.", call. = FALSE)
-      premiere_data
-    })
-  } else {
-    result <- premiere_data
-  }
-
-  return(result)
+  timing_data <- bind_rows(timing_data)
+  if (nrow(timing_data) == 0) timing_data <- empty_timing
+  add_tuber_attributes(
+    timing_data,
+    api_calls_made = attr(result, "tuber_api_calls") %||% 0,
+    function_name = "get_video_broadcast_timing",
+    results_found = nrow(timing_data),
+    response_format = "data.frame"
+  )
 }

@@ -4,7 +4,7 @@
 \alias{tuber_POST}
 \title{POST}
 \usage{
-tuber_POST(path, query, body = "", auth = "token", ...)
+tuber_POST(path, query, body = "", ...)
 }
 \arguments{
 \item{path}{path to specific API request URL}
@@ -12,8 +12,6 @@ tuber_POST(path, query, body = "", auth = "token", ...)
 \item{query}{query list}
 
 \item{body}{passing image through body}
-
-\item{auth}{A character vector of the authentication method, either "token" (the default) or "key"}
 
 \item{\dots}{Additional arguments passed to \code{\link[httr]{POST}}.}
 }
@@ -23,3 +21,4 @@ list
 \description{
 POST
 }
+\keyword{internal}

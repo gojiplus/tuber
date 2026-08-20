@@ -12,7 +12,7 @@ test_that("list_captions runs successfully", {
     options(google_token = google_token)
 
     video_id <- "M7FIvfx5J10"
-    get_info <- list_caption_tracks(video_id = video_id)
+    get_info <- list_captions(video_id = video_id)
     expect_s3_class(get_info, "data.frame")
 
   }, error = function(e) {

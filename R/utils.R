@@ -74,21 +74,33 @@ build_comment_row <- function(snippet, comment_id, parent_id = NA_character_) {
   like_count <- if (is.na(like_count)) NA_real_ else as.numeric(like_count)
 
   data.frame(
-    authorDisplayName = safe_extract(snippet, "authorDisplayName"),
-    authorProfileImageUrl = safe_extract(snippet, "authorProfileImageUrl"),
-    authorChannelUrl = safe_extract(snippet, "authorChannelUrl"),
-    authorChannelId.value = safe_nested(snippet, "authorChannelId", "value"),
-    videoId = safe_extract(snippet, "videoId"),
-    textDisplay = safe_extract(snippet, "textDisplay"),
-    textOriginal = safe_extract(snippet, "textOriginal"),
-    canRate = safe_extract(snippet, "canRate", default = NA),
-    viewerRating = safe_extract(snippet, "viewerRating"),
-    likeCount = like_count,
-    publishedAt = safe_extract(snippet, "publishedAt"),
-    updatedAt = safe_extract(snippet, "updatedAt"),
-    id = comment_id,
-    moderationStatus = safe_extract(snippet, "moderationStatus"),
-    parentId = parent_id,
+    comment_id = comment_id,
+    parent_id = parent_id,
+    video_id = safe_extract(snippet, "videoId"),
+    author_name = safe_extract(snippet, "authorDisplayName"),
+    author_channel_id = safe_nested(snippet, "authorChannelId", "value"),
+    author_channel_url = safe_extract(snippet, "authorChannelUrl"),
+    author_profile_image_url = safe_extract(snippet, "authorProfileImageUrl"),
+    text_display = safe_extract(snippet, "textDisplay"),
+    text_original = safe_extract(snippet, "textOriginal"),
+    can_rate = safe_extract(snippet, "canRate", default = NA),
+    viewer_rating = safe_extract(snippet, "viewerRating"),
+    like_count = like_count,
+    published_at = safe_extract(snippet, "publishedAt"),
+    updated_at = safe_extract(snippet, "updatedAt"),
+    moderation_status = safe_extract(snippet, "moderationStatus"),
     stringsAsFactors = FALSE
   )
+}
+
+empty_comment_frame <- function() {
+  build_comment_row(list(), NA_character_)[0, , drop = FALSE]
+}
+
+items_to_frame <- function(items, row_builder) {
+  template <- row_builder(list())
+  if (is.null(items) || length(items) == 0) {
+    return(template[0, , drop = FALSE])
+  }
+  bind_rows(lapply(items, row_builder))
 }

@@ -2,39 +2,35 @@
 % Please edit documentation in R/get_all_comments.R
 \name{get_all_comments}
 \alias{get_all_comments}
-\title{Get all the comments for a video including replies}
+\title{Get All Video Comments, Including Replies}
 \usage{
-get_all_comments(video_id = NULL, max_results = NULL, ...)
+get_all_comments(video_id, max_results = NULL, auth = "key", ...)
 }
 \arguments{
-\item{video_id}{string; Required.
-\code{video_id}: video ID.}
+\item{video_id}{Video ID.}
 
-\item{max_results}{Integer. Maximum number of comments to return. Default is
-NULL which returns all comments. Set this to avoid long-running requests
-on popular videos.}
+\item{max_results}{Optional maximum total number of comments and replies.
+`NULL` retrieves all available comments.}
 
-\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
+\item{auth}{Authentication method, `"key"` or `"token"`.}
+
+\item{...}{Additional arguments passed to [tuber_GET()].}
 }
 \value{
-a \code{data.frame} with the following columns:
-\code{authorDisplayName, authorProfileImageUrl, authorChannelUrl,}
-\code{ authorChannelId.value, videoId, textDisplay,
-canRate, viewerRating, likeCount, publishedAt, updatedAt,
-id, moderationStatus, parentId}
+A data frame with one row per top-level comment or reply and
+snake-case column names.
 }
 \description{
-Get all the comments for a video including replies
+Retrieves top-level comments and, when a thread response contains only a
+reply preview, follows `comments.list` pagination to retrieve the remaining
+replies.
 }
 \examples{
 \dontrun{
-
-# Set API token via yt_oauth() first
-
-get_all_comments(video_id = "a-UQz7fqR3w")
-get_all_comments(video_id = "a-UQz7fqR3w", max_results = 100)
+get_all_comments("a-UQz7fqR3w", max_results = 100)
 }
 }
 \references{
 \url{https://developers.google.com/youtube/v3/docs/commentThreads/list}
+\url{https://developers.google.com/youtube/v3/docs/comments/list}
 }

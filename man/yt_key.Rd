@@ -10,19 +10,24 @@ yt_get_key(decrypt = FALSE)
 yt_set_key(key, type)
 }
 \arguments{
-\item{decrypt}{A boolean vector specifying whether to decrypt the supplied key with `httr2::secret_decrypt()`. Defaults to `FALSE`. If `TRUE`, requires the environment variable `TUBER_KEY` to be set in `.Renviron`.}
+\item{decrypt}{Whether to decrypt `YOUTUBE_KEY` with
+[httr2::secret_decrypt()]. If `TRUE`, `TUBER_KEY` must also be set.}
 
 \item{key}{A character vector specifying a YouTube API key.}
 
-\item{type}{A character vector specifying the type of API key to set. One of 'api' (the default, stored in `YOUTUBE_KEY`) or 'package'. Package keys are stored in `TUBER_KEY` and are used to decrypt API keys, for use in continuous integration and testing.}
+\item{type}{Key type: `"api"` sets `YOUTUBE_KEY`; `"package"` sets
+`TUBER_KEY`, which can decrypt an encrypted API key in continuous
+integration.}
 }
 \value{
-`yt_get_key()` returns a character vector with the YouTube API key stored in `.Renviron`. If this value is not stored in `.Renviron`, the functions return `NULL`.
+`yt_get_key()` returns `YOUTUBE_KEY` invisibly, or `NULL` when it is unset.
 
-When the `type` argument is set to 'api', `yt_set_key()` assigns a YouTube API key to `YOUTUBE_KEY` in `.Renviron` and invisibly returns `NULL`. When the `type` argument is set to 'package', `yt_set_key()` assigns a package key to `TUBER_KEY` in `.Renviron` and invisibly returns `NULL`.
+`yt_set_key()` sets the selected environment variable for the current R
+process and invisibly returns the key. Put the variable in a user-level
+`.Renviron` file yourself if it must persist across sessions.
 }
 \description{
-These functions manage your YouTube API key and package key in \code{.Renviron}.
+These functions read and set YouTube keys in the current R process.
 }
 \examples{
 \dontrun{

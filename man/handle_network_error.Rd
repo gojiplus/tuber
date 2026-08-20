@@ -17,3 +17,4 @@ Stops execution with informative error message
 \description{
 Handle network/connection errors with retry suggestions
 }
+\keyword{internal}

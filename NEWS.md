@@ -1,3 +1,50 @@
+# tuber 2.0.0
+
+Released 2026-08-17.
+
+## Breaking API cleanup
+
+* List endpoints now use a consistent `list_*()` prefix. The renamed functions
+  are `list_comments()`, `list_comment_threads()`, `list_playlist_items()`,
+  `list_playlists()`, `list_subscriptions()`, `list_live_chat_messages()`, and
+  `list_super_chat_events()`.
+* Resource-specific names replace ambiguous names and abbreviations, including
+  `get_video_stats()`, `get_channel_details()`, `list_popular_videos()`,
+  `list_video_categories()`, `list_languages()`, and `download_caption()`.
+* Singular mutation arguments use singular names, such as `video_id`,
+  `comment_id`, and `playlist_item_id`. Plural ID arguments accept vectors.
+* Public reads default to API-key authentication. OAuth-only functions no
+  longer expose an `auth` choice.
+* Simplified list results use fixed snake-case schemas. Set `simplify = FALSE`
+  to retain the collected API response. `get_video_details()` remains dynamic
+  because its columns depend on `part`.
+
+See `vignette("api-conventions", package = "tuber")` for the full migration
+table and endpoint support matrix.
+
+## Correctness
+
+* Video and caption uploads now use Google's resumable upload protocol.
+  Thumbnail and channel-banner uploads use explicit media uploads and enforce
+  YouTube's file-size limits.
+* Comment collection fetches every reply page instead of relying on the reply
+  preview embedded in a comment thread.
+* Channel, playlist, subscription, comment, live-broadcast, and search wrappers
+  now enforce the filter combinations documented by YouTube.
+* Pagination treats `max_results` as a total limit and trims the first page as
+  well as later pages.
+* Quota estimates use Google's current data, search, and video-upload buckets
+  and method-specific costs.
+* The optional response cache covers reference data, is transparent and
+  persistent when configured, and is isolated by authentication credentials.
+* Removed wrappers for retired related-video and guide-category endpoints.
+
+## Documentation
+
+* Added an API convention and endpoint coverage vignette.
+* Rewrote the README around the supported API and removed obsolete OAuth,
+  caption, and TLS instructions.
+
 # version 1.4.1
 
 ## Bug fixes

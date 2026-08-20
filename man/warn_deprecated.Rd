@@ -16,3 +16,4 @@ warn_deprecated(old_function, new_function, version = "next major version")
 \description{
 Warn about deprecated functionality with migration guidance
 }
+\keyword{internal}

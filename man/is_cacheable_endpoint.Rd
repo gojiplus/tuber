@@ -15,3 +15,4 @@ Logical indicating if endpoint is cacheable
 \description{
 Check if endpoint should be cached
 }
+\keyword{internal}

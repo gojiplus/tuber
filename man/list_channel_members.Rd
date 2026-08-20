@@ -10,6 +10,7 @@ list_channel_members(
   page_token = NULL,
   mode = "all_current",
   has_access_to_level = NULL,
+  filter_by_member_channel_ids = NULL,
   simplify = TRUE,
   ...
 )
@@ -17,13 +18,16 @@ list_channel_members(
 \arguments{
 \item{part}{Parts to retrieve. Valid values are "snippet". Default is "snippet".}
 
-\item{max_results}{Maximum number of items to return. Default is 50. Max is 1000.}
+\item{max_results}{Maximum total number of members to return.}
 
 \item{page_token}{Specific page token to retrieve. Optional.}
 
-\item{mode}{Filter for members. Valid values: "all_current", "newest". Default is "all_current".}
+\item{mode}{Member stream, `"all_current"` or `"updates"`.}
 
 \item{has_access_to_level}{Filter by a specific membership level ID. Optional.}
+
+\item{filter_by_member_channel_ids}{Optional member channel IDs whose
+membership status should be checked. YouTube accepts at most 100 per call.}
 
 \item{simplify}{Whether to return a simplified data.frame. Default is TRUE.}
 
@@ -38,8 +42,7 @@ This endpoint requires OAuth 2.0 authentication and the channel must have member
 }
 \examples{
 \dontrun{
-# Set API token via yt_oauth() first
-
+yt_oauth("YOUR_CLIENT_ID", "YOUR_CLIENT_SECRET", scope = "channel_memberships")
 members <- list_channel_members()
 }
 }

@@ -1,4 +1,4 @@
-test_that("get_comment_threads returns all comments", {
+test_that("list_comment_threads returns all comments", {
   skip_on_cran()
 
   # Skip if no token file exists
@@ -16,13 +16,13 @@ test_that("get_comment_threads returns all comments", {
     )
     total <- first_page$pageInfo$totalResults
 
-    all_comments <- get_comment_threads(
-      filter = c(video_id = "N708P-A45D0"),
+    all_comments <- list_comment_threads(
+      video_id = "N708P-A45D0",
       max_results = 101
     )
 
     expect_s3_class(all_comments, "data.frame")
-    expect_equal(nrow(all_comments), total)
+    expect_equal(nrow(all_comments), min(total, 101))
 
   }, error = function(e) {
     skip(paste("API test failed:", e$message))

@@ -3,6 +3,10 @@ test_that("set_video_thumbnail functions correctly", {
 
   with_mocked_bindings(
     yt_check_token = function() TRUE,
+    track_quota_usage = function(endpoint, method) {
+      expect_equal(c(endpoint, method), c("thumbnails", "set"))
+      invisible(NULL)
+    },
     tuber_check = function(req) invisible(TRUE),
     content = function(req) {
       list(
@@ -15,6 +19,7 @@ test_that("set_video_thumbnail functions correctly", {
       with_mocked_bindings(
         POST = function(url, ...) {
           expect_true(grepl("thumbnails/set", url))
+          expect_equal(list(...)$query$uploadType, "media")
           res <- list(status_code = 200, request = list(), url = "https://example.com/mock")
           class(res) <- "response"
           res
@@ -42,6 +47,10 @@ test_that("insert_channel_banner functions correctly", {
 
   with_mocked_bindings(
     yt_check_token = function() TRUE,
+    track_quota_usage = function(endpoint, method) {
+      expect_equal(c(endpoint, method), c("channelBanners", "insert"))
+      invisible(NULL)
+    },
     tuber_check = function(req) invisible(TRUE),
     content = function(req) {
       list(
@@ -53,6 +62,7 @@ test_that("insert_channel_banner functions correctly", {
       with_mocked_bindings(
         POST = function(url, ...) {
           expect_true(grepl("channelBanners/insert", url))
+          expect_equal(list(...)$query$uploadType, "media")
           res <- list(status_code = 200, request = list(), url = "https://example.com/mock")
           class(res) <- "response"
           res

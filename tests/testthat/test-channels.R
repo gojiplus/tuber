@@ -3,8 +3,8 @@
 # ==============================================================================
 # This file tests all channel-related functions including:
 # - get_all_channel_video_stats() - Get statistics for all videos in a channel
-# - list_channel_resources() - Get channel information and playlists
-# - get_playlist_items() - Used internally by channel stats functions
+# - get_channel_details() - Get channel information and playlists
+# - list_playlist_items() - Used internally by channel stats functions
 #
 # Tests use accurate YouTube API v3 mocks that reflect current API behavior:
 # - dislikeCount is private since December 2021
@@ -14,8 +14,8 @@
 test_that("get_all_channel_video_stats handles video details correctly", {
   # Mock the required functions
   with_mocked_bindings(
-    # Mock list_channel_resources
-    list_channel_resources = function(...) {
+    # Mock get_channel_details
+    get_channel_details = function(...) {
       list(
         kind = "youtube#channelListResponse",
         etag = "test-etag",
@@ -41,8 +41,8 @@ test_that("get_all_channel_video_stats handles video details correctly", {
       )
     },
 
-    # Mock get_playlist_items to return 2 video IDs
-    get_playlist_items = function(...) {
+    # Mock list_playlist_items to return 2 video IDs
+    list_playlist_items = function(...) {
       list(
         kind = "youtube#playlistItemListResponse",
         etag = "test-etag",
@@ -205,7 +205,7 @@ test_that("get_all_channel_video_stats handles video details correctly", {
       expect_equal(nrow(result), 2)
 
       # Check column names (note: dislike_count may be present but NA)
-      expected_cols <- c("id", "title", "publication_date", "description",
+      expected_cols <- c("video_id", "title", "publication_date", "description",
                         "channel_id", "channel_title", "view_count",
                         "like_count", "comment_count", "url")
       expect_true(all(expected_cols %in% names(result)))
@@ -215,8 +215,8 @@ test_that("get_all_channel_video_stats handles video details correctly", {
       }
 
       # Verify data integrity
-      expect_equal(result$id[1], "video1")
-      expect_equal(result$id[2], "video2")
+      expect_equal(result$video_id[1], "video1")
+      expect_equal(result$video_id[2], "video2")
       expect_equal(result$title[1], "Test Video 1")
       expect_equal(result$title[2], "Test Video 2")
       expect_equal(result$publication_date[1], "2024-01-01T00:00:00Z")
@@ -234,7 +234,7 @@ test_that("get_all_channel_video_stats handles video details correctly", {
 test_that("get_all_channel_video_stats handles missing publishedAt field", {
   # Mock setup with video missing publishedAt
   with_mocked_bindings(
-    list_channel_resources = function(...) {
+    get_channel_details = function(...) {
       list(
         kind = "youtube#channelListResponse",
         etag = "test-etag",
@@ -260,7 +260,7 @@ test_that("get_all_channel_video_stats handles missing publishedAt field", {
       )
     },
 
-    get_playlist_items = function(...) {
+    list_playlist_items = function(...) {
       list(
         kind = "youtube#playlistItemListResponse",
         etag = "test-etag",

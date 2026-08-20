@@ -17,7 +17,7 @@ test_that("get_all_comments runs successfully with real API", {
     expect_true(nrow(result) > 0)
 
     # Check for expected columns
-    expected_cols <- c("authorDisplayName", "textDisplay", "publishedAt", "id")
+    expected_cols <- c("author_name", "text_display", "published_at", "comment_id")
     missing_cols <- setdiff(expected_cols, colnames(result))
     expect_true(length(missing_cols) == 0,
                 info = paste("Missing columns:", paste(missing_cols, collapse = ", ")))
@@ -67,12 +67,12 @@ test_that("get_all_comments handles pagination correctly", {
 
       expect_s3_class(result, "data.frame")
       expect_equal(nrow(result), 15)  # 3 pages * 5 comments each
-      expect_true(all(c("textDisplay", "authorDisplayName") %in% colnames(result)))
+      expect_true(all(c("text_display", "author_name") %in% colnames(result)))
 
       # Check that we got comments from all pages
-      expect_true(any(grepl("page 1", result$textDisplay)))
-      expect_true(any(grepl("page 2", result$textDisplay)))
-      expect_true(any(grepl("page 3", result$textDisplay)))
+      expect_true(any(grepl("page 1", result$text_display)))
+      expect_true(any(grepl("page 2", result$text_display)))
+      expect_true(any(grepl("page 3", result$text_display)))
     }
   )
 })
@@ -88,7 +88,10 @@ test_that("get_all_comments handles empty responses gracefully", {
   with_mocked_bindings(
     tuber_GET = mock_empty_response,
     {
-      result <- get_all_comments(video_id = "empty_video")
+      expect_warning(
+        result <- get_all_comments(video_id = "empty_video"),
+        "No comments found"
+      )
       expect_s3_class(result, "data.frame")
       expect_equal(nrow(result), 0)
     }

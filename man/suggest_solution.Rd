@@ -14,3 +14,4 @@ suggest_solution(issue_type, details = "")
 \description{
 Provide helpful suggestions for common user errors
 }
+\keyword{internal}

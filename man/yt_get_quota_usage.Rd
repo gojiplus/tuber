@@ -7,14 +7,16 @@
 yt_get_quota_usage()
 }
 \value{
-List with quota_used, quota_limit, quota_remaining, and reset_time
+A data frame with one row per quota bucket and columns for estimated
+usage, configured limits, remaining quota, and reset time.
 }
 \description{
-Returns the current estimated quota usage for the day
+Returns session-local estimated quota usage for the current quota day.
+Actual project usage is available in the Google Cloud Console.
 }
 \examples{
 \dontrun{
 quota_status <- yt_get_quota_usage()
-cat("Used:", quota_status$quota_used, "/", quota_status$quota_limit)
+quota_status[quota_status$bucket == "data", ]
 }
 }

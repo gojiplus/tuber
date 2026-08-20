@@ -19,7 +19,8 @@ add_tuber_attributes(
 
 \item{api_calls_made}{Number of API calls made to generate this result}
 
-\item{quota_used}{Estimated quota units consumed}
+\item{quota_used}{Estimated quota units consumed by the operation. If
+`NULL`, no quota attribute is added.}
 
 \item{function_name}{Name of the calling function}
 

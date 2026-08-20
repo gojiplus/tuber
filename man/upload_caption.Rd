@@ -2,55 +2,56 @@
 % Please edit documentation in R/upload_caption.R
 \name{upload_caption}
 \alias{upload_caption}
-\title{Upload Video Caption to Youtube}
+\title{Upload a Caption Track}
 \usage{
 upload_caption(
   file,
   video_id,
-  language = "en-US",
   caption_name,
+  language = "en-US",
   is_draft = FALSE,
-  query = NULL,
+  on_behalf_of_content_owner = NULL,
   open_url = FALSE,
   ...
 )
 }
 \arguments{
-\item{file}{Filename of the caption file with timing information (e.g., `.srt`, `.vtt`).
-As of April 12, 2024, timing information is required for all caption uploads.}
+\item{file}{Path to a caption file containing timing information.}
 
-\item{video_id}{YouTube Video ID.  Try \code{\link{list_my_videos}} for examples.}
+\item{video_id}{YouTube video ID.}
 
-\item{language}{character string of `BCP47` language type.
-See \url{https://www.rfc-editor.org/info/bcp47} for language specification}
+\item{caption_name}{Name of the caption track. YouTube limits names to 150
+characters.}
 
-\item{caption_name}{character vector of the name for the caption.}
+\item{language}{BCP 47 language tag for the caption track.}
 
-\item{is_draft}{logical indicating whether the caption track is a draft.}
+\item{is_draft}{Whether the caption track should remain a draft.}
 
-\item{query}{Fields for `query` in `POST`}
+\item{on_behalf_of_content_owner}{Optional YouTube content-owner ID. This is
+only available to authorized YouTube content partners.}
 
-\item{open_url}{Should the video be opened using \code{\link{browseURL}}}
+\item{open_url}{Whether to open the video's YouTube URL after a successful
+upload.}
 
-\item{...}{Additional arguments to send to \code{\link[httr]{POST}}}
+\item{...}{Additional arguments passed to [httr::POST()] and [httr::PUT()].}
 }
 \value{
-A list of the response object from the \code{\link[httr]{POST}}, content,
-and the URL of the video
+A list containing the final HTTP response, parsed caption resource,
+  and video URL.
 }
 \description{
-Upload Video Caption to Youtube
-}
-\note{
-See
-\url{https://developers.google.com/youtube/v3/docs/captions#resource} for
-full specification
+Uploads a timed caption file using YouTube's resumable media-upload
+protocol. The request requires OAuth 2.0 authorization.
 }
 \examples{
 \dontrun{
-xx = list_my_videos()
-video_id = xx$contentDetails.videoId[1]
-video_id = as.character(video_id)
-language = "en-US"
+upload_caption(
+  file = "captions.vtt",
+  video_id = "dQw4w9WgXcQ",
+  caption_name = "English"
+)
 }
+}
+\references{
+<https://developers.google.com/youtube/v3/docs/captions/insert>
 }

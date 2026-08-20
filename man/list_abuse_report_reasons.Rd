@@ -2,38 +2,33 @@
 % Please edit documentation in R/list_abuse_report_reasons.R
 \name{list_abuse_report_reasons}
 \alias{list_abuse_report_reasons}
-\title{List reasons that can be used to report abusive videos}
+\title{List Video-Abuse Report Reasons}
 \usage{
-list_abuse_report_reasons(part = "id, snippet", hl = "en-US", ...)
+list_abuse_report_reasons(
+  part = c("id", "snippet"),
+  language = "en-US",
+  auth = "key",
+  ...
+)
 }
 \arguments{
-\item{part}{Caption resource requested. Required. Comma separated list of
-one or more of the
-following: \code{id, snippet}. e.g., \code{"id, snippet"}, \code{"id"}, etc.
- Default: \code{snippet}.}
+\item{part}{Character vector of resource parts.}
 
-\item{hl}{Language used for text values. Optional. Default is \code{en-US}.
-For other allowed language codes, see \code{\link{list_langs}}.}
+\item{language}{Language code for localized labels.}
 
-\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
+\item{auth}{Authentication method, `"key"` or `"token"`.}
+
+\item{...}{Additional arguments passed to [tuber_GET()].}
 }
 \value{
-If no results, empty data.frame returned
-If part requested = "id, snippet" or "snippet",
-\code{data.frame} with 4 columns: \code{etag, id, label, secReasons}
-If part requested = "id", data.frame with 2 columns: \code{etag, id}
+A data frame with one row per primary report reason.
 }
 \description{
-List reasons that can be used to report abusive videos
+List Video-Abuse Report Reasons
 }
 \examples{
 \dontrun{
-
-# Set API token via yt_oauth() first
-
 list_abuse_report_reasons()
-list_abuse_report_reasons(part="id")
-list_abuse_report_reasons(part="snippet")
 }
 }
 \references{

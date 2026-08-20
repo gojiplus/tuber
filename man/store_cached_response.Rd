@@ -16,3 +16,4 @@ store_cached_response(cache_key, data, ttl = NULL)
 \description{
 Store response in cache
 }
+\keyword{internal}

@@ -35,8 +35,8 @@ test_that("list_channel_members handles data correctly", {
 
       expect_true(is.data.frame(result))
       expect_equal(nrow(result), 1)
-      expect_equal(result$id[1], "member-id")
-      expect_equal(result$memberDetails_displayName[1], "Test Member")
+      expect_equal(result$member_id[1], "member-id")
+      expect_equal(result$member_name[1], "Test Member")
     }
   )
 })

@@ -17,3 +17,4 @@ Invisible NULL if valid, stops execution if invalid
 \description{
 Validate language codes
 }
+\keyword{internal}

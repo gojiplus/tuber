@@ -45,6 +45,8 @@
 #' to the search query term.
 #' @param type Character. Optional. Takes one of three values:
 #' \code{'video', 'channel', 'playlist'}. Default is \code{'video'}.
+#' @param order Character. Sort order. One of \code{'date', 'rating',
+#' 'relevance', 'title', 'videoCount', 'viewCount'}.
 #' @param video_caption Character. Optional. Takes one of three values:
 #' \code{'any'} (return all videos; Default), \code{'closedCaption', 'none'}.
 #' Type must be set to video.
@@ -54,11 +56,13 @@
 #' @param video_syndicated Character. Optional. Takes one of two values:
 #' \code{'any'} (return all videos; Default), \code{'true'}
 #' (return only syndicated videos)
-#' @param region_code Character. Required. Has to be a ISO 3166-1 alpha-2 code
-#'  (see \url{https://www.iso.org/obp/ui/#search}).
+#' @param region_code Character. Optional. An ISO 3166-1 alpha-2 country code.
 #' @param video_definition Character. Optional.
 #' Takes one of three values: \code{'any'} (return all videos; Default),
 #' \code{'high', 'standard'}
+#' @param video_duration Character. Optional. One of \code{'any', 'long',
+#' 'medium', 'short'}. YouTube defines `short` as less than four minutes; it
+#' does not identify the YouTube Shorts product.
 #' @param video_license Character. Optional.
 #' Takes one of three values: \code{'any'} (return all videos; Default),
 #' \code{'creativeCommon'} (return videos with Creative Commons
@@ -74,15 +78,11 @@
 #' @param max_pages Maximum number of pages to retrieve when get_all is TRUE.
 #' Default is Inf (no page limit). Setting a lower value can reduce API quota
 #' usage.
+#' @param auth Authentication method: `"token"` or `"key"`.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'
-#' @return data.frame with 16 elements: \code{video_id, publishedAt,
-#' channelId, title, description,
-#' thumbnails.default.url, thumbnails.default.width, thumbnails.default.height,
-#' thumbnails.medium.url,
-#' thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url,
-#' thumbnails.high.width,
-#' thumbnails.high.height, channelTitle, liveBroadcastContent}
+#' @return When `simplify = TRUE`, a data frame with a resource ID column and
+#' snake-case metadata columns. Otherwise, a raw search-list response.
 #' The returned data.frame also has the following attributes:
 #' \code{total_results}: The total number of results reported by the API
 #' \code{actual_results}: The actual number of rows returned
@@ -114,22 +114,30 @@
 #' }
 
 yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
-                      channel_type = NULL, type = "video", event_type = NULL,
+                      channel_type = NULL, type = "video", order = "relevance",
+                      event_type = NULL,
                       location = NULL, location_radius = NULL,
                       published_after = NULL, published_before = NULL,
-                      video_definition = "any", video_caption = "any",
+                      video_definition = "any", video_duration = "any",
+                      video_caption = "any",
                       video_license = "any", video_syndicated = "any",
                       region_code = NULL, relevance_language = "en",
                       video_type = "any", simplify = TRUE, get_all = TRUE,
-                      page_token = NULL, max_pages = Inf, ...) {
+                      page_token = NULL, max_pages = Inf, auth = "key", ...) {
 
   # Modern validation using checkmate
   assert_string(term, min.chars = 1, .var.name = "term")
   assert_integerish(max_results, len = 1, lower = 1, upper = 500, .var.name = "max_results")
   assert_choice(type, c("video", "channel", "playlist"), .var.name = "type")
+  assert_choice(
+    order,
+    c("date", "rating", "relevance", "title", "videoCount", "viewCount"),
+    .var.name = "order"
+  )
   assert_logical(simplify, len = 1, .var.name = "simplify")
   assert_logical(get_all, len = 1, .var.name = "get_all")
   assert_numeric(max_pages, len = 1, lower = 1, .var.name = "max_pages")
+  assert_choice(auth, c("token", "key"), .var.name = "auth")
 
   # Validate video-specific parameters only when type is "video"
   if (type == "video") {
@@ -137,10 +145,11 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
     assert_choice(video_syndicated, c("any", "true"), .var.name = "video_syndicated")
     assert_choice(video_type, c("any", "episode", "movie"), .var.name = "video_type")
     assert_choice(video_definition, c("any", "high", "standard"), .var.name = "video_definition")
+    assert_choice(video_duration, c("any", "long", "medium", "short"), .var.name = "video_duration")
     assert_choice(video_caption, c("any", "closedCaption", "none"), .var.name = "video_caption")
   } else {
     # Set these to NULL if type is not "video" to avoid sending them in the API call
-    video_caption <- video_license <- video_definition <-
+    video_caption <- video_license <- video_definition <- video_duration <-
       video_type <- video_syndicated <- NULL
   }
 
@@ -176,6 +185,7 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
     maxResults = results_per_page,
     channelId = channel_id,
     type = type,
+    order = order,
     channelType = channel_type,
     eventType = event_type,
     location = location,
@@ -183,6 +193,7 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
     publishedAfter = published_after,
     publishedBefore = published_before,
     videoDefinition = video_definition,
+    videoDuration = video_duration,
     videoCaption = video_caption,
     videoType = video_type,
     videoSyndicated = video_syndicated,
@@ -198,114 +209,117 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
   # Helper function to process search results
   process_results <- function(res_items, item_type) {
     if (length(res_items) == 0) {
-      return(data.frame())
+      result <- data.frame(
+        resource_id = character(),
+        published_at = character(),
+        title = character(),
+        description = character(),
+        channel_id = character(),
+        channel_title = character(),
+        live_broadcast_content = character(),
+        thumbnail_url = character(),
+        stringsAsFactors = FALSE
+      )
+      names(result)[1] <- paste0(item_type, "_id")
+      return(result)
     }
 
-    if (item_type == "video") {
-      simple_res <- lapply(res_items, function(x) {
-        if (is.null(x$id$videoId)) {
-          return(NULL)  # Skip items without videoId
-        }
-        c(video_id = x$id$videoId, unlist(x$snippet))
-      })
-    } else {
-      simple_res <- lapply(res_items, function(x) unlist(x$snippet))
-    }
+    bind_rows(lapply(res_items, function(item) {
+      resource_id <- switch(
+        item_type,
+        video = item$id$videoId,
+        channel = item$id$channelId,
+        playlist = item$id$playlistId
+      )
+      if (is.null(resource_id)) return(NULL)
 
-    # Remove NULL entries and convert to data frame
-    simple_res <- simple_res[!sapply(simple_res, is.null)]
-    if (length(simple_res) == 0) {
-      return(data.frame())
-    }
-
-    return(bind_rows(lapply(simple_res, function(x) {
-      as.data.frame(t(x), stringsAsFactors = FALSE)
-    })))
+      row <- data.frame(
+        published_at = item$snippet$publishedAt %||% NA_character_,
+        title = item$snippet$title %||% NA_character_,
+        description = item$snippet$description %||% NA_character_,
+        channel_id = item$snippet$channelId %||% NA_character_,
+        channel_title = item$snippet$channelTitle %||% NA_character_,
+        live_broadcast_content = item$snippet$liveBroadcastContent %||% NA_character_,
+        thumbnail_url = item$snippet$thumbnails$high$url %||%
+          item$snippet$thumbnails$medium$url %||%
+          item$snippet$thumbnails$default$url %||% NA_character_,
+        stringsAsFactors = FALSE
+      )
+      id_name <- paste0(item_type, "_id")
+      row[[id_name]] <- resource_id
+      row[, c(id_name, setdiff(names(row), id_name)), drop = FALSE]
+    }))
   }
 
-  # Make initial API call
-  res <- tuber_GET("search", querylist, ...)
+  fetch_page <- function(token = NULL) {
+    page_query <- querylist
+    page_query$pageToken <- token
+    tuber_GET("search", page_query, auth = auth, ...)
+  }
+  response <- fetch_page(page_token)
 
-  # If get_all is FALSE or there are no results, process and return
-  if (!identical(get_all, TRUE) || res$pageInfo$totalResults == 0) {
-    if (!identical(simplify, TRUE)) {
-      return(res)
-    }
-    return(process_results(res$items, type))
+  pages <- if (get_all) {
+    paginate_api_request(
+      response,
+      fetch_page,
+      max_results = max_results,
+      max_pages = max_pages
+    )
+  } else {
+    list(
+      items = head(response$items %||% list(), max_results),
+      page_count = 1L,
+      has_more = !is.null(response$nextPageToken),
+      final_page_token = response$nextPageToken
+    )
+  }
+  response$items <- pages$items
+  response$nextPageToken <- pages$final_page_token
+
+  if (get_all && pages$has_more && pages$page_count >= max_pages &&
+      length(pages$items) < max_results) {
+    warning(sprintf(
+      paste0(
+        "Only retrieved %d pages of results (got %d/%d items). ",
+        "Set max_pages higher to get more results."
+      ),
+      max_pages,
+      length(pages$items),
+      max_results
+    ))
   }
 
-  # Process all pages for get_all=TRUE
-  all_results <- process_results(res$items, type)
-  page_token <- res$nextPageToken
-  page_count <- 1
-  total_returned <- nrow(all_results)
-
-  # Get all pages up to max_pages limit and requested max_results
-  while (!is.null(page_token) && page_count < max_pages &&
-         total_returned < max_results) {
-
-    # Calculate how many more results we actually need
-    remaining_needed <- max_results - total_returned
-    request_size <- min(remaining_needed, 50)  # Don't request more than we need
-
-    querylist$pageToken <- page_token
-    querylist$maxResults <- request_size
-    a_res <- tuber_GET("search", querylist, ...)
-
-    next_results <- process_results(a_res$items, type)
-
-    # Only take what we need if we get more than requested
-    if (nrow(next_results) > remaining_needed) {
-      next_results <- next_results[seq_len(remaining_needed), , drop = FALSE]
-    }
-
-    all_results <- rbind(all_results, next_results)
-    total_returned <- nrow(all_results)
-    page_token <- a_res$nextPageToken
-    page_count <- page_count + 1
-
-    # Stop if we've reached our target
-    if (total_returned >= max_results) {
-      break
-    }
-
-    # Check if we've reached YouTube's limit (around 500-600 items)
-    if (total_returned >= 500 && is.null(page_token)) {
-      warning("Reached YouTube API search result limit (approximately 500 items)")
-      break
-    }
+  if (!simplify) {
+    return(add_tuber_attributes(
+      response,
+      api_calls_made = pages$page_count,
+      function_name = "yt_search",
+      results_found = length(pages$items),
+      pages_retrieved = pages$page_count,
+      response_format = "list"
+    ))
   }
 
-  # Add warning if we hit the max_pages limit but there are still more results
-  if (!is.null(page_token) && page_count >= max_pages && total_returned < max_results) {
-    warning(sprintf("Only retrieved %d pages of results (got %d/%d items). Set max_pages higher to get more results.",
-                   max_pages, total_returned, max_results))
-  }
-
-  # Calculate actual API calls made
-  api_calls_made <- page_count
-
-  # Add standardized attributes (preserving existing ones)
+  result <- process_results(pages$items, type)
   result <- add_tuber_attributes(
-    all_results,
-    api_calls_made = api_calls_made,
+    result,
+    api_calls_made = pages$page_count,
     function_name = "yt_search",
     parameters = list(
       term = term,
       max_results = max_results,
       type = type,
+      order = order,
       get_all = get_all,
       max_pages = max_pages
     ),
-    results_found = nrow(all_results),
-    pages_retrieved = page_count,
-    search_exhausted = is.null(page_token) || page_count >= max_pages
+    results_found = nrow(result),
+    pages_retrieved = pages$page_count,
+    search_exhausted = !pages$has_more,
+    response_format = "data.frame"
   )
-
-  # Preserve existing attributes
-  attr(result, "total_results") <- res$pageInfo$totalResults
-  attr(result, "actual_results") <- nrow(all_results)
-  attr(result, "api_limit_reached") <- nrow(all_results) >= 500
-
-  return(result)
+  attr(result, "total_results") <- response$pageInfo$totalResults %||% nrow(result)
+  attr(result, "actual_results") <- nrow(result)
+  attr(result, "api_limit_reached") <- nrow(result) >= 500
+  result
 }

@@ -5,34 +5,35 @@
 \title{Returns List of Requested Channel Videos}
 \usage{
 list_channel_videos(
-  channel_id = NULL,
+  channel_id,
   max_results = 50,
   page_token = NULL,
-  hl = "en-US",
+  simplify = TRUE,
+  auth = "key",
   ...
 )
 }
 \arguments{
 \item{channel_id}{String. ID of the channel. Required.}
 
-\item{max_results}{Maximum number of videos returned. Integer. Default is 50.
-If the number is over 50, all the videos will be returned.}
+\item{max_results}{Maximum total number of videos returned.}
 
 \item{page_token}{Specific page in the result set that should be returned.
 Optional.}
 
-\item{hl}{Language used for text values. Optional. Default is \code{en-US}.
-For other allowed language codes, see \code{\link{list_langs}}}
+\item{simplify}{If `TRUE`, return a data frame; otherwise return the raw
+playlist-items response.}
+
+\item{auth}{Authentication method, `"key"` or `"token"`.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-list of \code{data.frame} with each list corresponding to a different
-playlist
+A data frame when `simplify = TRUE`; otherwise a playlist-items
+response.
 }
 \description{
-Iterate through the \code{max_results} number of playlists in channel and get
-the videos for each of the playlists.
+Retrieves items from a channel's uploads playlist.
 }
 \examples{
 

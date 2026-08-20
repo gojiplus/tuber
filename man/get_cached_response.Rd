@@ -15,3 +15,4 @@ Cached response or NULL if not available/expired
 \description{
 Get cached response if available and valid
 }
+\keyword{internal}

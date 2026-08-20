@@ -2,23 +2,29 @@
 % Please edit documentation in R/list_my_videos.R
 \name{list_my_videos}
 \alias{list_my_videos}
-\title{List My videos}
+\title{List My Videos}
 \usage{
-list_my_videos(...)
+list_my_videos(max_results = 50, page_token = NULL, simplify = TRUE, ...)
 }
 \arguments{
-\item{...}{additional arguments to pass to \code{\link{list_channel_videos}}}
+\item{max_results}{Maximum total number of videos to return.}
+
+\item{page_token}{Optional page token at which to start.}
+
+\item{simplify}{If `TRUE`, return a data frame; otherwise return the raw
+playlist-items response.}
+
+\item{...}{Additional arguments passed to [tuber_GET()].}
 }
 \value{
-\code{data.frame} with each list corresponding to a different
-playlist
+A data frame when `simplify = TRUE`; otherwise a playlist-items
+response.
 }
 \description{
-List My videos
+Lists videos in the authenticated channel's uploads playlist.
 }
 \examples{
 \dontrun{
-  list_my_videos()
+list_my_videos(max_results = 100)
 }
-
 }

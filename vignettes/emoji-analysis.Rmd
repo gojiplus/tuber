@@ -44,8 +44,8 @@ comments <- get_all_comments(video_id = "your_video_id", max_results = 500)
 ```{r basic-analysis, eval=FALSE}
 comments <- comments |>
   mutate(
-    has_emoji = has_emoji(textDisplay),
-    emoji_count = count_emojis(textDisplay)
+    has_emoji = has_emoji(text_display),
+    emoji_count = count_emojis(text_display)
   )
 
 summary(comments$emoji_count)
@@ -74,7 +74,7 @@ comments |>
 ### Top Emojis
 
 ```{r frequency, eval=FALSE}
-all_emojis <- unlist(extract_emojis(comments$textDisplay))
+all_emojis <- unlist(extract_emojis(comments$text_display))
 
 emoji_freq <- as.data.frame(table(all_emojis), stringsAsFactors = FALSE)
 names(emoji_freq) <- c("emoji", "count")
@@ -102,8 +102,8 @@ emoji_freq |>
 ```{r temporal, eval=FALSE}
 comments <- comments |>
   mutate(
-    date = as.Date(publishedAt),
-    emoji_count = count_emojis(textDisplay)
+    date = as.Date(published_at),
+    emoji_count = count_emojis(text_display)
   )
 
 daily_emoji <- comments |>
@@ -145,7 +145,7 @@ negative_emojis <- c(
 
 comments <- comments |>
   mutate(
-    emojis = extract_emojis(textDisplay),
+    emojis = extract_emojis(text_display),
     pos_emoji = sapply(emojis, function(e) sum(e %in% positive_emojis)),
     neg_emoji = sapply(emojis, function(e) sum(e %in% negative_emojis)),
     emoji_sentiment = case_when(
@@ -168,13 +168,13 @@ engagement_summary <- comments |>
   group_by(has_emoji) |>
   summarise(
     n = n(),
-    mean_likes = mean(likeCount, na.rm = TRUE),
-    median_likes = median(likeCount, na.rm = TRUE)
+    mean_likes = mean(like_count, na.rm = TRUE),
+    median_likes = median(like_count, na.rm = TRUE)
   )
 
 print(engagement_summary)
 
-ggplot(comments, aes(x = has_emoji, y = likeCount + 1)) +
+ggplot(comments, aes(x = has_emoji, y = like_count + 1)) +
   geom_boxplot(fill = "steelblue", alpha = 0.7) +
   scale_y_log10() +
   labs(
@@ -200,7 +200,7 @@ all_comments <- lapply(video_ids, function(vid) {
 all_comments <- bind_rows(all_comments)
 
 video_emoji_stats <- all_comments |>
-  mutate(emoji_count = count_emojis(textDisplay)) |>
+  mutate(emoji_count = count_emojis(text_display)) |>
   group_by(video_id) |>
   summarise(
     total_comments = n(),
@@ -218,7 +218,7 @@ For text analysis that should exclude emojis:
 ```{r clean-text, eval=FALSE}
 comments <- comments |>
   mutate(
-    clean_text = remove_emojis(textDisplay),
+    clean_text = remove_emojis(text_display),
     clean_text = trimws(gsub("\\s+", " ", clean_text))
   )
 
@@ -233,7 +233,7 @@ For large datasets:
 comments_sample <- comments[sample(nrow(comments), min(1000, nrow(comments))), ]
 
 comments_sample <- comments_sample |>
-  mutate(emoji_count = count_emojis(textDisplay))
+  mutate(emoji_count = count_emojis(text_display))
 
 emoji_rate_estimate <- mean(comments_sample$emoji_count > 0) * 100
 ```

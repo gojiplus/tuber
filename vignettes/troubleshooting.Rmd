@@ -14,8 +14,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Troubleshooting Common Issues
-
 This vignette addresses the most common issues users encounter when setting up and using the `tuber` package.
 
 ## HTTP 403 Errors
@@ -27,18 +25,18 @@ This vignette addresses the most common issues users encounter when setting up a
 **Solution**:
 1. Go to [Google Cloud Console](https://console.cloud.google.com/)
 2. Select your project (or create a new one)
-3. Enable the YouTube Data API v3: https://console.cloud.google.com/marketplace/product/google/youtube.googleapis.com
+3. Follow Google's [YouTube Data API setup guide](https://developers.google.com/youtube/v3/getting-started) to enable the API
 4. Wait 2-5 minutes for the API to be fully activated
 5. Try your request again
 
 ### Error: "Access denied" or "Insufficient permissions"
 
-**Cause**: Your OAuth scope or API key doesn't have the required permissions.
+Your OAuth scope or API key does not have the required permissions.
 
-**Solution**:
-- For OAuth: Delete `.httr-oauth` file and re-authenticate with `yt_oauth()`
-- For API keys: Ensure your API key has YouTube Data API permissions
-- Some operations (like accessing private videos) require OAuth authentication
+- For OAuth, call `yt_oauth()` with a token path that does not contain a usable
+  token, or remove the cached token reported by `formals(yt_oauth())$token`.
+- For API keys, confirm that the key's project has the YouTube Data API enabled.
+- Private data and every write operation require OAuth.
 
 ## Authentication Issues
 
@@ -54,26 +52,27 @@ This vignette addresses the most common issues users encounter when setting up a
 7. Note the Client ID and Client Secret
 8. Use: `yt_oauth("your_client_id", "your_client_secret")`
 
-### OAuth Browser Issues
+### OAuth browser issues
 
-**Issue**: Browser doesn't open or redirect fails
+Google requires installed applications to use a system browser and local
+redirect. Its former out-of-band copy-and-paste flow is no longer supported.
 
-**Solutions**:
-- Use out-of-band authentication: `yt_oauth(app_id, app_secret, use_oob = TRUE)`
-- For server environments, copy the authorization code manually
-- Ensure your OAuth app is configured for "Desktop application"
+- Confirm that the OAuth client type is "Desktop app".
+- Run the initial authorization in an interactive R session that can open a
+  browser and receive a loopback redirect.
+- Reuse the saved token for later non-interactive sessions.
 
 ## API Quota and Rate Limits
 
 ### Error: "Quota exceeded"
 
-**Cause**: You've exceeded your daily API quota (default: 10,000 units).
+You have exhausted one of the project's daily quota buckets.
 
 **Solutions**:
-- Wait until quota resets (daily at Pacific Time midnight)
-- Request quota increase in Google Cloud Console
-- Use batch operations to reduce quota usage
-- Cache results to avoid repeated API calls
+- Wait until quota resets at midnight Pacific Time.
+- Inspect the project's actual usage in Google Cloud Console.
+- Use batch operations and the response cache to avoid repeated requests.
+- Request a quota increase if the application needs a higher allocation.
 
 ### Error: "Rate limit exceeded" (429)
 
@@ -87,11 +86,12 @@ Sys.sleep(0.1)  # 100ms delay
 
 ## Common Function Issues
 
-### get_captions() returns 403
+### download_caption() returns 403
 
-**Cause**: Caption download requires video ownership.
+Caption download requires OAuth and permission to access the caption track.
 
-**Solution**: You can only download captions from videos you own using OAuth authentication.
+Authenticate as the channel that owns the video or as an authorized content
+partner.
 
 ### Comments functions return fewer results than expected
 
@@ -109,9 +109,8 @@ Sys.sleep(0.1)  # 100ms delay
 **Solution**: Use channel IDs instead of usernames when possible:
 ```r
 # Instead of username
-get_channel_stats(channel_id = "UC_x5XG1OV2P6uZZ5FSM9Ttw")
-# Instead of 
-get_channel_stats(username = "oldusername")
+get_channel_details(channel_ids = "UC_x5XG1OV2P6uZZ5FSM9Ttw")
+get_channel_details(usernames = "oldusername")
 ```
 
 ## Performance Tips
@@ -124,10 +123,9 @@ get_channel_stats(username = "oldusername")
 
 ## Getting Help
 
-If you continue to experience issues:
-
-1. Check that your issue isn't covered in this troubleshooting guide
-2. Verify your Google Cloud setup matches the instructions exactly
+Open an issue at <https://github.com/gojiplus/tuber/issues> with the function
+call, the error class and message, and `sessionInfo()`. Remove API keys, OAuth
+tokens, and other credentials before posting.
 3. Test with simple examples before complex operations
 4. Check the [GitHub issues](https://github.com/gojiplus/tuber/issues) for similar problems
 5. When reporting issues, include:

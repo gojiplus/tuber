@@ -1,12 +1,13 @@
 #' Insert Channel Banner
 #'
 #' Uploads a channel banner image to YouTube.
-#' The image must be a JPEG, PNG, or GIF. The maximum file size is 6MB.
+#' The image must be a JPEG or PNG. The maximum file size is 6 MB.
 #' This returns a URL that you can then use with `update_channel` (if implemented)
 #' or through the standard API to set the channel banner.
 #'
 #' @param file Character. Path to the banner image file.
-#' @param channel_id Character. Optional. The channel to upload the banner for (needed if using service accounts).
+#' @param on_behalf_of_content_owner Optional YouTube content-owner ID. This is
+#'   only available to authorized YouTube content partners.
 #' @param \dots Additional arguments passed to \code{\link[httr]{POST}}.
 #'
 #' @return A list containing the response from the API, including the `url` for the banner.
@@ -21,11 +22,16 @@
 #' banner <- insert_channel_banner(file = "banner.jpg")
 #' print(banner$content$url)
 #' }
-insert_channel_banner <- function(file, channel_id = NULL, ...) {
+insert_channel_banner <- function(file, on_behalf_of_content_owner = NULL, ...) {
   # Validation
   assert_character(file, len = 1, min.chars = 1, .var.name = "file")
-  if (!is.null(channel_id)) {
-    assert_character(channel_id, len = 1, min.chars = 1, .var.name = "channel_id")
+  if (!is.null(on_behalf_of_content_owner)) {
+    assert_character(
+      on_behalf_of_content_owner,
+      len = 1,
+      min.chars = 1,
+      .var.name = "on_behalf_of_content_owner"
+    )
   }
 
   if (!file.exists(file)) {
@@ -36,22 +42,30 @@ insert_channel_banner <- function(file, channel_id = NULL, ...) {
 
   file_size <- file.info(file)$size
   if (file_size > 6 * 1024 * 1024) {
-    warning("Banner file size exceeds 6MB. The upload may fail.")
+    abort(
+      "Banner file exceeds YouTube's 6 MB limit",
+      file_path = file,
+      class = "tuber_file_too_large"
+    )
   }
 
   yt_check_token()
+  track_quota_usage("channelBanners", "insert")
 
   url <- "https://www.googleapis.com/upload/youtube/v3/channelBanners/insert"
 
-  query <- list()
-  if (!is.null(channel_id)) {
-    query$onBehalfOfContentOwnerChannel <- channel_id
+  query <- list(uploadType = "media")
+  if (!is.null(on_behalf_of_content_owner)) {
+    query$onBehalfOfContentOwner <- on_behalf_of_content_owner
   }
 
   req <- httr::POST(
     url,
     query = query,
-    body = httr::upload_file(file),
+    body = httr::upload_file(
+      file,
+      type = mime::guess_type(file, empty = "application/octet-stream")
+    ),
     config(token = getOption("google_token")),
     ...
   )

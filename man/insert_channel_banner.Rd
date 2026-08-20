@@ -4,12 +4,13 @@
 \alias{insert_channel_banner}
 \title{Insert Channel Banner}
 \usage{
-insert_channel_banner(file, channel_id = NULL, ...)
+insert_channel_banner(file, on_behalf_of_content_owner = NULL, ...)
 }
 \arguments{
 \item{file}{Character. Path to the banner image file.}
 
-\item{channel_id}{Character. Optional. The channel to upload the banner for (needed if using service accounts).}
+\item{on_behalf_of_content_owner}{Optional YouTube content-owner ID. This is
+only available to authorized YouTube content partners.}
 
 \item{\dots}{Additional arguments passed to \code{\link[httr]{POST}}.}
 }
@@ -18,7 +19,7 @@ A list containing the response from the API, including the `url` for the banner.
 }
 \description{
 Uploads a channel banner image to YouTube.
-The image must be a JPEG, PNG, or GIF. The maximum file size is 6MB.
+The image must be a JPEG or PNG. The maximum file size is 6 MB.
 This returns a URL that you can then use with `update_channel` (if implemented)
 or through the standard API to set the channel banner.
 }

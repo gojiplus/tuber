@@ -5,6 +5,8 @@
 #'
 #' @param channel_id Character. Id of the channel
 #' @param mine Boolean. TRUE if you want to fetch stats of your own channel. Default is FALSE.
+#' @param auth Authentication method, `"key"` or `"token"`. `mine = TRUE`
+#' requires OAuth.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'
 #' @return A \code{data.frame} containing video metadata along with view, like,
@@ -25,16 +27,30 @@
 #' get_all_channel_video_stats(channel_id="UCMtFAi84ehTSYSE9Xo") # Incorrect channel ID
 #' }
 
-get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
+get_all_channel_video_stats <- function(channel_id = NULL,
+                                        mine = FALSE,
+                                        auth = if (mine) "token" else "key",
+                                        ...) {
   # Modern validation using checkmate
-  if (!identical(tolower(mine), "true")) {
+  assert_flag(mine, .var.name = "mine")
+  assert_choice(auth, c("key", "token"), .var.name = "auth")
+  if (!mine) {
     assert_character(channel_id, len = 1, min.chars = 1, .var.name = "channel_id")
   }
-  assert_logical(mine, len = 1, .var.name = "mine")
+  if (mine && auth != "token") {
+    abort("`mine = TRUE` requires OAuth authentication.", class = "tuber_auth_required")
+  }
 
   # Get channel resources with proper error handling
   channel_resources <- tryCatch({
-    list_channel_resources(filter = c(channel_id = channel_id), part = "contentDetails", simplify = FALSE, ...)
+    get_channel_details(
+      channel_ids = if (mine) NULL else channel_id,
+      mine = mine,
+      part = "contentDetails",
+      simplify = FALSE,
+      auth = auth,
+      ...
+    )
   }, error = function(e) {
     abort("Failed to get channel information",
           channel_id = channel_id,
@@ -78,11 +94,12 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
       message("Fetching playlist page ", page_count, "...")
     }
 
-    playlist_items <- get_playlist_items(
-      filter = c(playlist_id = playlist_id),
+    playlist_items <- list_playlist_items(
+      playlist_id = playlist_id,
       max_results = 50,
       page_token = page_token,
       simplify = FALSE,
+      auth = auth,
       ...
     )
 
@@ -113,6 +130,7 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
     part = c("snippet", "statistics"),
     simplify = TRUE,
     show_progress = TRUE,
+    auth = auth,
     ...
   )
 
@@ -146,10 +164,11 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
   }
 
   # Add video URL
-  result_df$url <- paste0("https://www.youtube.com/watch?v=", result_df$id)
+  names(result_df)[names(result_df) == "id"] <- "video_id"
+  result_df$url <- paste0("https://www.youtube.com/watch?v=", result_df$video_id)
 
   # Ensure consistent column order
-  final_columns <- c("id", "title", "publication_date", "description",
+  final_columns <- c("video_id", "title", "publication_date", "description",
                      "channel_id", "channel_title", "view_count", "like_count",
                      "comment_count", "url")
 
@@ -169,7 +188,7 @@ get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
     result_df,
     api_calls_made = page_count + ceiling(length(vid_ids) / 50),
     function_name = "get_all_channel_video_stats",
-    parameters = list(channel_id = channel_id),
+    parameters = list(channel_id = channel_id, mine = mine),
     results_found = nrow(result_df),
     videos_in_channel = length(vid_ids),
     response_format = "data.frame"

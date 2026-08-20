@@ -1,54 +1,99 @@
 #' List Channel Sections
 #'
-#' Returns list of channel sections that channel id belongs to.
+#' Returns channel sections matching exactly one supported YouTube filter.
 #'
-#' @param filter string; Required.
-#' named vector of length 1
-#' potential names of the entry in the vector:
-#' \code{channel_id}: Channel ID
-#' \code{id}: Section ID
+#' @param channel_id Channel whose sections should be returned.
+#' @param section_ids One or more channel-section IDs.
+#' @param mine Set to `TRUE` to return sections for the authenticated user's
+#' channel.
+#' @param part Character vector of resource parts to return.
+#' @param simplify If `TRUE`, return a data frame; otherwise return the raw API
+#' response.
+#' @param auth Authentication method, `"token"` or `"key"`. `mine = TRUE`
+#' requires `"token"`.
+#' @param ... Additional arguments passed to [tuber_GET()].
 #'
-#' @param part specify which part do you want. It can only be one of the
-#' following: \code{contentDetails, id, localizations, snippet, targeting}.
-#' Default is \code{snippet}.
-#' @param hl  language that will be used for text values, optional, default
-#' is en-US. See also \code{\link{list_langs}}
-#' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
-#'
-#' @return captions for the video from one of the first track
+#' @return A data frame when `simplify = TRUE`; otherwise a channel-section
+#' list response.
 #' @export
-#' @references \url{https://developers.google.com/youtube/v3/docs/activities/list}
+#' @references \url{https://developers.google.com/youtube/v3/docs/channelSections/list}
 #' @examples
-#'
 #' \dontrun{
-#'
-#' # Set API token via yt_oauth() first
-#'
-#' list_channel_sections(c(channel_id = "UCRw8bIz2wMLmfgAgWm903cA"))
+#' list_channel_sections(channel_id = "UCRw8bIz2wMLmfgAgWm903cA")
+#' list_channel_sections(mine = TRUE, auth = "token")
 #' }
+list_channel_sections <- function(channel_id = NULL,
+                                  section_ids = NULL,
+                                  mine = FALSE,
+                                  part = c("snippet", "contentDetails"),
+                                  simplify = TRUE,
+                                  auth = if (mine) "token" else "key",
+                                  ...) {
+  assert_flag(mine, .var.name = "mine")
+  assert_character(part, min.len = 1, any.missing = FALSE, .var.name = "part")
+  assert_flag(simplify, .var.name = "simplify")
+  assert_choice(auth, c("token", "key"), .var.name = "auth")
 
-list_channel_sections <- function(filter = NULL, part = "snippet",
-                                   hl = NULL, ...) {
-
-  # Modern validation using checkmate
-  assert_character(filter, len = 1, .var.name = "filter")
-  assert_choice(names(filter), c("id", "channel_id"),
-                .var.name = "filter names (must be 'id' or 'channel_id')")
-  assert_character(part, len = 1, min.chars = 1, .var.name = "part")
-
-  if (!is.null(hl)) {
-    assert_character(hl, len = 1, min.chars = 1, .var.name = "hl")
+  if (!is.null(channel_id)) {
+    assert_string(channel_id, min.chars = 1, .var.name = "channel_id")
+  }
+  if (!is.null(section_ids)) {
+    assert_character(section_ids, min.len = 1, min.chars = 1, .var.name = "section_ids")
   }
 
-  translate_filter   <- c(id = "id", channel_id = "channelId")
-  yt_filter_name     <- as.vector(translate_filter[match(names(filter),
-                                                      names(translate_filter))])
-  names(filter)      <- yt_filter_name
+  filter_count <- sum(!is.null(channel_id), !is.null(section_ids), mine)
+  if (filter_count != 1) {
+    abort(
+      "Supply exactly one of `channel_id`, `section_ids`, or `mine = TRUE`.",
+      class = "tuber_invalid_channel_section_filter"
+    )
+  }
+  if (mine && auth != "token") {
+    abort(
+      "`mine = TRUE` requires OAuth authentication (`auth = \"token\"`).",
+      class = "tuber_auth_required"
+    )
+  }
 
-  querylist <- list(part = part)
-  querylist <- c(querylist, filter)
+  query <- list(part = paste(part, collapse = ","))
+  if (!is.null(channel_id)) query$channelId <- channel_id
+  if (!is.null(section_ids)) query$id <- paste(section_ids, collapse = ",")
+  if (mine) query$mine <- "true"
 
-  res <- tuber_GET("channelSections", querylist, ...)
+  response <- tuber_GET("channelSections", query = query, auth = auth, ...)
+  items <- response$items %||% list()
 
-   res
+  if (!simplify) {
+    return(add_tuber_attributes(
+      response,
+      function_name = "list_channel_sections",
+      results_found = length(items),
+      response_format = "list"
+    ))
+  }
+
+  result <- items_to_frame(items, function(item) {
+    snippet <- item$snippet %||% list()
+    content <- item$contentDetails %||% list()
+    data.frame(
+      section_id = item$id %||% NA_character_,
+      channel_id = snippet$channelId %||% NA_character_,
+      title = snippet$title %||% NA_character_,
+      type = snippet$type %||% NA_character_,
+      style = snippet$style %||% NA_character_,
+      position = as.integer(snippet$position %||% NA),
+      default_language = snippet$defaultLanguage %||% NA_character_,
+      localized_title = snippet$localized$title %||% NA_character_,
+      playlist_ids = I(list(content$playlists %||% character())),
+      channel_ids = I(list(content$channels %||% character())),
+      stringsAsFactors = FALSE
+    )
+  })
+
+  add_tuber_attributes(
+    result,
+    function_name = "list_channel_sections",
+    results_found = nrow(result),
+    response_format = "data.frame"
+  )
 }

@@ -9,8 +9,8 @@
 #' @examples
 #' if (yt_authorized()) {
 #' vids <- list_my_videos()
-#' res <- list_caption_tracks(video_id = vids$contentDetails.videoId[1])
-#' cap <- get_captions(id = res$id, as_raw = FALSE)
+#' res <- list_captions(video_id = vids$video_id[[1]])
+#' cap <- download_caption(res$caption_id[[1]], as_raw = FALSE)
 #' tfile <- tempfile(fileext = ".sbv")
 #' writeLines(cap, tfile)
 #' x <- read_sbv(tfile)

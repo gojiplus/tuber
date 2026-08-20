@@ -8,7 +8,7 @@ yt_oauth(
   app_id = NULL,
   app_secret = NULL,
   scope = "ssl",
-  token = ".httr-oauth",
+  token = file.path(tools::R_user_dir("tuber", "cache"), "oauth-token.rds"),
   ...
 )
 }
@@ -19,34 +19,24 @@ yt_oauth(
 
 \item{scope}{Character. \code{ssl}, \code{basic},
 \code{own_account_readonly}, \code{upload_and_manage_own_videos},
-\code{partner}, and \code{partner_audit}.
+\code{channel_memberships}, \code{partner}, and \code{partner_audit}.
 Required. \code{ssl} and \code{basic} are basically interchangeable.
 Default is \code{ssl}.}
 
-\item{token}{path to file containing the token. If a path is given,
-the function will first try to read from it.
-Default is \code{.httr-oauth} in the local directory.
-So if there is such a file, the function will first try to read from it.}
+\item{token}{Path to the token cache. The default is
+`file.path(tools::R_user_dir("tuber", "cache"), "oauth-token.rds")`.}
 
 \item{\dots}{Additional arguments passed to \code{\link[httr]{oauth2.0_token}}}
 }
 \value{
-sets the google_token option and also saves \code{.httr_oauth}
-in the working directory (find out the working directory via \code{getwd()})
+The OAuth token, invisibly. The function also sets the
+`google_token` option and saves the token at `token`.
 }
 \description{
-The function looks for \code{.httr-oauth} in the working directory. If it
-doesn't find it, it expects an application ID and a secret.
-If you want to remove the existing \code{.httr-oauth}, set remove_old_oauth
-to TRUE. By default, it is set to FALSE.
-The function launches a browser to allow you to authorize the application
-}
-\details{
-If a browser cannot be opened, pass \code{use_oob = TRUE} to
-\code{yt_oauth()} so authentication can be completed using an
-out-of-band code.
-Delete the \code{.httr-oauth} file in the working directory to force
-re-authentication.
+The function reads a cached token when one exists. Otherwise, it opens the
+system browser and asks Google to authorize the application. By default,
+tokens are stored in the user's R cache directory rather than the project
+directory.
 }
 \examples{
  \dontrun{

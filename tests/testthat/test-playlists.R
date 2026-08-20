@@ -1,4 +1,4 @@
-test_that("get_playlists returns >50 results when requested", {
+test_that("list_playlists returns >50 results when requested", {
   skip_on_cran()
 
   # Skip if no token file exists
@@ -10,7 +10,11 @@ test_that("get_playlists returns >50 results when requested", {
     google_token <- readRDS("token_file.rds.enc")$google_token
     options(google_token = google_token)
 
-    res <- get_playlists(filter = c(channel_id = "UCBR8-60-B28hp2BmDPdntcQ"), max_results = 55)
+    res <- list_playlists(
+      channel_id = "UCBR8-60-B28hp2BmDPdntcQ",
+      max_results = 55,
+      simplify = FALSE
+    )
     expect_true(length(res$items) >= 55)
 
   }, error = function(e) {
