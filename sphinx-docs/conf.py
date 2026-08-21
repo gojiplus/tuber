@@ -1,5 +1,4 @@
 from pathlib import Path
-import os
 import sys
 
 DOCS = Path(__file__).resolve().parent
@@ -24,27 +23,10 @@ def read_description(path: Path) -> dict[str, str]:
             fields[current] = value.strip()
     return fields
 
-def detect_source_branch(root: Path) -> str:
-    head = root / '.git' / 'HEAD'
-    if head.exists():
-        value = head.read_text(encoding='utf-8').strip()
-        prefix = 'ref: refs/heads/'
-        if value.startswith(prefix):
-            return value[len(prefix):]
-    github_ref = os.environ.get('GITHUB_HEAD_REF') or os.environ.get('GITHUB_REF_NAME')
-    if github_ref and github_ref not in {'merge', 'HEAD'}:
-        return github_ref
-    return 'main'
-
 description = read_description(ROOT / 'DESCRIPTION')
 project = description.get('Package', ROOT.name)
 author = description.get('Authors@R', '')
 release = description.get('Version', '')
-urls = [item.strip() for item in description.get('URL', '').split(',') if item.strip()]
-source_repository = next((item for item in urls if 'github.com/' in item), '')
-if source_repository and not source_repository.endswith('/'):
-    source_repository += '/'
-source_branch = 'master' or detect_source_branch(ROOT)
 
 extensions = ['rd2sphinx_domain']
 source_suffix = {'.rst': 'restructuredtext'}
@@ -56,11 +38,13 @@ html_theme = 'furo'
 html_static_path = ['_static']
 html_css_files = ['custom.css']
 html_title = f'{project} {release}' if release else project
+
+# No source_repository/source_branch/source_directory, which is what Furo
+# turns into its view-source and edit-this-page buttons. The reference
+# pages under reference/ are generated from the package's Rd topics on
+# every build and are not in version control, so those buttons would point
+# at files that do not exist. The source that matters is the roxygen
+# comment in R/, and Furo builds one link per page from a single template
+# with no way to reach it.
 html_theme_options = {}
-if source_repository:
-    html_theme_options.update({
-        'source_repository': source_repository,
-        'source_branch': source_branch,
-        'source_directory': 'sphinx-docs/',
-    })
 
