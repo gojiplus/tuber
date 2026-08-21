@@ -38,3 +38,5 @@ _pkgdown.yml
 ^\.Rapp\.history$
 ^\.\.Rcheck$
 ^tests/testthat/token_file\.rds\.enc$
+^sphinx-docs$
+^_site$

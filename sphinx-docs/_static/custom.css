@@ -1,0 +1,31 @@
+:root {
+  --content-width: 52rem;
+}
+
+.sig-name, .sig-prename {
+  font-variant-ligatures: none;
+}
+
+/* Rd bodies are rendered by R and highlighted by downlit, which emits
+   these classes. Colours follow Furo's own variables so the light and
+   dark themes stay consistent. */
+.sourceCode {
+  overflow-x: auto;
+}
+.sourceCode .fu { color: var(--color-brand-content); }
+.sourceCode .st { color: var(--color-highlight-on-target, #2d7f3e); }
+.sourceCode .co { color: var(--color-foreground-muted); font-style: italic; }
+.sourceCode .kw { font-weight: 600; }
+.sourceCode .op, .sourceCode .va { color: inherit; }
+
+/* Rd argument lists come through as a plain table. */
+table[role='presentation'] {
+  border: 0;
+  width: 100%;
+}
+table[role='presentation'] td {
+  border: 0;
+  vertical-align: top;
+  padding: 0.2rem 0.6rem 0.2rem 0;
+}
+
