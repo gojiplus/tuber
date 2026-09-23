@@ -1,0 +1,25 @@
+# A second, parallel documentation build: the same Rd topics rendered as
+# semantic Sphinx objects and themed with Furo.
+#
+# Deliberately no `deploy:`. tuber's pkgdown site is the published one and this
+# job must not race it for the Pages deployment. Every run uploads the HTML as
+# an artifact instead, which is what makes the two comparable before anyone
+# decides whether to switch.
+
+name: sphinx-docs
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  sphinx:
+    permissions:
+      contents: read
+    uses: gojiplus/r-canon/.github/workflows/reusable-sphinx.yml@v2
+    with:
+      docs-dir: sphinx-docs
+      artifact-name: tuber-furo-site
