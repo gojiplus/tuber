@@ -9,14 +9,11 @@ type: software
 authors:
   - given-names: Gaurav
     family-names: Sood
-    email: gsood07@gmail.com
     orcid: "https://orcid.org/0000-0001-5385-2502"
   - given-names: Kate
     family-names: Lyons
-    email: k.lyons7@gmail.com
   - given-names: John
     family-names: Muschelli
-    email: muschellij2@gmail.com
     orcid: "https://orcid.org/0000-0001-6469-1750"
 
 repository-code: "https://github.com/gojiplus/tuber"
@@ -44,13 +41,10 @@ preferred-citation:
   authors:
     - given-names: Gaurav
       family-names: Sood
-      email: gsood07@gmail.com
     - given-names: Kate
       family-names: Lyons
-      email: k.lyons7@gmail.com
     - given-names: John
       family-names: Muschelli
-      email: muschellij2@gmail.com
   year: 2026
   notes: "R package version 2.0.0"
   url: "https://gojiplus.github.io/tuber/"
