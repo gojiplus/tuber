@@ -25,3 +25,8 @@ figure/
 # pkgdown output. Disposable local build product; CI builds and publishes the
 # definitive site. See R Packages (2e), ch. 19.
 /docs/
+
+_site/
+sphinx-docs/reference/
+sphinx-docs/_ext/rd2sphinx_domain.py
+__pycache__/

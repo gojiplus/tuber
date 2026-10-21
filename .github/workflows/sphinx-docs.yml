@@ -1,0 +1,20 @@
+name: sphinx-docs
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  sphinx:
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: gojiplus/r-canon/.github/workflows/reusable-sphinx.yml@v2
+    with:
+      docs-dir: sphinx-docs
+      deploy: false
+      artifact-name: tuber-furo-site
