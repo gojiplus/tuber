@@ -1,0 +1,8 @@
+# Keeps the commit pins in .github/workflows/rhub.yaml current. A pin that
+# never moves is worse than a floating tag: it runs unpatched actions forever.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
