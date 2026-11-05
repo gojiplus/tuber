@@ -4,7 +4,7 @@ Version: 3.0.0
 Date: 2026-11-04
 Language: en-US
 Authors@R: c(
-    person("Gaurav", "Sood", , "gsood07@gmail.com", role = c("aut", "cre")),
+    person("Gaurav", "Sood", , "gsood07@gmail.com", role = c("aut", "cre", "cph")),
     person("Kate", "Lyons", , "k.lyons7@gmail.com", role = "ctb"),
     person("John", "Muschelli", , "muschellij2@gmail.com", role = "ctb")
   )
@@ -42,6 +42,7 @@ Suggests:
     progress,
     promises,
     rmarkdown,
+    spelling,
     testthat (>= 3.1.7),
     withr,
     xml2

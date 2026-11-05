@@ -100,16 +100,18 @@ upload_video <- function(
     )
   }
   if ("privacyStatus" %in% names(status)) {
-    status$privacyStatus <- match.arg(
+    assert_choice(
       status$privacyStatus,
-      choices = c("private", "public", "unlisted")
+      c("private", "public", "unlisted"),
+      .var.name = "status$privacyStatus"
     )
   }
 
   if ("license" %in% names(status)) {
-    status$license <- match.arg(
+    assert_choice(
       status$license,
-      choices = c("creativeCommon", "youtube")
+      c("creativeCommon", "youtube"),
+      .var.name = "status$license"
     )
   }
 

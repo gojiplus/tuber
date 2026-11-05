@@ -114,9 +114,9 @@ yt_oauth <- function(
       warn(
         c(
           paste0("Could not save the OAuth token to ", token, "."),
-          x = conditionMessage(saved),
           i = "The token still works for this session."
         ),
+        parent = saved,
         class = "tuber_token_save_error"
       )
     }

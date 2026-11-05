@@ -1,32 +1,9 @@
-test_that("list_comment_threads returns all comments", {
-  skip_on_cran()
+test_that("list_comment_threads pages past the 100-item page cap against the live API", {
+  skip_if_no_api_key()
 
-  # Skip if no token file exists
-  if (!file.exists("token_file.rds.enc")) {
-    skip("No token file available for API testing")
-  }
+  threads <- list_comment_threads(video_id = "dQw4w9WgXcQ", max_results = 101)
 
-  tryCatch(
-    {
-      google_token <- readRDS("token_file.rds.enc")$google_token
-      options(google_token = google_token)
-
-      first_page <- tuber_GET(
-        "commentThreads",
-        list(part = "snippet", videoId = "N708P-A45D0", maxResults = 100)
-      )
-      total <- first_page$pageInfo$totalResults
-
-      all_comments <- list_comment_threads(
-        video_id = "N708P-A45D0",
-        max_results = 101
-      )
-
-      expect_s3_class(all_comments, "data.frame")
-      expect_equal(nrow(all_comments), min(total, 101))
-    },
-    error = function(e) {
-      skip(paste("API test failed:", e$message))
-    }
-  )
+  expect_s3_class(threads, "data.frame")
+  expect_equal(nrow(threads), 101)
+  expect_false(anyDuplicated(threads$thread_id) > 0)
 })

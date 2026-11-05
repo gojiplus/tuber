@@ -1,13 +1,5 @@
 # Integration tests for real API testing
 # These tests run when an API key is available via yt_set_key() or YOUTUBE_KEY env var
-# Helper to check if API key is available
-skip_if_no_api_key <- function() {
-  api_key <- suppressMessages(yt_get_key())
-  if (is.null(api_key)) {
-    testthat::skip("No YouTube API key found. Set one with yt_set_key()")
-  }
-}
-
 # ==============================================================================
 # Channel Functions
 # ==============================================================================
@@ -227,11 +219,7 @@ test_that("list_channel_activities works", {
 # ==============================================================================
 
 test_that("list_captions works", {
-  skip_on_cran()
-  token <- yt_token()
-  if (is.null(token) || !is.function(token$sign)) {
-    skip("No usable YouTube OAuth token available")
-  }
+  skip_if_no_oauth_token()
 
   result <- list_captions(video_id = "dQw4w9WgXcQ")
 
@@ -247,7 +235,7 @@ test_that("list_channel_sections works", {
   skip_if_no_api_key()
 
   result <- list_channel_sections(
-    filter = c(channel_id = "UC_x5XG1OV2P6uZZ5FSM9Ttw"),
+    channel_id = "UC_x5XG1OV2P6uZZ5FSM9Ttw",
     auth = "key"
   )
 

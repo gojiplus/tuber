@@ -1,5 +1,5 @@
 test_that("yt_search obeys max_results against the live API", {
-  skip_without_key()
+  skip_if_no_api_key()
 
   res <- yt_search(term = "cats", type = "channel", max_results = 5)
 
@@ -9,7 +9,7 @@ test_that("yt_search obeys max_results against the live API", {
 })
 
 test_that("yt_search pages past the 50-item page cap against the live API", {
-  skip_without_key()
+  skip_if_no_api_key()
 
   res <- yt_search(term = "cats", type = "video", max_results = 55)
 

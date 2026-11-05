@@ -29,3 +29,6 @@ _site/
 sphinx-docs/reference/
 sphinx-docs/_ext/rd2sphinx_domain.py
 __pycache__/
+
+# Reverse-dependency check output is regenerated, never committed.
+/revdep/

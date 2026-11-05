@@ -643,3 +643,96 @@ test_that("making a scheduled video public drops its publish time", {
   update_video_metadata("abcdefghijk", embeddable = FALSE)
   expect_match(seen$json, '"publishAt":"2030-01-01T00:00:00Z"', fixed = TRUE)
 })
+
+# r-canon implementation guidance: conditions --------------------------------
+
+membership_refused <- function(req) {
+  json_response(
+    list(error = list(
+      code = 403,
+      message = "The request is not properly authorized to retrieve members.",
+      errors = list(list(reason = "channelMembershipsNotEnabled"))
+    )),
+    status = 403L
+  )
+}
+
+test_that("a refused members request is recognized by status, not by wording", {
+  local_fake_token()
+  httr2::local_mocked_responses(membership_refused)
+
+  err <- expect_error(list_channel_members(), class = "tuber_members_forbidden")
+  expect_s3_class(err$parent, "tuber_http_error")
+  expect_equal(err$parent$reason, "channelMembershipsNotEnabled")
+})
+
+test_that("a refused Super Chat request is recognized by status, not by wording", {
+  local_fake_token()
+  httr2::local_mocked_responses(membership_refused)
+
+  err <- expect_error(list_super_chat_events(), class = "tuber_super_chat_forbidden")
+  expect_s3_class(err$parent, "tuber_http_error")
+})
+
+test_that("quota exhaustion is not relabelled as a membership problem", {
+  local_fake_token()
+  httr2::local_mocked_responses(quota_exhausted_response)
+
+  expect_error(list_channel_members(), class = "tuber_quota_exhausted")
+  expect_error(list_super_chat_events(), class = "tuber_quota_exhausted")
+})
+
+test_that("validation errors name the function the user called", {
+  local_fake_token()
+  video <- withr::local_tempfile(fileext = ".mp4")
+  writeBin(as.raw(1:10), video)
+
+  err <- expect_error(
+    upload_video(video, snippet = list(title = "t"), chunk_size = 1000),
+    class = "tuber_invalid_chunk_size"
+  )
+  expect_equal(rlang::call_name(err$call), "upload_video")
+
+  err <- expect_error(
+    yt_search("x", published_after = "yesterday"),
+    class = "tuber_invalid_date_format"
+  )
+  expect_equal(rlang::call_name(err$call), "yt_search")
+})
+
+test_that("a failed token refresh keeps the underlying error as its parent", {
+  withr::local_options(
+    google_token = httr2::oauth_token(
+      "stale", refresh_token = "r", expires_in = -1000
+    ),
+    tuber.oauth_client = tuber:::.oauth_client("id", "secret")
+  )
+  local_mocked_bindings(oauth_flow_refresh = function(...) stop("invalid_grant"))
+
+  err <- expect_error(
+    tuber:::yt_access_token(),
+    class = "tuber_token_refresh_failed"
+  )
+  expect_equal(conditionMessage(err$parent), "invalid_grant")
+})
+
+test_that("upload_video matches privacy and license values exactly", {
+  local_fake_token()
+  video <- withr::local_tempfile(fileext = ".mp4")
+  writeBin(as.raw(1:10), video)
+  requests <- 0L
+  httr2::local_mocked_responses(function(req) {
+    requests <<- requests + 1L
+    httr2::response(200L, headers = list(location = "https://upload.example/s"))
+  })
+
+  expect_error(
+    upload_video(video, status = list(privacyStatus = "priv")),
+    "privacyStatus"
+  )
+  expect_error(
+    upload_video(video, status = list(privacyStatus = "private", license = "you")),
+    "license"
+  )
+  expect_equal(requests, 0L)
+})

@@ -1,5 +1,5 @@
 test_that("get_video_details returns one live video", {
-  skip_without_key()
+  skip_if_no_api_key()
 
   details <- get_video_details(video_ids = "dQw4w9WgXcQ")
 
@@ -8,7 +8,7 @@ test_that("get_video_details returns one live video", {
 })
 
 test_that("get_video_details returns several live videos in one batch", {
-  skip_without_key()
+  skip_if_no_api_key()
   ids <- c("dQw4w9WgXcQ", "kJQP7kiw5Fk")
 
   details <- get_video_details(video_ids = ids)

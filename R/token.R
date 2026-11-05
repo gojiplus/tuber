@@ -73,9 +73,9 @@ yt_access_token <- function() {
         abort(
           c(
             "Could not refresh the access token.",
-            x = conditionMessage(e),
             i = "Run `yt_oauth()` with your `app_id` and `app_secret` to authenticate again."
           ),
+          parent = e,
           class = "tuber_token_refresh_failed"
         )
       }

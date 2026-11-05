@@ -62,6 +62,7 @@ yt_get_quota_usage <- function() {
 #'
 #' @param limit Integer. Daily quota limit for the selected bucket.
 #' @param bucket Quota bucket: `"data"`, `"search"`, or `"video_uploads"`.
+#' @return The new limit, invisibly.
 #' @export
 #'
 #' @examples
@@ -81,7 +82,12 @@ yt_set_quota_limit <- function(limit, bucket = "data") {
 #' Reset the quota counter (typically done automatically at midnight Pacific
 #' Time, when YouTube's daily quota resets)
 #'
+#' @return `NULL`, invisibly. Called for its side effect on the session's quota
+#' estimate.
 #' @export
+#' @examples
+#' yt_reset_quota()
+#' yt_get_quota_usage()
 yt_reset_quota <- function() {
   .tuber_env$quota_used[] <- 0L
   .tuber_env$quota_reset_time <- next_quota_reset()

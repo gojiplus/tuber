@@ -4,12 +4,14 @@
 \alias{validate_rfc3339_date}
 \title{Validate RFC 3339 date format for YouTube API}
 \usage{
-validate_rfc3339_date(date_string, name)
+validate_rfc3339_date(date_string, name, call = rlang::caller_env())
 }
 \arguments{
 \item{date_string}{Date string to validate}
 
 \item{name}{Parameter name for error messages}
+
+\item{call}{The frame to report in the error: the function the user called.}
 }
 \value{
 Invisible NULL if valid, stops execution if invalid

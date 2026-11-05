@@ -67,17 +67,17 @@ list_channel_members <- function(part = "snippet",
         tuber_GET("members", query = q, auth = "token")
       },
       error = function(e) {
-        if (grepl("forbidden", tolower(e$message))) {
+        if (is_refused(e)) {
           abort(
             paste(
               "Forbidden: Ensure the authenticated channel has Memberships",
               "enabled and you are using OAuth2."
             ),
+            parent = e,
             class = "tuber_members_forbidden"
           )
-        } else {
-          stop(e)
         }
+        stop(e)
       }
     )
   }

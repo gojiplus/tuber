@@ -6,7 +6,15 @@
 \usage{
 yt_reset_quota()
 }
+\value{
+`NULL`, invisibly. Called for its side effect on the session's quota
+estimate.
+}
 \description{
 Reset the quota counter (typically done automatically at midnight Pacific
 Time, when YouTube's daily quota resets)
+}
+\examples{
+yt_reset_quota()
+yt_get_quota_usage()
 }

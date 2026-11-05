@@ -34,7 +34,15 @@ key_fingerprint <- function() {
 #' @param default_ttl Default time-to-live in seconds
 #' @param max_size Maximum number of cached items
 #' @param cache_dir Directory for persistent cache (NULL for memory only)
+#' @return `NULL`, invisibly. Called for its side effect on the session's cache
+#' settings.
 #' @export
+#' @examples
+#' tuber_cache_config(default_ttl = 600)
+#' tuber_cache_info()$default_ttl
+#'
+#' # Restore the defaults.
+#' tuber_cache_config()
 tuber_cache_config <- function(enabled = TRUE,
                                default_ttl = 3600, # 1 hour
                                max_size = 1000,
@@ -69,6 +77,8 @@ tuber_cache_config <- function(enabled = TRUE,
 #'
 #' @return List with cache configuration
 #' @export
+#' @examples
+#' str(tuber_cache_info())
 tuber_cache_info <- function() {
   config <- .tuber_cache$config
 
@@ -94,7 +104,10 @@ tuber_cache_info <- function() {
 #'
 #' @param pattern Regular expression pattern to match cache keys (NULL for all)
 #' @param older_than Clear entries older than this many seconds
+#' @return The number of entries cleared, invisibly.
 #' @export
+#' @examples
+#' tuber_cache_clear()
 tuber_cache_clear <- function(pattern = NULL, older_than = NULL) {
   # Modern validation using checkmate
   if (!is.null(pattern)) {

@@ -13,8 +13,12 @@ yt_authorized()
 yt_check_token()
 }
 \value{
-An httr2 token
+`yt_token()` returns the httr2 token set by [yt_oauth()], or `NULL`
+when there is none. `yt_authorized()` returns `TRUE` when a token is set.
 }
 \description{
 Check if authentication token is in options
+}
+\examples{
+yt_authorized()
 }

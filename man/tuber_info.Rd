@@ -9,6 +9,10 @@ tuber_info(result)
 \arguments{
 \item{result}{A result object from a tuber function with metadata attributes}
 }
+\value{
+`result`, invisibly, after printing its metadata; `NULL`, invisibly,
+when `result` carries none.
+}
 \description{
 Shows the metadata attributes added to tuber function results for debugging
 and quota management.

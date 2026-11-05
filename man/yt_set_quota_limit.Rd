@@ -11,6 +11,9 @@ yt_set_quota_limit(limit, bucket = "data")
 
 \item{bucket}{Quota bucket: `"data"`, `"search"`, or `"video_uploads"`.}
 }
+\value{
+The new limit, invisibly.
+}
 \description{
 Set the daily quota limit (default is 10,000 units)
 }

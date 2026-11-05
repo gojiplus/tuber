@@ -101,10 +101,11 @@ resumed_offset <- function(resp) {
 #' first; a bad `chunk_size` must not cost an upload.
 #'
 #' @inheritParams tuber_upload_file
+#' @param call The frame to report in the error: the function the user called.
 #' @return NULL, invisibly.
 #' @keywords internal
 #' @noRd
-validate_upload <- function(file, chunk_size, max_tries) {
+validate_upload <- function(file, chunk_size, max_tries, call = rlang::caller_env()) {
   assert_numeric(
     chunk_size,
     len = 1, lower = 1, finite = TRUE,
@@ -119,7 +120,8 @@ validate_upload <- function(file, chunk_size, max_tries) {
         upload_chunk_unit, chunk_size
       ),
       chunk_size = chunk_size,
-      class = "tuber_invalid_chunk_size"
+      class = "tuber_invalid_chunk_size",
+      call = call
     )
   }
 
@@ -127,7 +129,8 @@ validate_upload <- function(file, chunk_size, max_tries) {
     abort(
       "Cannot upload an empty file",
       file_path = file,
-      class = "tuber_empty_file"
+      class = "tuber_empty_file",
+      call = call
     )
   }
 

@@ -1,6 +1,10 @@
 ## Test environments
 
 * local macOS 27.0.1 (aarch64), R 4.6.0
+* GitHub Actions:
+    * ubuntu-latest: R-devel, R 4.6.2, R 4.5.3
+    * macos-latest: R 4.6.2
+    * windows-latest: R 4.6.2
 
 ## R CMD check results
 

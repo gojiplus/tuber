@@ -50,17 +50,17 @@ list_super_chat_events <- function(part = "snippet",
         tuber_GET("superChatEvents", query = q, auth = "token")
       },
       error = function(e) {
-        if (grepl("forbidden", tolower(e$message))) {
+        if (is_refused(e)) {
           abort(
             paste(
               "Forbidden: Ensure the authenticated channel has Super Chat",
               "enabled and you are using OAuth2."
             ),
+            parent = e,
             class = "tuber_super_chat_forbidden"
           )
-        } else {
-          stop(e)
         }
+        stop(e)
       }
     )
   }

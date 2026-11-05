@@ -111,6 +111,21 @@ with_retry <- function(expr,
   }
 }
 
+#' Was this request refused for lack of permission?
+#'
+#' A 403 that is not quota exhaustion, which is also a 403 but has nothing to
+#' do with what the account may access.
+#'
+#' @param error A condition
+#' @return Logical
+#' @keywords internal
+#' @noRd
+is_refused <- function(error) {
+  inherits(error, "tuber_http_error") &&
+    !inherits(error, "tuber_quota_exhausted") &&
+    isTRUE(error$status_code == 403)
+}
+
 #' Check if an error is transient and worth retrying
 #'
 #' @param error Error object to check
@@ -207,9 +222,10 @@ call_api_with_retry <- function(api_function, ..., retry_config = list()) {
 #'
 #' @param date_string Date string to validate
 #' @param name Parameter name for error messages
+#' @param call The frame to report in the error: the function the user called.
 #' @return Invisible NULL if valid, stops execution if invalid
 #' @keywords internal
-validate_rfc3339_date <- function(date_string, name) {
+validate_rfc3339_date <- function(date_string, name, call = rlang::caller_env()) {
   assert_character(date_string, len = 1, min.chars = 1, .var.name = name)
 
   rfc3339_pattern <- paste0(
@@ -233,7 +249,8 @@ validate_rfc3339_date <- function(date_string, name) {
       ),
       parameter = name,
       date_string = date_string,
-      class = "tuber_invalid_date_format"
+      class = "tuber_invalid_date_format",
+      call = call
     )
   }
 

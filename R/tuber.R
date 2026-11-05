@@ -200,6 +200,8 @@ tuber_json <- function(resp) {
 #' and quota management.
 #'
 #' @param result A result object from a tuber function with metadata attributes
+#' @return `result`, invisibly, after printing its metadata; `NULL`, invisibly,
+#' when `result` carries none.
 #' @export
 #'
 #' @examples
@@ -348,8 +350,11 @@ summary.tuber_result <- function(object, ...) {
 }
 
 #' Check if authentication token is in options
-#' @return An httr2 token
+#' @return `yt_token()` returns the httr2 token set by [yt_oauth()], or `NULL`
+#' when there is none. `yt_authorized()` returns `TRUE` when a token is set.
 #' @export
+#' @examples
+#' yt_authorized()
 yt_token <- function() {
   getOption("google_token")
 }
