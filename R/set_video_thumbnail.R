@@ -5,7 +5,6 @@
 #'
 #' @param video_id Character. ID of the video to set the thumbnail for.
 #' @param file Character. Path to the thumbnail image file (JPG or PNG, max 2MB).
-#' @param \dots Ignored; retained for backward compatibility.
 #'
 #' @return A list containing the response from the API.
 #' @export
@@ -18,7 +17,7 @@
 #'
 #' set_video_thumbnail(video_id = "yJXTXN4xrI8", file = "thumbnail.jpg")
 #' }
-set_video_thumbnail <- function(video_id, file, ...) {
+set_video_thumbnail <- function(video_id, file) {
   # Validation
   assert_character(video_id, len = 1, min.chars = 1, .var.name = "video_id")
   assert_character(file, len = 1, min.chars = 1, .var.name = "file")

@@ -4,7 +4,7 @@
 \alias{list_my_videos}
 \title{List My Videos}
 \usage{
-list_my_videos(max_results = 50, page_token = NULL, simplify = TRUE, ...)
+list_my_videos(max_results = 50, page_token = NULL, simplify = TRUE)
 }
 \arguments{
 \item{max_results}{Maximum total number of videos to return.}
@@ -13,8 +13,6 @@ list_my_videos(max_results = 50, page_token = NULL, simplify = TRUE, ...)
 
 \item{simplify}{If `TRUE`, return a data frame; otherwise return the raw
 playlist-items response.}
-
-\item{...}{Additional arguments passed to [tuber_GET()].}
 }
 \value{
 A data frame when `simplify = TRUE`; otherwise a playlist-items

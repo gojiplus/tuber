@@ -27,7 +27,7 @@ To install the latest version from CRAN:
 install.packages("tuber")
 ```
 
-The latest development version of the package will always be on GitHub. Instructions for installing the package from Github are provided below.
+The latest development version of the package will always be on GitHub. Instructions for installing the package from GitHub are provided below.
 
 ```{r, eval=FALSE, install_g}
 devtools::install_github("gojiplus/tuber", build_vignettes = TRUE)

@@ -15,7 +15,8 @@ paginate_api_request(
 \arguments{
 \item{initial_response}{The response from the initial API call}
 
-\item{fetch_next_page_fn}{Function that takes a page token and returns the next page}
+\item{fetch_next_page_fn}{Function that takes a page token and the number of
+items still wanted, and returns the next page}
 
 \item{extract_items_fn}{Function to extract items from a response. Default: function(res)
 res$items}
@@ -30,5 +31,11 @@ List with items (all collected items) and metadata
 \description{
 Helper function to handle pagination for YouTube API requests consistently.
 Collects items across multiple pages until max_results or max_pages is reached.
+}
+\details{
+Every page after the first is asked for no more items than are still
+wanted. Asking for a full page and trimming it would leave
+\code{final_page_token} pointing past items that were never returned, so a
+caller resuming from that token would silently skip them.
 }
 \keyword{internal}

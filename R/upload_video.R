@@ -1,4 +1,4 @@
-#' Upload Video to Youtube
+#' Upload Video to YouTube
 #'
 #' @param file Filename of the video locally
 #' @param snippet Additional fields for the video, including `description`
@@ -19,7 +19,6 @@
 #'   Uploads resume from the last byte YouTube confirms, so a smaller chunk
 #'   loses less work when a connection drops.
 #' @param max_tries Consecutive failed attempts to tolerate before giving up.
-#' @param ... Ignored; retained for backward compatibility.
 #' @param open_url Should the video be opened using \code{\link{browseURL}}
 #'
 #' @note The information for `status` and `snippet` are at
@@ -54,8 +53,7 @@ upload_video <- function(
   content_owner_channel_id = NULL,
   open_url = FALSE,
   chunk_size = 8 * 1024^2,
-  max_tries = 5,
-  ...
+  max_tries = 5
 ) {
   # Modern validation using checkmate
   assert_character(file, len = 1, min.chars = 1, .var.name = "file")
@@ -102,16 +100,18 @@ upload_video <- function(
     )
   }
   if ("privacyStatus" %in% names(status)) {
-    status$privacyStatus <- match.arg(
+    assert_choice(
       status$privacyStatus,
-      choices = c("private", "public", "unlisted")
+      c("private", "public", "unlisted"),
+      .var.name = "status$privacyStatus"
     )
   }
 
   if ("license" %in% names(status)) {
-    status$license <- match.arg(
+    assert_choice(
       status$license,
-      choices = c("creativeCommon", "youtube")
+      c("creativeCommon", "youtube"),
+      .var.name = "status$license"
     )
   }
 
@@ -151,6 +151,7 @@ upload_video <- function(
   }
   video_type <- guess_type(file, empty = "application/octet-stream")
 
+  validate_upload(file, chunk_size, max_tries)
   yt_check_token()
   track_quota_usage("videos", "insert")
 

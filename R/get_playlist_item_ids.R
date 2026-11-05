@@ -12,8 +12,7 @@ get_playlist_item_ids <- function(playlist_id = NULL,
                                   video_id = NULL,
                                   max_results = 50,
                                   page_token = NULL,
-                                  auth = "key",
-                                  ...) {
+                                  auth = "key") {
   result <- list_playlist_items(
     playlist_id = playlist_id,
     playlist_item_ids = playlist_item_ids,
@@ -22,8 +21,7 @@ get_playlist_item_ids <- function(playlist_id = NULL,
     max_results = max_results,
     page_token = page_token,
     simplify = FALSE,
-    auth = auth,
-    ...
+    auth = auth
   )
   vapply(result$items %||% list(), function(item) item$id, character(1))
 }

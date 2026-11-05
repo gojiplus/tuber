@@ -8,8 +8,7 @@ list_video_categories(
   region_code = NULL,
   category_ids = NULL,
   language = NULL,
-  auth = "key",
-  ...
+  auth = "key"
 )
 }
 \arguments{
@@ -20,8 +19,6 @@ list_video_categories(
 \item{language}{Optional language code for localized text.}
 
 \item{auth}{Authentication method, `"key"` or `"token"`.}
-
-\item{...}{Additional arguments passed to [tuber_GET()].}
 }
 \value{
 A data frame with one row per category and snake-case column names.

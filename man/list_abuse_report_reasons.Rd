@@ -7,8 +7,7 @@
 list_abuse_report_reasons(
   part = c("id", "snippet"),
   language = "en-US",
-  auth = "key",
-  ...
+  auth = "key"
 )
 }
 \arguments{
@@ -17,8 +16,6 @@ list_abuse_report_reasons(
 \item{language}{Language code for localized labels.}
 
 \item{auth}{Authentication method, `"key"` or `"token"`.}
-
-\item{...}{Additional arguments passed to [tuber_GET()].}
 }
 \value{
 A data frame with one row per primary report reason.

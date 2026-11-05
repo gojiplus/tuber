@@ -10,8 +10,7 @@ get_playlist_item_ids(
   video_id = NULL,
   max_results = 50,
   page_token = NULL,
-  auth = "key",
-  ...
+  auth = "key"
 )
 }
 \arguments{
@@ -27,8 +26,6 @@ Supply exactly one of `playlist_id` or `playlist_item_ids`.}
 \item{page_token}{Optional page token at which to start.}
 
 \item{auth}{Authentication method, `"key"` or `"token"`.}
-
-\item{...}{Additional arguments passed to [tuber_GET()].}
 }
 \value{
 A character vector of playlist-item IDs.

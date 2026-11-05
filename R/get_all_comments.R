@@ -8,7 +8,6 @@
 #' @param max_results Optional maximum total number of comments and replies.
 #' `NULL` retrieves all available comments.
 #' @param auth Authentication method, `"key"` or `"token"`.
-#' @param ... Additional arguments passed to [tuber_GET()].
 #'
 #' @return A data frame with one row per top-level comment or reply and
 #' snake-case column names.
@@ -22,8 +21,7 @@
 #' }
 get_all_comments <- function(video_id,
                              max_results = NULL,
-                             auth = "key",
-                             ...) {
+                             auth = "key") {
   assert_string(video_id, min.chars = 1, .var.name = "video_id")
   if (!is.null(max_results)) {
     assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
@@ -37,11 +35,10 @@ get_all_comments <- function(video_id,
       part = c("id", "replies", "snippet"),
       max_results = thread_limit,
       simplify = FALSE,
-      auth = auth,
-      ...
+      auth = auth
     ),
     error = function(error) {
-      if (grepl("disabled", error$message, ignore.case = TRUE)) {
+      if (identical(error$reason, "commentsDisabled")) {
         warn(
           "Comments appear to be disabled for this video.",
           video_id = video_id,
@@ -59,7 +56,9 @@ get_all_comments <- function(video_id,
   )
 
   if (is.null(threads) || length(threads$items %||% list()) == 0) {
-    warn("No comments found for video.", video_id = video_id, class = "tuber_no_comments")
+    if (!is.null(threads)) {
+      warn("No comments found for video.", video_id = video_id, class = "tuber_no_comments")
+    }
     return(add_tuber_attributes(
       empty_comment_frame(),
       api_calls_made = attr(threads, "tuber_api_calls") %||% 0,
@@ -101,8 +100,7 @@ get_all_comments <- function(video_id,
           parent_id = comment_id,
           max_results = remaining,
           simplify = FALSE,
-          auth = auth,
-          ...
+          auth = auth
         )
         replies <- reply_response$items %||% list()
         api_calls <- api_calls + (attr(reply_response, "tuber_api_calls") %||% 1L)

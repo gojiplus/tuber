@@ -4,12 +4,10 @@
 \alias{delete_video}
 \title{Delete a Video}
 \usage{
-delete_video(video_id, ...)
+delete_video(video_id)
 }
 \arguments{
 \item{video_id}{Video ID.}
-
-\item{...}{Additional arguments passed to [tuber_DELETE()].}
 }
 \value{
 The empty API response, invisibly.

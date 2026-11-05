@@ -21,8 +21,7 @@ list_subscriptions(
  } else {
   
       "key"
- },
-  ...
+ }
 )
 }
 \arguments{
@@ -55,8 +54,6 @@ response with all collected items.}
 
 \item{auth}{Authentication method, `"key"` or `"token"`. Authenticated-user
 filters require OAuth.}
-
-\item{...}{Additional arguments passed to [tuber_GET()].}
 }
 \value{
 A data frame when `simplify = TRUE`; otherwise a subscriptions-list

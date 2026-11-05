@@ -8,7 +8,6 @@
 #' @param max_results Maximum total number of events to return.
 #' @param page_token Specific page token to retrieve. Optional.
 #' @param simplify Whether to return a simplified data.frame. Default is TRUE.
-#' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'
 #' @return A data.frame or list of Super Chat events.
 #' @export
@@ -25,8 +24,7 @@ list_super_chat_events <- function(part = "snippet",
                                    language = NULL,
                                    max_results = 50,
                                    page_token = NULL,
-                                   simplify = TRUE,
-                                   ...) {
+                                   simplify = TRUE) {
   # Validation
   assert_character(part, min.len = 1, min.chars = 1, .var.name = "part")
   assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
@@ -43,25 +41,26 @@ list_super_chat_events <- function(part = "snippet",
     query$hl <- language
   }
 
-  fetch_page <- function(token = NULL) {
+  fetch_page <- function(token = NULL, remaining = max_results) {
     q <- query
     if (!is.null(token)) q$pageToken <- token
+    q$maxResults <- min(remaining, query$maxResults)
     tryCatch(
       {
-        tuber_GET("superChatEvents", query = q, auth = "token", ...)
+        tuber_GET("superChatEvents", query = q, auth = "token")
       },
       error = function(e) {
-        if (grepl("forbidden", tolower(e$message))) {
+        if (is_refused(e)) {
           abort(
             paste(
               "Forbidden: Ensure the authenticated channel has Super Chat",
               "enabled and you are using OAuth2."
             ),
+            parent = e,
             class = "tuber_super_chat_forbidden"
           )
-        } else {
-          stop(e)
         }
+        stop(e)
       }
     )
   }

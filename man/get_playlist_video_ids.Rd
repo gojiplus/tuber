@@ -8,8 +8,7 @@ get_playlist_video_ids(
   playlist_id,
   max_results = 50,
   page_token = NULL,
-  auth = "key",
-  ...
+  auth = "key"
 )
 }
 \arguments{
@@ -20,8 +19,6 @@ get_playlist_video_ids(
 \item{page_token}{Optional page token at which to start.}
 
 \item{auth}{Authentication method, `"key"` or `"token"`.}
-
-\item{...}{Additional arguments passed to [list_playlist_items()].}
 }
 \value{
 A character vector of video IDs.

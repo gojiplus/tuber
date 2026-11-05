@@ -15,7 +15,6 @@
 ^_pkgdown\.yml$
 ^revdep$
 ^data-raw$
-^emoji_vignette$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 _pkgdown.yml
@@ -37,6 +36,5 @@ _pkgdown.yml
 ^\.Rhistory$
 ^\.Rapp\.history$
 ^\.\.Rcheck$
-^tests/testthat/token_file\.rds\.enc$
 ^sphinx-docs$
 ^_site$

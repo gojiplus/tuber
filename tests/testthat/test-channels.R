@@ -205,7 +205,7 @@ test_that("get_all_channel_video_stats handles video details correctly", {
 
       # Check column names (note: dislike_count may be present but NA)
       expected_cols <- c(
-        "video_id", "title", "publication_date", "description",
+        "video_id", "title", "published_at", "description",
         "channel_id", "channel_title", "view_count",
         "like_count", "comment_count", "url"
       )
@@ -220,10 +220,9 @@ test_that("get_all_channel_video_stats handles video details correctly", {
       expect_equal(result$video_id[2], "video2")
       expect_equal(result$title[1], "Test Video 1")
       expect_equal(result$title[2], "Test Video 2")
-      expect_equal(result$publication_date[1], "2024-01-01T00:00:00Z")
-      expect_equal(result$publication_date[2], "2024-01-02T00:00:00Z")
-      expect_equal(result$view_count[1], "1000")
-      expect_equal(result$view_count[2], "2000")
+      expect_equal(result$published_at[1], "2024-01-01T00:00:00Z")
+      expect_equal(result$published_at[2], "2024-01-02T00:00:00Z")
+      expect_equal(result$view_count, c(1000, 2000))
 
       # Check URL generation
       expect_equal(result$url[1], "https://www.youtube.com/watch?v=video1")
@@ -365,7 +364,7 @@ test_that("get_all_channel_video_stats handles missing publishedAt field", {
       # Should handle missing publishedAt gracefully with NA
       expect_true(is.data.frame(result))
       expect_equal(nrow(result), 1)
-      expect_true(is.na(result$publication_date[1]))
+      expect_true(is.na(result$published_at[1]))
     }
   )
 })

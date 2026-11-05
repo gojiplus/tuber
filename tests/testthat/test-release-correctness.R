@@ -245,7 +245,7 @@ test_that("simplified collection results have stable snake-case empty schemas", 
   }
 })
 
-test_that("cache keys isolate credentials and persistent cache round-trips", {
+test_that("cache keys isolate API keys and the persistent cache round-trips", {
   cache_dir <- tempfile("tuber-cache-")
   dir.create(cache_dir)
   on.exit(unlink(cache_dir, recursive = TRUE), add = TRUE)
@@ -254,17 +254,17 @@ test_that("cache keys isolate credentials and persistent cache round-trips", {
   on.exit(tuber_cache_config(cache_dir = NULL), add = TRUE)
   tuber_cache_clear()
 
-  old_token <- getOption("google_token")
-  on.exit(options(google_token = old_token), add = TRUE)
-  options(google_token = list(credentials = list(access_token = "token-a")))
-  key_a <- tuber:::generate_cache_key("channels", list(part = "snippet", mine = TRUE), "token")
-  options(google_token = list(credentials = list(access_token = "token-b")))
-  key_b <- tuber:::generate_cache_key("channels", list(part = "snippet", mine = TRUE), "token")
+  query <- list(part = "snippet", hl = "en")
+  withr::local_envvar(YOUTUBE_KEY = "key-a")
+  key_a <- tuber:::generate_cache_key("i18nLanguages", query)
+  withr::local_envvar(YOUTUBE_KEY = "key-b")
+  key_b <- tuber:::generate_cache_key("i18nLanguages", query)
   expect_false(identical(key_a, key_b))
+  expect_identical(tuber:::generate_cache_key("i18nLanguages", rev(query)), key_b)
 
-  tuber:::store_cached_response(key_b, list(items = list(list(id = "channel-b"))))
+  tuber:::store_cached_response(key_b, list(items = list(list(id = "language-b"))))
   rm(list = key_b, envir = tuber:::.tuber_cache)
-  expect_equal(tuber:::get_cached_response(key_b)$items[[1]]$id, "channel-b")
+  expect_equal(tuber:::get_cached_response(key_b)$items[[1]]$id, "language-b")
 })
 
 test_that("ordinary GET wrappers use the transparent cache", {
@@ -296,18 +296,21 @@ test_that("ordinary GET wrappers use the transparent cache", {
 test_that("mutable channel and video resources are never cached", {
   expect_false(tuber:::is_cacheable_endpoint("channels"))
   expect_false(tuber:::is_cacheable_endpoint("videos"))
-  expect_false(tuber:::is_static_query(
-    "videos",
-    list(part = "snippet,contentDetails", id = "video00001")
-  ))
-  expect_false(tuber:::is_static_query(
-    "videos",
-    list(part = "snippet", chart = "mostPopular")
-  ))
-  expect_false(tuber:::is_static_query(
-    "videos",
-    list(part = "snippet", myRating = "like")
-  ))
+
+  withr::local_envvar(YOUTUBE_KEY = "cache-key")
+  tuber_cache_config(enabled = TRUE, cache_dir = NULL)
+  tuber_cache_clear()
+  calls <- 0L
+  local_mocked_bindings(track_quota_usage = function(...) invisible(NULL), .package = "tuber")
+  httr2::local_mocked_responses(function(req) {
+    calls <<- calls + 1L
+    httr2::response_json(status_code = 200L, body = list(items = list()))
+  })
+
+  query <- list(part = "snippet", chart = "mostPopular")
+  tuber:::tuber_GET("videos", query, auth = "key")
+  tuber:::tuber_GET("videos", query, auth = "key")
+  expect_equal(calls, 2L)
 })
 
 test_that("httr2 failures become tuber HTTP errors", {
@@ -521,19 +524,6 @@ test_that("bulk comment counts align with returned video IDs", {
   expect_equal(result$video_data$comments_retrieved, 2L)
 })
 
-test_that("empty short-video searches preserve the empty schema", {
-  empty <- data.frame(video_id = character(), title = character())
-  local_mocked_bindings(
-    yt_search = function(...) empty,
-    .package = "tuber"
-  )
-
-  result <- search_short_videos("topic")
-  expect_equal(nrow(result), 0L)
-  expect_type(result$duration_filter, "character")
-  expect_length(result$duration_filter, 0L)
-})
-
 test_that("raw paginated results expose the final page token", {
   paged_get <- function(...) {
     token <- list(...)$query$pageToken
@@ -563,8 +553,9 @@ test_that("empty fetched pages advance pagination metadata", {
       items = list(list(id = "first")),
       nextPageToken = "page-2"
     ),
-    fetch_next_page_fn = function(token) {
+    fetch_next_page_fn = function(token, remaining) {
       expect_equal(token, "page-2")
+      expect_equal(remaining, 1)
       list(items = list(), nextPageToken = "page-3")
     },
     max_results = 2

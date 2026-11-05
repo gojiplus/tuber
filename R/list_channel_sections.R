@@ -11,7 +11,6 @@
 #' response.
 #' @param auth Authentication method, `"token"` or `"key"`. `mine = TRUE`
 #' requires `"token"`.
-#' @param ... Additional arguments passed to [tuber_GET()].
 #'
 #' @return A data frame when `simplify = TRUE`; otherwise a channel-section
 #' list response.
@@ -27,8 +26,7 @@ list_channel_sections <- function(channel_id = NULL,
                                   mine = FALSE,
                                   part = c("snippet", "contentDetails"),
                                   simplify = TRUE,
-                                  auth = if (mine) "token" else "key",
-                                  ...) {
+                                  auth = if (mine) "token" else "key") {
   assert_flag(mine, .var.name = "mine")
   assert_character(part, min.len = 1, any.missing = FALSE, .var.name = "part")
   assert_flag(simplify, .var.name = "simplify")
@@ -60,7 +58,7 @@ list_channel_sections <- function(channel_id = NULL,
   if (!is.null(section_ids)) query$id <- paste(section_ids, collapse = ",")
   if (mine) query$mine <- "true"
 
-  response <- tuber_GET("channelSections", query = query, auth = auth, ...)
+  response <- tuber_GET("channelSections", query = query, auth = auth)
   items <- response$items %||% list()
 
   if (!simplify) {

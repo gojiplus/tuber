@@ -4,12 +4,10 @@
 \alias{delete_playlist}
 \title{Delete a Playlist}
 \usage{
-delete_playlist(playlist_id, ...)
+delete_playlist(playlist_id)
 }
 \arguments{
 \item{playlist_id}{Playlist ID.}
-
-\item{...}{Additional arguments passed to [tuber_DELETE()].}
 }
 \value{
 The empty API response, invisibly.

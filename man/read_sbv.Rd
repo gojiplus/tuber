@@ -10,7 +10,9 @@ read_sbv(file)
 \item{file}{The file name of the \code{sbv} file}
 }
 \value{
-A \code{data.frame} with start/stop times and the text
+A data frame with one row per caption, in file order, and the
+columns `text`, `start` and `stop`. A caption that spans several lines
+keeps its line breaks.
 }
 \description{
 Read SBV file

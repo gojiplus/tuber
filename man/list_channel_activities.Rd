@@ -13,8 +13,7 @@ list_channel_activities(
   published_before = NULL,
   region_code = NULL,
   simplify = TRUE,
-  auth = "key",
-  ...
+  auth = "key"
 )
 }
 \arguments{
@@ -36,8 +35,6 @@ list_channel_activities(
 response with all collected items.}
 
 \item{auth}{Authentication method, `"key"` or `"token"`.}
-
-\item{...}{Additional arguments passed to [tuber_GET()].}
 }
 \value{
 A data frame when `simplify = TRUE`; otherwise an activities-list

@@ -9,8 +9,7 @@ list_channel_videos(
   max_results = 50,
   page_token = NULL,
   simplify = TRUE,
-  auth = "key",
-  ...
+  auth = "key"
 )
 }
 \arguments{
@@ -25,8 +24,6 @@ Optional.}
 playlist-items response.}
 
 \item{auth}{Authentication method, `"key"` or `"token"`.}
-
-\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
 A data frame when `simplify = TRUE`; otherwise a playlist-items

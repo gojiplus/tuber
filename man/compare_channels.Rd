@@ -8,8 +8,7 @@ compare_channels(
   channel_ids,
   metrics = c("subscriber_count", "video_count", "view_count"),
   auth = "key",
-  simplify = TRUE,
-  ...
+  simplify = TRUE
 )
 }
 \arguments{
@@ -20,8 +19,6 @@ compare_channels(
 \item{auth}{Authentication method: "token" (OAuth2) or "key" (API key)}
 
 \item{simplify}{Whether to return a simplified comparison table}
-
-\item{...}{Additional arguments passed to API functions}
 }
 \value{
 List or data frame with channel comparison

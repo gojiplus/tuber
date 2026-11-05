@@ -13,8 +13,7 @@ upload_caption(
   on_behalf_of_content_owner = NULL,
   open_url = FALSE,
   chunk_size = 8 * 1024^2,
-  max_tries = 5,
-  ...
+  max_tries = 5
 )
 }
 \arguments{
@@ -40,8 +39,6 @@ Uploads resume from the last byte YouTube confirms, so a smaller chunk
 loses less work when a connection drops.}
 
 \item{max_tries}{Consecutive failed attempts to tolerate before giving up.}
-
-\item{...}{Ignored; retained for backward compatibility.}
 }
 \value{
 A list containing the final HTTP response, parsed caption resource,

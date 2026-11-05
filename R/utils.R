@@ -5,17 +5,6 @@
 #' @keywords internal
 NULL
 
-#' Check if object has items
-#'
-#' Returns TRUE if x is not NULL and has length > 0
-#'
-#' @param x Object to check
-#' @return Logical indicating if x has items
-#' @keywords internal
-has_items <- function(x) {
-  !is.null(x) && length(x) > 0
-}
-
 #' Safely extract field from list/object
 #'
 #' Extracts a field from an object, returning a default value if the field

@@ -4,12 +4,10 @@
 \alias{delete_caption}
 \title{Delete a Caption Track}
 \usage{
-delete_caption(caption_id, ...)
+delete_caption(caption_id)
 }
 \arguments{
 \item{caption_id}{Caption-track ID.}
-
-\item{...}{Additional arguments passed to [tuber_DELETE()].}
 }
 \value{
 The empty API response, invisibly.

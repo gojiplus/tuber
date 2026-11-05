@@ -1,46 +1,10 @@
 skip_on_cran()
 
-test_that("list_channel_sections runs successfully", {
-  skip_on_cran()
+test_that("get_my_channel returns the authenticated channel from the live API", {
+  skip_if_no_oauth_token()
 
-  # Skip if no token file exists
-  if (!file.exists("token_file.rds.enc")) {
-    skip("No token file available for API testing")
-  }
+  channel <- get_my_channel()
 
-  tryCatch(
-    {
-      google_token <- readRDS("token_file.rds.enc")$google_token
-      options(google_token = google_token)
-
-      get_info <- list_channel_sections(c(channel_id = "UCRw8bIz2wMLmfgAgWm903cA"))
-      expect_type(get_info, "list")
-    },
-    error = function(e) {
-      skip(paste("API test failed:", e$message))
-    }
-  )
-})
-
-
-test_that("get_my_channel runs successfully", {
-  skip_on_cran()
-
-  # Skip if no token file exists
-  if (!file.exists("token_file.rds.enc")) {
-    skip("No token file available for API testing")
-  }
-
-  tryCatch(
-    {
-      google_token <- readRDS("token_file.rds.enc")$google_token
-      options(google_token = google_token)
-
-      get_info <- get_my_channel()
-      expect_type(get_info, "list")
-    },
-    error = function(e) {
-      skip(paste("API test failed:", e$message))
-    }
-  )
+  expect_s3_class(channel, "data.frame")
+  expect_equal(nrow(channel), 1)
 })

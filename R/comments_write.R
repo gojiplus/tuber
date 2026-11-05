@@ -1,13 +1,12 @@
 #' Post a Top-Level Comment
 #'
-#' Posts a new top-level comment on a YouTube video or channel.
-#' Requires OAuth 2.0 authentication.
+#' Posts a new top-level comment on a YouTube video. Requires OAuth 2.0
+#' authentication. YouTube no longer accepts comments on a channel itself, so
+#' a video is required.
 #'
-#' @param video_id Character. ID of the video to comment on. Either `video_id` or `channel_id` must
-#' be provided.
-#' @param channel_id Character. ID of the channel to comment on.
+#' @param video_id Character. ID of the video to comment on.
+#' @param channel_id Character. Optional ID of the channel that owns the video.
 #' @param text Character. The text of the comment.
-#' @param \dots Additional arguments passed to \code{\link{tuber_POST_json}}.
 #'
 #' @return A list containing the API response.
 #' @export
@@ -20,15 +19,13 @@
 #'
 #' post_comment(video_id = "yJXTXN4xrI8", text = "Great video!")
 #' }
-post_comment <- function(video_id = NULL, channel_id = NULL, text, ...) {
+post_comment <- function(video_id, channel_id = NULL, text) {
+  assert_string(video_id, min.chars = 1, .var.name = "video_id")
   assert_character(text, len = 1, min.chars = 1, .var.name = "text")
-
-  if (is.null(video_id) && is.null(channel_id)) {
-    abort("Either video_id or channel_id must be provided to post a comment.")
-  }
 
   body <- list(
     snippet = list(
+      videoId = video_id,
       topLevelComment = list(
         snippet = list(
           textOriginal = text
@@ -37,10 +34,6 @@ post_comment <- function(video_id = NULL, channel_id = NULL, text, ...) {
     )
   )
 
-  if (!is.null(video_id)) {
-    assert_character(video_id, len = 1, min.chars = 1, .var.name = "video_id")
-    body$snippet$videoId <- video_id
-  }
   if (!is.null(channel_id)) {
     assert_character(channel_id, len = 1, min.chars = 1, .var.name = "channel_id")
     body$snippet$channelId <- channel_id
@@ -49,8 +42,7 @@ post_comment <- function(video_id = NULL, channel_id = NULL, text, ...) {
   tuber_POST_json(
     path = "commentThreads",
     query = list(part = "snippet"),
-    body = body,
-    ...
+    body = body
   )
 }
 
@@ -61,7 +53,6 @@ post_comment <- function(video_id = NULL, channel_id = NULL, text, ...) {
 #'
 #' @param parent_id Character. The ID of the comment being replied to.
 #' @param text Character. The text of the reply.
-#' @param \dots Additional arguments passed to \code{\link{tuber_POST_json}}.
 #'
 #' @return A list containing the API response.
 #' @export
@@ -74,7 +65,7 @@ post_comment <- function(video_id = NULL, channel_id = NULL, text, ...) {
 #'
 #' reply_to_comment(parent_id = "Ugz...", text = "Thanks for watching!")
 #' }
-reply_to_comment <- function(parent_id, text, ...) {
+reply_to_comment <- function(parent_id, text) {
   assert_character(parent_id, len = 1, min.chars = 1, .var.name = "parent_id")
   assert_character(text, len = 1, min.chars = 1, .var.name = "text")
 
@@ -88,8 +79,7 @@ reply_to_comment <- function(parent_id, text, ...) {
   tuber_POST_json(
     path = "comments",
     query = list(part = "snippet"),
-    body = body,
-    ...
+    body = body
   )
 }
 
@@ -98,10 +88,9 @@ reply_to_comment <- function(parent_id, text, ...) {
 #' Sets the moderation status of one or more comments.
 #' Requires OAuth 2.0 authentication and owner privileges.
 #'
-#' @param comment_id Character vector. The IDs of the comments to update.
+#' @param comment_ids Character vector. The IDs of the comments to update.
 #' @param moderation_status Character. Valid values are 'heldForReview', 'published', 'rejected'.
 #' @param ban_author Logical. Whether to ban the author from commenting on the channel. Optional.
-#' @param \dots Additional arguments passed to \code{\link{tuber_POST_json}}.
 #'
 #' @return A list containing the API response.
 #' @export
@@ -112,13 +101,18 @@ reply_to_comment <- function(parent_id, text, ...) {
 #' \dontrun{
 #' # Set API token via yt_oauth() first
 #'
-#' set_comment_moderation_status(comment_id = "Ugz...", moderation_status = "rejected")
+#' set_comment_moderation_status(comment_ids = "Ugz...", moderation_status = "rejected")
 #' }
-set_comment_moderation_status <- function(comment_id,
+set_comment_moderation_status <- function(comment_ids,
                                           moderation_status,
-                                          ban_author = FALSE,
-                                          ...) {
-  assert_character(comment_id, min.chars = 1, .var.name = "comment_id")
+                                          ban_author = FALSE) {
+  assert_character(
+    comment_ids,
+    min.len = 1,
+    any.missing = FALSE,
+    min.chars = 1,
+    .var.name = "comment_ids"
+  )
   assert_choice(
     moderation_status, c("heldForReview", "published", "rejected"),
     .var.name = "moderation_status"
@@ -126,7 +120,7 @@ set_comment_moderation_status <- function(comment_id,
   assert_logical(ban_author, len = 1, .var.name = "ban_author")
 
   query <- list(
-    id = paste(comment_id, collapse = ","),
+    id = paste(comment_ids, collapse = ","),
     moderationStatus = moderation_status
   )
 

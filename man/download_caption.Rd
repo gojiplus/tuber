@@ -4,13 +4,7 @@
 \alias{download_caption}
 \title{Download a Caption Track}
 \usage{
-download_caption(
-  caption_id,
-  language = NULL,
-  format = NULL,
-  as_raw = TRUE,
-  ...
-)
+download_caption(caption_id, language = NULL, format = NULL, as_raw = TRUE)
 }
 \arguments{
 \item{caption_id}{Caption-track ID returned by [list_captions()].}
@@ -22,8 +16,6 @@ download_caption(
 
 \item{as_raw}{If `TRUE`, return a raw vector; otherwise return one character
 string.}
-
-\item{...}{Additional arguments passed to [tuber_GET()].}
 }
 \value{
 A raw vector when `as_raw = TRUE`; otherwise a character scalar.

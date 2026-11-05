@@ -4,7 +4,7 @@
 \alias{tuber_PUT}
 \title{PUT}
 \usage{
-tuber_PUT(path, query, body = "", ...)
+tuber_PUT(path, query, body = "")
 }
 \arguments{
 \item{path}{path to specific API request URL}
@@ -12,8 +12,6 @@ tuber_PUT(path, query, body = "", ...)
 \item{query}{query list}
 
 \item{body}{list serialized as the JSON request body}
-
-\item{\dots}{Ignored; see [tuber_POST_json()].}
 }
 \value{
 list

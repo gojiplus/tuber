@@ -1,45 +1,19 @@
-test_that("yt_search obeys max_results", {
-  skip_on_cran()
+test_that("yt_search obeys max_results against the live API", {
+  skip_if_no_api_key()
 
-  # Skip if no token file exists
-  if (!file.exists("token_file.rds.enc")) {
-    skip("No token file available for API testing")
-  }
+  res <- yt_search(term = "cats", type = "channel", max_results = 5)
 
-  tryCatch(
-    {
-      google_token <- readRDS("token_file.rds.enc")$google_token
-      options(google_token = google_token)
-
-      res <- yt_search(term = "cats", type = "channel", max_results = 5)
-      expect_s3_class(res, "data.frame")
-      expect_equal(nrow(res), 5)
-    },
-    error = function(e) {
-      skip(paste("API test failed:", e$message))
-    }
-  )
+  expect_s3_class(res, "data.frame")
+  expect_gt(nrow(res), 0)
+  expect_lte(nrow(res), 5)
 })
 
-test_that("yt_search returns >50 results when requested", {
-  skip_on_cran()
+test_that("yt_search pages past the 50-item page cap against the live API", {
+  skip_if_no_api_key()
 
-  # Skip if no token file exists
-  if (!file.exists("token_file.rds.enc")) {
-    skip("No token file available for API testing")
-  }
+  res <- yt_search(term = "cats", type = "video", max_results = 55)
 
-  tryCatch(
-    {
-      google_token <- readRDS("token_file.rds.enc")$google_token
-      options(google_token = google_token)
-
-      res <- yt_search(term = "cats", type = "video", max_results = 55)
-      expect_s3_class(res, "data.frame")
-      expect_true(nrow(res) >= 55)
-    },
-    error = function(e) {
-      skip(paste("API test failed:", e$message))
-    }
-  )
+  expect_gt(nrow(res), 50)
+  expect_lte(nrow(res), 55)
+  expect_false(anyDuplicated(res$video_id) > 0)
 })

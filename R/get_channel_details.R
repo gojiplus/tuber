@@ -1,21 +1,18 @@
 #' Get Channel Details
 #'
-#' Retrieves channels by ID, legacy username, guide category, or the
-#' authenticated user's channel. Supply exactly one filter.
+#' Retrieves channels by ID, legacy username, or the authenticated user's
+#' channel. Supply exactly one filter.
 #'
 #' @param channel_ids Optional character vector of channel IDs.
 #' @param usernames Optional character vector of legacy YouTube usernames.
-#' @param category_id Optional guide-category ID.
 #' @param mine If `TRUE`, retrieve the authenticated user's channel.
 #' @param part Character vector of channel resource parts.
-#' @param max_results Maximum number of category-filtered channels to return.
 #' @param language Optional language code for localized text.
 #' @param simplify If `TRUE`, return a data frame; otherwise return a channels
 #' list response with all collected items.
 #' @param batch_size Number of channel IDs per request, at most 50.
 #' @param auth Authentication method, `"key"` or `"token"`. `mine = TRUE`
 #' requires OAuth.
-#' @param ... Additional arguments passed to [tuber_GET()].
 #'
 #' @return A data frame when `simplify = TRUE`; otherwise a channels-list
 #' response.
@@ -29,18 +26,14 @@
 #' }
 get_channel_details <- function(channel_ids = NULL,
                                 usernames = NULL,
-                                category_id = NULL,
                                 mine = FALSE,
                                 part = c("snippet", "statistics"),
-                                max_results = 50,
                                 language = NULL,
                                 simplify = TRUE,
                                 batch_size = 50,
-                                auth = if (mine) "token" else "key",
-                                ...) {
+                                auth = if (mine) "token" else "key") {
   assert_flag(mine, .var.name = "mine")
   assert_character(part, min.len = 1, any.missing = FALSE, .var.name = "part")
-  assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
   assert_flag(simplify, .var.name = "simplify")
   assert_integerish(batch_size, len = 1, lower = 1, upper = 50, .var.name = "batch_size")
   assert_choice(auth, c("key", "token"), .var.name = "auth")
@@ -62,9 +55,6 @@ get_channel_details <- function(channel_ids = NULL,
       .var.name = "usernames"
     )
   }
-  if (!is.null(category_id)) {
-    assert_string(category_id, min.chars = 1, .var.name = "category_id")
-  }
   if (!is.null(language)) {
     assert_string(language, min.chars = 1, .var.name = "language")
   }
@@ -72,15 +62,11 @@ get_channel_details <- function(channel_ids = NULL,
   filter_count <- sum(
     !is.null(channel_ids),
     !is.null(usernames),
-    !is.null(category_id),
     mine
   )
   if (filter_count != 1) {
     abort(
-      paste0(
-        "Supply exactly one of `channel_ids`, `usernames`, `category_id`, or ",
-        "`mine = TRUE`."
-      ),
+      "Supply exactly one of `channel_ids`, `usernames`, or `mine = TRUE`.",
       class = "tuber_invalid_channel_filter"
     )
   }
@@ -94,8 +80,7 @@ get_channel_details <- function(channel_ids = NULL,
       tuber_GET,
       path = "channels",
       query = query,
-      auth = auth,
-      ...
+      auth = auth
     )
   }
   items <- list()
@@ -124,22 +109,6 @@ get_channel_details <- function(channel_ids = NULL,
       items <- c(items, response$items %||% list())
       api_calls <- api_calls + 1L
     }
-  } else if (!is.null(category_id)) {
-    query <- list(
-      part = part_query,
-      categoryId = category_id,
-      hl = language,
-      maxResults = min(max_results, 50)
-    )
-    fetch_page <- function(token = NULL) {
-      page_query <- query
-      page_query$pageToken <- token
-      request(page_query)
-    }
-    first_page <- fetch_page()
-    pages <- paginate_api_request(first_page, fetch_page, max_results = max_results)
-    items <- pages$items
-    api_calls <- pages$page_count
   } else {
     response <- request(list(part = part_query, mine = "true", hl = language))
     items <- response$items %||% list()
@@ -166,14 +135,12 @@ get_channel_details <- function(channel_ids = NULL,
 #' @export
 get_my_channel <- function(part = c("snippet", "statistics"),
                            language = NULL,
-                           simplify = TRUE,
-                           ...) {
+                           simplify = TRUE) {
   get_channel_details(
     mine = TRUE,
     part = part,
     language = language,
-    simplify = simplify,
-    ...
+    simplify = simplify
   )
 }
 

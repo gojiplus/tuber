@@ -2,7 +2,9 @@
 #'
 #' @param file The file name of the \code{sbv} file
 #'
-#' @return A \code{data.frame} with start/stop times and the text
+#' @return A data frame with one row per caption, in file order, and the
+#' columns `text`, `start` and `stop`. A caption that spans several lines
+#' keeps its line breaks.
 #' @export
 #'
 #' @examples
@@ -29,22 +31,36 @@ read_sbv <- function(file) {
     )
   }
 
-  x <- readLines(file)
-  x <- matrix(x, ncol = 3, byrow = TRUE)
-  colnames(x) <- c("time", "text", "empty")
-  x <- as.data.frame(x, stringsAsFactors = FALSE)
-  if (!all(x$empty %in% "")) {
-    warn("Something seems off - results may be wrong",
+  # Hand-rolled: an SBV file is blank-line-separated blocks, each a
+  # "start,stop" line followed by one or more lines of text. On CRAN, srt
+  # reads SubRip only; subtools reads SubViewer, which was not tested against
+  # YouTube's SBV variant and would not return this function's columns.
+  lines <- sub("^\ufeff", "", readLines(file, warn = FALSE, encoding = "UTF-8"))
+  blank <- !nzchar(trimws(lines))
+  blocks <- unname(split(lines[!blank], cumsum(blank)[!blank]))
+
+  times <- vapply(blocks, function(block) block[[1]], character(1))
+  time_range <- "^\\d+:\\d{2}:\\d{2}\\.\\d{3},\\d+:\\d{2}:\\d{2}\\.\\d{3}$"
+  malformed <- which(!grepl(time_range, times))
+  if (length(malformed) > 0) {
+    abort(
+      c(
+        "This does not look like an SBV file.",
+        x = paste0(
+          "Caption block ", malformed[[1]], " starts with \"", times[[malformed[[1]]]],
+          "\", not a `start,stop` time range."
+        )
+      ),
       file_path = file,
-      class = "tuber_sbv_parse_warning"
+      class = "tuber_sbv_parse_error"
     )
   }
-  x$empty <- NULL
-  times <- do.call(rbind, lapply(strsplit(x$time, ","), c))
-  colnames(times) <- c("start", "stop")
-  times <- as.data.frame(times, stringsAsFactors = FALSE)
-  times$time <- x$time
-  x <- merge(x, times, all.x = TRUE, by = "time")
-  x$time <- NULL
-  x
+
+  split_times <- strsplit(times, ",", fixed = TRUE)
+  data.frame(
+    text = vapply(blocks, function(block) paste(block[-1], collapse = "\n"), character(1)),
+    start = vapply(split_times, function(x) x[[1]], character(1)),
+    stop = vapply(split_times, function(x) x[[2]], character(1)),
+    stringsAsFactors = FALSE
+  )
 }

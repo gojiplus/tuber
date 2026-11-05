@@ -17,7 +17,6 @@
 #'   Uploads resume from the last byte YouTube confirms, so a smaller chunk
 #'   loses less work when a connection drops.
 #' @param max_tries Consecutive failed attempts to tolerate before giving up.
-#' @param ... Ignored; retained for backward compatibility.
 #'
 #' @return A list containing the final HTTP response, parsed caption resource,
 #'   and video URL.
@@ -43,8 +42,7 @@ upload_caption <- function(
   on_behalf_of_content_owner = NULL,
   open_url = FALSE,
   chunk_size = 8 * 1024^2,
-  max_tries = 5,
-  ...
+  max_tries = 5
 ) {
   assert_character(file, len = 1, min.chars = 1, .var.name = "file")
   assert_character(video_id, len = 1, min.chars = 1, .var.name = "video_id")
@@ -101,6 +99,7 @@ upload_caption <- function(
   }
   caption_type <- guess_type(file, empty = "application/octet-stream")
 
+  validate_upload(file, chunk_size, max_tries)
   yt_check_token()
   track_quota_usage("captions", "insert")
 

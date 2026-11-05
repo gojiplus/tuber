@@ -10,8 +10,7 @@ analyze_trends(
   time_period = "month",
   order = "viewCount",
   region_code = NULL,
-  auth = "key",
-  ...
+  auth = "key"
 )
 }
 \arguments{
@@ -26,8 +25,6 @@ analyze_trends(
 \item{region_code}{Region code for localized trends}
 
 \item{auth}{Authentication method: "token" (OAuth2) or "key" (API key)}
-
-\item{...}{Additional arguments passed to search functions}
 }
 \value{
 List containing trending analysis results

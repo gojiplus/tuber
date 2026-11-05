@@ -8,7 +8,6 @@
 #' licensed-content, and projection fields.
 #' @param batch_size Number of video IDs per API request, up to 50.
 #' @param auth Authentication method, `"token"` or `"key"`.
-#' @param ... Additional arguments passed to [tuber_GET()].
 #'
 #' @return A data frame with snake-case column names and one row per video.
 #' Count columns are numeric and missing statistics are returned as `NA`.
@@ -22,8 +21,7 @@
 get_video_stats <- function(video_ids,
                             include_content_details = FALSE,
                             batch_size = 50,
-                            auth = "key",
-                            ...) {
+                            auth = "key") {
   assert_character(video_ids, any.missing = FALSE, min.len = 1, .var.name = "video_ids")
   assert_flag(include_content_details, .var.name = "include_content_details")
   assert_integerish(batch_size, len = 1, lower = 1, upper = 50, .var.name = "batch_size")
@@ -39,8 +37,7 @@ get_video_stats <- function(video_ids,
     part = part,
     simplify = TRUE,
     batch_size = batch_size,
-    auth = auth,
-    ...
+    auth = auth
   )
 
   if (!is.data.frame(details) || nrow(details) == 0) {

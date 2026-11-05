@@ -3,7 +3,9 @@
 #' The token lives in `options(google_token)` as an httr2 token, and the
 #' client that minted it in `options(tuber.oauth_client)`, so an expired
 #' token can be refreshed without asking the user to authenticate again.
-#' Both are set by [yt_oauth()].
+#' Both are set by [yt_oauth()], and both are written to the cache file: an
+#' access token lasts an hour, so a cached token without its client would be
+#' useless in the next session.
 #'
 #' @name tuber-token
 #' @keywords internal
@@ -58,8 +60,10 @@ yt_access_token <- function() {
     client <- getOption("tuber.oauth_client")
     if (is.null(client)) {
       abort(
-        "The access token has expired and cannot be refreshed",
-        help = "Run yt_oauth() again to authenticate",
+        c(
+          "The access token has expired and cannot be refreshed.",
+          i = "Run `yt_oauth()` with your `app_id` and `app_secret` to authenticate again."
+        ),
         class = "tuber_token_expired"
       )
     }
@@ -67,9 +71,11 @@ yt_access_token <- function() {
       oauth_flow_refresh(client, refresh_token = token$refresh_token),
       error = function(e) {
         abort(
-          "Could not refresh the access token",
-          error = conditionMessage(e),
-          help = "Run yt_oauth() again to authenticate",
+          c(
+            "Could not refresh the access token.",
+            i = "Run `yt_oauth()` with your `app_id` and `app_secret` to authenticate again."
+          ),
+          parent = e,
           class = "tuber_token_refresh_failed"
         )
       }
@@ -80,22 +86,25 @@ yt_access_token <- function() {
   access <- token$access_token
   if (is.null(access) || !nzchar(access)) {
     abort(
-      "The stored token carries no access token",
-      help = "Run yt_oauth() again to authenticate",
+      c(
+        "The stored token carries no access token.",
+        i = "Run `yt_oauth()` with your `app_id` and `app_secret` to authenticate again."
+      ),
       class = "tuber_token_invalid"
     )
   }
   access
 }
 
-#' Read a saved token, if the file holds one this version understands
+#' Read a saved token cache, if the file holds one this version understands
 #'
-#' Versions before 2.1.0 stored an httr `Token2.0`, which httr2 cannot use.
-#' Those are reported plainly rather than failing later with something
+#' The cache is a token together with the OAuth client that minted it.
+#' Anything else, including the httr `Token2.0` that tuber 2.0.0 and earlier
+#' stored, is reported plainly rather than failing later with something
 #' obscure about a missing access token.
 #'
 #' @param path Path to the token file
-#' @return An httr2 token, or NULL
+#' @return A list with `token` and `client`, or NULL
 #' @keywords internal
 #' @noRd
 .read_token_file <- function(path) {
@@ -106,26 +115,24 @@ yt_access_token <- function() {
   if (is.null(saved)) {
     return(NULL)
   }
-  if (inherits(saved, "httr2_token")) {
+  usable <- inherits(saved, "tuber_token_cache") &&
+    inherits(saved$token, "httr2_token") &&
+    inherits(saved$client, "httr2_oauth_client")
+  if (usable) {
     return(saved)
   }
 
-  looks_like_httr <- inherits(saved, "Token2.0") || inherits(saved, "Token") ||
-    (is.list(saved) && length(saved) > 0 && inherits(saved[[1]], "Token2.0"))
-  if (looks_like_httr) {
-    inform(
+  inform(
+    c(
       paste0("The token in ", path, " was created by an older version of tuber."),
-      help = c(
-        "tuber authenticates with httr2 now, so it cannot be reused.",
-        "Authenticating again; the new token replaces it."
-      ),
-      class = "tuber_token_legacy"
-    )
-  }
+      i = "It cannot be reused. Authenticating again; the new token replaces it."
+    ),
+    class = "tuber_token_legacy"
+  )
   NULL
 }
 
-#' Save a token without overwriting httr's shared cache
+#' Save a token and its client without overwriting httr's shared cache
 #'
 #' `.httr-oauth` is httr's cache name, and every httr-based package in the
 #' same working directory reads it expecting httr tokens. An httr2 token there
@@ -133,22 +140,25 @@ yt_access_token <- function() {
 #' path is tuber's own and is overwritten freely.
 #'
 #' @param token An httr2 token
+#' @param client The httr2 OAuth client that minted `token`
 #' @param path Path to write to
 #' @return Invisibly, the path
 #' @keywords internal
 #' @noRd
-.save_token_file <- function(token, path) {
+.save_token_file <- function(token, client, path) {
   if (identical(basename(path), ".httr-oauth")) {
     abort(
-      paste0(path, " is httr's shared token cache, which other packages read"),
-      help = c(
-        "Refusing to overwrite it.",
-        "Pass a different `token` path to yt_oauth()"
+      c(
+        paste0(path, " is httr's shared token cache, which other packages read."),
+        i = "Refusing to overwrite it. Pass a different `token` path to `yt_oauth()`."
       ),
       class = "tuber_token_would_clobber"
     )
   }
   dir.create(dirname(path), recursive = TRUE, showWarnings = FALSE)
-  saveRDS(token, file = path)
+  saveRDS(
+    structure(list(token = token, client = client), class = "tuber_token_cache"),
+    file = path
+  )
   invisible(path)
 }

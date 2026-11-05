@@ -10,8 +10,7 @@ list_channel_sections(
   mine = FALSE,
   part = c("snippet", "contentDetails"),
   simplify = TRUE,
-  auth = if (mine) "token" else "key",
-  ...
+  auth = if (mine) "token" else "key"
 )
 }
 \arguments{
@@ -29,8 +28,6 @@ response.}
 
 \item{auth}{Authentication method, `"token"` or `"key"`. `mine = TRUE`
 requires `"token"`.}
-
-\item{...}{Additional arguments passed to [tuber_GET()].}
 }
 \value{
 A data frame when `simplify = TRUE`; otherwise a channel-section

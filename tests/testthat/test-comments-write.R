@@ -1,5 +1,5 @@
 test_that("post_comment validates arguments", {
-  expect_error(post_comment(text = "Hello"), "Either video_id or channel_id")
+  expect_error(post_comment(text = "Hello"), "video_id")
   expect_error(post_comment(video_id = "vid"), "argument \"text\" is missing")
 })
 
@@ -47,7 +47,7 @@ test_that("set_comment_moderation_status formulates correct request", {
       })
 
       res <- set_comment_moderation_status(
-        comment_id = "comm1", moderation_status = "rejected",
+        comment_ids = "comm1", moderation_status = "rejected",
         ban_author = TRUE
       )
 

@@ -4,15 +4,13 @@
 \alias{insert_channel_banner}
 \title{Insert Channel Banner}
 \usage{
-insert_channel_banner(file, on_behalf_of_content_owner = NULL, ...)
+insert_channel_banner(file, on_behalf_of_content_owner = NULL)
 }
 \arguments{
 \item{file}{Character. Path to the banner image file.}
 
 \item{on_behalf_of_content_owner}{Optional YouTube content-owner ID. This is
 only available to authorized YouTube content partners.}
-
-\item{\dots}{Ignored; retained for backward compatibility.}
 }
 \value{
 A list containing the response from the API, including the `url` for the banner.

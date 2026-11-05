@@ -8,8 +8,7 @@ analyze_channel(
   channel_id,
   max_videos = 50,
   auth = "key",
-  include_comments = FALSE,
-  ...
+  include_comments = FALSE
 )
 }
 \arguments{
@@ -20,8 +19,6 @@ analyze_channel(
 \item{auth}{Authentication method: "token" (OAuth2) or "key" (API key)}
 
 \item{include_comments}{Whether to fetch comment statistics (requires more quota)}
-
-\item{...}{Additional arguments passed to API functions}
 }
 \value{
 List containing comprehensive channel analysis

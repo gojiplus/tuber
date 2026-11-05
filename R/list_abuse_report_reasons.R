@@ -3,7 +3,6 @@
 #' @param part Character vector of resource parts.
 #' @param language Language code for localized labels.
 #' @param auth Authentication method, `"key"` or `"token"`.
-#' @param ... Additional arguments passed to [tuber_GET()].
 #'
 #' @return A data frame with one row per primary report reason.
 #' @export
@@ -14,8 +13,7 @@
 #' }
 list_abuse_report_reasons <- function(part = c("id", "snippet"),
                                       language = "en-US",
-                                      auth = "key",
-                                      ...) {
+                                      auth = "key") {
   assert_character(part, min.len = 1, any.missing = FALSE, .var.name = "part")
   assert_string(language, min.chars = 1, .var.name = "language")
   assert_choice(auth, c("key", "token"), .var.name = "auth")
@@ -23,8 +21,7 @@ list_abuse_report_reasons <- function(part = c("id", "snippet"),
   response <- tuber_GET(
     "videoAbuseReportReasons",
     query = list(part = paste(part, collapse = ","), hl = language),
-    auth = auth,
-    ...
+    auth = auth
   )
   items <- response$items %||% list()
 

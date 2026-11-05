@@ -4,24 +4,22 @@
 \alias{post_comment}
 \title{Post a Top-Level Comment}
 \usage{
-post_comment(video_id = NULL, channel_id = NULL, text, ...)
+post_comment(video_id, channel_id = NULL, text)
 }
 \arguments{
-\item{video_id}{Character. ID of the video to comment on. Either `video_id` or `channel_id` must
-be provided.}
+\item{video_id}{Character. ID of the video to comment on.}
 
-\item{channel_id}{Character. ID of the channel to comment on.}
+\item{channel_id}{Character. Optional ID of the channel that owns the video.}
 
 \item{text}{Character. The text of the comment.}
-
-\item{\dots}{Additional arguments passed to \code{\link{tuber_POST_json}}.}
 }
 \value{
 A list containing the API response.
 }
 \description{
-Posts a new top-level comment on a YouTube video or channel.
-Requires OAuth 2.0 authentication.
+Posts a new top-level comment on a YouTube video. Requires OAuth 2.0
+authentication. YouTube no longer accepts comments on a channel itself, so
+a video is required.
 }
 \examples{
 \dontrun{

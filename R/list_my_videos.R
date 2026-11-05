@@ -6,7 +6,6 @@
 #' @param page_token Optional page token at which to start.
 #' @param simplify If `TRUE`, return a data frame; otherwise return the raw
 #' playlist-items response.
-#' @param ... Additional arguments passed to [tuber_GET()].
 #' @return A data frame when `simplify = TRUE`; otherwise a playlist-items
 #' response.
 #' @export
@@ -16,8 +15,7 @@
 #' }
 list_my_videos <- function(max_results = 50,
                            page_token = NULL,
-                           simplify = TRUE,
-                           ...) {
+                           simplify = TRUE) {
   channel <- get_my_channel(part = "id", simplify = TRUE)
   if (nrow(channel) == 0) {
     abort(
@@ -30,7 +28,6 @@ list_my_videos <- function(max_results = 50,
     max_results = max_results,
     page_token = page_token,
     simplify = simplify,
-    auth = "token",
-    ...
+    auth = "token"
   )
 }

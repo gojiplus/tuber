@@ -11,7 +11,6 @@
 #' @param simplify If `TRUE`, return a data frame; otherwise return the raw API
 #' response with all collected items.
 #' @param auth Authentication method, `"key"` or `"token"`.
-#' @param ... Additional arguments passed to [tuber_GET()].
 #'
 #' @return A data frame when `simplify = TRUE`; otherwise a videos-list
 #' response.
@@ -28,8 +27,7 @@ list_popular_videos <- function(region_code = NULL,
                                 language = NULL,
                                 page_token = NULL,
                                 simplify = TRUE,
-                                auth = "key",
-                                ...) {
+                                auth = "key") {
   assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
   assert_character(part, min.len = 1, any.missing = FALSE, .var.name = "part")
   assert_flag(simplify, .var.name = "simplify")
@@ -56,10 +54,11 @@ list_popular_videos <- function(region_code = NULL,
     regionCode = region_code,
     videoCategoryId = category_id
   )
-  fetch_page <- function(token = NULL) {
+  fetch_page <- function(token = NULL, remaining = max_results) {
     page_query <- query
     page_query$pageToken <- token
-    tuber_GET("videos", query = page_query, auth = auth, ...)
+    page_query$maxResults <- min(remaining, query$maxResults)
+    tuber_GET("videos", query = page_query, auth = auth)
   }
 
   response <- fetch_page(page_token)

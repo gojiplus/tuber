@@ -4,14 +4,12 @@
 \alias{tuber_DELETE}
 \title{DELETE}
 \usage{
-tuber_DELETE(path, query, ...)
+tuber_DELETE(path, query)
 }
 \arguments{
 \item{path}{path to specific API request URL}
 
 \item{query}{query list}
-
-\item{\dots}{Ignored; see [tuber_POST_json()].}
 }
 \value{
 list

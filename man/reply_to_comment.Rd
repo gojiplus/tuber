@@ -4,14 +4,12 @@
 \alias{reply_to_comment}
 \title{Reply to a Comment}
 \usage{
-reply_to_comment(parent_id, text, ...)
+reply_to_comment(parent_id, text)
 }
 \arguments{
 \item{parent_id}{Character. The ID of the comment being replied to.}
 
 \item{text}{Character. The text of the reply.}
-
-\item{\dots}{Additional arguments passed to \code{\link{tuber_POST_json}}.}
 }
 \value{
 A list containing the API response.

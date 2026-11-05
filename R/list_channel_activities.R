@@ -10,7 +10,6 @@
 #' @param simplify If `TRUE`, return a data frame; otherwise return the raw API
 #' response with all collected items.
 #' @param auth Authentication method, `"key"` or `"token"`.
-#' @param ... Additional arguments passed to [tuber_GET()].
 #'
 #' @return A data frame when `simplify = TRUE`; otherwise an activities-list
 #' response.
@@ -28,8 +27,7 @@ list_channel_activities <- function(channel_id,
                                     published_before = NULL,
                                     region_code = NULL,
                                     simplify = TRUE,
-                                    auth = "key",
-                                    ...) {
+                                    auth = "key") {
   assert_string(channel_id, min.chars = 1, .var.name = "channel_id")
   assert_character(part, min.len = 1, any.missing = FALSE, .var.name = "part")
   assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
@@ -57,10 +55,11 @@ list_channel_activities <- function(channel_id,
     publishedBefore = published_before,
     regionCode = region_code
   )
-  fetch_page <- function(token = NULL) {
+  fetch_page <- function(token = NULL, remaining = max_results) {
     page_query <- query
     page_query$pageToken <- token
-    tuber_GET("activities", page_query, auth = auth, ...)
+    page_query$maxResults <- min(remaining, query$maxResults)
+    tuber_GET("activities", page_query, auth = auth)
   }
   response <- fetch_page(page_token)
   pages <- paginate_api_request(response, fetch_page, max_results = max_results)

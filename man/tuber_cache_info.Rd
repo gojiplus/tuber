@@ -12,3 +12,6 @@ List with cache configuration
 \description{
 Get current cache configuration
 }
+\examples{
+str(tuber_cache_info())
+}

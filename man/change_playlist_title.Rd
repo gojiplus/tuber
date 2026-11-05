@@ -7,8 +7,7 @@
 change_playlist_title(
   playlist_id,
   new_title,
-  on_behalf_of_content_owner = NULL,
-  ...
+  on_behalf_of_content_owner = NULL
 )
 }
 \arguments{
@@ -18,9 +17,6 @@ change_playlist_title(
 
 \item{on_behalf_of_content_owner}{Optional YouTube content-owner ID. This is
 only available to authorized YouTube content partners.}
-
-\item{...}{Additional arguments passed to [list_playlists()] and
-[tuber_PUT()].}
 }
 \value{
 The updated playlist resource.

@@ -1,25 +1,8 @@
-test_that("list_playlists returns >50 results when requested", {
-  skip_on_cran()
+test_that("list_playlists pages past the 50-item page cap against the live API", {
+  skip_if_no_api_key()
 
-  # Skip if no token file exists
-  if (!file.exists("token_file.rds.enc")) {
-    skip("No token file available for API testing")
-  }
+  playlists <- list_playlists(channel_id = "UC_x5XG1OV2P6uZZ5FSM9Ttw", max_results = 55)
 
-  tryCatch(
-    {
-      google_token <- readRDS("token_file.rds.enc")$google_token
-      options(google_token = google_token)
-
-      res <- list_playlists(
-        channel_id = "UCBR8-60-B28hp2BmDPdntcQ",
-        max_results = 55,
-        simplify = FALSE
-      )
-      expect_true(length(res$items) >= 55)
-    },
-    error = function(e) {
-      skip(paste("API test failed:", e$message))
-    }
-  )
+  expect_equal(nrow(playlists), 55)
+  expect_false(anyDuplicated(playlists$playlist_id) > 0)
 })

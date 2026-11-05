@@ -9,8 +9,7 @@ list_super_chat_events(
   language = NULL,
   max_results = 50,
   page_token = NULL,
-  simplify = TRUE,
-  ...
+  simplify = TRUE
 )
 }
 \arguments{
@@ -23,8 +22,6 @@ list_super_chat_events(
 \item{page_token}{Specific page token to retrieve. Optional.}
 
 \item{simplify}{Whether to return a simplified data.frame. Default is TRUE.}
-
-\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
 A data.frame or list of Super Chat events.

@@ -20,6 +20,17 @@ tuber_cache_config(
 
 \item{cache_dir}{Directory for persistent cache (NULL for memory only)}
 }
+\value{
+`NULL`, invisibly. Called for its side effect on the session's cache
+settings.
+}
 \description{
 Configure caching settings
+}
+\examples{
+tuber_cache_config(default_ttl = 600)
+tuber_cache_info()$default_ttl
+
+# Restore the defaults.
+tuber_cache_config()
 }

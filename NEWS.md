@@ -1,31 +1,124 @@
-# tuber 2.0.0.9000 (development version)
+# tuber 3.0.0
 
-## httr2
+## Breaking changes
 
-* tuber now talks to YouTube entirely through httr2. httr is no longer a
-  dependency.
-* **Saved OAuth tokens must be recreated.** Tokens written by tuber 2.0.0 and
-  earlier are httr `Token2.0` objects, which httr2 cannot use. `yt_oauth()`
-  says so and authenticates again; the new token replaces the old file.
-* `options(google_token)` now holds an httr2 token. Code reading
+### Authentication
+
+* **Saved OAuth tokens must be recreated once.** tuber now talks to YouTube
+  through httr2, which cannot use the httr tokens that tuber 2.0.0 and earlier
+  saved. `yt_oauth()` says so when it finds one; run
+  `yt_oauth(app_id, app_secret)` again and the new token replaces the old
+  file. After that, `yt_oauth()` with no arguments reads the cache as before.
+* The token cache holds the token together with the OAuth client that
+  refreshes it. The file therefore contains the client secret; treat it as a
+  credential. The default location is unchanged:
+  `tools::R_user_dir("tuber", "cache")`.
+* `options(google_token)` holds an httr2 token. Code reading
   `token$credentials$access_token` should read `token$access_token`.
 * `yt_oauth()` refuses to write into a file named `.httr-oauth`. That name is
   httr's *shared* cache, read by every httr-based package in the same working
-  directory, and an httr2 token there would break them. tuber's own default
-  lives in `tools::R_user_dir("tuber", "cache")`.
-* An expired access token is refreshed automatically when the OAuth client is
-  still available, instead of failing the request.
-* Credentials travel in redacted headers, so a printed request or an error
-  dump no longer shows the bearer token or API key.
-* The `...` argument of the internal HTTP functions no longer reaches httr's
-  configuration. The argument is still accepted and ignored.
+  directory, and an httr2 token there would break them.
+* `yt_get_key()` and `yt_set_key()` read and set `YOUTUBE_KEY` as given. The
+  `decrypt` and `type` arguments and the `TUBER_KEY` variable are gone;
+  requests never used the decrypted key. In continuous integration, supply
+  `YOUTUBE_KEY` from the secret store.
+
+### Arguments and return values
+
+* Functions no longer accept `...`. An argument a function does not know,
+  such as a misspelled `simplfy = FALSE`, is now an error instead of being
+  silently dropped. `yt_oauth()` still forwards `...` to
+  `httr2::oauth_flow_auth_code()`.
+* `get_channel_details()` drops `category_id` and `max_results`. Google
+  retired the guide-category filter in 2020.
+* `post_comment()` requires `video_id`. YouTube no longer accepts comments on
+  a channel itself.
+* `set_comment_moderation_status()` takes `comment_ids`, since it accepts
+  several.
+* `get_all_channel_video_stats()` returns `published_at` instead of
+  `publication_date`, returns its counts as numbers, and keeps its columns
+  when a channel has no videos.
+
+### Removed
+
+tuber now exports only what needs the YouTube API.
+
+* The `%>%` pipe is no longer re-exported. Use R's `|>`, or load magrittr or
+  dplyr yourself.
+* `search_short_videos()` is removed. Use
+  `yt_search(video_duration = "short")`, which is all it did; it never
+  identified YouTube Shorts.
+* `with_retry()` is no longer exported.
+* `analyze_trends()` no longer reports `trending_score`, a formula with no
+  source. The summary is ordered by `total_views`.
+* httr, magrittr and purrr are no longer dependencies. stringi is a new one,
+  and httr2 must be 1.2.0 or later.
+
+## Uploads
+
+* Interrupted uploads resume (#81). The file goes up in
+  `Content-Range`-tagged chunks; if a chunk dies in flight or draws a 5xx,
+  tuber asks YouTube how many bytes it kept and continues from there instead
+  of restarting at byte zero. Tune with the new `chunk_size` (default 8 MB)
+  and `max_tries` (default 5 consecutive failed chunks) arguments to
+  `upload_video()` and `upload_caption()`. An expired session URL raises
+  `tuber_upload_session_expired`; exhausting the retries raises
+  `tuber_upload_interrupted`, whose condition carries the byte count reached.
+* Uploads that fail to start report YouTube's own error message rather than a
+  bare status code.
 
 ## Fixes
 
+* Paginated functions ask each page for no more items than are still wanted.
+  Previously a trimmed page left `nextPageToken` pointing past items that
+  were never returned, so resuming from it skipped them, and
+  `get_all_channel_video_stats()` could drop videos whenever YouTube returned
+  a short page.
+* `get_all_comments()` reports comments as disabled only when YouTube says
+  so. A project without the YouTube Data API enabled was reported as
+  "comments disabled" and returned an empty data frame; it is now an error.
+* HTTP errors carry YouTube's reason code in `reason`, and a 403 whose body
+  is not Google's usual error object no longer fails with an unrelated R
+  error. A quota error (`tuber_quota_exhausted`) is now also a
+  `tuber_http_error` and carries `reason` and `status_code` like the rest.
+* `get_all_channel_video_stats()` no longer rewraps a failed channel lookup as
+  `tuber_channel_info_error`; the original error, such as
+  `tuber_quota_exhausted`, reaches the caller.
+* `list_comments(comment_ids = )` returns every comment asked for. It capped
+  the result at `max_results`, which the documentation says is ignored there.
+* `update_video_metadata()` no longer resends a scheduled publish time when
+  it makes a video public or unlisted. YouTube accepts `publishAt` only on a
+  private video.
+* Error messages print their advice. It was attached to the condition but
+  never shown.
+* Credentials travel in redacted headers, so a printed request or an error
+  dump no longer shows the bearer token or API key.
+* `update_video_metadata(tags = "one")` sends a JSON array rather than a bare
+  string.
+* `read_sbv()` reads captions that span several lines and keeps them in file
+  order.
+* `analyze_channel(include_comments = TRUE)` no longer fails when an upload
+  is private or deleted.
+* `yt_search()` accepts any RFC 3339 date-time, including UTC offsets, and no
+  longer rejects valid times that fall in the local daylight-saving gap. It
+  rejects `event_type` and `location` unless `type = "video"`, as YouTube
+  requires. Its documentation now says that `relevance_language` defaults to
+  `"en"` and that `NULL` searches without a language preference.
+* `list_channel_members()` and `list_super_chat_events()` recognize a refused
+  request by its HTTP status rather than by the word "forbidden" in the
+  message, and keep YouTube's error as the `parent` of the one they raise.
+* `upload_video()` matches `privacyStatus` and `license` exactly instead of
+  accepting abbreviations.
+* `list_channel_videos()` reports why a channel could not be resolved
+  (`tuber_channel_not_found`, `tuber_autogenerated_channel`,
+  `tuber_no_uploads_playlist`) instead of a generic resolution error.
+* Emoji helpers count an emoji once however many code points encode it. A
+  family, a flag, a keycap or a skin-toned emoji counted as two or three and
+  left fragments behind when removed. Text symbols that Unicode does not list
+  as emoji, such as a black star, are left alone.
+* The session quota estimate charges `liveChatMessages.list` five units.
 * `set_comment_moderation_status()` and other endpoints returning HTTP 204 no
   longer attempt to parse an absent response body.
-* Uploads that fail to start now report YouTube's own error message rather
-  than a bare status code.
 
 # tuber 2.0.0
 
@@ -53,14 +146,7 @@ table and endpoint support matrix.
 
 ## Correctness
 
-* Video and caption uploads now use Google's resumable upload protocol, and
-  actually resume (#81). The file goes up in `Content-Range`-tagged chunks; if
-  a chunk dies in flight or draws a 5xx, tuber asks YouTube how many bytes it
-  kept and continues from there instead of restarting at byte zero. Tune with
-  the new `chunk_size` (default 8 MB) and `max_tries` (default 5) arguments to
-  `upload_video()` and `upload_caption()`. An expired session URL raises
-  `tuber_upload_session_expired`; exhausting the retries raises
-  `tuber_upload_interrupted`, whose condition carries the byte count reached.
+* Video and caption uploads now use Google's resumable upload protocol.
   Thumbnail and channel-banner uploads use explicit media uploads and enforce
   YouTube's file-size limits.
 * Comment collection fetches every reply page instead of relying on the reply
@@ -362,7 +448,7 @@ This release fixes critical issues that were causing the package to be unreliabl
 
 * No more invisible return
 * Rather than is.null checks, !is.character checks for args expected to be chars
-* using ldly for more robust rbind of data.frames
+* using ldply for more robust rbind of data.frames
 * Specific functions:
     * get_playlists now supports simplify --- allows for data.frame return
     * More consistent return for get_related_videos() --- df with same cols. even if no results.
@@ -374,7 +460,7 @@ This release fixes critical issues that were causing the package to be unreliabl
 
 # version 0.6.0
 
-* Based on CRAN feedback, add comment about yt_outh to all man pages
+* Based on CRAN feedback, add comment about yt_oauth to all man pages
 * video_id is returned as part of the list for get_stats, get_video_details
 * handles errors stemming from bad video id for get_stats, get_video_details
 * fixed bug in get_comment that delivers separate results for diff. filters, error handling for bad comment_id, and now comment_id returned as part of df

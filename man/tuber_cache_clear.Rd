@@ -11,6 +11,12 @@ tuber_cache_clear(pattern = NULL, older_than = NULL)
 
 \item{older_than}{Clear entries older than this many seconds}
 }
+\value{
+The number of entries cleared, invisibly.
+}
 \description{
 Clear cache entries
+}
+\examples{
+tuber_cache_clear()
 }

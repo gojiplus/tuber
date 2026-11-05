@@ -17,11 +17,11 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Gaurav Sood \email{gsood07@gmail.com}
+\strong{Maintainer}: Gaurav Sood \email{gsood07@gmail.com} [copyright holder]
 
 Authors:
 \itemize{
-  \item Gaurav Sood \email{gsood07@gmail.com}
+  \item Gaurav Sood \email{gsood07@gmail.com} [copyright holder]
 }
 
 Other contributors:

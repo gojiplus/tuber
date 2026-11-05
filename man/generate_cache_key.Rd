@@ -4,19 +4,17 @@
 \alias{generate_cache_key}
 \title{Generate cache key for API request}
 \usage{
-generate_cache_key(endpoint, query, auth)
+generate_cache_key(endpoint, query)
 }
 \arguments{
 \item{endpoint}{API endpoint name}
 
 \item{query}{Query parameters}
-
-\item{auth}{Authentication method}
 }
 \value{
 Character cache key
 }
 \description{
-Generate cache key for API request
+Only API-key requests are cached, so the key is isolated by API key.
 }
 \keyword{internal}

@@ -1,33 +1,14 @@
-test_that("get_all_comments runs successfully with real API", {
-  skip_on_cran()
+test_that("get_all_comments returns comments and replies from the live API", {
+  skip_if_no_api_key()
 
-  # Skip if no token file exists
-  if (!file.exists("token_file.rds.enc")) {
-    skip("No token file available for API testing")
-  }
+  comments <- get_all_comments(video_id = "dQw4w9WgXcQ", max_results = 150)
 
-  tryCatch(
-    {
-      google_token <- readRDS("token_file.rds.enc")$google_token
-      options(google_token = google_token)
-
-      # Use a well-known video with comments (Rick Astley - Never Gonna Give You Up)
-      result <- get_all_comments(video_id = "dQw4w9WgXcQ")
-
-      expect_s3_class(result, "data.frame")
-      expect_true(nrow(result) > 0)
-
-      # Check for expected columns
-      expected_cols <- c("author_name", "text_display", "published_at", "comment_id")
-      missing_cols <- setdiff(expected_cols, colnames(result))
-      expect_true(length(missing_cols) == 0,
-        info = paste("Missing columns:", paste(missing_cols, collapse = ", "))
-      )
-    },
-    error = function(e) {
-      skip(paste("API test failed:", e$message))
-    }
-  )
+  expect_s3_class(comments, "data.frame")
+  expect_gt(nrow(comments), 0)
+  expect_lte(nrow(comments), 150)
+  expect_true(all(
+    c("author_name", "text_display", "published_at", "comment_id") %in% names(comments)
+  ))
 })
 
 test_that("get_all_comments handles pagination correctly", {

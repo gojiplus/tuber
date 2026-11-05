@@ -2,7 +2,6 @@
 #'
 #' @param language Optional language code for localized names.
 #' @param auth Authentication method, `"key"` or `"token"`.
-#' @param ... Additional arguments passed to [tuber_GET()].
 #'
 #' @return A data frame with `region_code`, `name`, and `etag` columns.
 #' @export
@@ -11,7 +10,7 @@
 #' \dontrun{
 #' list_regions()
 #' }
-list_regions <- function(language = NULL, auth = "key", ...) {
+list_regions <- function(language = NULL, auth = "key") {
   if (!is.null(language)) {
     assert_string(language, min.chars = 1, .var.name = "language")
   }
@@ -20,8 +19,7 @@ list_regions <- function(language = NULL, auth = "key", ...) {
   response <- tuber_GET(
     "i18nRegions",
     query = list(part = "snippet", hl = language),
-    auth = auth,
-    ...
+    auth = auth
   )
   items <- response$items %||% list()
 

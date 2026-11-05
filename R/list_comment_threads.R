@@ -14,7 +14,6 @@
 #' @param simplify If `TRUE`, return one row per top-level comment; otherwise
 #' return the raw API response with all collected items.
 #' @param auth Authentication method, `"key"` or `"token"`.
-#' @param ... Additional arguments passed to [tuber_GET()].
 #'
 #' @return A data frame when `simplify = TRUE`; otherwise a comment-threads
 #' response.
@@ -33,8 +32,7 @@ list_comment_threads <- function(video_id = NULL,
                                  max_results = 100,
                                  page_token = NULL,
                                  simplify = TRUE,
-                                 auth = "key",
-                                 ...) {
+                                 auth = "key") {
   scalar_filters <- list(
     video_id = video_id,
     channel_id = channel_id,
@@ -91,15 +89,17 @@ list_comment_threads <- function(video_id = NULL,
     maxResults = if (by_ids) NULL else min(max_results, 100),
     pageToken = if (by_ids) NULL else page_token
   )
-  fetch_page <- function(token = NULL) {
+  fetch_page <- function(token = NULL, remaining = max_results) {
     page_query <- query
-    if (!by_ids) page_query$pageToken <- token
+    if (!by_ids) {
+      page_query$pageToken <- token
+      page_query$maxResults <- min(remaining, query$maxResults)
+    }
     call_api_with_retry(
       tuber_GET,
       path = "commentThreads",
       query = page_query,
-      auth = auth,
-      ...
+      auth = auth
     )
   }
 

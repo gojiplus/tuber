@@ -4,7 +4,6 @@
 dev
 .httr-oauth
 tests/testthat/yt_key
-tests/testthat/token_file.rds
 vignettes/.httr-oauth
 doc
 Meta
@@ -30,3 +29,6 @@ _site/
 sphinx-docs/reference/
 sphinx-docs/_ext/rd2sphinx_domain.py
 __pycache__/
+
+# Reverse-dependency check output is regenerated, never committed.
+/revdep/
