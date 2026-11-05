@@ -5,6 +5,7 @@
     * ubuntu-latest: R-devel, R 4.6.2, R 4.5.3
     * macos-latest: R 4.6.2
     * windows-latest: R 4.6.2
+* R-hub, all on R-devel: windows, macos-arm64, linux
 
 ## R CMD check results
 
