@@ -2,7 +2,7 @@
 # See: https://citation-file-format.github.io/
 
 cff-version: 1.2.0
-title: "tuber: Client for the YouTube API"
+title: "tuber: Client for the YouTube Data API"
 message: "If you use this software, please cite it as below."
 type: software
 
@@ -10,11 +10,6 @@ authors:
   - given-names: Gaurav
     family-names: Sood
     orcid: "https://orcid.org/0000-0001-5385-2502"
-  - given-names: Kate
-    family-names: Lyons
-  - given-names: John
-    family-names: Muschelli
-    orcid: "https://orcid.org/0000-0001-6469-1750"
 
 repository-code: "https://github.com/gojiplus/tuber"
 url: "https://gojiplus.github.io/tuber/"
@@ -37,14 +32,10 @@ date-released: "2026-11-04"
 
 preferred-citation:
   type: manual
-  title: "tuber: Client for the YouTube API"
+  title: "tuber: Client for the YouTube Data API"
   authors:
     - given-names: Gaurav
       family-names: Sood
-    - given-names: Kate
-      family-names: Lyons
-    - given-names: John
-      family-names: Muschelli
   year: 2026
   notes: "R package version 3.0.0"
   url: "https://gojiplus.github.io/tuber/"
