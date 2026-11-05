@@ -113,17 +113,22 @@ with_retry <- function(expr,
 
 #' Was this request refused for lack of permission?
 #'
-#' A 403 that is not quota exhaustion, which is also a 403 but has nothing to
-#' do with what the account may access.
+#' Google also answers 403 when a quota or rate limit is hit, which has
+#' nothing to do with what the account may access, so those reasons are
+#' excluded by their reason code.
 #'
 #' @param error A condition
 #' @return Logical
 #' @keywords internal
 #' @noRd
 is_refused <- function(error) {
+  usage_limits <- c(
+    "quotaExceeded", "dailyLimitExceeded",
+    "rateLimitExceeded", "userRateLimitExceeded"
+  )
   inherits(error, "tuber_http_error") &&
-    !inherits(error, "tuber_quota_exhausted") &&
-    isTRUE(error$status_code == 403)
+    isTRUE(error$status_code == 403) &&
+    !isTRUE(error$reason %in% usage_limits)
 }
 
 #' Check if an error is transient and worth retrying

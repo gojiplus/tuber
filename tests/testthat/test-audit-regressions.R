@@ -674,12 +674,55 @@ test_that("a refused Super Chat request is recognized by status, not by wording"
   expect_s3_class(err$parent, "tuber_http_error")
 })
 
+# expect_error(class = ) also matches a class on the error's parent, so these
+# check the class of the error itself.
 test_that("quota exhaustion is not relabelled as a membership problem", {
   local_fake_token()
   httr2::local_mocked_responses(quota_exhausted_response)
 
-  expect_error(list_channel_members(), class = "tuber_quota_exhausted")
-  expect_error(list_super_chat_events(), class = "tuber_quota_exhausted")
+  members <- expect_error(list_channel_members())
+  expect_equal(class(members)[[1]], "tuber_quota_exhausted")
+
+  super_chat <- expect_error(list_super_chat_events())
+  expect_equal(class(super_chat)[[1]], "tuber_quota_exhausted")
+})
+
+test_that("a 403 rate limit is not relabelled as a membership problem", {
+  local_fake_token()
+  httr2::local_mocked_responses(function(req) {
+    json_response(
+      list(error = list(
+        code = 403,
+        message = "User Rate Limit Exceeded.",
+        errors = list(list(reason = "userRateLimitExceeded"))
+      )),
+      status = 403L
+    )
+  })
+
+  members <- expect_error(list_channel_members())
+  expect_equal(class(members)[[1]], "tuber_http_error")
+  expect_equal(members$reason, "userRateLimitExceeded")
+
+  super_chat <- expect_error(list_super_chat_events())
+  expect_equal(class(super_chat)[[1]], "tuber_http_error")
+})
+
+test_that("a token that cannot be saved warns and keeps the cause as its parent", {
+  withr::local_options(google_token = NULL, tuber.oauth_client = NULL)
+  tf <- withr::local_tempfile(fileext = ".rds")
+  token <- httr2::oauth_token("abc")
+  local_mocked_bindings(
+    oauth_flow_auth_code = function(...) token,
+    .save_token_file = function(...) stop("disk full")
+  )
+
+  warned <- expect_warning(
+    result <- yt_oauth(app_id = "id", app_secret = "secret", token = tf),
+    class = "tuber_token_save_error"
+  )
+  expect_equal(conditionMessage(warned$parent), "disk full")
+  expect_identical(result, token)
 })
 
 test_that("validation errors name the function the user called", {
