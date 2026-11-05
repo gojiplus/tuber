@@ -24,19 +24,8 @@ cache_file_path <- function(cache_key) {
   file.path(cache_dir, paste0(cache_key, ".rds"))
 }
 
-auth_fingerprint <- function(auth) {
-  credential <- if (auth == "key") {
-    suppressMessages(yt_get_key()) %||% "missing-key"
-  } else {
-    token <- yt_token()
-    if (is.null(token)) {
-      "missing-token"
-    } else {
-      tryCatch(token$credentials$access_token, error = function(e) NULL) %||%
-        digest(token)
-    }
-  }
-  digest(credential, algo = "sha256")
+key_fingerprint <- function() {
+  digest(suppressMessages(yt_get_key()) %||% "missing-key", algo = "sha256")
 }
 
 #' Configure caching settings
@@ -162,17 +151,18 @@ tuber_cache_clear <- function(pattern = NULL, older_than = NULL) {
 
 #' Generate cache key for API request
 #'
+#' Only API-key requests are cached, so the key is isolated by API key.
+#'
 #' @param endpoint API endpoint name
 #' @param query Query parameters
-#' @param auth Authentication method
 #' @return Character cache key
 #' @keywords internal
-generate_cache_key <- function(endpoint, query, auth) {
+generate_cache_key <- function(endpoint, query) {
   # Sort query parameters for consistent keys
   query_sorted <- query[sort(names(query))]
   query_str <- paste(names(query_sorted), query_sorted, sep = "=", collapse = "&")
 
-  key_parts <- c(endpoint, auth, auth_fingerprint(auth), query_str)
+  key_parts <- c(endpoint, key_fingerprint(), query_str)
   cache_key <- paste0("cache_", digest(key_parts, algo = "md5"))
 
   cache_key
@@ -185,22 +175,6 @@ generate_cache_key <- function(endpoint, query, auth) {
 #' @keywords internal
 is_cacheable_endpoint <- function(endpoint) {
   endpoint %in% c("videoCategories", "i18nLanguages", "i18nRegions")
-}
-
-#' Check if query parameters indicate static data
-#'
-#' @param endpoint API endpoint
-#' @param query Query parameters
-#' @return Logical indicating if this specific query is cacheable
-#' @keywords internal
-is_static_query <- function(endpoint, query) {
-  # Video categories - always static
-  if (endpoint == "videoCategories") return(TRUE)
-
-  # Languages and regions - always static
-  if (endpoint %in% c("i18nLanguages", "i18nRegions")) return(TRUE)
-
-  FALSE
 }
 
 #' Get cached response if available and valid

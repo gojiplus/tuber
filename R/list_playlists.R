@@ -13,7 +13,6 @@
 #' response with all collected items.
 #' @param auth Authentication method, `"key"` or `"token"`. `mine = TRUE`
 #' requires OAuth.
-#' @param ... Additional arguments passed to [tuber_GET()].
 #'
 #' @return A data frame when `simplify = TRUE`; otherwise a playlists-list
 #' response.
@@ -33,8 +32,7 @@ list_playlists <- function(channel_id = NULL,
                            language = NULL,
                            page_token = NULL,
                            simplify = TRUE,
-                           auth = if (mine) "token" else "key",
-                           ...) {
+                           auth = if (mine) "token" else "key") {
   if (!is.null(channel_id)) {
     assert_string(channel_id, min.chars = 1, .var.name = "channel_id")
   }
@@ -80,10 +78,13 @@ list_playlists <- function(channel_id = NULL,
     maxResults = if (by_ids) NULL else min(max_results, 50),
     pageToken = if (by_ids) NULL else page_token
   )
-  fetch_page <- function(token = NULL) {
+  fetch_page <- function(token = NULL, remaining = max_results) {
     page_query <- query
-    if (!by_ids) page_query$pageToken <- token
-    tuber_GET("playlists", page_query, auth = auth, ...)
+    if (!by_ids) {
+      page_query$pageToken <- token
+      page_query$maxResults <- min(remaining, query$maxResults)
+    }
+    tuber_GET("playlists", page_query, auth = auth)
   }
 
   response <- fetch_page(page_token)

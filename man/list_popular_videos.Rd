@@ -12,8 +12,7 @@ list_popular_videos(
   language = NULL,
   page_token = NULL,
   simplify = TRUE,
-  auth = "key",
-  ...
+  auth = "key"
 )
 }
 \arguments{
@@ -33,8 +32,6 @@ list_popular_videos(
 response with all collected items.}
 
 \item{auth}{Authentication method, `"key"` or `"token"`.}
-
-\item{...}{Additional arguments passed to [tuber_GET()].}
 }
 \value{
 A data frame when `simplify = TRUE`; otherwise a videos-list

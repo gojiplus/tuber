@@ -1,8 +1,6 @@
 ## Test environments
 
-* local macOS 15.5 (aarch64), R 4.6.0
-* GitHub Actions: ubuntu-latest (release, devel, oldrel-1), macOS-latest
-  (release), windows-latest (release)
+* local macOS 27.0.1 (aarch64), R 4.6.0
 
 ## R CMD check results
 
@@ -10,18 +8,22 @@ There were no ERRORs, WARNINGs, or NOTEs.
 
 ## Release summary
 
-This is a major release. It standardizes function and argument names, removes
-wrappers for retired YouTube endpoints, corrects request filters and
-pagination, and implements resumable video and caption uploads. The NEWS file
-and `api-conventions` vignette document the breaking changes.
+This is a major release, eleven weeks after 2.0.0. It follows an audit of the
+package against the YouTube Data API documentation and fixes defects that
+returned wrong or incomplete results without an error: paginated functions
+could skip items, misspelled arguments were silently ignored, and one error
+was misreported as "comments disabled". It also completes the move from httr
+to httr2 and makes interrupted uploads resume.
+
+The release removes a small number of exports and arguments that did not work
+as documented or that wrapped parameters Google has retired. The NEWS file
+lists every breaking change.
 
 ## Reverse dependencies
 
-One package on CRAN lists tuber: bdpar, which has it in Suggests.
+One package on CRAN lists tuber: bdpar 3.1.0, which has it in Suggests.
 
-bdpar calls `tuber::get_comments()` in `R/ExtractorYtbid.R`. That function is
-one of the names this release standardizes; it is now `list_comments()`.
-bdpar's own checks continue to pass, because those call sites need YouTube
-credentials and its tests exercise only an argument-validation path, but the
-extractor will stop working for bdpar users until the call is renamed. The
-bdpar maintainer is being notified.
+bdpar uses two tuber functions. `tuber::yt_oauth(app_id, app_secret)` is
+unchanged. `tuber::get_comments()` was renamed `list_comments()` in tuber
+2.0.0, as noted in that submission; this release does not change it further.
+I inspected bdpar's source for these calls and did not run its checks.

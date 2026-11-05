@@ -12,8 +12,7 @@ list_live_broadcasts(
   broadcast_type = NULL,
   max_results = 50,
   page_token = NULL,
-  simplify = TRUE,
-  ...
+  simplify = TRUE
 )
 }
 \arguments{
@@ -35,8 +34,6 @@ list_live_broadcasts(
 \item{page_token}{Page token at which to start.}
 
 \item{simplify}{Whether to return a simplified data frame}
-
-\item{...}{Additional arguments passed to tuber_GET}
 }
 \value{
 List or data frame with live stream information

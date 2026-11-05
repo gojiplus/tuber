@@ -4,13 +4,7 @@
 \alias{list_captions}
 \title{List Caption Tracks}
 \usage{
-list_captions(
-  video_id,
-  caption_ids = NULL,
-  part = "snippet",
-  simplify = TRUE,
-  ...
-)
+list_captions(video_id, caption_ids = NULL, part = "snippet", simplify = TRUE)
 }
 \arguments{
 \item{video_id}{YouTube video ID.}
@@ -21,8 +15,6 @@ list_captions(
 
 \item{simplify}{If `TRUE`, return a data frame; otherwise return the raw API
 response.}
-
-\item{...}{Additional arguments passed to [tuber_GET()].}
 }
 \value{
 A data frame when `simplify = TRUE`; otherwise a caption-list

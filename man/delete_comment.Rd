@@ -4,12 +4,10 @@
 \alias{delete_comment}
 \title{Delete a Comment}
 \usage{
-delete_comment(comment_id, ...)
+delete_comment(comment_id)
 }
 \arguments{
 \item{comment_id}{Comment ID.}
-
-\item{...}{Additional arguments passed to [tuber_DELETE()].}
 }
 \value{
 The empty API response, invisibly.

@@ -8,8 +8,7 @@ get_video_stats(
   video_ids,
   include_content_details = FALSE,
   batch_size = 50,
-  auth = "key",
-  ...
+  auth = "key"
 )
 }
 \arguments{
@@ -21,8 +20,6 @@ licensed-content, and projection fields.}
 \item{batch_size}{Number of video IDs per API request, up to 50.}
 
 \item{auth}{Authentication method, `"token"` or `"key"`.}
-
-\item{...}{Additional arguments passed to [tuber_GET()].}
 }
 \value{
 A data frame with snake-case column names and one row per video.

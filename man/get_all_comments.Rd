@@ -4,7 +4,7 @@
 \alias{get_all_comments}
 \title{Get All Video Comments, Including Replies}
 \usage{
-get_all_comments(video_id, max_results = NULL, auth = "key", ...)
+get_all_comments(video_id, max_results = NULL, auth = "key")
 }
 \arguments{
 \item{video_id}{Video ID.}
@@ -13,8 +13,6 @@ get_all_comments(video_id, max_results = NULL, auth = "key", ...)
 `NULL` retrieves all available comments.}
 
 \item{auth}{Authentication method, `"key"` or `"token"`.}
-
-\item{...}{Additional arguments passed to [tuber_GET()].}
 }
 \value{
 A data frame with one row per top-level comment or reply and

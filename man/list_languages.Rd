@@ -4,14 +4,12 @@
 \alias{list_languages}
 \title{List Supported Languages}
 \usage{
-list_languages(language = NULL, auth = "key", ...)
+list_languages(language = NULL, auth = "key")
 }
 \arguments{
 \item{language}{Optional language code for localized names.}
 
 \item{auth}{Authentication method, `"key"` or `"token"`.}
-
-\item{...}{Additional arguments passed to [tuber_GET()].}
 }
 \value{
 A data frame with `language_code`, `name`, and `etag` columns.

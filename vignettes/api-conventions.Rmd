@@ -69,7 +69,7 @@ not a claim that `tuber` implements the entire YouTube API.
 | Playlists | `list_playlists()`, `list_playlist_items()`, ID helpers | `create_playlist()`, `change_playlist_title()`, `add_video_to_playlist()`, delete functions |
 | Comments | `list_comment_threads()`, `list_comments()`, `get_all_comments()` | `post_comment()`, `reply_to_comment()`, moderation and delete functions |
 | Captions | `list_captions()`, `download_caption()` | `upload_caption()`, `delete_caption()` |
-| Search | `yt_search()`, `search_short_videos()` | Not applicable |
+| Search | `yt_search()` | Not applicable |
 | Live and monetization | `list_live_broadcasts()`, `list_live_chat_messages()`, `list_super_chat_events()`, `list_channel_members()` | Not implemented |
 | Subscriptions | `list_subscriptions()` | Not implemented |
 | Reference data | languages, regions, video categories, and abuse-report reasons | Not applicable |

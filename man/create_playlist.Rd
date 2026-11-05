@@ -4,7 +4,7 @@
 \alias{create_playlist}
 \title{Create New Playlist}
 \usage{
-create_playlist(title, description = "", status = "public", ...)
+create_playlist(title, description = "", status = "public")
 }
 \arguments{
 \item{title}{string; Required. The title of the playlist.}
@@ -13,8 +13,6 @@ create_playlist(title, description = "", status = "public", ...)
 
 \item{status}{string; Optional. Default: 'public'. Can be one of: 'private', 'public', or
 'unlisted'.}
-
-\item{...}{Ignored; retained for backward compatibility.}
 }
 \value{
 The created playlist's details.

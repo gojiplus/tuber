@@ -4,7 +4,7 @@
 \alias{get_video_broadcast_timing}
 \title{Get video live-broadcast timing}
 \usage{
-get_video_broadcast_timing(video_ids, simplify = TRUE, auth = "key", ...)
+get_video_broadcast_timing(video_ids, simplify = TRUE, auth = "key")
 }
 \arguments{
 \item{video_ids}{Video ID or vector of video IDs.}
@@ -12,8 +12,6 @@ get_video_broadcast_timing(video_ids, simplify = TRUE, auth = "key", ...)
 \item{simplify}{Whether to return simplified data frame}
 
 \item{auth}{Authentication method: "token" (OAuth2) or "key" (API key)}
-
-\item{...}{Additional arguments passed to tuber_GET}
 }
 \value{
 A data frame when `simplify = TRUE`; otherwise the raw videos-list

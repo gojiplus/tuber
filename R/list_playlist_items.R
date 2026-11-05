@@ -13,7 +13,6 @@
 #' @param simplify If `TRUE`, return a data frame; otherwise return the raw API
 #' response with all collected items.
 #' @param auth Authentication method, `"key"` or `"token"`.
-#' @param ... Additional arguments passed to [tuber_GET()].
 #'
 #' @return A data frame when `simplify = TRUE`; otherwise a playlist-items
 #' response.
@@ -33,8 +32,7 @@ list_playlist_items <- function(playlist_id = NULL,
                                 max_results = 50,
                                 page_token = NULL,
                                 simplify = TRUE,
-                                auth = "key",
-                                ...) {
+                                auth = "key") {
   assert_character(part, min.len = 1, any.missing = FALSE, .var.name = "part")
   assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
   assert_flag(simplify, .var.name = "simplify")
@@ -79,16 +77,17 @@ list_playlist_items <- function(playlist_id = NULL,
     maxResults = min(max_results, 50),
     pageToken = page_token
   )
-  fetch_page <- function(token = NULL) {
+  fetch_page <- function(token = NULL, remaining = max_results) {
     page_query <- query
     page_query$pageToken <- token
-    tuber_GET("playlistItems", query = page_query, auth = auth, ...)
+    page_query$maxResults <- min(remaining, query$maxResults)
+    tuber_GET("playlistItems", query = page_query, auth = auth)
   }
 
   response <- call_api_with_retry(fetch_page, page_token)
   pages <- paginate_api_request(
     response,
-    function(token) call_api_with_retry(fetch_page, token),
+    function(token, remaining) call_api_with_retry(fetch_page, token, remaining),
     max_results = max_results
   )
   response$items <- pages$items

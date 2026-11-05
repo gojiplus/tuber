@@ -102,7 +102,6 @@ reference:
   desc: "Functions for searching YouTube"
   contents:
     - yt_search
-    - search_short_videos
 
 - title: "Additional Resources"
   desc: "Functions for getting YouTube metadata"
@@ -149,7 +148,6 @@ reference:
     - tuber_cache_clear
     - tuber_cache_info
     - get_video_thumbnails
-    - with_retry
 
 - title: "Utility Functions"
   desc: "Additional utility functions and information"

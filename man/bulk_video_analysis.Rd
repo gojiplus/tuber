@@ -8,8 +8,7 @@ bulk_video_analysis(
   video_ids,
   include_comments = FALSE,
   benchmark_percentiles = c(0.25, 0.5, 0.75, 0.9),
-  auth = "key",
-  ...
+  auth = "key"
 )
 }
 \arguments{
@@ -20,8 +19,6 @@ bulk_video_analysis(
 \item{benchmark_percentiles}{Percentiles to use for performance benchmarking}
 
 \item{auth}{Authentication method: "token" (OAuth2) or "key" (API key)}
-
-\item{...}{Additional arguments passed to API functions}
 }
 \value{
 List containing bulk video analysis

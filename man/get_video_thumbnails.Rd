@@ -4,13 +4,7 @@
 \alias{get_video_thumbnails}
 \title{Get video thumbnails information}
 \usage{
-get_video_thumbnails(
-  video_ids,
-  size = NULL,
-  simplify = TRUE,
-  auth = "key",
-  ...
-)
+get_video_thumbnails(video_ids, size = NULL, simplify = TRUE, auth = "key")
 }
 \arguments{
 \item{video_ids}{Video ID or vector of video IDs.}
@@ -20,8 +14,6 @@ get_video_thumbnails(
 \item{simplify}{Whether to return a simplified data frame}
 
 \item{auth}{Authentication method: "token" (OAuth2) or "key" (API key)}
-
-\item{...}{Additional arguments passed to tuber_GET}
 }
 \value{
 A tidy data frame with one row per video and thumbnail size when

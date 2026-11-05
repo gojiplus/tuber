@@ -275,18 +275,7 @@ comments$author_name
 comments$like_count
 ```
 
-## Error Handling & Retries
-
-### Using with_retry for Transient Errors
-
-```{r retry, eval=FALSE}
-# Automatic retry with exponential backoff
-result <- with_retry(
-  get_video_details(video_ids = "dQw4w9WgXcQ", auth = "key"),
-  max_retries = 3,
-  base_delay = 1
-)
-```
+## Error Handling
 
 ### Handling Quota Exhaustion
 
@@ -431,7 +420,6 @@ avg_duration <- mean(as.numeric(video_stats$duration), na.rm = TRUE)
 
 **Rate limiting (429 errors):**
 - Add delays with `Sys.sleep()` between requests
-- Use `with_retry()` for automatic backoff
 
 ### Getting Help
 
@@ -439,7 +427,6 @@ avg_duration <- mean(as.numeric(video_stats$duration), na.rm = TRUE)
 # Check function documentation
 ?get_video_details
 ?yt_search
-?with_retry
 
 # View package vignettes
 browseVignettes("tuber")

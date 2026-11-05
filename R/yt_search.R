@@ -27,16 +27,19 @@
 #' @param channel_type Character. Optional. Takes one of two values:
 #' \code{'any', 'show'}. Default is \code{'any'}
 #' @param event_type Character. Optional. Takes one of three values:
-#' \code{'completed', 'live', 'upcoming'}
+#' \code{'completed', 'live', 'upcoming'}. Requires \code{type = "video"}.
 #' @param location  Character.  Optional. Latitude and Longitude within
-#' parentheses, e.g. "(37.42307,-122.08427)"
+#' parentheses, e.g. "(37.42307,-122.08427)". Requires
+#' \code{type = "video"} and \code{location_radius}.
 #' @param location_radius Character.  Optional. e.g. "1500m", "5km",
 #' "10000ft", "0.75mi"
-#' @param published_after Character. Optional. RFC 339 Format.
-#' For instance, "1970-01-01T00:00:00Z"
-#' @param published_before Character. Optional. RFC 339 Format.
-#' For instance, "1970-01-01T00:00:00Z"
-#' @param relevance_language Character. Optional. The relevance_language
+#' @param published_after Character. Optional. An RFC 3339 date-time, for
+#' instance "1970-01-01T00:00:00Z" or "1970-01-01T05:30:00+05:30".
+#' @param published_before Character. Optional. An RFC 3339 date-time, in the
+#' same format as \code{published_after}.
+#' @param relevance_language Character. Default is \code{"en"}. This default
+#' is tuber's choice: YouTube itself applies no language preference, so pass
+#' \code{NULL} to search without one. The relevance_language
 #' argument instructs the API to return search results that are most relevant to
 #' the specified language. The parameter value is typically an ISO 639-1
 #' two-letter language code. However, you should use the values zh-Hans for
@@ -69,7 +72,7 @@
 #' license), \code{'youtube'} (return videos with standard YouTube license).
 #' @param simplify Boolean. Return a data.frame if \code{TRUE}.
 #' Default is \code{TRUE}.
-#' If \code{TRUE}, it returns a list that carries additional information.
+#' If \code{FALSE}, it returns the search-list response as a list.
 #' @param page_token specific page in the result set that should be
 #' returned, optional
 #' @param get_all get all results, iterating through all the results
@@ -79,7 +82,6 @@
 #' Default is Inf (no page limit). Setting a lower value can reduce API quota
 #' usage.
 #' @param auth Authentication method: `"token"` or `"key"`.
-#' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'
 #' @return When `simplify = TRUE`, a data frame with a resource ID column and
 #' snake-case metadata columns. Otherwise, a raw search-list response.
@@ -125,7 +127,7 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
                       video_license = "any", video_syndicated = "any",
                       region_code = NULL, relevance_language = "en",
                       video_type = "any", simplify = TRUE, get_all = TRUE,
-                      page_token = NULL, max_pages = Inf, auth = "key", ...) {
+                      page_token = NULL, max_pages = Inf, auth = "key") {
   # Modern validation using checkmate
   assert_string(term, min.chars = 1, .var.name = "term")
   assert_integerish(max_results, len = 1, lower = 1, upper = 500, .var.name = "max_results")
@@ -154,38 +156,43 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
       video_type <- video_syndicated <- NULL
   }
 
-  # Modern RFC 3339 date validation using rlang
-  validate_rfc339_date <- function(date_str, param_name) {
-    if (is.character(date_str) &&
-          is.na(as.POSIXct(date_str, format = "%Y-%m-%dT%H:%M:%SZ"))) {
-      abort("Invalid RFC 3339 date format",
-        parameter = param_name,
-        date_string = date_str,
-        expected_format = "YYYY-MM-DDTHH:MM:SSZ",
-        example = "2023-01-01T00:00:00Z",
-        class = "tuber_invalid_date_format"
-      )
-    }
+  if (!is.null(published_after)) {
+    validate_rfc3339_date(published_after, "published_after")
+  }
+  if (!is.null(published_before)) {
+    validate_rfc3339_date(published_before, "published_before")
   }
 
-  validate_rfc339_date(published_after, "published_after")
-  validate_rfc339_date(published_before, "published_before")
-
-  # Validate location and location_radius together
   if (!is.null(location) && is.null(location_radius)) {
-    abort("Location radius required when location is specified",
+    abort(
+      c(
+        "`location_radius` is required when `location` is specified.",
+        i = "For example, `location_radius = \"10km\"`."
+      ),
       location = location,
-      help = "Provide location_radius parameter (e.g., '10km')",
       class = "tuber_missing_location_radius"
+    )
+  }
+  video_only <- c(
+    event_type = !is.null(event_type),
+    location = !is.null(location),
+    location_radius = !is.null(location_radius)
+  )
+  if (type != "video" && any(video_only)) {
+    abort(
+      paste0(
+        "`", paste(names(video_only)[video_only], collapse = "`, `"),
+        "` can only be used with `type = \"video\"`."
+      ),
+      class = "tuber_conflicting_parameters"
     )
   }
 
   # Build the query list
-  results_per_page <- min(max_results, 50)
   querylist <- list(
     part = "snippet",
     q = term,
-    maxResults = results_per_page,
+    maxResults = min(max_results, 50),
     channelId = channel_id,
     type = type,
     order = order,
@@ -253,10 +260,11 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
     }))
   }
 
-  fetch_page <- function(token = NULL) {
+  fetch_page <- function(token = NULL, remaining = max_results) {
     page_query <- querylist
     page_query$pageToken <- token
-    tuber_GET("search", page_query, auth = auth, ...)
+    page_query$maxResults <- min(remaining, querylist$maxResults)
+    tuber_GET("search", page_query, auth = auth)
   }
   response <- fetch_page(page_token)
 

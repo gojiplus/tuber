@@ -1,20 +1,25 @@
 citHeader("To cite package 'tuber' in publications use:")
 
+# `meta` is the installed DESCRIPTION, so the version and year always match
+# the package being cited.
+year <- sub("-.*", "", meta$Date)
+version_note <- paste("R package version", meta$Version)
+title <- paste0("tuber: ", meta$Title)
+url <- "https://gojiplus.github.io/tuber/"
+
 bibentry(
   bibtype = "Manual",
-  title   = "tuber: Client for the YouTube API",
+  title   = title,
   author  = c(
-    person("Gaurav", "Sood", email = "gsood07@gmail.com", role = c("aut", "cre")),
-    person("Kate", "Lyons", email = "k.lyons7@gmail.com", role = "ctb"),
-    person("John", "Muschelli", email = "muschellij2@gmail.com", role = "ctb")
+    person("Gaurav", "Sood"),
+    person("Kate", "Lyons"),
+    person("John", "Muschelli")
   ),
-  year    = "2024",
-  note    = "R package version 1.3.0",
-  url     = "https://gojiplus.github.io/tuber/",
+  year    = year,
+  note    = version_note,
+  url     = url,
   textVersion = paste0(
-    "Gaurav Sood, Kate Lyons, and John Muschelli (2024). ",
-    "tuber: Client for the YouTube API. ",
-    "R package version 1.3.0. ",
-    "https://gojiplus.github.io/tuber/"
+    "Gaurav Sood, Kate Lyons, and John Muschelli (", year, "). ",
+    title, ". ", version_note, ". ", url
   )
 )

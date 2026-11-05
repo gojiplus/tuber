@@ -7,11 +7,13 @@
 #' @param part Character. Parts to retrieve. Valid values are "snippet", "authorDetails". Default is
 #' "snippet,authorDetails".
 #' @param language Optional language code for localized text.
-#' @param max_results Maximum total number of messages to return.
+#' @param max_results Maximum total number of messages to return. YouTube
+#' serves live chat in pages of at least 200 messages, so when fewer than 200
+#' are still wanted the surplus on the last page is dropped and the returned
+#' `nextPageToken` continues after that page, not after the last message.
 #' @param page_token Character. Specific page token to retrieve. Optional.
 #' @param profile_image_size Integer. Size of the profile image to return. Optional.
 #' @param simplify Logical. Whether to return a simplified data.frame. Default is TRUE.
-#' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'
 #' @return A data.frame or list of live chat messages.
 #' @export
@@ -30,8 +32,7 @@ list_live_chat_messages <- function(live_chat_id,
                                     max_results = 500,
                                     page_token = NULL,
                                     profile_image_size = NULL,
-                                    simplify = TRUE,
-                                    ...) {
+                                    simplify = TRUE) {
   # Validation
   assert_character(live_chat_id, len = 1, min.chars = 1, .var.name = "live_chat_id")
   assert_character(part, min.len = 1, min.chars = 1, .var.name = "part")
@@ -60,10 +61,13 @@ list_live_chat_messages <- function(live_chat_id,
     query$profileImageSize <- profile_image_size
   }
 
-  fetch_page <- function(token = NULL) {
+  fetch_page <- function(token = NULL, remaining = max_results) {
     q <- query
     if (!is.null(token)) q$pageToken <- token
-    tuber_GET("liveChatMessages", query = q, ...)
+    # YouTube rejects a page size below 200, so the last page can still
+    # overshoot and be trimmed.
+    q$maxResults <- max(200, min(remaining, query$maxResults))
+    tuber_GET("liveChatMessages", query = q)
   }
 
   initial_res <- fetch_page(page_token)

@@ -48,7 +48,9 @@ yt_oauth("YOUR_CLIENT_ID", "YOUR_CLIENT_SECRET")
 ```
 
 `yt_oauth()` stores its token in the user's R cache directory by default. Pass
-an explicit `token` path if you need a different location.
+an explicit `token` path if you need a different location. The file also holds
+your client secret, which is what lets later sessions call `yt_oauth()` with no
+arguments, so treat it as a credential.
 
 ## Examples
 

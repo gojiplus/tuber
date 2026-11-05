@@ -1,46 +1,19 @@
-test_that("get_video_details runs successfully", {
-  skip_on_cran()
+test_that("get_video_details returns one live video", {
+  skip_without_key()
 
-  # Skip if no token file exists
-  if (!file.exists("token_file.rds.enc")) {
-    skip("No token file available for API testing")
-  }
+  details <- get_video_details(video_ids = "dQw4w9WgXcQ")
 
-  tryCatch(
-    {
-      google_token <- readRDS("token_file.rds.enc")$google_token
-      options(google_token = google_token)
-
-      get_info <- get_video_details(video_ids = "N708P-A45D0")
-      expect_true(is.list(get_info))
-    },
-    error = function(e) {
-      skip(paste("API test failed:", e$message))
-    }
-  )
+  expect_s3_class(details, "data.frame")
+  expect_equal(details$id, "dQw4w9WgXcQ")
 })
-test_that("get_video_details(as.data.frame = TRUE) runs successfully for multiple videos", {
-  skip_on_cran()
 
-  # Skip if no token file exists
-  if (!file.exists("token_file.rds.enc")) {
-    skip("No token file available for API testing")
-  }
+test_that("get_video_details returns several live videos in one batch", {
+  skip_without_key()
+  ids <- c("dQw4w9WgXcQ", "kJQP7kiw5Fk")
 
-  tryCatch(
-    {
-      google_token <- readRDS("token_file.rds.enc")$google_token
-      options(google_token = google_token)
+  details <- get_video_details(video_ids = ids)
 
-      get_info <- get_video_details(
-        video_id = c("LDZX4ooRsWs", "yJXTXN4xrI8"),
-        as.data.frame = TRUE
-      )
-      expect_s3_class(get_info, "data.frame")
-      expect_true(all(c("items_kind", "channelTitle") %in% names(get_info)))
-    },
-    error = function(e) {
-      skip(paste("API test failed:", e$message))
-    }
-  )
+  expect_setequal(details$id, ids)
+  expect_true(all(c("items_kind", "snippet_channelTitle") %in% names(details)))
+  expect_equal(attr(details, "tuber_api_calls"), 1)
 })

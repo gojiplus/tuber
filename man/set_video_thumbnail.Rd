@@ -4,14 +4,12 @@
 \alias{set_video_thumbnail}
 \title{Set Video Thumbnail}
 \usage{
-set_video_thumbnail(video_id, file, ...)
+set_video_thumbnail(video_id, file)
 }
 \arguments{
 \item{video_id}{Character. ID of the video to set the thumbnail for.}
 
 \item{file}{Character. Path to the thumbnail image file (JPG or PNG, max 2MB).}
-
-\item{\dots}{Ignored; retained for backward compatibility.}
 }
 \value{
 A list containing the response from the API.

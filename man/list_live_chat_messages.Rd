@@ -11,8 +11,7 @@ list_live_chat_messages(
   max_results = 500,
   page_token = NULL,
   profile_image_size = NULL,
-  simplify = TRUE,
-  ...
+  simplify = TRUE
 )
 }
 \arguments{
@@ -23,15 +22,16 @@ list_live_chat_messages(
 
 \item{language}{Optional language code for localized text.}
 
-\item{max_results}{Maximum total number of messages to return.}
+\item{max_results}{Maximum total number of messages to return. YouTube
+serves live chat in pages of at least 200 messages, so when fewer than 200
+are still wanted the surplus on the last page is dropped and the returned
+`nextPageToken` continues after that page, not after the last message.}
 
 \item{page_token}{Character. Specific page token to retrieve. Optional.}
 
 \item{profile_image_size}{Integer. Size of the profile image to return. Optional.}
 
 \item{simplify}{Logical. Whether to return a simplified data.frame. Default is TRUE.}
-
-\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
 A data.frame or list of live chat messages.

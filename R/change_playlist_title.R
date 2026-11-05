@@ -9,8 +9,6 @@
 #' @param new_title New playlist title.
 #' @param on_behalf_of_content_owner Optional YouTube content-owner ID. This is
 #'   only available to authorized YouTube content partners.
-#' @param ... Additional arguments passed to [list_playlists()] and
-#'   [tuber_PUT()].
 #'
 #' @return The updated playlist resource.
 #' @export
@@ -22,8 +20,7 @@
 #' }
 change_playlist_title <- function(playlist_id,
                                   new_title,
-                                  on_behalf_of_content_owner = NULL,
-                                  ...) {
+                                  on_behalf_of_content_owner = NULL) {
   assert_string(playlist_id, min.chars = 1, .var.name = "playlist_id")
   assert_string(new_title, min.chars = 1, .var.name = "new_title")
   if (!is.null(on_behalf_of_content_owner)) {
@@ -38,8 +35,7 @@ change_playlist_title <- function(playlist_id,
     playlist_ids = playlist_id,
     part = "snippet",
     simplify = FALSE,
-    auth = "token",
-    ...
+    auth = "token"
   )
   if (length(current$items %||% list()) == 0) {
     abort(
@@ -65,7 +61,6 @@ change_playlist_title <- function(playlist_id,
   tuber_PUT(
     "playlists",
     query = query,
-    body = list(id = playlist_id, snippet = snippet),
-    ...
+    body = list(id = playlist_id, snippet = snippet)
   )
 }

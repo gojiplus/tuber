@@ -2,7 +2,7 @@
 % Please edit documentation in R/tuber.R
 \name{handle_http_response}
 \alias{handle_http_response}
-\title{Handle HTTP response for quota and rate limiting errors}
+\title{Warn when YouTube is rate limiting}
 \usage{
 handle_http_response(req)
 }
@@ -13,7 +13,7 @@ handle_http_response(req)
 NULL invisibly if no errors, otherwise stops with informative message
 }
 \description{
-Centralized error handling for all tuber HTTP functions.
-Checks for quota exceeded (403) and rate limiting (429) errors.
+A 429 is reported as a warning before [tuber_check()] turns the response
+into an error, so the advice is visible even when the error is retried.
 }
 \keyword{internal}

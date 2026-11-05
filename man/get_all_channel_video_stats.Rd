@@ -7,8 +7,7 @@
 get_all_channel_video_stats(
   channel_id = NULL,
   mine = FALSE,
-  auth = if (mine) "token" else "key",
-  ...
+  auth = if (mine) "token" else "key"
 )
 }
 \arguments{
@@ -18,14 +17,13 @@ get_all_channel_video_stats(
 
 \item{auth}{Authentication method, `"key"` or `"token"`. `mine = TRUE`
 requires OAuth.}
-
-\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-A \code{data.frame} containing video metadata along with view, like,
-  dislike and comment counts.
-
-If the \code{channel_id} is mistyped or there is no information, an empty list is returned
+A data frame with one row per video and the columns `video_id`,
+`title`, `published_at`, `description`, `channel_id`, `channel_title`,
+`view_count`, `like_count`, `comment_count` (numeric) and `url`. A channel
+with no uploads returns the same columns and zero rows. An unknown
+`channel_id` is an error.
 }
 \description{
 Efficiently collects all video IDs from a channel's uploads playlist, then
@@ -37,7 +35,6 @@ fetches statistics and details using batch processing for optimal API quota usag
 # Set API token via yt_oauth() first
 
 get_all_channel_video_stats(channel_id = "UCxOhDvtaoXDAB336AolWs3A")
-get_all_channel_video_stats(channel_id = "UCMtFAi84ehTSYSE9Xo") # Incorrect channel ID
 }
 }
 \references{

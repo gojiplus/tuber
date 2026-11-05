@@ -8,7 +8,6 @@
 #' @param file Character. Path to the banner image file.
 #' @param on_behalf_of_content_owner Optional YouTube content-owner ID. This is
 #'   only available to authorized YouTube content partners.
-#' @param \dots Ignored; retained for backward compatibility.
 #'
 #' @return A list containing the response from the API, including the `url` for the banner.
 #' @export
@@ -22,7 +21,7 @@
 #' banner <- insert_channel_banner(file = "banner.jpg")
 #' print(banner$content$url)
 #' }
-insert_channel_banner <- function(file, on_behalf_of_content_owner = NULL, ...) {
+insert_channel_banner <- function(file, on_behalf_of_content_owner = NULL) {
   # Validation
   assert_character(file, len = 1, min.chars = 1, .var.name = "file")
   if (!is.null(on_behalf_of_content_owner)) {

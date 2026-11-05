@@ -13,7 +13,6 @@
 #' @param simplify If `TRUE`, return a data frame; otherwise return the raw API
 #' response with all collected items.
 #' @param auth Authentication method, `"key"` or `"token"`.
-#' @param ... Additional arguments passed to [tuber_GET()].
 #'
 #' @return A data frame when `simplify = TRUE`; otherwise a comments-list
 #' response.
@@ -31,8 +30,7 @@ list_comments <- function(comment_ids = NULL,
                           text_format = "html",
                           page_token = NULL,
                           simplify = TRUE,
-                          auth = "key",
-                          ...) {
+                          auth = "key") {
   if (!is.null(comment_ids)) {
     assert_character(
       comment_ids,
@@ -69,16 +67,19 @@ list_comments <- function(comment_ids = NULL,
     maxResults = if (is.null(parent_id)) NULL else min(max_results, 100),
     pageToken = if (is.null(parent_id)) NULL else page_token
   )
-  fetch_page <- function(token = NULL) {
+  fetch_page <- function(token = NULL, remaining = max_results) {
     page_query <- query
-    if (!is.null(parent_id)) page_query$pageToken <- token
-    tuber_GET("comments", page_query, auth = auth, ...)
+    if (!is.null(parent_id)) {
+      page_query$pageToken <- token
+      page_query$maxResults <- min(remaining, query$maxResults)
+    }
+    tuber_GET("comments", page_query, auth = auth)
   }
 
   response <- fetch_page(page_token)
   pages <- if (is.null(parent_id)) {
     list(
-      items = head(response$items %||% list(), max_results),
+      items = response$items %||% list(),
       page_count = 1L,
       final_page_token = NULL
     )

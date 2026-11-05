@@ -95,6 +95,45 @@ resumed_offset <- function(resp) {
   if (is.na(last)) 0 else last + 1
 }
 
+#' Check what a resumable upload needs before anything is sent
+#'
+#' Opening a session spends quota, so the public upload functions call this
+#' first; a bad `chunk_size` must not cost an upload.
+#'
+#' @inheritParams tuber_upload_file
+#' @return NULL, invisibly.
+#' @keywords internal
+#' @noRd
+validate_upload <- function(file, chunk_size, max_tries) {
+  assert_numeric(
+    chunk_size,
+    len = 1, lower = 1, finite = TRUE,
+    .var.name = "chunk_size"
+  )
+  assert_count(max_tries, positive = TRUE, .var.name = "max_tries")
+
+  if (chunk_size %% upload_chunk_unit != 0) {
+    abort(
+      sprintf(
+        "`chunk_size` must be a multiple of %d bytes (256 KB); got %.0f.",
+        upload_chunk_unit, chunk_size
+      ),
+      chunk_size = chunk_size,
+      class = "tuber_invalid_chunk_size"
+    )
+  }
+
+  if (file.size(file) == 0) {
+    abort(
+      "Cannot upload an empty file",
+      file_path = file,
+      class = "tuber_empty_file"
+    )
+  }
+
+  invisible(NULL)
+}
+
 #' Upload a file to a resumable session, resuming after interruptions
 #'
 #' The second half of [tuber_upload_session()]. The file goes up in chunks
@@ -122,32 +161,8 @@ resumed_offset <- function(resp) {
 tuber_upload_file <- function(upload_url, file, type,
                               chunk_size = 8 * 1024^2,
                               max_tries = 5) {
-  assert_numeric(
-    chunk_size,
-    len = 1, lower = 1, finite = TRUE,
-    .var.name = "chunk_size"
-  )
-  assert_count(max_tries, positive = TRUE, .var.name = "max_tries")
-
-  if (chunk_size %% upload_chunk_unit != 0) {
-    abort(
-      sprintf(
-        "`chunk_size` must be a multiple of %d bytes (256 KB); got %.0f.",
-        upload_chunk_unit, chunk_size
-      ),
-      chunk_size = chunk_size,
-      class = "tuber_invalid_chunk_size"
-    )
-  }
-
+  validate_upload(file, chunk_size, max_tries)
   total <- file.size(file)
-  if (total == 0) {
-    abort(
-      "Cannot upload an empty file",
-      file_path = file,
-      class = "tuber_empty_file"
-    )
-  }
 
   con <- file(file, "rb")
   on.exit(close(con), add = TRUE)
@@ -159,8 +174,9 @@ tuber_upload_file <- function(upload_url, file, type,
   repeat {
     # An NA offset means we no longer know how much YouTube has, so the next
     # request asks instead of guessing.
+    asking <- is.na(offset)
     resp <- tryCatch(
-      if (is.na(offset)) {
+      if (asking) {
         upload_status_request(upload_url, total)
       } else {
         upload_chunk_request(upload_url, con, offset, total, chunk_size, type)
@@ -201,7 +217,14 @@ tuber_upload_file <- function(upload_url, file, type,
       next
     }
 
-    # Either the request failed, or it succeeded without moving the upload
+    # The status check answered: we now know where to resume. The chunk that
+    # prompted it was already counted, so this is not a second failure.
+    if (asking && !is.na(resumed)) {
+      offset <- resumed
+      next
+    }
+
+    # The request failed, or a chunk was accepted without moving the upload
     # forward. A stuck session has to time out rather than loop forever.
     failures <- failures + 1
     if (failures >= max_tries) {

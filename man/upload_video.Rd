@@ -2,7 +2,7 @@
 % Please edit documentation in R/upload_video.R
 \name{upload_video}
 \alias{upload_video}
-\title{Upload Video to Youtube}
+\title{Upload Video to YouTube}
 \usage{
 upload_video(
   file,
@@ -13,8 +13,7 @@ upload_video(
   content_owner_channel_id = NULL,
   open_url = FALSE,
   chunk_size = 8 * 1024^2,
-  max_tries = 5,
-  ...
+  max_tries = 5
 )
 }
 \arguments{
@@ -46,15 +45,13 @@ Uploads resume from the last byte YouTube confirms, so a smaller chunk
 loses less work when a connection drops.}
 
 \item{max_tries}{Consecutive failed attempts to tolerate before giving up.}
-
-\item{...}{Ignored; retained for backward compatibility.}
 }
 \value{
 A list of the response object, content,
 and the URL of the uploaded
 }
 \description{
-Upload Video to Youtube
+Upload Video to YouTube
 }
 \note{
 The information for `status` and `snippet` are at

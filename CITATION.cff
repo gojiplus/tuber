@@ -32,8 +32,8 @@ keywords:
   - social-media
 
 license: MIT
-version: "2.0.0"
-date-released: "2026-08-17"
+version: "3.0.0"
+date-released: "2026-11-04"
 
 preferred-citation:
   type: manual
@@ -46,5 +46,5 @@ preferred-citation:
     - given-names: John
       family-names: Muschelli
   year: 2026
-  notes: "R package version 2.0.0"
+  notes: "R package version 3.0.0"
   url: "https://gojiplus.github.io/tuber/"

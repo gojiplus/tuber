@@ -7,6 +7,8 @@
 The token lives in `options(google_token)` as an httr2 token, and the
 client that minted it in `options(tuber.oauth_client)`, so an expired
 token can be refreshed without asking the user to authenticate again.
-Both are set by [yt_oauth()].
+Both are set by [yt_oauth()], and both are written to the cache file: an
+access token lasts an hour, so a cached token without its client would be
+useless in the next session.
 }
 \keyword{internal}

@@ -21,8 +21,6 @@
 #'   private video that has never been published.
 #' @param on_behalf_of_content_owner Optional YouTube content-owner ID. This is
 #'   only available to authorized YouTube content partners.
-#' @param ... Additional arguments passed to [get_video_details()] and
-#'   [tuber_PUT()].
 #'
 #' @return The updated video resource.
 #' @export
@@ -50,8 +48,7 @@ update_video_metadata <- function(
   license = NULL,
   public_stats_viewable = NULL,
   publish_at = NULL,
-  on_behalf_of_content_owner = NULL,
-  ...
+  on_behalf_of_content_owner = NULL
 ) {
   assert_string(video_id, min.chars = 1, .var.name = "video_id")
   if (!is.null(title)) assert_string(title, min.chars = 1, .var.name = "title")
@@ -99,7 +96,10 @@ update_video_metadata <- function(
     title = title,
     categoryId = category_id,
     description = description,
-    tags = tags,
+    # I() stops jsonlite unboxing a single tag into a bare string. A list would
+    # also serialize as an array, but modifyList() merges lists element-wise
+    # and would leave the existing tags in place.
+    tags = if (!is.null(tags)) I(tags),
     defaultLanguage = default_language
   )
   status_updates <- list(
@@ -128,8 +128,7 @@ update_video_metadata <- function(
     video_ids = video_id,
     part = parts,
     simplify = FALSE,
-    auth = "token",
-    ...
+    auth = "token"
   )
   if (length(current$items %||% list()) == 0) {
     abort(
@@ -160,11 +159,17 @@ update_video_metadata <- function(
     status <- (item$status %||% list())[mutable_status]
     status <- status[!vapply(status, is.null, logical(1))]
     body$status <- modifyList(status, status_updates)
+    # YouTube accepts publishAt only on a private video, so a schedule carried
+    # over from the current resource must not ride along with a change to
+    # public or unlisted.
+    if (!identical(body$status$privacyStatus, "private") && is.null(publish_at)) {
+      body$status$publishAt <- NULL
+    }
   }
 
   query <- list(part = paste(parts, collapse = ","))
   if (!is.null(on_behalf_of_content_owner)) {
     query$onBehalfOfContentOwner <- on_behalf_of_content_owner
   }
-  tuber_PUT("videos", query = query, body = body, ...)
+  tuber_PUT("videos", query = query, body = body)
 }

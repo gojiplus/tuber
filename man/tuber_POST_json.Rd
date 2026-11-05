@@ -4,7 +4,7 @@
 \alias{tuber_POST_json}
 \title{POST encoded in json}
 \usage{
-tuber_POST_json(path, query, body = "", ...)
+tuber_POST_json(path, query, body = "")
 }
 \arguments{
 \item{path}{path to specific API request URL}
@@ -12,9 +12,6 @@ tuber_POST_json(path, query, body = "", ...)
 \item{query}{query list}
 
 \item{body}{list serialized as the JSON request body}
-
-\item{\dots}{Ignored; retained so callers that forwarded httr configuration
-keep working.}
 }
 \value{
 list

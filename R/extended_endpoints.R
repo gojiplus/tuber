@@ -21,7 +21,6 @@ NULL
 #' @param max_results Maximum number of broadcasts to return.
 #' @param page_token Page token at which to start.
 #' @param simplify Whether to return a simplified data frame
-#' @param ... Additional arguments passed to tuber_GET
 #'
 #' @return List or data frame with live stream information
 #' @export
@@ -42,8 +41,7 @@ list_live_broadcasts <- function(broadcast_ids = NULL,
                                  broadcast_type = NULL,
                                  max_results = 50,
                                  page_token = NULL,
-                                 simplify = TRUE,
-                                 ...) {
+                                 simplify = TRUE) {
   n_filters <- sum(!is.null(broadcast_ids), !is.null(status), isTRUE(mine))
   if (n_filters == 0) {
     abort(paste0(
@@ -101,15 +99,15 @@ list_live_broadcasts <- function(broadcast_ids = NULL,
     query$mine <- "true"
   }
 
-  fetch_page <- function(token = NULL) {
+  fetch_page <- function(token = NULL, remaining = max_results) {
     page_query <- query
     page_query$pageToken <- token
+    page_query$maxResults <- min(remaining, query$maxResults)
     call_api_with_retry(
       tuber_GET,
       path = "liveBroadcasts",
       query = page_query,
-      auth = "token",
-      ...
+      auth = "token"
     )
   }
 
@@ -167,7 +165,6 @@ list_live_broadcasts <- function(broadcast_ids = NULL,
 #' @param size Thumbnail size: "default", "medium", "high", "standard", "maxres"
 #' @param simplify Whether to return a simplified data frame
 #' @param auth Authentication method: "token" (OAuth2) or "key" (API key)
-#' @param ... Additional arguments passed to tuber_GET
 #'
 #' @return A tidy data frame with one row per video and thumbnail size when
 #' `simplify = TRUE`; otherwise the raw videos-list response.
@@ -187,8 +184,7 @@ list_live_broadcasts <- function(broadcast_ids = NULL,
 get_video_thumbnails <- function(video_ids,
                                  size = NULL,
                                  simplify = TRUE,
-                                 auth = "key",
-                                 ...) {
+                                 auth = "key") {
   # Modern validation using checkmate
   assert_character(video_ids, min.len = 1, .var.name = "video_ids")
   assert_flag(simplify, .var.name = "simplify")
@@ -202,8 +198,7 @@ get_video_thumbnails <- function(video_ids,
     video_ids = video_ids,
     part = "snippet",
     simplify = FALSE,
-    auth = auth,
-    ...
+    auth = auth
   )
   items <- result$items %||% list()
 
@@ -245,67 +240,6 @@ get_video_thumbnails <- function(video_ids,
   )
 }
 
-#' Search for videos shorter than four minutes
-#'
-#' Uses YouTube's `videoDuration = "short"` filter. This filter includes every
-#' video shorter than four minutes and does not identify the YouTube Shorts
-#' product.
-#'
-#' @param term Search term.
-#' @param max_results Maximum total number of results.
-#' @param order Sort order: "date", "rating", "relevance", "title", "viewCount"
-#' @param region_code Region code for search
-#' @param published_after RFC 3339 formatted date-time (e.g., "2023-01-01T00:00:00Z")
-#' @param published_before RFC 3339 formatted date-time
-#' @param simplify Whether to return simplified data frame
-#' @param auth Authentication method: "token" (OAuth2) or "key" (API key)
-#' @param ... Additional arguments passed to [yt_search()].
-#'
-#' @return List or data frame with search results for videos under four minutes
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' # Search for recent shorts about cats
-#' short_videos <- search_short_videos("cats", max_results = 25, order = "date")
-#'
-#' # Search for popular short-duration videos in a specific region
-#' short_videos_us <- search_short_videos(
-#'   "music",
-#'   region_code = "US",
-#'   order = "viewCount"
-#' )
-#' }
-search_short_videos <- function(term,
-                                max_results = 25,
-                                order = "relevance",
-                                region_code = NULL,
-                                published_after = NULL,
-                                published_before = NULL,
-                                simplify = TRUE,
-                                auth = "key",
-                                ...) {
-  result <- yt_search(
-    term = term,
-    max_results = max_results,
-    type = "video",
-    order = order,
-    region_code = region_code,
-    published_after = published_after,
-    published_before = published_before,
-    video_duration = "short",
-    simplify = simplify,
-    get_all = TRUE,
-    auth = auth,
-    ...
-  )
-
-  if (simplify) {
-    result$duration_filter <- rep("under_four_minutes", nrow(result))
-  }
-  result
-}
-
 #' Get video live-broadcast timing
 #'
 #' Retrieves scheduling and actual start/end information exposed in a video's
@@ -315,7 +249,6 @@ search_short_videos <- function(term,
 #' @param video_ids Video ID or vector of video IDs.
 #' @param simplify Whether to return simplified data frame
 #' @param auth Authentication method: "token" (OAuth2) or "key" (API key)
-#' @param ... Additional arguments passed to tuber_GET
 #'
 #' @return A data frame when `simplify = TRUE`; otherwise the raw videos-list
 #' response.
@@ -329,8 +262,7 @@ search_short_videos <- function(term,
 #' }
 get_video_broadcast_timing <- function(video_ids,
                                        simplify = TRUE,
-                                       auth = "key",
-                                       ...) {
+                                       auth = "key") {
   # Modern validation using checkmate
   assert_character(video_ids, min.len = 1, .var.name = "video_ids")
   assert_flag(simplify, .var.name = "simplify")
@@ -340,8 +272,7 @@ get_video_broadcast_timing <- function(video_ids,
     video_ids = video_ids,
     part = c("snippet", "liveStreamingDetails", "status"),
     simplify = FALSE,
-    auth = auth,
-    ...
+    auth = auth
   )
   items <- result$items %||% list()
 

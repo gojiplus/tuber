@@ -10,8 +10,7 @@ get_video_details(
   simplify = TRUE,
   batch_size = 50,
   show_progress = NULL,
-  auth = "key",
-  ...
+  auth = "key"
 )
 }
 \arguments{
@@ -27,8 +26,6 @@ TRUE.}
 \item{show_progress}{Whether to show progress for large batches. Default: TRUE for >10 videos.}
 
 \item{auth}{Authentication method, `"key"` (the default) or `"token"`.}
-
-\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
 When \code{simplify = TRUE} (default): a data frame whose columns mirror the

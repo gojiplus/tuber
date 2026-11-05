@@ -64,7 +64,6 @@ json_to_df <- function(res) {
 #' @param batch_size Number of videos per API call (max 50). Default: 50.
 #' @param show_progress Whether to show progress for large batches. Default: TRUE for >10 videos.
 #' @param auth Authentication method, `"key"` (the default) or `"token"`.
-#' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'
 #' @details
 #' Valid values for \code{part}: \code{contentDetails, fileDetails, id,
@@ -121,8 +120,7 @@ get_video_details <- function(video_ids,
                               simplify = TRUE,
                               batch_size = 50,
                               show_progress = NULL,
-                              auth = "key",
-                              ...) {
+                              auth = "key") {
   # Modern validation using checkmate
   assert_character(video_ids, any.missing = FALSE, min.len = 1, .var.name = "video_ids")
   assert_character(part, min.len = 1, .var.name = "part")
@@ -144,10 +142,13 @@ get_video_details <- function(video_ids,
   # Check for owner-only parts when simplify is TRUE
   parts_only_for_video_owners <- c("fileDetails", "suggestions", "processingDetails")
   if (simplify && any(strsplit(part, ",")[[1]] %in% parts_only_for_video_owners)) {
-    abort("Data frame conversion not supported with owner-only parts",
+    abort(
+      c(
+        "Data frame conversion is not supported for owner-only parts.",
+        i = "Use `simplify = FALSE` with fileDetails, suggestions or processingDetails."
+      ),
       owner_only_parts = parts_only_for_video_owners,
       requested_parts = part,
-      help = "Use simplify = FALSE for owner-only parts",
       class = "tuber_incompatible_dataframe_parts"
     )
   }
@@ -169,8 +170,7 @@ get_video_details <- function(video_ids,
       tuber_GET,
       path = "videos",
       query = querylist,
-      auth = auth,
-      ...
+      auth = auth
     )
 
     if (length(raw_res$items) == 0) {
@@ -242,8 +242,7 @@ get_video_details <- function(video_ids,
       tuber_GET,
       path = "videos",
       query = list(part = part, id = batch_ids),
-      auth = auth,
-      ...
+      auth = auth
     )
     api_calls_made <- api_calls_made + 1
 

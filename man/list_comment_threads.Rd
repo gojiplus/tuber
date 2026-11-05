@@ -14,8 +14,7 @@ list_comment_threads(
   max_results = 100,
   page_token = NULL,
   simplify = TRUE,
-  auth = "key",
-  ...
+  auth = "key"
 )
 }
 \arguments{
@@ -40,8 +39,6 @@ related to that channel.}
 return the raw API response with all collected items.}
 
 \item{auth}{Authentication method, `"key"` or `"token"`.}
-
-\item{...}{Additional arguments passed to [tuber_GET()].}
 }
 \value{
 A data frame when `simplify = TRUE`; otherwise a comment-threads

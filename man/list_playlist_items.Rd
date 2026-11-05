@@ -12,8 +12,7 @@ list_playlist_items(
   max_results = 50,
   page_token = NULL,
   simplify = TRUE,
-  auth = "key",
-  ...
+  auth = "key"
 )
 }
 \arguments{
@@ -34,8 +33,6 @@ Supply exactly one of `playlist_id` or `playlist_item_ids`.}
 response with all collected items.}
 
 \item{auth}{Authentication method, `"key"` or `"token"`.}
-
-\item{...}{Additional arguments passed to [tuber_GET()].}
 }
 \value{
 A data frame when `simplify = TRUE`; otherwise a playlist-items

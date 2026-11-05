@@ -11,7 +11,6 @@
 #' @param filter_by_member_channel_ids Optional member channel IDs whose
 #' membership status should be checked. YouTube accepts at most 100 per call.
 #' @param simplify Whether to return a simplified data.frame. Default is TRUE.
-#' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'
 #' @return A data.frame or list of channel members.
 #' @export
@@ -29,8 +28,7 @@ list_channel_members <- function(part = "snippet",
                                  mode = "all_current",
                                  has_access_to_level = NULL,
                                  filter_by_member_channel_ids = NULL,
-                                 simplify = TRUE,
-                                 ...) {
+                                 simplify = TRUE) {
   # Validation
   assert_character(part, min.len = 1, min.chars = 1, .var.name = "part")
   assert_integerish(max_results, len = 1, lower = 1, .var.name = "max_results")
@@ -60,12 +58,13 @@ list_channel_members <- function(part = "snippet",
     query$filterByMemberChannelId <- paste(filter_by_member_channel_ids, collapse = ",")
   }
 
-  fetch_page <- function(token = NULL) {
+  fetch_page <- function(token = NULL, remaining = max_results) {
     q <- query
     if (!is.null(token)) q$pageToken <- token
+    q$maxResults <- min(remaining, query$maxResults)
     tryCatch(
       {
-        tuber_GET("members", query = q, auth = "token", ...)
+        tuber_GET("members", query = q, auth = "token")
       },
       error = function(e) {
         if (grepl("forbidden", tolower(e$message))) {

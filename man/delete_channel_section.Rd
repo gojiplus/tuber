@@ -4,12 +4,10 @@
 \alias{delete_channel_section}
 \title{Delete a Channel Section}
 \usage{
-delete_channel_section(section_id, ...)
+delete_channel_section(section_id)
 }
 \arguments{
 \item{section_id}{Channel-section ID.}
-
-\item{...}{Additional arguments passed to [tuber_DELETE()].}
 }
 \value{
 The empty API response, invisibly.

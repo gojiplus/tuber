@@ -13,8 +13,7 @@ list_playlists(
   language = NULL,
   page_token = NULL,
   simplify = TRUE,
-  auth = if (mine) "token" else "key",
-  ...
+  auth = if (mine) "token" else "key"
 )
 }
 \arguments{
@@ -37,8 +36,6 @@ response with all collected items.}
 
 \item{auth}{Authentication method, `"key"` or `"token"`. `mine = TRUE`
 requires OAuth.}
-
-\item{...}{Additional arguments passed to [tuber_GET()].}
 }
 \value{
 A data frame when `simplify = TRUE`; otherwise a playlists-list

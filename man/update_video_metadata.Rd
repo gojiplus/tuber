@@ -18,8 +18,7 @@ update_video_metadata(
   license = NULL,
   public_stats_viewable = NULL,
   publish_at = NULL,
-  on_behalf_of_content_owner = NULL,
-  ...
+  on_behalf_of_content_owner = NULL
 )
 }
 \arguments{
@@ -54,9 +53,6 @@ private video that has never been published.}
 
 \item{on_behalf_of_content_owner}{Optional YouTube content-owner ID. This is
 only available to authorized YouTube content partners.}
-
-\item{...}{Additional arguments passed to [get_video_details()] and
-[tuber_PUT()].}
 }
 \value{
 The updated video resource.

@@ -11,8 +11,7 @@ list_channel_members(
   mode = "all_current",
   has_access_to_level = NULL,
   filter_by_member_channel_ids = NULL,
-  simplify = TRUE,
-  ...
+  simplify = TRUE
 )
 }
 \arguments{
@@ -30,8 +29,6 @@ list_channel_members(
 membership status should be checked. YouTube accepts at most 100 per call.}
 
 \item{simplify}{Whether to return a simplified data.frame. Default is TRUE.}
-
-\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
 A data.frame or list of channel members.

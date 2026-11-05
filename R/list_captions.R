@@ -9,7 +9,6 @@
 #' @param part Character vector of caption resource parts.
 #' @param simplify If `TRUE`, return a data frame; otherwise return the raw API
 #' response.
-#' @param ... Additional arguments passed to [tuber_GET()].
 #'
 #' @return A data frame when `simplify = TRUE`; otherwise a caption-list
 #' response.
@@ -22,8 +21,7 @@
 list_captions <- function(video_id,
                           caption_ids = NULL,
                           part = "snippet",
-                          simplify = TRUE,
-                          ...) {
+                          simplify = TRUE) {
   assert_string(video_id, min.chars = 1, .var.name = "video_id")
   assert_character(part, min.len = 1, any.missing = FALSE, .var.name = "part")
   assert_flag(simplify, .var.name = "simplify")
@@ -42,7 +40,7 @@ list_captions <- function(video_id,
     videoId = video_id,
     id = if (is.null(caption_ids)) NULL else paste(caption_ids, collapse = ",")
   )
-  response <- tuber_GET("captions", query = query, auth = "token", ...)
+  response <- tuber_GET("captions", query = query, auth = "token")
   items <- response$items %||% list()
 
   if (!simplify) {

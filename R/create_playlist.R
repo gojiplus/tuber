@@ -4,7 +4,6 @@
 #' @param description string; Optional. The description of the playlist.
 #' @param status string; Optional. Default: 'public'. Can be one of: 'private', 'public', or
 #' 'unlisted'.
-#' @param ... Ignored; retained for backward compatibility.
 #'
 #' @return The created playlist's details.
 #'
@@ -18,7 +17,7 @@
 #'
 #' create_playlist(title = "My New Playlist", description = "This is a test playlist.")
 #' }
-create_playlist <- function(title, description = "", status = "public", ...) {
+create_playlist <- function(title, description = "", status = "public") {
   # Modern validation using checkmate
   assert_character(title, len = 1, min.chars = 1, .var.name = "title")
   assert_character(description, len = 1, .var.name = "description")
@@ -32,7 +31,7 @@ create_playlist <- function(title, description = "", status = "public", ...) {
 
   # Make the POST request using tuber_POST_json
   raw_res <- tuber_POST_json(
-    path = "playlists", query = list(part = "snippet,status"), body = body, ...
+    path = "playlists", query = list(part = "snippet,status"), body = body
   )
 
   # Return the response

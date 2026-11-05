@@ -5,20 +5,17 @@
 \title{Set Comment Moderation Status}
 \usage{
 set_comment_moderation_status(
-  comment_id,
+  comment_ids,
   moderation_status,
-  ban_author = FALSE,
-  ...
+  ban_author = FALSE
 )
 }
 \arguments{
-\item{comment_id}{Character vector. The IDs of the comments to update.}
+\item{comment_ids}{Character vector. The IDs of the comments to update.}
 
 \item{moderation_status}{Character. Valid values are 'heldForReview', 'published', 'rejected'.}
 
 \item{ban_author}{Logical. Whether to ban the author from commenting on the channel. Optional.}
-
-\item{\dots}{Additional arguments passed to \code{\link{tuber_POST_json}}.}
 }
 \value{
 A list containing the API response.
@@ -31,7 +28,7 @@ Requires OAuth 2.0 authentication and owner privileges.
 \dontrun{
 # Set API token via yt_oauth() first
 
-set_comment_moderation_status(comment_id = "Ugz...", moderation_status = "rejected")
+set_comment_moderation_status(comment_ids = "Ugz...", moderation_status = "rejected")
 }
 }
 \references{

@@ -114,6 +114,7 @@ quota_cost <- function(endpoint, method) {
     "captions.download" = 200L,
     "captions.insert" = 400L,
     "captions.update" = 450L,
+    "liveChatMessages.list" = 5L,
     "members.list" = 2L,
     "thumbnails.set" = 50L
   )
@@ -174,44 +175,15 @@ track_quota_usage <- function(endpoint, method = "list") {
   }
 
   if (bucket_status$requests_last_minute > 50) {
-    inform("High request rate detected",
+    inform(
+      c(
+        "High request rate detected.",
+        i = "Consider adding delays between API calls."
+      ),
       requests_last_minute = bucket_status$requests_last_minute,
-      help = "Consider adding delays between API calls",
       class = "tuber_high_request_rate"
     )
   }
 
   invisible(estimate)
-}
-
-#' Add Exponential Backoff
-#'
-#' Internal function to handle rate limiting with exponential backoff
-#'
-#' @param attempt_number Integer. Current attempt number
-#' @param max_attempts Integer. Maximum attempts before giving up
-#' @param base_delay Numeric. Base delay in seconds
-#'
-#' @importFrom stats runif
-#' @keywords internal
-exponential_backoff <- function(attempt_number, max_attempts = 5, base_delay = 1) {
-  # Modern validation using checkmate
-  assert_integerish(attempt_number, len = 1, lower = 1, .var.name = "attempt_number")
-  assert_integerish(max_attempts, len = 1, lower = 1, .var.name = "max_attempts")
-  assert_numeric(base_delay, len = 1, lower = 0, .var.name = "base_delay")
-
-  if (attempt_number > max_attempts) {
-    abort("Maximum retry attempts exceeded",
-      attempt_number = attempt_number,
-      max_attempts = max_attempts,
-      class = "tuber_max_retries_exceeded"
-    )
-  }
-
-  if (attempt_number > 1) {
-    delay <- base_delay * (2^(attempt_number - 2)) # 1, 2, 4, 8 seconds...
-    delay <- delay + runif(1, 0, 0.5)
-    message("Rate limited. Waiting ", round(delay, 2), " seconds before retry...")
-    Sys.sleep(delay)
-  }
 }

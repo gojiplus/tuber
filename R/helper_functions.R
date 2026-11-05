@@ -9,7 +9,7 @@ NULL
 # Suppress R CMD check warnings for dplyr variables
 utils::globalVariables(c(
   "search_term", "view_count", "like_count", "total_views",
-  "avg_engagement", "trending_score", "comment_count"
+  "avg_engagement", "comment_count"
 ))
 
 #' Comprehensive channel analysis
@@ -21,7 +21,6 @@ utils::globalVariables(c(
 #' @param max_videos Maximum number of recent videos to analyze (default: 50)
 #' @param auth Authentication method: "token" (OAuth2) or "key" (API key)
 #' @param include_comments Whether to fetch comment statistics (requires more quota)
-#' @param ... Additional arguments passed to API functions
 #'
 #' @return List containing comprehensive channel analysis
 #' @export
@@ -40,8 +39,7 @@ utils::globalVariables(c(
 analyze_channel <- function(channel_id,
                             max_videos = 50,
                             auth = "key",
-                            include_comments = FALSE,
-                            ...) {
+                            include_comments = FALSE) {
   # Modern validation using checkmate
   assert_character(channel_id, len = 1, min.chars = 1, .var.name = "channel_id")
   assert_integerish(max_videos, len = 1, lower = 1, upper = 500, .var.name = "max_videos")
@@ -56,9 +54,7 @@ analyze_channel <- function(channel_id,
     channel_ids = channel_id,
     part = c("snippet", "statistics", "brandingSettings", "contentDetails"),
     simplify = TRUE,
-    show_progress = FALSE,
-    auth = auth,
-    ...
+    auth = auth
   )
 
   if (nrow(channel_info) == 0) {
@@ -85,8 +81,7 @@ analyze_channel <- function(channel_id,
       part = "snippet",
       max_results = max_videos,
       simplify = FALSE,
-      auth = auth,
-      ...
+      auth = auth
     )
 
     if (length(playlist_items$items) > 0) {
@@ -104,25 +99,25 @@ analyze_channel <- function(channel_id,
         part = c("snippet", "statistics", "contentDetails"),
         simplify = TRUE,
         show_progress = FALSE,
-        auth = auth,
-        ...
+        auth = auth
       )
 
       if (include_comments && nrow(videos_info) > 0) {
         message("Fetching comments...")
-        videos_info$comments_retrieved <- vapply(video_ids, function(vid) {
+        # Keyed on the rows that came back, not the IDs that were asked for:
+        # a private or deleted upload is in the playlist but not in the details.
+        videos_info$comments_retrieved <- vapply(videos_info$id, function(vid) {
           tryCatch(
             {
               comments <- get_all_comments(
                 video_id = vid,
-                auth = auth,
-                ...
+                auth = auth
               )
               if (is.data.frame(comments)) nrow(comments) else length(comments)
             },
             error = function(e) NA_integer_
           )
-        }, integer(1))
+        }, integer(1), USE.NAMES = FALSE)
       }
     } else {
       videos_info <- data.frame()
@@ -188,7 +183,6 @@ analyze_channel <- function(channel_id,
 #' @param metrics Metrics to include in comparison
 #' @param auth Authentication method: "token" (OAuth2) or "key" (API key)
 #' @param simplify Whether to return a simplified comparison table
-#' @param ... Additional arguments passed to API functions
 #'
 #' @return List or data frame with channel comparison
 #' @export
@@ -207,8 +201,7 @@ analyze_channel <- function(channel_id,
 compare_channels <- function(channel_ids,
                              metrics = c("subscriber_count", "video_count", "view_count"),
                              auth = "key",
-                             simplify = TRUE,
-                             ...) {
+                             simplify = TRUE) {
   # Modern validation using checkmate
   assert_character(channel_ids, min.len = 2, .var.name = "channel_ids")
   assert_character(metrics, min.len = 1, .var.name = "metrics")
@@ -222,15 +215,16 @@ compare_channels <- function(channel_ids,
     channel_ids = channel_ids,
     part = c("snippet", "statistics", "brandingSettings"),
     simplify = TRUE,
-    show_progress = TRUE,
-    auth = auth,
-    ...
+    auth = auth
   )
 
   if (nrow(channels_info) == 0) {
-    abort("No channel information could be retrieved",
+    abort(
+      c(
+        "No channel information could be retrieved.",
+        i = "Check that the channel IDs are valid and accessible."
+      ),
       channel_ids = channel_ids,
-      help = "Check that channel IDs are valid and accessible",
       class = "tuber_no_channel_data"
     )
   }
@@ -307,7 +301,6 @@ compare_channels <- function(channel_ids,
 #' @param order Sort order: "relevance", "date", "rating", "viewCount"
 #' @param region_code Region code for localized trends
 #' @param auth Authentication method: "token" (OAuth2) or "key" (API key)
-#' @param ... Additional arguments passed to search functions
 #'
 #' @return List containing trending analysis results
 #' @export
@@ -325,8 +318,7 @@ analyze_trends <- function(search_terms,
                            time_period = "month",
                            order = "viewCount",
                            region_code = NULL,
-                           auth = "key",
-                           ...) {
+                           auth = "key") {
   # Modern validation using checkmate
   assert_character(search_terms, min.len = 1, .var.name = "search_terms")
   assert_choice(time_period, c("week", "month", "year", "all"), .var.name = "time_period")
@@ -367,8 +359,7 @@ analyze_trends <- function(search_terms,
       published_after = published_after,
       region_code = region_code,
       auth = auth,
-      simplify = TRUE,
-      ...
+      simplify = TRUE
     )
 
     if (nrow(search_results) > 0 && "video_id" %in% names(search_results)) {
@@ -382,8 +373,7 @@ analyze_trends <- function(search_terms,
           part = c("statistics", "contentDetails"),
           simplify = TRUE,
           show_progress = FALSE,
-          auth = auth,
-          ...
+          auth = auth
         )
 
         detail_rows <- nrow(videos_details)
@@ -457,10 +447,9 @@ analyze_trends <- function(search_terms,
         } else {
           max(view_count, na.rm = TRUE)
         },
-        trending_score = log10(total_views + 1) * avg_engagement * 100,
         .groups = "drop"
       ) |>
-      arrange(desc(trending_score))
+      arrange(desc(total_views))
 
     result <- list(
       detailed_results = combined_data,
@@ -499,7 +488,6 @@ analyze_trends <- function(search_terms,
 #' @param include_comments Whether to include comment analysis
 #' @param benchmark_percentiles Percentiles to use for performance benchmarking
 #' @param auth Authentication method: "token" (OAuth2) or "key" (API key)
-#' @param ... Additional arguments passed to API functions
 #'
 #' @return List containing bulk video analysis
 #' @export
@@ -516,8 +504,7 @@ analyze_trends <- function(search_terms,
 bulk_video_analysis <- function(video_ids,
                                 include_comments = FALSE,
                                 benchmark_percentiles = c(0.25, 0.5, 0.75, 0.9),
-                                auth = "key",
-                                ...) {
+                                auth = "key") {
   # Modern validation using checkmate
   assert_character(video_ids, min.len = 1, .var.name = "video_ids")
   assert_flag(include_comments, .var.name = "include_comments")
@@ -532,14 +519,16 @@ bulk_video_analysis <- function(video_ids,
     part = c("snippet", "statistics", "contentDetails"),
     simplify = TRUE,
     show_progress = TRUE,
-    auth = auth,
-    ...
+    auth = auth
   )
 
   if (nrow(videos_data) == 0) {
-    abort("No video data could be retrieved",
+    abort(
+      c(
+        "No video data could be retrieved.",
+        i = "Check that the video IDs are valid and accessible."
+      ),
       video_ids = video_ids,
-      help = "Check that video IDs are valid and accessible",
       class = "tuber_no_video_data"
     )
   }
@@ -553,7 +542,7 @@ bulk_video_analysis <- function(video_ids,
     videos_data$comments_retrieved <- vapply(videos_data$id, function(video_id) {
       tryCatch(
         {
-          comments <- get_all_comments(video_id = video_id, auth = auth, ...)
+          comments <- get_all_comments(video_id = video_id, auth = auth)
           if (is.data.frame(comments)) nrow(comments) else length(comments)
         },
         error = function(e) NA_integer_

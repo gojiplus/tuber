@@ -10,7 +10,6 @@
 #' `"ttml"`, or `"vtt"`.
 #' @param as_raw If `TRUE`, return a raw vector; otherwise return one character
 #' string.
-#' @param ... Additional arguments passed to [tuber_GET()].
 #'
 #' @return A raw vector when `as_raw = TRUE`; otherwise a character scalar.
 #' @export
@@ -22,8 +21,7 @@
 download_caption <- function(caption_id,
                              language = NULL,
                              format = NULL,
-                             as_raw = TRUE,
-                             ...) {
+                             as_raw = TRUE) {
   assert_string(caption_id, min.chars = 1, .var.name = "caption_id")
   assert_flag(as_raw, .var.name = "as_raw")
   if (!is.null(language)) {
@@ -37,9 +35,7 @@ download_caption <- function(caption_id,
     tuber_GET(
       paste0("captions/", caption_id),
       query = list(tlang = language, tfmt = format),
-      auth = "token",
-      use_cache = FALSE,
-      ...
+      auth = "token"
     ),
     error = function(error) {
       abort(

@@ -123,3 +123,54 @@ test_that("emoji functions handle mixed content", {
     "Great video!  Check this out: example.com  #awesome"
   )
 })
+
+test_that("an emoji made of several code points is one emoji", {
+  family <- "\U0001F468‍\U0001F469‍\U0001F467"
+  flag <- "\U0001F1FA\U0001F1F8"
+  keycap <- "5️⃣"
+  heart <- "❤️"
+  thumbs_up_medium <- "\U0001F44D\U0001F3FD"
+  sequences <- c(family, flag, keycap, heart, thumbs_up_medium)
+
+  expect_equal(count_emojis(sequences), rep(1L, 5))
+  expect_equal(extract_emojis(paste0("a", family, "b", flag))[[1]], c(family, flag))
+  expect_equal(remove_emojis(paste0("x", sequences, "y")), rep("xy", 5))
+  expect_equal(replace_emojis(paste0(family, flag), "[e]"), "[e][e]")
+})
+
+test_that("digits and text symbols are not emoji unless presented as one", {
+  expect_equal(count_emojis("price is 5 # 10 * 2"), 0L)
+  expect_false(has_emoji("© 2026"))
+  expect_true(has_emoji("©️ 2026"))
+  expect_equal(remove_emojis("日本語"), "日本語")
+})
+
+test_that("missing text stays missing", {
+  expect_equal(has_emoji(NA_character_), FALSE)
+  expect_equal(remove_emojis(c(NA, "a\U0001F600")), c(NA, "a"))
+  expect_equal(extract_emojis(NA_character_), list(character(0)))
+})
+
+test_that("comment text reaches the data frame with its emoji intact", {
+  sent <- paste(
+    "love it",
+    "\U0001F468‍\U0001F469‍\U0001F467",
+    "\U0001F1FA\U0001F1F8",
+    "5️⃣"
+  )
+  withr::local_envvar(YOUTUBE_KEY = "fake-key")
+  httr2::local_mocked_responses(function(req) {
+    httr2::response_json(body = list(items = list(list(
+      id = "t1",
+      snippet = list(
+        totalReplyCount = 0,
+        topLevelComment = list(id = "c1", snippet = list(textOriginal = sent))
+      )
+    ))))
+  })
+
+  comments <- get_all_comments("abcdefghijk")
+
+  expect_identical(comments$text_original, sent)
+  expect_equal(count_emojis(comments$text_original), 3L)
+})

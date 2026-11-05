@@ -127,25 +127,6 @@ emoji_freq <- table(all_emojis)
 sort(emoji_freq, decreasing = TRUE)[1:10]
 ```
 
-## Unicode Text Processing
-
-Beyond emojis, `tuber` handles Unicode text consistently:
-
-### `safe_utf8()` - Ensure UTF-8 encoding
-
-```{r eval=FALSE}
-problematic_text <- c("caf\xe9", "na\xefve")
-safe_text <- safe_utf8(problematic_text)
-```
-
-### `clean_youtube_text()` - Clean HTML and normalize text
-
-```{r eval=FALSE}
-raw_text <- "Great video! &lt;3 &amp; more..."
-clean_text <- clean_youtube_text(raw_text)
-#> "Great video! <3 & more..."
-```
-
 ## Troubleshooting
 
 ### Emojis appear as question marks
@@ -160,10 +141,13 @@ Sys.getlocale("LC_CTYPE")
 Sys.setlocale("LC_CTYPE", "en_US.UTF-8")
 ```
 
-### Emoji counts seem too high
+### What counts as one emoji
 
-Compound emojis (like family emojis or skin tone modifiers) may be counted as multiple characters. This is due to how Unicode encodes these as sequences of code points.
+An emoji is counted once however many code points encode it. A family, a flag,
+a keycap, or a thumbs-up with a skin tone is one emoji. `tuber` finds emoji per
+user-perceived character using the Unicode data that ships with the `stringi`
+package, so there is no list of emoji inside `tuber` to go out of date.
 
-### Some emojis not detected
-
-The emoji pattern covers most common Unicode emoji blocks. Very new emojis added in recent Unicode versions may not be detected until the pattern is updated.
+Text symbols such as the copyright sign, and plain digits, count as emoji only
+when the text presents them as one (a keycap digit, or a symbol followed by the
+emoji variation selector).

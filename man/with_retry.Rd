@@ -38,3 +38,4 @@ Result of successful expression evaluation
 \description{
 Implements exponential backoff with jitter for retrying failed API calls
 }
+\keyword{internal}

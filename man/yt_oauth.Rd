@@ -13,9 +13,11 @@ yt_oauth(
 )
 }
 \arguments{
-\item{app_id}{client id; required; no default}
+\item{app_id}{client id. Required the first time; optional once a token is
+cached.}
 
-\item{app_secret}{client secret; required; no default}
+\item{app_secret}{client secret. Required the first time; optional once a
+token is cached.}
 
 \item{scope}{Character. \code{ssl}, \code{basic},
 \code{own_account_readonly}, \code{upload_and_manage_own_videos},
@@ -38,6 +40,11 @@ The function reads a cached token when one exists. Otherwise, it opens the
 system browser and asks Google to authorize the application. By default,
 tokens are stored in the user's R cache directory rather than the project
 directory.
+}
+\details{
+The cache file holds the token together with the OAuth client, including
+the client secret, because an access token lasts an hour and can only be
+refreshed by the client that minted it. Treat the file as a credential.
 }
 \examples{
  \dontrun{

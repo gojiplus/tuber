@@ -35,21 +35,6 @@ test_that("Quota management functions work", {
   yt_set_quota_limit(original_limit, bucket = "data")
 })
 
-test_that("Unicode utilities work", {
-  expect_true(exists("safe_utf8"))
-  expect_true(exists("clean_youtube_text"))
-
-  # Test basic UTF-8 handling
-  test_text <- "Hello, world! 🌍"
-  result <- safe_utf8(test_text)
-  expect_equal(result, test_text)
-
-  # Test text cleaning
-  html_text <- "<b>Bold text</b> &amp; entities"
-  cleaned <- clean_youtube_text(html_text)
-  expect_equal(cleaned, "Bold text & entities")
-})
-
 test_that("Authentication functions exist", {
   expect_true(exists("yt_oauth"))
   expect_true(exists("yt_token"))

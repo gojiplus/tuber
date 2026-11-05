@@ -4,14 +4,12 @@
 \alias{list_regions}
 \title{List Supported Content Regions}
 \usage{
-list_regions(language = NULL, auth = "key", ...)
+list_regions(language = NULL, auth = "key")
 }
 \arguments{
 \item{language}{Optional language code for localized names.}
 
 \item{auth}{Authentication method, `"key"` or `"token"`.}
-
-\item{...}{Additional arguments passed to [tuber_GET()].}
 }
 \value{
 A data frame with `region_code`, `name`, and `etag` columns.

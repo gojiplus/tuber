@@ -6,7 +6,6 @@
 #' @param category_ids Optional character vector of video-category IDs.
 #' @param language Optional language code for localized text.
 #' @param auth Authentication method, `"key"` or `"token"`.
-#' @param ... Additional arguments passed to [tuber_GET()].
 #'
 #' @return A data frame with one row per category and snake-case column names.
 #' @export
@@ -19,8 +18,7 @@
 list_video_categories <- function(region_code = NULL,
                                   category_ids = NULL,
                                   language = NULL,
-                                  auth = "key",
-                                  ...) {
+                                  auth = "key") {
   if (!is.null(region_code)) {
     assert_string(region_code, pattern = "^[A-Z]{2}$", .var.name = "region_code")
   }
@@ -53,8 +51,7 @@ list_video_categories <- function(region_code = NULL,
       id = if (is.null(category_ids)) NULL else paste(category_ids, collapse = ","),
       hl = language
     ),
-    auth = auth,
-    ...
+    auth = auth
   )
   items <- response$items %||% list()
 

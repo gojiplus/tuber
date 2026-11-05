@@ -28,8 +28,7 @@ yt_search(
   get_all = TRUE,
   page_token = NULL,
   max_pages = Inf,
-  auth = "key",
-  ...
+  auth = "key"
 )
 }
 \arguments{
@@ -67,19 +66,20 @@ channel; Optional.}
 'relevance', 'title', 'videoCount', 'viewCount'}.}
 
 \item{event_type}{Character. Optional. Takes one of three values:
-\code{'completed', 'live', 'upcoming'}}
+\code{'completed', 'live', 'upcoming'}. Requires \code{type = "video"}.}
 
 \item{location}{Character.  Optional. Latitude and Longitude within
-parentheses, e.g. "(37.42307,-122.08427)"}
+parentheses, e.g. "(37.42307,-122.08427)". Requires
+\code{type = "video"} and \code{location_radius}.}
 
 \item{location_radius}{Character.  Optional. e.g. "1500m", "5km",
 "10000ft", "0.75mi"}
 
-\item{published_after}{Character. Optional. RFC 339 Format.
-For instance, "1970-01-01T00:00:00Z"}
+\item{published_after}{Character. Optional. An RFC 3339 date-time, for
+instance "1970-01-01T00:00:00Z" or "1970-01-01T05:30:00+05:30".}
 
-\item{published_before}{Character. Optional. RFC 339 Format.
-For instance, "1970-01-01T00:00:00Z"}
+\item{published_before}{Character. Optional. An RFC 3339 date-time, in the
+same format as \code{published_after}.}
 
 \item{video_definition}{Character. Optional.
 Takes one of three values: \code{'any'} (return all videos; Default),
@@ -104,7 +104,9 @@ license), \code{'youtube'} (return videos with standard YouTube license).}
 
 \item{region_code}{Character. Optional. An ISO 3166-1 alpha-2 country code.}
 
-\item{relevance_language}{Character. Optional. The relevance_language
+\item{relevance_language}{Character. Default is \code{"en"}. This default
+is tuber's choice: YouTube itself applies no language preference, so pass
+\code{NULL} to search without one. The relevance_language
 argument instructs the API to return search results that are most relevant to
 the specified language. The parameter value is typically an ISO 639-1
 two-letter language code. However, you should use the values zh-Hans for
@@ -118,7 +120,7 @@ to the search query term.}
 
 \item{simplify}{Boolean. Return a data.frame if \code{TRUE}.
 Default is \code{TRUE}.
-If \code{TRUE}, it returns a list that carries additional information.}
+If \code{FALSE}, it returns the search-list response as a list.}
 
 \item{get_all}{get all results, iterating through all the results
 pages. Default is \code{TRUE}.
@@ -132,8 +134,6 @@ Default is Inf (no page limit). Setting a lower value can reduce API quota
 usage.}
 
 \item{auth}{Authentication method: `"token"` or `"key"`.}
-
-\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
 When `simplify = TRUE`, a data frame with a resource ID column and
