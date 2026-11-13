@@ -20,7 +20,7 @@
 #' @importFrom stats median quantile runif
 #' @importFrom digest digest
 #' @importFrom jsonlite toJSON fromJSON
-#' @importFrom dplyr bind_rows group_by summarise n arrange desc rename
+#' @importFrom dplyr bind_rows group_by summarize n arrange desc rename
 #' @importFrom tibble enframe
 #' @importFrom tidyselect all_of
 #' @importFrom tidyr pivot_wider unnest unnest_wider

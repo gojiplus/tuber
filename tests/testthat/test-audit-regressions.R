@@ -17,7 +17,7 @@ request_json <- function(req) {
   as.character(do.call(jsonlite::toJSON, c(list(req$body$data), req$body$params)))
 }
 
-# A playlist of `total` items that honours maxResults, optionally capping the
+# A playlist of `total` items that honors maxResults, optionally capping the
 # first page to imitate YouTube returning a short page with a next token.
 playlist_pages <- function(total, first_page_cap = Inf) {
   function(path, query, ...) {
