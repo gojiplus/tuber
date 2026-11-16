@@ -39,3 +39,4 @@ _pkgdown.yml
 ^sphinx-docs$
 ^_site$
 ^\.codespellrc$
+^lychee\.toml$
