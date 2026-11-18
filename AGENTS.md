@@ -1,4 +1,4 @@
-# CLAUDE.md
+# AGENTS.md
 
 This repository contains the `tuber` R package, a client for the YouTube Data
 API and selected YouTube Live Streaming API endpoints.
